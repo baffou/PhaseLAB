@@ -1,0 +1,7 @@
+{"class":"CrossGrating",
+"Gamma": 39e-6,
+"name": "P4",
+"depth": 588e-9,
+"RI": 1.46,
+"lambda0": 540.96e-9
+}
