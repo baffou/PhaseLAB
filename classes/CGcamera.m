@@ -72,7 +72,7 @@ classdef CGcamera  <  handle
                         end
 
                         cam=Camera(pxSizeCamera,Nx,Ny);
-                        CrGr=CrossGrating(Gamma,CGdepth);
+                        CrGr=CrossGrating(Gamma=Gamma,depth=CGdepth);
                         obj=CGcamera(cam,CrGr);
                         obj.fileName=fileName;
                         obj.CGangle=CGangle;

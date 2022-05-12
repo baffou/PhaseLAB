@@ -14,30 +14,27 @@ lambda=530e-9;
 d=0.5e-3;
 %lambdaList=500e-9;
 %dList=2.5e-3;
-I0=40000;
 Nim=30;
-eD=550e-9;
-OB=Objective(100,1.0,'Olympus');
-CG=CrossGrating(39e-6,eD);
-CGcam=CGcamera('Zyla',CG);
-CGcam.RL.zoom=1;
+OB=Objective(100,1.3,'Olympus');
+%CG=CrossGrating(Gamma=39e-6,lambda0=lambda);
+%CGcam=CGcamera('Zyla',CG);
+%CGcam.RL.zoom=2;
+CGcam=CGcamera('sc8-830');
 MI=Microscope(OB,180,CGcam);
 MI.zo=0e-6;
 Npx=300; % should be multiple of 3
-system='Gaussian';
+system='NP';
 %system='noise';
 %system='Gaussian';
-w=40000;
-shotNoise='off';
+shotNoise='on';
 
 MI.CGcam.setDistance(d);
 IL=Illumination(lambda,ME);
-IL.NA=0.5;
 
 %% Construction of the T/OPD image, of a nanoparticle in this example
 switch system
     case 'NP'
-        radius=100e-9;
+        radius=50e-9;
         DI = Dipole('Au',radius);
         DI = DI.shine(IL);
         
@@ -61,7 +58,7 @@ end
 %Itf=CGMinSilico(IM0,,'shotNoise',1,'Nimages',100);
 
 %Itf=CGMinSilico(IM0,shotNoise=shotNoise,Nimages=30);
-Itf=CGMinSilico(IM0,shotNoise=shotNoise,Nimages=Nim,NAill=IL.NA);
+Itf=CGMinSilico(IM0,shotNoise='off',Nimages=Nim);
 
 
 %% Definition of the crops
@@ -85,7 +82,6 @@ IM.figure
 %% comparison
 figure
 hold on
-plot(OPD(end/2,:))
 plot(IM.OPD(end/2,:),'--')
 legend({'theo','insilico'})
 
