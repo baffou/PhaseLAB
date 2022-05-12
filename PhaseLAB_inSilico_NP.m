@@ -53,7 +53,7 @@ switch system
         Pha = 2*pi/lambda*OPD;
         IM0=ImageQLSI(sqrt(T),OPD,MI,IL);
 end
-
+IM0.pxSize0=IM0.pxSize*MI.M;
 %% Creation of the inSilico Interfero
 %Itf=CGMinSilico(IM0,,'shotNoise',1,'Nimages',100);
 
