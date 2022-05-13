@@ -94,7 +94,7 @@ if (nargin<5) || isempty(f11)
 end
 
 % if scalar spacings, expand them to be vectors
-dx=dx(:);
+dx = dx(:);
 if length(dx) == 1
   dx = repmat(dx,nx-1,1);
 elseif length(dx)==nx
@@ -103,7 +103,7 @@ elseif length(dx)==nx
 else
   error 'dx is not a scalar or of length == nx'
 end
-dy=dy(:);
+dy = dy(:);
 if length(dy) == 1
   dy = repmat(dy,ny-1,1);
 elseif length(dy)==ny

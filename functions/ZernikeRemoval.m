@@ -1,28 +1,28 @@
 % Remove the Zernike polynomial image component (n,m) from the image.
 % Useful to remove, e.g., an image tilt.
 
-function [pout,mask,Zimage]=ZernikeRemoval(Im,n,m,r0,x0,y0)
+function [pout,mask,Zimage] = ZernikeRemoval(Im,n,m,r0,x0,y0)
 
-N=min(size(Im));
+N = min(size(Im));
 if nargin==3
-    r0=N/2-1;
-    x0=N/2;
-    y0=N/2;
+    r0 = N/2-1;
+    x0 = N/2;
+    y0 = N/2;
 elseif nargin==4
-    x0=N/2;
-    y0=N/2;
+    x0 = N/2;
+    y0 = N/2;
 elseif nargin~=6
     error('not he proper number of inputs')
 end
 
-r0=round(r0);
+r0 = round(r0);
 
 if mod(n,2)~=mod(m,2)
     error('wrong parity of m')
 end
 
 
-Z= ZernikeMoment(Im,n,m,r0,x0,y0);
+Z = ZernikeMoment(Im,n,m,r0,x0,y0);
 
 [Ny, Nx] = size(Im);
 y = 1:Ny; x = 1:Nx;
@@ -40,10 +40,10 @@ Rad = ZernikeRadialpoly(R,n,m);    % get the radial polynomial
 % colorbar
 % subplot(1,3,3)
 
-Zimage=0.5*Rad.*(Z'*exp(-1i*m*Theta)+Z*exp(+1i*m*Theta));
-pout=Im-Zimage;
+Zimage = 0.5*Rad.*(Z'*exp(-1i*m*Theta)+Z*exp(+1i*m*Theta));
+pout = Im-Zimage;
 
-mask=(R<=1);
+mask = (R<=1);
 
 
 

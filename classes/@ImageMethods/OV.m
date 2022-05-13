@@ -1,9 +1,9 @@
-        function DMmean=OV(IM,NNP,nmax0,hfigInit)
+        function DMmean = OV(IM,NNP,nmax0,hfigInit)
             % NNP: number of nanoparticles to be measured in the image
             % size of the cropped area around the NP
             if nargin>=4
-                hand=hfigInit.UserData{8};
-                UIresult=hand.UIresult;
+                hand = hfigInit.UserData{8};
+                UIresult = hand.UIresult;
                 if ~strcmp(hfigInit.UserData{2},'px')
                     error('Please select px units to use the alpha function')
                 end
@@ -13,27 +13,27 @@
                     warning('As E0 is zero at the image plane, the T map is not normalized and the alpha won''t be absolutely measured.')
                 end
             end
-            taillePx=IM.pxSize;
+            taillePx = IM.pxSize;
             
             %nmax = input('valeur de nmax');
             if nargin==1
-                NNP=1;
-                nmax0=40;
+                NNP = 1;
+                nmax0 = 40;
             elseif nargin==2
-                nmax0=40;
+                nmax0 = 40;
             end
             
-            DMmean=zeros(NNP,1);
+            DMmean = zeros(NNP,1);
             
             imph = IM.OPD;
             imT = IM.T; %./imTref; %intensity normalization
             
-            for iNP=1:NNP
+            for iNP = 1:NNP
                 
                 fprintf(['Nanoparticle #' num2str(iNP) '/' num2str(NNP) '\n'])
                 
                 if nargin<4
-                    hfigInit=figure;imagesc(imT),colormap(gray),colorbar
+                    hfigInit = figure;imagesc(imT),colormap(gray),colorbar
                     %% zoom on the particle of interest
                     zoom on
                     waitfor(gcf,'CurrentCharacter',char(13))
@@ -42,7 +42,7 @@
                 
                 % press the central pixel of the particle
                 
-                button=0;
+                button = 0;
                 while(button~=1) % i.e. as long as it is not a mouse click
                     figure(hfigInit)
                     [x,y] = ginput(1);
@@ -50,22 +50,22 @@
                     %% starting pixel for sum
                     %n = input('nothing');
                     
-                    nmax=min(round(y)-1, nmax0);
-                    nmax=min(round(x)-1, nmax);
-                    nmax=min(IM.Ny-round(y)-1,nmax);
-                    nmax=min(IM.Nx-round(x)-1,nmax);
+                    nmax = min(round(y)-1, nmax0);
+                    nmax = min(round(x)-1, nmax);
+                    nmax = min(IM.Ny-round(y)-1,nmax);
+                    nmax = min(IM.Nx-round(x)-1,nmax);
                     
                     
                     imPcrop = imph(round(y)-nmax:round(y)+nmax,round(x)-nmax:round(x)+nmax); %crop OPD image
                     
                     % create mask image
                     coo = 0:1:nmax; % integration radius
-                    Noo=numel(coo);
+                    Noo = numel(coo);
                     sizeX = 2*nmax+1;
                     sizeY = 2*nmax+1;
                     [rows,columns] = meshgrid(1:sizeX, 1:sizeY);
                     
-                    DM=zeros(Noo);
+                    DM = zeros(Noo);
                     %% computation of alpha in function of the summed pixel number
                     for co = 1:Noo
                         rr = coo(co);
@@ -94,20 +94,20 @@
                     %angalpha = angle(alpha);
                     %save -ascii angalpha_focus angalpha
                     
-                    hfig2=figure();
+                    hfig2 = figure();
                     plot(DM)
                     %save -ascii realpha_p250 realpha
                     
                     %% mean value of alpha and error bares
                     %pxmin = input('valeur de pxmin'); %faire la moyene de alpha entre pxmin et pxmax
                     %pxmax = input('valeur de pxmax');
-                    [xp,~,button]=ginput(2);  % click twice on any key to restart the loop. Other, click twice with the mouse to keep on going.
+                    [xp,~,button] = ginput(2);  % click twice on any key to restart the loop. Other, click twice with the mouse to keep on going.
                     close(hfig2)
                 end
                 
                 
-                pxmin=round(min(xp));
-                pxmax=min(round(max(xp)),Noo); % in case the user clicks too far in x
+                pxmin = round(min(xp));
+                pxmax = min(round(max(xp)),Noo); % in case the user clicks too far in x
                 if pxmax<pxmin
                     error('The second click must correspond to a higher x value.')
                 end
@@ -119,7 +119,7 @@
                 end
             end
             if nargin>=4
-                hfigInit.UserData{10}=DMmean;
+                hfigInit.UserData{10} = DMmean;
             end
             DMmean*1e20
         end

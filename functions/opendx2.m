@@ -36,31 +36,31 @@ end
 %% handling the number of parameters
 
 if nargin==3                % (Im)
-    colorScale=hsv(1024);
-    coloringMap=Im1;
-    EL=35;
+    colorScale = hsv(1024);
+    coloringMap = Im1;
+    EL = 35;
 elseif nargin==4
-    EL=35;
+    EL = 35;
     if size(Im2)==size(Im1) % (Im1,Im2)
-        colorScale=colorPhaseMap(Im2);
-        coloringMap=Im2;
+        colorScale = colorPhaseMap(Im2);
+        coloringMap = Im2;
     else                  % (Im,colorScale)
-        colorScale=Im2;
-        coloringMap=Im1;
+        colorScale = Im2;
+        coloringMap = Im1;
     end
 elseif nargin==5
     if size(Im2)==size(Im1) %(Im1,Im2,colorScale0)
-        coloringMap=Im2;
-        EL=35;
-        colorScale=colorScale0;
+        coloringMap = Im2;
+        EL = 35;
+        colorScale = colorScale0;
     else                    %(Im1,colorScale,EL)
-        coloringMap=Im1;
-        EL=colorScale0;
-        colorScale=Im2;
+        coloringMap = Im1;
+        EL = colorScale0;
+        colorScale = Im2;
     end
 elseif nargin==6
-    colorScale=colorScale0;
-    EL=35;
+    colorScale = colorScale0;
+    EL = 35;
 end
 
 colormap(gca,colorScale);
@@ -77,7 +77,7 @@ view(0,90)
 %camlight(AZ, EL)
 camlight(20,EL,'infinite')
 %light('Position',[-1 0 0],'Style','local')
-cb=colorbar;
+cb = colorbar;
 axis([1 Ny 1 Nx])
 view(0,viewangle)
 camproj('perspective')
@@ -85,7 +85,7 @@ camproj('perspective')
 
 
 if nargout
-	c=cb;
+	c = cb;
 end
 
 

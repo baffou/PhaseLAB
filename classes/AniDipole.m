@@ -6,7 +6,7 @@
 % affiliation: CNRS, Institut Fresnel
 % date: Apr 28, 2020
 
-% Be carfule, in this version, when using an array of AniDipole, to simulate
+% Be carefull, in this version, when using an array of AniDipole, to simulate
 % serveral AniDipole is a field of view, all the alpha must be equal. 
 
 classdef AniDipole  < Dipole
@@ -25,11 +25,11 @@ classdef AniDipole  < Dipole
 
     methods
     
-        function obj=AniDipole(mat,radius,beta,z)
+        function obj = AniDipole(mat,radius,beta,z)
             obj@Dipole(mat,radius);
-            obj.beta=beta;
+            obj.beta = beta;
             if nargin==4
-                obj.z=z;
+                obj.z = z;
             end
         end
     
@@ -51,7 +51,7 @@ classdef AniDipole  < Dipole
             elseif theta*1000~=round(theta*1000)
                 warning('are you sure the input of rotation() is in degres and not in radian?') 
             end
-            obj.alphaAngle=theta;
+            obj.alphaAngle = theta;
         end
         
         function obj = rotateBy(obj,theta)
@@ -63,7 +63,7 @@ classdef AniDipole  < Dipole
             elseif theta*1000~=round(theta*1000)
                 warning('are you sure the input of rotation() is in degres and not in radian?') 
             end
-            obj.alphaAngle=obj.alphaAngle+theta;
+            obj.alphaAngle = obj.alphaAngle + theta;
         end
         
         function [obj,mat]=Jones(obj,varargin)
@@ -73,16 +73,16 @@ classdef AniDipole  < Dipole
             end
             
             % Quarter waveplate
-                QWP=[1 0;0 1i];
+                QWP = [1 0;0 1i];
             % Half waveplate
-                HWP=[1 0;0 -1];
+                HWP = [1 0;0 -1];
             % Polarizer
-                P=[1 0;0 0];
+                P = [1 0;0 0];
             % Rotation matrix
                 R = @(theta) [cosd(theta) -sind(theta);sind(theta) cosd(theta)];
              
-            mat=eye(2,2);
-            for ii=1:2:Nvar
+            mat = eye(2,2);
+            for ii = 1:2:Nvar
                 if ~ischar(varargin{ii})
                     error('this input must be text: ''P'', ''QWP'' or ''HWP''')
                 elseif ~isnumeric(varargin{ii+1})
@@ -90,31 +90,25 @@ classdef AniDipole  < Dipole
                 end
                 switch varargin{ii}
                     case 'P'
-                        mat=R(varargin{ii+1})*P*R(-varargin{ii+1})*mat;
+                        mat = R(varargin{ii+1})*P*R(-varargin{ii+1})*mat;
                     case 'QWP'
-                        mat=R(varargin{ii+1})*QWP*R(-varargin{ii+1})*mat;
+                        mat = R(varargin{ii+1})*QWP*R(-varargin{ii+1})*mat;
                     case 'HWP'
-                        mat=R(varargin{ii+1})*HWP*R(-varargin{ii+1})*mat;
+                        mat = R(varargin{ii+1})*HWP*R(-varargin{ii+1})*mat;
                 end
             end
-            obj=Jones0(obj,mat);
+            obj = Jones0(obj,mat);
             
         end
         
-        function obj=Jones0(obj,mat)
-            p1=obj.p(1)*mat(1,1)+obj.p(2)*mat(1,2);            
-            p2=obj.p(1)*mat(2,1)+obj.p(2)*mat(2,2);            
+        function obj = Jones0(obj,mat)
+            p1 = obj.p(1)*mat(1,1)+obj.p(2)*mat(1,2);            
+            p2 = obj.p(1)*mat(2,1)+obj.p(2)*mat(2,2);            
 
-            obj=obj.setp([p1 p2 obj.p(3)]);
+            obj = obj.setp([p1 p2 obj.p(3)]);
         end
         
-        
-        
-        
     end
-
-        
-        
     
 end
     

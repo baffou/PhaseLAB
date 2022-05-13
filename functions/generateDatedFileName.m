@@ -1,13 +1,13 @@
-function fileName=generateDatedFileName(prefix,extension)
+function fileName = generateDatedFileName(prefix,extension)
 
 if nargin==0
-    extension=[];
-    prefix=[];
+    extension = [];
+    prefix = [];
 elseif nargin==1
-    prefix=[prefix '_'];
-    extension='.txt';
+    prefix = [prefix '_'];
+    extension = '.txt';
 elseif ~strcmp(extension(1),'.')
-    extension=['.' extension];
+    extension = ['.' extension];
 end
 
 time   = clock;
@@ -17,7 +17,7 @@ day    = num2str(time(3));
 hour   = num2str(time(4));
 minute = num2str(time(5));
 second = num2str(time(6));
-second=second(1:find(second=='.')-1);
+second = second(1:find(second=='.')-1);
 
 if length(month) ==1,month=['0' month]; end
 if length(day)   ==1,day=['0' month];   end
@@ -26,6 +26,6 @@ if length(minute)==1,minute=['0' minute];end
 if length(second)==1,second=['0' second];end
 
 %fileName=[prefix '_' year(3:4) month day '_' hour 'h' minute extension];
-fileName=[prefix year(3:4) month day '_' hour 'h' minute 'min' second 's' extension];
+fileName = [prefix year(3:4) month day '_' hour 'h' minute 'min' second 's' extension];
 
 end

@@ -6,11 +6,11 @@ function figure_callback_Itf(hfig,IM,unit,dx0,fft,k)
 %mix: 'mix' or 'duo'
 %[k: image number]
 %[UIk: gui handle]
-hand=hfig.UserData{8};
+hand = hfig.UserData{8};
 
-AxesColor=hfig.UserData{6}.AxesColor;
-ButtonOnColor=hfig.UserData{6}.ButtonOnColor;
-ButtonOffColor=hfig.UserData{6}.ButtonOffColor;
+AxesColor = hfig.UserData{6}.AxesColor;
+ButtonOnColor = hfig.UserData{6}.ButtonOnColor;
+ButtonOffColor = hfig.UserData{6}.ButtonOffColor;
 
 set(hand.obj,'String' ,['M = ' num2str(IM.Microscope.Mobj) 'x'])
 set(hand.pxSize,'String',['px size: ' num2str(IM.pxSize*1e9) ' nm'])
@@ -22,13 +22,13 @@ if nargin==6 %ie in the case k and UIk are specified
 end
 
 if strcmp(unit,'px')
-    factorX=1;
-    factorY=1;
-    unit='px';  % present the µm mode with dx, mess up a bit the image, I don't know why
+    factorX = 1;
+    factorY = 1;
+    unit = 'px';  % present the µm mode with dx, mess up a bit the image, I don't know why
 elseif strcmp(unit,'um') || strcmp(unit,'µm')
-    factorX=IM.pxSize*1e6;
-    factorY=IM.pxSize*1e6;
-    unit='µm';
+    factorX = IM.pxSize*1e6;
+    factorY = IM.pxSize*1e6;
+    unit = 'µm';
 else
     error('the unit parameter must be ''px'' or ''um''')
 end
@@ -50,19 +50,19 @@ end
 
 %% 1st image
 
-ha(1)=subplot(1,2,1);
-ha(1).XColor='w'; 
-%ha(1).Position=[0.2300    0.1100    0.3347    0.8150];
-%ha(1).Position=[0.5703    0.1100    0.3347    0.8150];
-xx=[0 IM.Nx*factorX];
-yy=[0 IM.Ny*factorY];
+ha(1) = subplot(1,2,1);
+ha(1).XColor = 'w'; 
+%ha(1).Position = [0.2300    0.1100    0.3347    0.8150];
+%ha(1).Position = [0.5703    0.1100    0.3347    0.8150];
+xx = [0 IM.Nx*factorX];
+yy = [0 IM.Ny*factorY];
 
 
 imagesc(xx,yy,IM.Itf);
 axis equal
 colormap(gca,gray(1024))
-cb.T=colorbar;
-cb.T.Color=AxesColor;
+cb.T = colorbar;
+cb.T.Color = AxesColor;
     
 
 
@@ -80,17 +80,17 @@ set(ha(1),'YColor',AxesColor);
 ha(1).YDir = 'normal';
 
 %% 2nd image
-ha(2)=subplot(1,2,2);
+ha(2) = subplot(1,2,2);
 
-ha(1).Position(3)=ha(2).Position(3);
-ha(1).Position(1)=ha(1).Position(1)*1.2;
+ha(1).Position(3) = ha(2).Position(3);
+ha(1).Position(1) = ha(1).Position(1)*1.2;
 
 if strcmp(fft,'ref')
-    reference=IM.Ref.Itf;
+    reference = IM.Ref.Itf;
     set(hand.ref,'BackgroundColor',ButtonOnColor)
     set(hand.fft,'BackgroundColor',ButtonOffColor)
 else
-    reference=log(abs(fftshift(ifft2(IM.Itf))));
+    reference = log(abs(fftshift(ifft2(IM.Itf))));
     set(hand.ref,'BackgroundColor',ButtonOffColor)
     set(hand.fft,'BackgroundColor',ButtonOnColor)
 end
@@ -98,20 +98,15 @@ imagesc(xx,yy,reference);
 
 axis equal
 colormap(gca,gray(1024));
-cb.Ph=colorbar;
+cb.Ph = colorbar;
 ax = gca;
 ax.YDir = 'normal';
-cb.Ph.Color=AxesColor;
+cb.Ph.Color = AxesColor;
 
 % to avoid bright pixels distorting the colorscale
-%vec=sort(IM.Ph(:));
-%Nv=numel(vec);
+%vec = sort(IM.Ph(:));
+%Nv = numel(vec);
 %caxis([vec(500) vec(Nv-500) ]);
-
-
-
-
-
 
 cb.Ph.Label.String = 'counts';
 cb.Ph.Label.FontSize = 14;

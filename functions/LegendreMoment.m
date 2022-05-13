@@ -25,12 +25,12 @@ function [LMoment, LImage] = LegendreMoment(p,n,m)
 x = (-Nx/2+0.5:1:Nx/2-0.5)/(Nx/2-0.5); y = (-Ny/2+0.5:1:Ny/2-0.5)/(Ny/2-0.5);
 [X,Y] = meshgrid(x,y);
 
-LImage=LegendrePoly(X,n).*LegendrePoly(Y,m);    % get the radial polynomial
+LImage = LegendrePoly(X,n).*LegendrePoly(Y,m);    % get the radial polynomial
 
 
 
-LMoment=(2*n+1)*(2*m+1)/4*sum(sum(LImage.*p));
-LMoment=LMoment/(Nx*Ny);
+LMoment = (2*n+1)*(2*m+1)/4*sum(sum(LImage.*p));
+LMoment = LMoment/(Nx*Ny);
 
 
 

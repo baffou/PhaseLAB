@@ -12,7 +12,7 @@
 
 
 
-function Image=importPha(folder,MI,IL)
+function Image = importPha(folder,MI,IL)
 % importPha(folder,MI,IL)
 % folder: where to import the images from
 % MI:     Microscope object
@@ -27,86 +27,86 @@ function Image=importPha(folder,MI,IL)
     end
 
 %% Import the file T and OPD file names, and determine the number of images Npha.
-    previousFolder=pwd;
+    previousFolder = pwd;
     cd(folder);
 
-    fileList=dir;
-    NF=length(fileList);
+    fileList = dir;
+    NF = length(fileList);
 
     %Count the phase txt images
     % and building the name's list of the txt images
         
     if strcmp(MI(1).software,'Sid4Bio')
 
-        Npha=0;
-        for iF=1:NF
+        Npha = 0;
+        for iF = 1:NF
             if strcmp(fileList(iF).name(1:min(end,10)),'EXPORT PHA') && strcmp(fileList(iF).name(max(1,end-3):end),'.txt')
-                Npha=Npha+1;
+                Npha = Npha+1;
             end
         end
         
-        filePHA=repmat(struct('n',''),Npha,1);
+        filePHA = repmat(struct('n',''),Npha,1);
         
-        ipha=0;
-        for iF=1:NF
+        ipha = 0;
+        for iF = 1:NF
             if strcmp(fileList(iF).name(1:min(end,10)),'EXPORT PHA') && strcmp(fileList(iF).name(max(1,end-3):end),'.txt')
-                ipha=ipha+1;
-                filePHA(ipha).n=fileList(iF).name;
+                ipha = ipha+1;
+                filePHA(ipha).n = fileList(iF).name;
             end
         end
         
     elseif strcmp(MI(1).software,'PHAST')
     
-        Npha=0;
-        for iF=1:NF
+        Npha = 0;
+        for iF = 1:NF
             if strcmp(fileList(iF).name(1:min(end,3)),'PHA') &&...
                     ( strcmp(fileList(iF).name(max(1,end-3):end),'.txt') || strcmp(fileList(iF).name(max(1,end-3):end),'.tif') )
-                Npha=Npha+1;
+                Npha = Npha+1;
             end
         end
         
-        filePHA=repmat(struct([]),Npha,1);
+        filePHA = repmat(struct([]),Npha,1);
         
-        ipha=0;
-        for iF=1:NF
+        ipha = 0;
+        for iF = 1:NF
             if strcmp(fileList(iF).name(1:min(end,3)),'PHA') &&...
                     ( strcmp(fileList(iF).name(max(1,end-3):end),'.txt') || strcmp(fileList(iF).name(max(1,end-3):end),'.tif') )
-                ipha=ipha+1;
-                filePHA(ipha).n=fileList(iF).name;
+                ipha = ipha+1;
+                filePHA(ipha).n = fileList(iF).name;
             end
         end
     end
     
 %% Arranging the Illumination/wavelength and Microscope data data
-    ILlist=repmat(Illumination(),Npha,1);
+    ILlist = repmat(Illumination(),Npha,1);
     if length(IL)==1
         if length(IL.lambda)==1
-            ILlist=repmat(IL,Npha,1);
+            ILlist = repmat(IL,Npha,1);
         elseif length(IL.lambda)~=Npha
             error(['The number of images (' num2str(Npha) ') is not the number of specified lambda (' num2str(length(IL.lambda)) ')'])
         else % if Npha?1 and equals number of wavelengths, create independent IL objects.
-            for il=1:Npha
-                ILlist(il)=Illumination(IL.lambda(il),Medium(IL.n,IL.nS),IL.I,IL.polar);
+            for il = 1:Npha
+                ILlist(il) = Illumination(IL.lambda(il),Medium(IL.n,IL.nS),IL.I,IL.polar);
             end
         end
     elseif numel(IL)~=Npha
             error(['The number of images (' num2str(Npha) ') is not the number Illumination objects (' num2str(length(IL)) ')'])
     else
-        ILlist=IL;
+        ILlist = IL;
     end
     
     if numel(MI)==1
-        MI=repmat(MI,Npha,1);
+        MI = repmat(MI,Npha,1);
     elseif numel(MI)~=Npha
         error(['The number of images (' num2str(Npha) ') is not the number of specified Microscopes (' num2str(numel(MI)) ')'])
     end
         
     
 %% Importing the images and create the ImageQLSI objects.  
-    Image0=ImageQLSI();
-    Image=repmat(Image0,Npha,1);
+    Image0 = ImageQLSI();
+    Image = repmat(Image0,Npha,1);
     disp(['Importing ' num2str(Npha) ' images:'])
-    for ii=1:Npha
+    for ii = 1:Npha
         % import images
         
         disp([num2str(ii) '- ' filePHA(ii).n])
@@ -122,29 +122,29 @@ function Image=importPha(folder,MI,IL)
                 fwrite(FID, Data, 'char');
                 fclose(FID);
             end
-            OPD=dlmread(filePHA(ii).n)*1e-9;
+            OPD = dlmread(filePHA(ii).n)*1e-9;
         else
-            OPD=imread(filePHA(ii).n)*1e-9;
+            OPD = imread(filePHA(ii).n)*1e-9;
         end
-        T=OPD*0;
+        T = OPD*0;
         % create the ImageQLSI objects
-        Image(ii)=ImageQLSI(T,OPD,MI(ii),ILlist(ii));
-        Image(ii).folder=folder;
-        Image(ii).Microscope=MI(ii);
-        Image(ii).pxSize0=MI(ii).pxSizePhasics;
+        Image(ii) = ImageQLSI(T,OPD,MI(ii),ILlist(ii));
+        Image(ii).folder = folder;
+        Image(ii).Microscope = MI(ii);
+        Image(ii).pxSize0 = MI(ii).pxSizePhasics;
         
-        Image(ii).TfileName='';
-        Image(ii).OPDfileName=filePHA(ii).n;
+        Image(ii).TfileName = '';
+        Image(ii).OPDfileName = filePHA(ii).n;
         if strcmp(MI(ii).software,'Sid4Bio')
-            numIm=str2double(filePHA(ii).n(end-7:end-4));
+            numIm = str2double(filePHA(ii).n(end-7:end-4));
             if isnumeric(numIm) && isfinite(numIm)
-                Image(ii).imageNumber=str2double(filePHA(ii).n(end-7:end-4));
+                Image(ii).imageNumber = str2double(filePHA(ii).n(end-7:end-4));
             else
                 filePHA(ii).n(end-7:end-4)
                 warning('this image has no numer in its name')
             end
         elseif strcmp(MI(ii).software,'PHAST')
-            Image(ii).imageNumber=ii;
+            Image(ii).imageNumber = ii;
         end
     end
 

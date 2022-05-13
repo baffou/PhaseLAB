@@ -1,12 +1,10 @@
 function saveImages(hfig)
-hand=hfig.UserData{8};
-IM=hfig.UserData{5};
-folder=get(hand.folder,'string');
-k=str2double(get(hand.UIk,'string'));
-fileName=get(hand.file,'string');
+hand = hfig.UserData{8};
+IM = hfig.UserData{5};
+folder = get(hand.folder,'string');
 
 mkdir(folder)
-currFolder=pwd;
+currFolder = pwd;
 cd(folder)
 
 

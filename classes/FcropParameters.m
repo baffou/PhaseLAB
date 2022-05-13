@@ -17,7 +17,7 @@ classdef FcropParameters  %parameters of the crop in the Fourier plane
     
     methods
         
-        function obj=FcropParameters(x,y,R,Nx,Ny,opt)
+        function obj = FcropParameters(x,y,R,Nx,Ny,opt)
             arguments
                 x = []
                 y = []
@@ -46,7 +46,7 @@ classdef FcropParameters  %parameters of the crop in the Fourier plane
             end
         end
         
-        function obj=set.y(obj,y0)
+        function obj = set.y(obj,y0)
             if ~isempty(y0)
                 if y0 >= 0 && y0 <= obj.Ny
                     obj.y = y0;

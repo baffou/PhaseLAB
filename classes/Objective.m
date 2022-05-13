@@ -15,7 +15,7 @@
 
 classdef Objective  <  handle
     
-    properties(SetAccess=protected, GetAccess=public)
+    properties(SetAccess = protected, GetAccess = public)
         Mobj (1,1) {mustBeInteger, mustBePositive} = 100     % Magnification of the objective, specified by the manufacturer.
         NA   (1,1) {mustBeNumeric, mustBePositive} = 1.3     % Numerical aperture of the microscope objective
         objBrand char ='Olympus'  % Brand of the objective (can be 'Nikon', 'Thorlabs', 'Leica', 'Olympus' or 'Zeiss', nothing else. Proper specification is MANDATORY to properly estimate the magnification).
@@ -26,16 +26,16 @@ classdef Objective  <  handle
     
     methods
         
-        function obj=Objective(Mobj,NA,brand)
+        function obj = Objective(Mobj,NA,brand)
             % . Objective() or Objective(Mobj,NA) or Objective(Mobj,NA,brand)
             if nargin~=0
                 if nargin==2
-                    obj.Mobj=abs(Mobj);
-                    obj.NA=NA;
+                    obj.Mobj = abs(Mobj);
+                    obj.NA = NA;
                 elseif nargin==3
-                    obj.Mobj=abs(Mobj);
-                    obj.NA=NA;
-                    obj.objBrand=brand;
+                    obj.Mobj = abs(Mobj);
+                    obj.NA = NA;
+                    obj.objBrand = brand;
                 else
                     error('wrong number of inputs')
                 end
@@ -50,7 +50,7 @@ classdef Objective  <  handle
             elseif val/10~=round(val/10) || val>100
                 warning('are you sure this is the magnification written on the objective?')
             end
-            obj.Mobj=val;
+            obj.Mobj = val;
         end
         
         function set.NA(obj,val)
@@ -61,7 +61,7 @@ classdef Objective  <  handle
             elseif val>1.5
                 warning(['are you sure ' num2str(val) ' is the NA written on the objective? It looks too big.'])
             end
-            obj.NA=val;
+            obj.NA = val;
         end
         
         function set.objBrand(obj,val)
@@ -70,15 +70,15 @@ classdef Objective  <  handle
             end
             
             if strcmpi(val,'Olympus')
-                obj.objBrand='Olympus';
+                obj.objBrand = 'Olympus';
             elseif strcmp(val,'Nikon')
-                obj.objBrand='Nikon';
+                obj.objBrand = 'Nikon';
             elseif strcmp(val,'Zeiss')
-                obj.objBrand='Zeiss';
+                obj.objBrand = 'Zeiss';
             elseif strcmp(val,'Leica')
-                obj.objBrand='Leica';
+                obj.objBrand = 'Leica';
             elseif strcmp(val,'Thorlabs')
-                obj.objBrand='Thorlabs';
+                obj.objBrand = 'Thorlabs';
             else
                 error(['This objective brand, ' val ', is not known by PhaseLAB.'])
             end
