@@ -2,13 +2,13 @@ function reloadFigure(hfig,IM,unit,dx0,mix,k)
 
 %% zoom reset
 if strcmp(unit,'px') || dx==2 || dx==3  % presents the µm mode with dx
-    factorX=1;
-    factorY=1;
-    unit='px';  % present the µm mode with dx, mess up a bit the image, I don't know why
+    factorX = 1;
+    factorY = 1;
+    unit = 'px';  % present the µm mode with dx, mess up a bit the image, I don't know why
 elseif strcmp(unit,'um') || strcmp(unit,'µm')
-    factorX=IM.pxSize*1e6;
-    factorY=IM.pxSize*1e6;
-    unit='µm';
+    factorX = IM.pxSize*1e6;
+    factorY = IM.pxSize*1e6;
+    unit = 'µm';
 else
     error('the unit parameter must be ''px'' or ''um''')
 end

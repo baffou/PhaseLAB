@@ -35,7 +35,7 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
         dxSize      % pixel size at the image plane, ie dexel size of the camera if zoom=1 (usually in the 6 µm range)
     end
     
-    properties(Access=public)
+    properties(Access = public)
         zo (1,1) {mustBeNumeric} = 0              % Position in z of the imaged plane. Only useful for numerical simulation, not for processing exp data.
         T0                  % Microscope temperature
     end
@@ -49,16 +49,16 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
         f_Zeiss      = 165;  % focal length of the TL recommended by Zeiss
     end
      
-    properties(Access=private)
+    properties(Access = private)
         f_brand        % tubelens recommended by the manufacturer. Used to compute the actual mgnification, which can be different from the one specified by the manufacturer if another tube lens focal length is used.        
     end
     
     
     methods
 
-        function m=Microscope(OB,f_TL,CGcam,software)
-            m.Objective=Objective();
-            m.CGcam=CGcamera();
+        function m = Microscope(OB,f_TL,CGcam,software)
+            m.Objective = Objective();
+            m.CGcam = CGcamera();
             if nargin~=0
 
                 if nargin>=5
@@ -70,18 +70,18 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
                 end
                 
                 if nargin==4
-                    m.CGcam=CGcam;
-                    m.software=software;
+                    m.CGcam = CGcam;
+                    m.software = software;
                 end
                 
                 if nargin==3
-                    m.CGcam=CGcam;
-                    m.software='other';
+                    m.CGcam = CGcam;
+                    m.software = 'other';
                 end
                 
-                m.Objective=OB;
+                m.Objective = OB;
                 if nargin~=1
-                    m.f_TL=f_TL;
+                    m.f_TL = f_TL;
                 end                        
             end %nargin~=0
             eval(['m.f_brand=m(1).f_' m.Objective.objBrand ';'])
@@ -92,18 +92,18 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
             if abs(z)>0.1
                 warning('Are you sure z0 is in nanometer?')
             end
-            obj.zo=z;
+            obj.zo = z;
         end
 
         function set.software(m,str)
             if isa(str,'char')
                 if ismember(str,m.softwareList)
-                    m.software=str;
+                    m.software = str;
                 else
                     fprintf(['Error: ' '''' str ''': Unkown software name.\n'])
                     fprintf('Here is the list of software names:\n\n')
 
-                    for ii=1:numel(m.softwareList)
+                    for ii = 1:numel(m.softwareList)
                         disp(['''' m.softwareList{ii} ''''])
                     end
                     error(' ')
@@ -115,14 +115,14 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
 
         function set.CGcam(m,str)
             if isa(str,'char')
-                Lia= ismember(str,m.camList);
+                Lia = ismember(str,m.camList);
                 if max(Lia)
-                    m.CGcam=CGcamera(str);
+                    m.CGcam = CGcamera(str);
                 else
                     fprintf(['Error: ' '''' str ''': Unkown camera name.\n'])
                     fprintf('Here is the list of camera names:\n\n')
 
-                    for ii=1:numel(m.camList)
+                    for ii = 1:numel(m.camList)
                         disp(['''' m.camList{ii} ''''])
                     end
                     fprintf('\n')
@@ -130,91 +130,91 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
                     error(' ')
                 end
             elseif isa(str,'CGcamera')
-                m.CGcam=str;
+                m.CGcam = str;
             else
                 error('the property software must be a string')
             end                    
             
         end
         
-        function val=pxSizePhasics(obj)
+        function val = pxSizePhasics(obj)
             % returns the pixel size of the phase image in [m]. When using a Phasics (binning) software.
-            p=obj.CGcam.Camera.dxSize;
-            val=abs(p*obj.CGcam.zeta/(obj.CGcam.zoom*obj.M));
+            p = obj.CGcam.Camera.dxSize;
+            val = abs(p*obj.CGcam.zeta/(obj.CGcam.zoom*obj.M));
         end
         
-        function val=pxSizeItf(obj)
+        function val = pxSizeItf(obj)
             % returns the pixel size of the interferogram image in the object plane [m].
-            pxSizeCamera=obj.CGcam.Camera.dxSize;
-            val=abs(pxSizeCamera/(obj.M));
+            pxSizeCamera = obj.CGcam.Camera.dxSize;
+            val = abs(pxSizeCamera/(obj.M));
         end
         
-        function val=camList(obj)
+        function val = camList(obj)
             % returns the list of available cameras
-            cameraList=dir([obj.MIpath '/../CGcameras/*.txt']);
-            Nc=numel(cameraList);
-            val=cell(Nc,1);
-            for ic=1:Nc
-                val{ic}=cameraList(ic).name(1:end-4);
+            cameraList = dir([obj.MIpath '/../CGcameras/*.txt']);
+            Nc = numel(cameraList);
+            val = cell(Nc,1);
+            for ic = 1:Nc
+                val{ic} = cameraList(ic).name(1:end-4);
             end
         end    
         
         function set.Objective(obj,val)
             if isa(val,'Objective')
-                obj.Objective=val;
+                obj.Objective = val;
             end
         end
         
         function set.f_TL(obj,val)
             if val<10 % focal length specified in [m]
-                obj.f_TL=val*1000;
+                obj.f_TL = val*1000;
             else
-                obj.f_TL=val;
+                obj.f_TL = val;
             end
         end
 
-        function val=Mobj(m)      % Magnification of the objective, specified by the manufacturer.
-            val=m.Objective.Mobj;
+        function val = Mobj(m)      % Magnification of the objective, specified by the manufacturer.
+            val = m.Objective.Mobj;
         end
 
-        function val=NA(m)      % Magnification of the objective, specified by the manufacturer.
-            val=m.Objective.NA;
+        function val = NA(m)      % Magnification of the objective, specified by the manufacturer.
+            val = m.Objective.NA;
         end
 
-        function val=get.dxSize(obj)
+        function val = get.dxSize(obj)
             % pixel size at the image plane
             obj.CGcam.Camera.dxSize
             obj.CGcam.RL.zoom
             if ~isempty(obj.CGcam.RL)
-                val=obj.CGcam.Camera.dxSize/obj.CGcam.RL.zoom;
+                val = obj.CGcam.Camera.dxSize/obj.CGcam.RL.zoom;
             else
-                val=obj.CGcam.Camera.dxSize;
+                val = obj.CGcam.Camera.dxSize;
             end
         end
 
-        function val=get.pxSize(obj)
+        function val = get.pxSize(obj)
             % pixel size at the focal plane
-            val=abs( obj.dxSize()/obj.M );
+            val = abs( obj.dxSize()/obj.M );
         end
 
-        function val=objBrand(m)      % Magnification of the objective, specified by the manufacturer.
-            val=m.Objective.objBrand;
+        function val = objBrand(m)      % Magnification of the objective, specified by the manufacturer.
+            val = m.Objective.objBrand;
         end
 
-        function val=get.M(m)
-            %val=-m.Mobj*m.CGcam.zoom*m.f_TL/m.f_brand;
-            val=-m.Mobj*m.f_TL/m.f_brand; % I remove the zoom from this expression to match the camera-shrink description
+        function val = get.M(m)
+            %val = -m.Mobj*m.CGcam.zoom*m.f_TL/m.f_brand;
+            val = -m.Mobj*m.f_TL/m.f_brand; % I remove the zoom from this expression to match the camera-shrink description
         end
 
-        function sigma=sigmaTheo(MI)
-            Z=abs(MI.CGcam.zoom);
-            Lambda=MI.CGcam.CG.Gamma;
-            d=MI.CGcam.distance();
-            w=MI.CGcam.Camera.fullWellCapacity;
-            Nim=1;
-            Npx=MI.CGcam.Camera.Nx;
-            p=MI.CGcam.Camera.dxSize;
-            sigma=p*Lambda/(Z*d) * sqrt(2/(Nim*w)) * sqrt(log10(Npx*Npx))/(8*sqrt(2));
+        function sigma = sigmaTheo(MI)
+            Z = abs(MI.CGcam.zoom);
+            Lambda = MI.CGcam.CG.Gamma;
+            d = MI.CGcam.distance();
+            w = MI.CGcam.Camera.fullWellCapacity;
+            Nim = 1;
+            Npx = MI.CGcam.Camera.Nx;
+            p = MI.CGcam.Camera.dxSize;
+            sigma = p*Lambda/(Z*d) * sqrt(2/(Nim*w)) * sqrt(log10(Npx*Npx))/(8*sqrt(2));
         end
         
     end
@@ -222,8 +222,8 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
 
     methods(Static,Hidden)
 
-        function val=MIpath()
-            val=fileparts(which('Microscope.m'));
+        function val = MIpath()
+            val = fileparts(which('Microscope.m'));
         end
 
     end

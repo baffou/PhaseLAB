@@ -6,7 +6,7 @@
 % date: Jul 29, 2019
 
 
-function image=imaging(DIs,IL,MI,Npx)
+function image = imaging(DIs,IL,MI,Npx)
 % imaging(DIs,IL,MI[,ImSize,Npx])
 % DIs: array of Dipole objects, or Nanoparticle object
 % IL: Illumination object
@@ -15,20 +15,20 @@ function image=imaging(DIs,IL,MI,Npx)
 
 if isa(MI,'Microscope')
 elseif isa(MI,'Objective')
-    MI=Microscope(MI);
+    MI = Microscope(MI);
 else
     error('The third input must be either an Objective or a Microscope object')
 end
 
 if nargin==3
-    Npx=MI.CGcam.Camera.Ny;
+    Npx = MI.CGcam.Camera.Ny;
 end
-pxSize=MI.pxSizeItf;
-ImSize=Npx*pxSize;
+pxSize = MI.pxSizeItf;
+ImSize = Npx*pxSize;
 
 
 if isa(DIs(1),'Nanoparticle')
-    NP=DIs;
+    NP = DIs;
     if NP.Illumination.identity~=IL.identity
         warning('The illumination used to shine the nanoparticle is not the one used to compute the image')
     end
@@ -36,13 +36,13 @@ if isa(DIs(1),'Nanoparticle')
         error('The Nanoparticle must be illuminated before imaging')
     end
     clear DIs
-    Nd=numel(NP.mesh.pos)/3;
-    DI0=Dipole(NP.mat,NP.mesh.a/2);
-    DIs=repmat(DI0,Nd,1);
-    for id=1:Nd
-        DIs(id)=DIs(id).setp(NP.mesh.p(id,:));
-        DIs(id)=DIs(id).moveTo(NP.mesh.pos(id,1),NP.mesh.pos(id,2),NP.mesh.pos(id,3));
-        DIs(id).Illumination=NP.Illumination;
+    Nd = numel(NP.mesh.pos)/3;
+    DI0 = Dipole(NP.mat,NP.mesh.a/2);
+    DIs = repmat(DI0,Nd,1);
+    for id = 1:Nd
+        DIs(id) = DIs(id).setp(NP.mesh.p(id,:));
+        DIs(id) = DIs(id).moveTo(NP.mesh.pos(id,1),NP.mesh.pos(id,2),NP.mesh.pos(id,3));
+        DIs(id).Illumination = NP.Illumination;
     end
 end
 
@@ -63,7 +63,7 @@ M  = MI.M;            % Microscope magnification
 NA = MI.NA;           % Numerical aperture of the microscope objective
 
 
-zo=MI.zo;
+zo = MI.zo;
 
 if NA>nS
     error('NA should be smaller than n')
@@ -89,22 +89,22 @@ Ekprimey = zeros(length(kxx),length(kyy));
 Ekprimez = zeros(length(kxx),length(kyy));
 uz = [0;0;1];
 
-NDI=numel(DIs);
+NDI = numel(DIs);
 
-ILlist=[DIs(:).Illumination];
+ILlist = [DIs(:).Illumination];
 if [ILlist(:).identity]~=IL.identity
     warning('The illumination used to shine the nanoparticle is not the one used to compute the image')
 end
 
 
 
-if NDI>1,f=waitbar(0,'please wait');end
+if NDI>1,f = waitbar(0,'please wait');end
     
-for id=1:NDI
+for id = 1:NDI
 
         
     if NDI>1,waitbar(id/numel(DIs),f,['NP imaging: ' num2str(id) '/' num2str(numel(DIs)) ' dipoles']);end
-    DI=DIs(id);
+    DI = DIs(id);
     
 
     if DI.Illumination.identity~=IL.identity
@@ -126,63 +126,63 @@ for id=1:NDI
     
     %% Computation of the scattered field at Fourier plane
     
-    for ikx=1:numel(kxx)
-        kx=kxx(ikx);
-        kx0=kx/(n*k0);
-        kprimex=kx/M;
-        kprimex0=kprimex/k0;
-        for iky=1:numel(kyy)
-            ky=kyy(iky);
-            ky0=ky/(n*k0);
-            kprimey=ky/M;
-            kprimey0=kprimey/k0;
+    for ikx = 1:numel(kxx)
+        kx = kxx(ikx);
+        kx0 = kx/(n*k0);
+        kprimex = kx/M;
+        kprimex0 = kprimex/k0;
+        for iky = 1:numel(kyy)
+            ky = kyy(iky);
+            ky0 = ky/(n*k0);
+            kprimey = ky/M;
+            kprimey0 = kprimey/k0;
            
             if sqrt(kx*kx+ky*ky) <= NA*k0     % cutoff filter; taking into account the numerical aperture of the objective
                 
-                ga=sqrt(nS^2*k0^2-kx^2-ky^2);
-                ga0=sqrt(nS^2*k0^2-kx^2-ky^2)/(nS*k0);
+                ga = sqrt(nS^2*k0^2-kx^2-ky^2);
+                ga0 = sqrt(nS^2*k0^2-kx^2-ky^2)/(nS*k0);
                 
-                gab=sqrt(n^2*k0^2-kx^2-ky^2);
-                gab0=sqrt(n^2*k0^2-kx^2-ky^2)/(n*k0);
+                gab = sqrt(n^2*k0^2-kx^2-ky^2);
+                gab0 = sqrt(n^2*k0^2-kx^2-ky^2)/(n*k0);
                 
                 kv = [kx0;ky0;ga0];               % wavevector in the medium of refractive index n
                 kvb = [kx0;ky0;gab0];             % wavevector in the medium of refractive index nb
                 
                 % transmission coefficiens for s and p polarizations
-                ts=2*gab/(gab+ga);
-                tp=2*n*nS*gab/(nS^2*gab+n^2*ga);
+                ts = 2*gab/(gab+ga);
+                tp = 2*n*nS*gab/(nS^2*gab+n^2*ga);
                 
                 % s and p basis in the medium of refractive index nS
-                s1=cross(uz,kv);
+                s1 = cross(uz,kv);
                 if (s1==0)
-                    %s=[1;0;0];
-                    s=(IL.polar).';
-                    %s=(abs(DI.p/norm(DI.p))).';% norm vector along the dipole
+                    %s = [1;0;0];
+                    s = (IL.polar).';
+                    %s = (abs(DI.p/norm(DI.p))).';% norm vector along the dipole
                     
-                    p=[0;0;0];
+                    p = [0;0;0];
                 
                 else
-                    s=cross(uz,kv)/norm(s1);
-                    p1=cross(kv,s);
-                    p=cross(kv,s)/norm(p1);
+                    s = cross(uz,kv)/norm(s1);
+                    p1 = cross(kv,s);
+                    p = cross(kv,s)/norm(p1);
                 end
                 
                 % s and p basis in the medium of refractive index n
-                sb1=cross(uz,kvb);
+                sb1 = cross(uz,kvb);
                 if (sb1==0)
                     %sb=[1;0;0];
-                    sb=(IL.polar).';
+                    sb = (IL.polar).';
                     %sb=(abs(DI.p/norm(DI.p))).';% norm vector along the dipole
                                     % ASSUME THE DIPOLE IS LINEAR! WHAT IF IT IS EXCITED WITH
                                     % A CIRCULARLY POLARIZED LIGHT?, OR IF IT IS A DIPOLE WITHIN
                                     % A Nanoparticle  OBJECT
-                    pb=[0;0;0];
+                    pb = [0;0;0];
 
                 else
 
-                    sb=cross(uz,kvb)/norm(sb1);
-                    pb1=cross(kvb,sb);
-                    pb=cross(kvb,sb)/norm(pb1);
+                    sb = cross(uz,kvb)/norm(sb1);
+                    pb1 = cross(kvb,sb);
+                    pb = cross(kvb,sb)/norm(pb1);
                 end
 
 %                 if ikx==202 && iky==201
@@ -285,11 +285,11 @@ Ezpp = (1/M)*fftshift(fft2(ifftshift(Ekprimez)))*dk*dk;
 eexim = tr/M*sqrt(nS)*e0*exp(1i*nS*k0*zo)*IL.polar; % excitation field image plane
 Eixtot = eexim(1)+Expp;
 Eiytot = eexim(2)+Eypp;
-image=ImageEM(eexim,Eixtot,Eiytot,Ezpp);
-image.zoom=Npx*lambda/ImSize;
-image.pxSize0=pxSize;
-image.Illumination=IL;
-image.Microscope=MI;
+image = ImageEM(eexim,Eixtot,Eiytot,Ezpp);
+image.zoom = Npx*lambda/ImSize;
+image.pxSize0 = pxSize;
+image.Illumination = IL;
+image.Microscope = MI;
 
 
 

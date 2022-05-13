@@ -5,25 +5,25 @@ addpath(genpath('/System/Volumes/Data/Users/gbaffou/Documents/_DATA_SIMULATIONS/
 format long
 
 %% Construction of the setup
-ME=Medium(1.33);
-IL=Illumination(600e-9,ME);
+ME = Medium(1.33);
+IL = Illumination(600e-9,ME);
 
-OB=Objective(100,1.0,'Olympus');
-CGcam=CGcamera('Zyla','P4');
-MI=Microscope(OB,180,CGcam);
-MI.CGcam.distance0=0.8e-3;
-MI.zo=0;
+OB = Objective(100,1.0,'Olympus');
+CGcam = CGcamera('Zyla','P4');
+MI = Microscope(OB,180,CGcam);
+MI.CGcam.distance0 = 0.8e-3;
+MI.zo = 0;
 
 %% Construction of the T/OPD image, of a nanoparticle in this example
-radius=100e-9;
+radius = 100e-9;
 DI = Dipole('Au',radius);
 DI = DI.shine(IL);
 
-IM0=imaging(DI,IL,MI,200);
+IM0 = imaging(DI,IL,MI,200);
 
 %% Creation of the inSilico Interfero
-%Itf=CGMinSilico(IM0,'Nimages',100);
-Itf=CGMinSilico(IM0,'shotNoise',0);
+%Itf = CGMinSilico(IM0,'Nimages',100);
+Itf = CGMinSilico(IM0,'shotNoise',0);
 
 %% Postprocessing of the insilico data
 

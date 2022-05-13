@@ -9,27 +9,27 @@ classdef Camera  <  handle
     
     methods
         
-        function cam=Camera(var1,NX,NY)
+        function cam = Camera(var1,NX,NY)
             % (6.5e-6,2560,2160)  pxSize in µm
             % (6.5   ,2560,2160)  pxSize in m
             % ('Zyla')
             if nargin==3 % ex: (6.5e-6,2560,2160)
-                cam.Nx=NX;
-                cam.Ny=NY;
-                cam.dxSize=var1*(var1<1) + var1*(var1>=1)*1e-6;
+                cam.Nx = NX;
+                cam.Ny = NY;
+                cam.dxSize = var1*(var1<1) + var1*(var1>=1)*1e-6;
             elseif nargin==2 % ex: (6.5e-6,2048)
-                cam.Nx=NX;
-                cam.Ny=NX;
-                cam.dxSize=var1*(var1<1) + var1*(var1>=1)*1e-6;
+                cam.Nx = NX;
+                cam.Ny = NX;
+                cam.dxSize = var1*(var1<1) + var1*(var1>=1)*1e-6;
             elseif nargin==1 % ex: ('Zyla')
                 if istext(var1)
-                    cam=jsonImport(strcat(var1,'.json'));
+                    cam = jsonImport(strcat(var1,'.json'));
                 else
                     error('If only one input, must be a camera name')
                 end
             end     
             
-            function obj=jsonImport(jsonFile)
+            function obj = jsonImport(jsonFile)
                 fileName = jsonFile; % filename in JSON extension
                 fid = fopen(fileName); % Opening the file
                 raw = fread(fid,inf); % Reading the contents
@@ -38,10 +38,10 @@ classdef Camera  <  handle
                 data = jsondecode(str); %
                 eval(['obj=' data.class '();'])
 
-                objProps=properties(obj);
-                Np=numel(objProps);
+                objProps = properties(obj);
+                Np = numel(objProps);
 
-                for ip=1:Np
+                for ip = 1:Np
                     eval(['obj.' objProps{ip} '=data.' objProps{ip} ';'])
                 end
             end        
@@ -51,9 +51,9 @@ classdef Camera  <  handle
             if isnumeric(val)
                 if val>0
                     if val>1
-                        cam.dxSize=val*1e-6;
+                        cam.dxSize = val*1e-6;
                     elseif val<50e-6 && val>1e-6
-                        cam.dxSize=val;
+                        cam.dxSize = val;
                     else
                         warning('this length does not look like a pixel size')
                     end
@@ -67,19 +67,19 @@ classdef Camera  <  handle
         
         function set.fullWellCapacity(cam,val)
             if isempty(cam.model)
-                cam.fullWellCapacity=val;
+                cam.fullWellCapacity = val;
             else
                 error(['The full well capacity of a ' cam.model ' camera cannot be modified from its value of ' num2str(cam.fullWellCapacity) '.'])
             end
         end
         
-        function obj=crop(obj,Nx0,Ny0)
+        function obj = crop(obj,Nx0,Ny0)
             if nargin==2
-                obj.Nx=Nx0;
-                obj.Nx=Nx0;
+                obj.Nx = Nx0;
+                obj.Nx = Nx0;
             elseif nargin==3
-                obj.Nx=Nx0;
-                obj.Nx=Ny0;
+                obj.Nx = Nx0;
+                obj.Nx = Ny0;
             else
                 error('Wrong number of inputs')
             end
@@ -87,7 +87,5 @@ classdef Camera  <  handle
         end
 
     end
-    
-    
     
 end

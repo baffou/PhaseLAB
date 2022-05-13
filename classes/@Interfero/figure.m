@@ -1,4 +1,4 @@
-      function [hfig0out,UIk0,cb0]=figure(IM,varargin)
+      function [hfig0out,UIk0,cb0] = figure(IM,varargin)
             % Display an image in intensity and phase
             % all the inputs are optional
             % IM: can be either from the ImageEM or from the ImageQLSI classes.
@@ -20,52 +20,52 @@
             % UserData{12}: Where the user clicks (usefull for the crop method).
             
             %% Default values
-            unit='px'; % default value
-            st3D='st';
-            reffft='ref';
+            unit = 'px'; % default value
+            st3D = 'st';
+            reffft = 'ref';
             
             %% attribution of the inputs
-            isfig =0;
+            isfig = 0;
             if nargin~=1 % not only IM specified
-                for iar=1:numel(varargin)
+                for iar = 1:numel(varargin)
                     if ischar(varargin{iar})
                         if strcmp(varargin{iar},'px')
-                            unit='px';
+                            unit = 'px';
                         elseif  strcmp(varargin{iar},'µm') || strcmp(varargin{iar},'um')
-                            unit='µm';
+                            unit = 'µm';
                         elseif strcmp(varargin{iar},'st') || strcmp(varargin{iar},'3D')
-                            st3D=varargin{iar};
+                            st3D = varargin{iar};
                         elseif strcmp(varargin{iar},'ref') || strcmp(varargin{iar},'fft')
-                            reffft=varargin{iar};
+                            reffft = varargin{iar};
                         else
                             error('wrong input')
                         end
                     else
-                        hfig0=varargin{iar};
-                        isfig=1;
+                        hfig0 = varargin{iar};
+                        isfig = 1;
                     end
                 end
             end
             
             if isfig==0
-                hfig0=figure;
+                hfig0 = figure;
                 screenSz = get(groot,'ScreenSize');
                 %[left bottom width height]
                 set(hfig0,'position',[0 200 ceil(screenSz(3)) ceil(screenSz(4))-200]);
                 %set(hfig0,'position',screenSz);
             end
             
-            hfig0.UserData{2}=unit;
-            hfig0.UserData{3}=st3D;
-            hfig0.UserData{4}=reffft;
-            hfig0.UserData{5}=IM(1);
+            hfig0.UserData{2} = unit;
+            hfig0.UserData{3} = st3D;
+            hfig0.UserData{4} = reffft;
+            hfig0.UserData{5} = IM(1);
             
             %% Title of the figure
             
             if isa(IM(1),'ImageQLSI')
-                titleName='Experimental image';
+                titleName = 'Experimental image';
             else
-                titleName='Numerical image';
+                titleName = 'Numerical image';
             end
             
             if numel(IM)==1
@@ -75,27 +75,27 @@
             end
             
             %% Colors
-            AxesColor=[0 0 0];
-            BackgroundColor=[1 1 1];
-            PanelBackgroundColor=[0.8 0.8 0.8];
-            TitlePanelColor='k';
-            FunctionBackgroundColor=[1 0.9 0.8];
-            ButtonOnColor=[0.8 1 0.8];
-            ButtonOffColor=[0.94 0.94 0.94];
+            AxesColor = [0 0 0];
+            BackgroundColor = [1 1 1];
+            PanelBackgroundColor = [0.8 0.8 0.8];
+            TitlePanelColor = 'k';
+            FunctionBackgroundColor = [1 0.9 0.8];
+            ButtonOnColor = [0.8 1 0.8];
+            ButtonOffColor = [0.94 0.94 0.94];
             
-            hfig0.UserData{6}.AxesColor=AxesColor;
-            hfig0.UserData{6}.ButtonOnColor=ButtonOnColor;
-            hfig0.UserData{6}.ButtonOffColor=ButtonOffColor;
+            hfig0.UserData{6}.AxesColor = AxesColor;
+            hfig0.UserData{6}.ButtonOnColor = ButtonOnColor;
+            hfig0.UserData{6}.ButtonOffColor = ButtonOffColor;
             set(hfig0,'color',BackgroundColor)
             
             %% GUI interface
             
-            bH=20;    % box height
-            pWth=120; % panel width
-            bWth=30;  % box width
-            bWthL=50;    % box width large
-            spacing=3;
-            xshift=28;
+            bH = 20;    % box height
+            pWth = 120; % panel width
+            bWth = 30;  % box width
+            bWthL = 50;    % box width large
+            spacing = 3;
+            xshift = 28;
             
             % GUI controls
             
@@ -108,56 +108,56 @@
             
             % image properties
             hpProperties    = uipanel('Title','Properties','FontSize',12,'FontWeight','bold','TitlePosition','centertop','ForegroundColor',TitlePanelColor,'BackgroundColor',PanelBackgroundColor,'Units','pixels');
-            hand.lambda=annotation(hpProperties,'textbox', 'FontSize',12,'Fontweight','bold','units','pix','Interpreter','Tex','LineStyle','none');
-            hand.obj=annotation(hpProperties,'textbox', 'FontSize',12,'Fontweight','bold','units','pix','Interpreter','Tex','LineStyle','none');
-            hand.pxSize=annotation(hpProperties,'textbox', 'FontSize',12,'Fontweight','bold','units','pix','Interpreter','Tex','LineStyle','none');
-            hand.Npx=annotation(hpProperties,'textbox', 'FontSize',12,'Fontweight','bold','units','pix','Interpreter','Tex','LineStyle','none');
-            hand.comment=annotation(hpProperties,'textbox', 'FontSize',12,'Fontweight','bold','units','pix','Interpreter','Tex','LineStyle','none');
+            hand.lambda = annotation(hpProperties,'textbox', 'FontSize',12,'Fontweight','bold','units','pix','Interpreter','Tex','LineStyle','none');
+            hand.obj = annotation(hpProperties,'textbox', 'FontSize',12,'Fontweight','bold','units','pix','Interpreter','Tex','LineStyle','none');
+            hand.pxSize = annotation(hpProperties,'textbox', 'FontSize',12,'Fontweight','bold','units','pix','Interpreter','Tex','LineStyle','none');
+            hand.Npx = annotation(hpProperties,'textbox', 'FontSize',12,'Fontweight','bold','units','pix','Interpreter','Tex','LineStyle','none');
+            hand.comment = annotation(hpProperties,'textbox', 'FontSize',12,'Fontweight','bold','units','pix','Interpreter','Tex','LineStyle','none');
             
             % Functions
             hpFunctions = uipanel('Title','functions','FontSize',12,'FontWeight','bold','TitlePosition','centertop','ForegroundColor',TitlePanelColor,'BackgroundColor',PanelBackgroundColor,'Units','pixels');
             
             hand.UIresult = uicontrol('Parent',hpFunctions,'Style','Edit','string','','HorizontalAlignment','Center');
-            hand.standard=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','standard');
-            hand.threeD=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','3D');
-            hand.fft=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','fft');
-            hand.ref=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','ref');
-            hand.px=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','px');
-            hand.um=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','µm');
-            hand.HVcrosscuts=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','HV cross','BackgroundColor',FunctionBackgroundColor);
-            hand.crosscut=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','crosscut','BackgroundColor',FunctionBackgroundColor);
-            hand.radial=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','radial cross','BackgroundColor',FunctionBackgroundColor);
-            hand.OPDhighPass=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','OPD highPass','BackgroundColor',FunctionBackgroundColor);
+            hand.standard = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','standard');
+            hand.threeD = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','3D');
+            hand.fft = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','fft');
+            hand.ref = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','ref');
+            hand.px = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','px');
+            hand.um = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','µm');
+            hand.HVcrosscuts = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','HV cross','BackgroundColor',FunctionBackgroundColor);
+            hand.crosscut = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','crosscut','BackgroundColor',FunctionBackgroundColor);
+            hand.radial = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','radial cross','BackgroundColor',FunctionBackgroundColor);
+            hand.OPDhighPass = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','OPD highPass','BackgroundColor',FunctionBackgroundColor);
             hand.UIhighPass = uicontrol('Parent',hpFunctions,'Style','Edit','string',num2str(3),'HorizontalAlignment','Center');
-            hand.smooth=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','smooth','BackgroundColor',FunctionBackgroundColor);
+            hand.smooth = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','smooth','BackgroundColor',FunctionBackgroundColor);
             hand.UIsmooth = uicontrol('Parent',hpFunctions,'Style','Edit','string',num2str(2),'HorizontalAlignment','Center');
             
-            hand.Zernike=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','Zernike','BackgroundColor',FunctionBackgroundColor);
+            hand.Zernike = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','Zernike','BackgroundColor',FunctionBackgroundColor);
             hand.UIzernike_n = uicontrol('Parent',hpFunctions,'Style','Edit','string',num2str(1),'HorizontalAlignment','Center');
             hand.UIzernike_m = uicontrol('Parent',hpFunctions,'Style','Edit','string',num2str(1),'HorizontalAlignment','Center');
             hand.UIzernike_R = uicontrol('Parent',hpFunctions,'Style','Edit','string',num2str(floor(min([IM.Nx,IM.Ny])/2)-4),'HorizontalAlignment','Center');
-            hand.Z00=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','00','BackgroundColor',FunctionBackgroundColor);
-            hand.Z11=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','11','BackgroundColor',FunctionBackgroundColor);
-            hand.Z20=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','20','BackgroundColor',FunctionBackgroundColor);
-            hand.Z22=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','22','BackgroundColor',FunctionBackgroundColor);
-            hand.Z31=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','31','BackgroundColor',FunctionBackgroundColor);
-            hand.Z33=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','33','BackgroundColor',FunctionBackgroundColor);
+            hand.Z00 = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','00','BackgroundColor',FunctionBackgroundColor);
+            hand.Z11 = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','11','BackgroundColor',FunctionBackgroundColor);
+            hand.Z20 = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','20','BackgroundColor',FunctionBackgroundColor);
+            hand.Z22 = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','22','BackgroundColor',FunctionBackgroundColor);
+            hand.Z31 = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','31','BackgroundColor',FunctionBackgroundColor);
+            hand.Z33 = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','33','BackgroundColor',FunctionBackgroundColor);
             
             hand.UIalpha_NNP = uicontrol('Parent',hpFunctions,'Style','Edit','string',num2str(1),'HorizontalAlignment','Center');
             hand.UIalpha_nmax = uicontrol('Parent',hpFunctions,'Style','Edit','string',num2str(40),'HorizontalAlignment','Center');
             hand.UIalpha_bkgThick = uicontrol('Parent',hpFunctions,'Style','Edit','string',num2str(1),'HorizontalAlignment','Center');
-            hand.alpha=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','alpha','BackgroundColor',FunctionBackgroundColor);
-            hand.dryMass=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','Opt. Volume','BackgroundColor',FunctionBackgroundColor);
-            hand.pixels=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','pixel','BackgroundColor',FunctionBackgroundColor);
-            hand.area=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','area','BackgroundColor',FunctionBackgroundColor);
-            hand.distance=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','distance','BackgroundColor',FunctionBackgroundColor);
-            hand.close=uicontrol('Style','pushbutton','String','close','BackgroundColor',[0.3 0.3 0.3],'ForegroundColor',[0.9 0.9 0.9]);
-            hand.reload=uicontrol('Style','pushbutton','String','reload','BackgroundColor',[0.3 0.3 0.3],'ForegroundColor',[0.9 0.9 0.9]);
+            hand.alpha = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','alpha','BackgroundColor',FunctionBackgroundColor);
+            hand.dryMass = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','Opt. Volume','BackgroundColor',FunctionBackgroundColor);
+            hand.pixels = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','pixel','BackgroundColor',FunctionBackgroundColor);
+            hand.area = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','area','BackgroundColor',FunctionBackgroundColor);
+            hand.distance = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','distance','BackgroundColor',FunctionBackgroundColor);
+            hand.close = uicontrol('Style','pushbutton','String','close','BackgroundColor',[0.3 0.3 0.3],'ForegroundColor',[0.9 0.9 0.9]);
+            hand.reload = uicontrol('Style','pushbutton','String','reload','BackgroundColor',[0.3 0.3 0.3],'ForegroundColor',[0.9 0.9 0.9]);
             hand.file = uicontrol('Parent',hpFunctions,'Style','Edit','string','prefix','HorizontalAlignment','Center');
             hand.folder = uicontrol('Parent',hpFunctions,'Style','Edit','string',todayFolder(),'HorizontalAlignment','Center');
-            hand.save=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','save','BackgroundColor',[0.3 0.3 0.3],'ForegroundColor',[0.9 0.9 0.9]);
-            hand.autosave=uicontrol('Parent',hpFunctions,'Style','checkbox','String','auto','Value',0,'BackgroundColor',PanelBackgroundColor);
-            hand.saveImage=uicontrol('Parent',hpFunctions,'Style','pushbutton','String','save images','BackgroundColor',[0.3 0.3 0.3],'ForegroundColor',[0.9 0.9 0.9]);
+            hand.save = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','save','BackgroundColor',[0.3 0.3 0.3],'ForegroundColor',[0.9 0.9 0.9]);
+            hand.autosave = uicontrol('Parent',hpFunctions,'Style','checkbox','String','auto','Value',0,'BackgroundColor',PanelBackgroundColor);
+            hand.saveImage = uicontrol('Parent',hpFunctions,'Style','pushbutton','String','save images','BackgroundColor',[0.3 0.3 0.3],'ForegroundColor',[0.9 0.9 0.9]);
             
             % Positions
             
@@ -258,14 +258,14 @@
                 set(hpControls,'visible','off')
             end
             
-            hfig0.UserData{8}=hand;
+            hfig0.UserData{8} = hand;
             
             figure_callback_Itf(hfig0,IM(str2double(get(hand.UIk,'String'))),hfig0.UserData{2},hfig0.UserData{3},hfig0.UserData{4},str2double(get(hand.UIk,'String')))
             
             if nargout % do not display ans if no output is asked by the user.
-                hfig0out=hfig0;
-                UIk0=hand.UIk;
-                cb0=hfig0.UserData{1};
+                hfig0out = hfig0;
+                UIk0 = hand.UIk;
+                cb0 = hfig0.UserData{1};
             end
             
         end
