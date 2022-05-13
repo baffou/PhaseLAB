@@ -9,7 +9,7 @@
 % date: Jul 31, 2019
 
 classdef Dipole
-    properties(SetAccess=private , GetAccess=public)
+    properties(SetAccess = private , GetAccess = public)
         mat             % material
         r               % radius of the dipolar nanosphere [m]
         eps             % complex permittivity of the nanosphere material
@@ -17,7 +17,7 @@ classdef Dipole
         p               % electric dipolar moment
         EE0             % local electric field experienced by the dipole
     end
-    properties(Access=public)
+    properties(Access = public)
         x = 0           % x position of the dipole [m]
         y = 0           % y position of the dipole [m]
         z               % z position of the dipole [m]
@@ -46,7 +46,7 @@ classdef Dipole
     methods
 
         function obj = Dipole(mat,radius,z)
-            %Dipole(radius,mat,[z]). By default, z=radius.
+            %Dipole(radius,mat,[z]). By default, z = radius.
             if nargin~=0
                 if ~isnumeric(radius)
                     error('The 2nd input (radius) must be a real number')
@@ -54,31 +54,31 @@ classdef Dipole
                     error('The 2nd input must be positive')
                 end   
 
-                obj.r=radius;
+                obj.r = radius;
 
                 if ischar(mat)
-                    obj.mat=mat;
+                    obj.mat = mat;
                 elseif isnumeric(mat)
-                    obj.epsHidden=mat;
-                    obj.mat='user defined';
+                    obj.epsHidden = mat;
+                    obj.mat = 'user defined';
                 end
 
                 if nargin==2
-                    obj.z=radius;
+                    obj.z = radius;
                 elseif nargin==3
-                    obj.z=z;
+                    obj.z = z;
                 end
             end
         end
 
         function obj = shine(obj,IL)
             % Runs de DDA simulation and returns the Nanoparticle object, updated with the P, EE, EE0 fields. Works with an assembly of dipoles.
-            obj=DDA(obj,IL);
+            obj = DDA(obj,IL);
         end
 
         function val = get.eps(obj)
             if strcmp(obj.mat,'user defined')
-                val=obj.epsHidden;
+                val = obj.epsHidden;
             else
                 val = epsReadDDA(obj.lambda,obj.mat);   % dielectric function of the nanoparticle 
             end
@@ -86,7 +86,7 @@ classdef Dipole
         
         function val = get.n(obj)
             if strcmp(obj.mat,'user defined')
-                val=sqrt(obj.epsHidden);
+                val = sqrt(obj.epsHidden);
             else
                 val = indexReadDDA(obj.lambda,obj.mat);   % dielectric function of the nanoparticle 
             end
@@ -94,22 +94,22 @@ classdef Dipole
         
         function val = get.alphaMie(obj)
             prop = MieTheory(obj);
-            val=prop.alpha;
+            val = prop.alpha;
         end
 
         function val = get.CextMie(obj)
             prop = MieTheory(obj);
-            val=prop.Cext;
+            val = prop.Cext;
         end
 
         function val = get.CabsMie(obj)
             prop = MieTheory(obj);
-            val=prop.Cabs;
+            val = prop.Cabs;
         end
 
         function val = get.CscaMie(obj)
             prop = MieTheory(obj);
-            val=prop.Csca;
+            val = prop.Csca;
         end
 
         function val = get.pos(obj)
@@ -121,8 +121,8 @@ classdef Dipole
         end
 
         function val = getpos(objList)
-            val=zeros(numel(objList),3);
-            for io=1:numel(objList)
+            val = zeros(numel(objList),3);
+            for io = 1:numel(objList)
                 val(io,:) = [objList(io).x,objList(io).y,objList(io).z];
             end
         end
@@ -168,36 +168,36 @@ classdef Dipole
                 if length(varargin{1})~=3
                     error('when specifying a single input of the moveTo function, it must be a 3-vector')
                 end
-                targetPos=varargin{1};
-                obj.x=targetPos(1);
-                obj.y=targetPos(2);
-                obj.z=targetPos(3);
+                targetPos = varargin{1};
+                obj.x = targetPos(1);
+                obj.y = targetPos(2);
+                obj.z = targetPos(3);
             elseif nargin==4
                 if isnumeric(varargin{1}) && isnumeric(varargin{2}) && isnumeric(varargin{3})
-                    obj.x=varargin{1};
-                    obj.y=varargin{2};
-                    obj.z=varargin{3};
+                    obj.x = varargin{1};
+                    obj.y = varargin{2};
+                    obj.z = varargin{3};
                 else
                     error('error in the method ''moveTo'' of Dipole. Not a number.')
                 end
             elseif nargin==3 || nargin==5 || nargin==7 
-                for iv=1:(nargin-1)/2
+                for iv = 1:(nargin-1)/2
                     if ischar(varargin{2*iv-1})
                         if strcmp(varargin{2*iv-1},'x')
                             if isnumeric(varargin{2*iv})
-                                obj.x=varargin{2*iv};
+                                obj.x = varargin{2*iv};
                             else
                                 error('error in the method ''moveTo'' of Dipole. Not a number.')
                             end
                         elseif strcmp(varargin{2*iv-1},'y')
                             if isnumeric(varargin{2*iv})
-                                obj.y=varargin{2*iv};
+                                obj.y = varargin{2*iv};
                             else
                                 error('error in the method ''moveTo'' of Dipole. Not a number.')
                             end
                         elseif strcmp(varargin{2*iv-1},'z')
                             if isnumeric(varargin{2*iv})
-                                obj.z=varargin{2*iv};
+                                obj.z = varargin{2*iv};
                             else
                                 error('error in the method ''moveTo'' of Dipole. Not a number.')
                             end
@@ -221,36 +221,36 @@ classdef Dipole
                 if length(varargin{1})~=3
                     error('when specifying a single input of the moveTo function, it must be a 3-vector')
                 end
-                targetPos=varargin{1};
-                obj.x=obj.x+targetPos(1);
-                obj.y=obj.y+targetPos(2);
-                obj.z=obj.z+targetPos(3);
+                targetPos = varargin{1};
+                obj.x = obj.x+targetPos(1);
+                obj.y = obj.y+targetPos(2);
+                obj.z = obj.z+targetPos(3);
             elseif nargin==4
                 if isnumeric(varargin{1}) && isnumeric(varargin{2}) && isnumeric(varargin{3})
-                    obj.x=obj.x+varargin{1};
-                    obj.y=obj.y+varargin{2};
-                    obj.z=obj.z+varargin{3};
+                    obj.x = obj.x+varargin{1};
+                    obj.y = obj.y+varargin{2};
+                    obj.z = obj.z+varargin{3};
                 else
                     error('error in the method ''moveTo'' of Dipole. Not a number.')
                 end
             elseif nargin==3 || nargin==5 || nargin==7 
-                for iv=1:(nargin-1)/2
+                for iv = 1:(nargin-1)/2
                     if ischar(varargin{2*iv-1})
                         if strcmp(varargin{2*iv-1},'x')
                             if isnumeric(varargin{2*iv})
-                                obj.x=obj.x+varargin{2*iv};
+                                obj.x = obj.x+varargin{2*iv};
                             else
                                 error('error in the method ''moveTo'' of Dipole. Not a number.')
                             end
                         elseif strcmp(varargin{2*iv-1},'y')
                             if isnumeric(varargin{2*iv})
-                                obj.y=obj.y+varargin{2*iv};
+                                obj.y = obj.y+varargin{2*iv};
                             else
                                 error('error in the method ''moveTo'' of Dipole. Not a number.')
                             end
                         elseif strcmp(varargin{2*iv-1},'z')
                             if isnumeric(varargin{2*iv})
-                                obj.z=obj.z+varargin{2*iv};
+                                obj.z = obj.z+varargin{2*iv};
                             else
                                 error('error in the method ''moveTo'' of Dipole. Not a number.')
                             end
@@ -274,47 +274,47 @@ classdef Dipole
             if obj1(1).n_ext~=obj2(1).n_ext
                 error('You are trying to sum two images corresponding to two different surrounding media.')
             end
-            N1=length(obj1);
-            N2=length(obj2);
-            DI0=Dipole();
-            objs=repmat(DI0,1,N1+N2);
-            objs(1:N1)=obj1;
-            objs(N1+1:N1+N2)=obj2;
+            N1 = length(obj1);
+            N2 = length(obj2);
+            DI0 = Dipole();
+            objs = repmat(DI0,1,N1+N2);
+            objs(1:N1) = obj1;
+            objs(N1+1:N1+N2) = obj2;
         end
         
         function figure(obj)
-            NDI=numel(obj);
+            NDI = numel(obj);
             [xs,ys,zs] = sphere;
             hold on 
-            posList=reshape([obj.pos],3,NDI).';
-            for is=1:NDI
-                a=obj(is).r;
+            posList = reshape([obj.pos],3,NDI).';
+            for is = 1:NDI
+                a = obj(is).r;
                 surf(a*xs+posList(is,1),a*ys+posList(is,2),a*zs+posList(is,3), 'FaceColor', [0.7 0.3 0.2], 'FaceAlpha',0.9,'EdgeAlpha', 0)
             end
             light
             axis equal
-            ecart=max( max(5*[obj.r]) , 50e-9);
+            ecart = max( max(5*[obj.r]) , 50e-9);
             [X, Y] = meshgrid(-ecart+min(min(posList(:,1))):1e-7:ecart+max(max(posList(:,1))) , -ecart+min(min(posList(:,2))):1e-7:ecart+max(max(posList(:,2))));
             Z = 0.*X + 0.*Y;
-            color=Z*0+1;
+            color = Z*0+1;
             surf(X,Y,Z,color);
             view(14,28)
         end
 
-        function obj=set.Illumination(obj,val)
+        function obj = set.Illumination(obj,val)
             if ~isa(val,'Illumination') % val is the wavelength
-                obj.Illumination=Illumination(val);
+                obj.Illumination = Illumination(val);
             end
-            obj.Illumination=val;
+            obj.Illumination = val;
         end
         
-        function val=matList(obj)
+        function val = matList(obj)
             % returns the list of available cameras
-            matList=dir([obj.DIpath '/../materials/*.txt']);
-            Nc=numel(matList);
-            val=cell(Nc,1);
-            for ic=1:Nc
-                val{ic}=matList(ic).name(1:end-4);
+            matList = dir([obj.DIpath '/../materials/*.txt']);
+            Nc = numel(matList);
+            val = cell(Nc,1);
+            for ic = 1:Nc
+                val{ic} = matList(ic).name(1:end-4);
             end
         end    
         
@@ -323,8 +323,8 @@ classdef Dipole
     
     methods(Static,Hidden)
 
-        function val=DIpath()
-            val=fileparts(which('Dipole.m'));
+        function val = DIpath()
+            val = fileparts(which('Dipole.m'));
         end
         
         

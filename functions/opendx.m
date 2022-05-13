@@ -19,62 +19,62 @@ function c = opendx(T,varargin)
 % coloringmap: image which values sets the color. Normally Ph, but T when
 % Ph is absent
 
-[Ny,Nx]=size(T);
-DZ=max(T(:))-min(T(:));
+[Ny,Nx] = size(T);
+DZ = max(T(:))-min(T(:));
 if DZ==0
-    DZ=max(T(:));
+    DZ = max(T(:));
 end
 
 [X,Y] = meshgrid(0:Nx-1,0:Ny-1);
-viewangle=90;
-persp=1;
+viewangle = 90;
+persp = 1;
 
 if persp==1
-    DZ=(max(T(:))-min(T(:)))/3;
-    viewangle=40;
+    DZ = (max(T(:))-min(T(:)))/3;
+    viewangle = 40;
 end
 
 %% handling the number of parameters
 
 
 if nargin==1                % (T)
-    colorScale=hsv(1024);
-    coloringMap=T;
-    EL=35;
+    colorScale = hsv(1024);
+    coloringMap = T;
+    EL = 35;
 elseif nargin==2
     if size(varargin{1})==1 % (T,EL)
-        colorScale=hsv(1024);
-        coloringMap=T;
-        EL=Ph;
+        colorScale = hsv(1024);
+        coloringMap = T;
+        EL = Ph;
     elseif size(varargin{1})==size(T) % (T,Ph)
-        colorScale=colorPhaseMap(varargin{1}); % asign the color white to the mean value of the image.
-        coloringMap=varargin{1};
-        EL=35;
+        colorScale = colorPhaseMap(varargin{1}); % asign the color white to the mean value of the image.
+        coloringMap = varargin{1};
+        EL = 35;
     else                  % (T,colorScale)
-        colorScale=varargin{1};
-        coloringMap=T;
-        EL=35;
+        colorScale = varargin{1};
+        coloringMap = T;
+        EL = 35;
     end
 elseif nargin==3
     if size(varargin{1})==size(T)
         if size(varargin{2})==1 %(T,Ph,EL)
-            colorScale=colorPhaseMap(varargin{1});
-            coloringMap=varargin{1};
-            EL=varargin{2};
+            colorScale = colorPhaseMap(varargin{1});
+            coloringMap = varargin{1};
+            EL = varargin{2};
         else  %(T,Ph,colorScale)
-            colorScale=varargin{2};
-            coloringMap=varargin{1};
-            EL=35;
+            colorScale = varargin{2};
+            coloringMap = varargin{1};
+            EL = 35;
         end                        
     else                    %(T,colorScale0,EL)
-        coloringMap=T;
-        colorScale=varargin{1};
-        EL=varargin{2};
+        coloringMap = T;
+        colorScale = varargin{1};
+        EL = varargin{2};
     end
 elseif nargin==4
-    colorScale=varargin{2};
-    coloringMap=varargin{1};
-    EL=varargin{3};
+    colorScale = varargin{2};
+    coloringMap = varargin{1};
+    EL = varargin{3};
 end
 
 colormap(gca,colorScale);
@@ -91,7 +91,7 @@ view(0,90)
 %camlight(AZ, EL)
 camlight(20,EL,'infinite')
 %light('Position',[-1 0 0],'Style','local')
-cb=colorbar;
+cb = colorbar;
 axis([1 Nx 1 Ny])
 view(0,viewangle)
 camproj('perspective')
@@ -99,7 +99,7 @@ camproj('perspective')
 
 
 if nargout
-	c=cb;
+	c = cb;
 end
 
 

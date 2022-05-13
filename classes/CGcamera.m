@@ -10,19 +10,16 @@ classdef CGcamera  <  handle
     
     properties(Dependent)
         zeta
-    end
-
-    properties(Dependent)
         zoom (1,1) {mustBeNumeric}
     end
 
-    %properties(SetAccess=public,GetAccess=private)
+    %properties(SetAccess = public,GetAccess = private)
     %    distance0 % tampon, value of distance in case it is achromatic.
     %end
     
     methods
         
-        function obj=CGcamera(varargin)
+        function obj = CGcamera(varargin)
             %CGcamera('Zyla')
             %CGcamera('sc8-830')
             %CGcamera('Zyla','P4')
@@ -32,25 +29,25 @@ classdef CGcamera  <  handle
                 obj = CGcamera('Zyla');
             end
             if nargin==1 % CGcamera('sc8-830') or %CGcamera('Zyla')
-                fileName=varargin{1};
+                fileName = varargin{1};
                 if istext(fileName) % check if it is text, only option.
-                    fid=fopen(strcat(fileName,'.txt'));
+                    fid = fopen(strcat(fileName,'.txt'));
                     if fid==-1
-                        fid=fopen(strcat(fileName,'.json'));
+                        fid = fopen(strcat(fileName,'.json'));
                         if fid==-1
                             error(['The file ' fileName '.json or .txt does not exist'])
                         else
-                            camType=class(Camera);
+                            camType = class(Camera);
                         end
                     else
-                        camType=class(CGcamera);
+                        camType = class(CGcamera);
                     end
                     if strcmpi(camType,'CGcamera')
-                        line=fgetl(fid);
-                        chromatic=0;
+                        line = fgetl(fid);
+                        chromatic = 0;
                         while ~isnumeric(line)
-                            colPos=find(line==':');
-                            parameter=line(1:colPos-1);
+                            colPos = find(line==':');
+                            parameter = line(1:colPos-1);
                             if strcmp(parameter,'camera pixel size')
                                 eval(['pxSizeCamera=' line(colPos+1:end) ';'])
                             elseif strcmp(parameter,'Gamma')
@@ -66,144 +63,144 @@ classdef CGcamera  <  handle
                             elseif strcmp(parameter,'CGangle')
                                 eval(['CGangle=' line(colPos+1:end) ';'])
                             elseif strcmp(parameter,'distance')
-                                eval(['dCG=' line(colPos+1:end) ';']) % if line(colPos+1:end)=='chromatic', dCG=0
+                                eval(['dCG=' line(colPos+1:end) ';']) % if line(colPos+1:end)=='chromatic', dCG = 0
                             end
-                            line=fgetl(fid);
+                            line = fgetl(fid);
                         end
 
-                        cam=Camera(pxSizeCamera,Nx,Ny);
-                        CrGr=CrossGrating(Gamma=Gamma,depth=CGdepth);
-                        obj=CGcamera(cam,CrGr);
-                        obj.fileName=fileName;
-                        obj.CGangle=CGangle;
+                        cam = Camera(pxSizeCamera,Nx,Ny);
+                        CrGr = CrossGrating(Gamma=Gamma,depth=CGdepth);
+                        obj = CGcamera(cam,CrGr);
+                        obj.fileName = fileName;
+                        obj.CGangle = CGangle;
                         if exist('RL_Zoom','var')
-                            obj.RL.zoom=RL_Zoom;
+                            obj.RL.zoom = RL_Zoom;
                         end
                         if exist('dCG','var')
                             if dCG~=0
-                                obj.CGpos=dCG;
+                                obj.CGpos = dCG;
                             else
-                                obj.RL.chromatic=1;
+                                obj.RL.chromatic = 1;
                             end
                         else
-                            obj.CGpos=[];
+                            obj.CGpos = [];
                         end
                     
                     elseif strcmpi(camType,'Camera') % the input is just a Camera, not a CGcamera
-                        obj.Camera=Camera(varargin{1});
-                        obj.CG=CrossGrating.empty();
+                        obj.Camera = Camera(varargin{1});
+                        obj.CG = CrossGrating.empty();
                     else
                         error('not a proper input for a CGcamera')
                     end
                 end
             elseif nargin>=2
                 if istext(varargin{1})
-                    obj.Camera=Camera(varargin{1});
+                    obj.Camera = Camera(varargin{1});
                 elseif isa(varargin{1},'Camera')
-                    obj.Camera=varargin{1};
+                    obj.Camera = varargin{1};
                 else
                     error('Not a proper input to define a camera')
                 end
                 if istext(varargin{2}) || isnumeric(varargin{2})
-                    obj.CG=CrossGrating(varargin{2});
+                    obj.CG = CrossGrating(varargin{2});
                 elseif isa(varargin{2},'CrossGrating')
-                    obj.CG=varargin{2};
+                    obj.CG = varargin{2};
                 else
                     error('Not a proper input to define a CG grating')
                 end
-                obj.fileName=[];
-                obj.RL=RelayLens(1); % By default, when a custom CG is used, a relay lens is used as well. 
+                obj.fileName = [];
+                obj.RL = RelayLens(1); % By default, when a custom CG is used, a relay lens is used as well. 
             end
             if nargin==3
-                obj.RL.zoom=varargin{3};
+                obj.RL.zoom = varargin{3};
             end
 
         end
 
-        function val=alpha2(obj,varargin) % old version to calculate alpha, from an alpha value of the CGcamera files
+        function val = alpha2(obj,varargin) % old version to calculate alpha, from an alpha value of the CGcamera files
             % alpha()    ->either reads alpha0 or the file .txt
             % alpha(lambda)
             %if ~isempty(obj.alpha0) % the user already defined a custom alpha
-            %    val=obj.alpha0;
+            %    val = obj.alpha0;
             %else % the alpha value is supposed to be found in a CGcamera txt file.
                 if nargin==2
-                    lambda=varargin{1};
+                    lambda = varargin{1};
                     if ~isnumeric(lambda)
                         error('lambda must be a number')
                     end
                     if lambda>1
-                        lambda=lambda*1e-9;
+                        lambda = lambda*1e-9;
                     end
                 else
-                    lambda=550e-9;
+                    lambda = 550e-9;
                 end
-                camPath=fileparts(which('CGcamera.m'));
-                fid=fopen([camPath '/../CGcameras/' obj.fileName '.txt']);
+                camPath = fileparts(which('CGcamera.m'));
+                fid = fopen([camPath '/../CGcameras/' obj.fileName '.txt']);
                 if fid==-1
                     error(['The file' [camPath '/../CGcameras/' obj.fileName '.txt'] 'does not exist, certainly because the CG+camera association has been done manually, not by calling a CGcamera file. In that case, alpha has to be set by the user using the setalpha function.'])
                 end
-                line=fgetl(fid);
+                line = fgetl(fid);
                 while ~isnumeric(line)
-                    colPos=find(line==':');
-                    parameter=line(1:colPos-1);
+                    colPos = find(line==':');
+                    parameter = line(1:colPos-1);
                     if strcmp(parameter,'phase factor')
                         if contains(line(colPos+1:end),'chromatic')
-                            line=fgetl(fid);
-                            ii=0;
+                            line = fgetl(fid);
+                            ii = 0;
                             while ~strcmp(line,'end')
-                                 line=strtrim(line);
+                                 line = strtrim(line);
                                  if max(ismember(num2str(0:9),line(1)))
-                                     ii=ii+1;
-                                     spacePos1=find(line==' ',1,'first');
-                                     spacePos2=find(line==char(9),1,'first');
-                                     spacePos=min([spacePos1,spacePos2]);
+                                     ii = ii+1;
+                                     spacePos1 = find(line==' ',1,'first');
+                                     spacePos2 = find(line==char(9),1,'first');
+                                     spacePos = min([spacePos1,spacePos2]);
                                      eval(['lambdaList(ii)=' line(1:spacePos-1) ';'])
                                      if lambdaList(ii)>1
-                                         lambdaList(ii)=lambdaList(ii)*1e-9;
+                                         lambdaList(ii) = lambdaList(ii)*1e-9;
                                      end
-                                     line=strtrim(line(spacePos:end));
+                                     line = strtrim(line(spacePos:end));
                                      eval(['factorList(ii)=' line ';'])
                                  end
-                                 line=fgetl(fid);
+                                 line = fgetl(fid);
                             end
-                            val=interp1(lambdaList,factorList,lambda,'spline');
+                            val = interp1(lambdaList,factorList,lambda,'spline');
                             % rajouter ici une interpolation à partir de la valeur de lambda.
                             % Si elle n'est pas présente, rappeler à l'utilisateur qu'on doit
                             % munir Microscope d'une illumination pour cette caméra.
                         else
                             eval(['val0=' line(colPos+1:end) ';'])
-                            val=val0;
+                            val = val0;
                         end
                     end
-                    line=fgetl(fid);
+                    line = fgetl(fid);
                 end
             %end
         end                    
                     
-        function val=alpha(obj,lambda) % this second version of alpha calculates alpha from the distance specified in the CGcamera file
+        function val = alpha(obj,lambda) % this second version of alpha calculates alpha from the distance specified in the CGcamera file
             if nargin==2
                 if ~isnumeric(lambda)
                     error('lambda must be a number')
                 end
                 if lambda>1
-                    lambda=lambda*1e-9;
+                    lambda = lambda*1e-9;
                 end
-                dist=distance(obj,lambda);
+                dist = distance(obj,lambda);
             else
-                dist=distance(obj);
+                dist = distance(obj);
             end
-            Gamma=obj.CG.Gamma;
-            p=obj.Camera.dxSize;
-            val=Gamma*p/(4*pi*dist*obj.zoom);
+            Gamma = obj.CG.Gamma;
+            p = obj.Camera.dxSize;
+            val = Gamma*p/(4*pi*dist*obj.zoom);
         end                    
                     
-        function val=distance(obj,lambda)
+        function val = distance(obj,lambda)
             % distance()    ->either reads distance0 or the file .txt
             % distance(lambda) -> calculate the distance in case a relay lens is used
             if isempty(obj.RL) % if no Relay Lens
-                val=obj.CGpos;
+                val = obj.CGpos;
             elseif ~obj.RL.chromatic % Relay lens, but considered as achromatic, mostly to deal with numerical simuations, not for real experimental data.
-                val=obj.CGpos;% * obj.RL.zoom^2;
+                val = obj.CGpos;% * obj.RL.zoom^2;
             else % distance0 is empty, so the distance value is supposed to be found in a CGcamera txt file.
                 %if nargin~=2
                 %    error('No CG-camera distance has been specified when creating the object')
@@ -212,67 +209,67 @@ classdef CGcamera  <  handle
                     error('lambda must be a number')
                 end
                 if lambda>1
-                    lambda=lambda*1e-9;
+                    lambda = lambda*1e-9;
                 end
-                camPath=fileparts(which('CGcamera.m'));
-                fid=fopen([camPath '/../CGcameras/' obj.fileName '.txt']);
+                camPath = fileparts(which('CGcamera.m'));
+                fid = fopen([camPath '/../CGcameras/' obj.fileName '.txt']);
                 if fid==-1
                     error(['The file' [camPath '/../CGcameras/' obj.fileName '.txt'] 'does not exist, certainly because the CG+camera association has been done manually, not by calling a CGcamera file. In that case, the distance has to be set manually.'])
                 end
-                line=fgetl(fid);
+                line = fgetl(fid);
                 while ~isnumeric(line)
-                    colPos=find(line==':');
-                    parameter=line(1:colPos-1);
+                    colPos = find(line==':');
+                    parameter = line(1:colPos-1);
                     if strcmp(parameter,'distance')
                         if contains(line(colPos+1:end),'chromatic')
-                            line=fgetl(fid);
-                            ii=0;
+                            line = fgetl(fid);
+                            ii = 0;
                             while  ~strcmp(line,'end')
-                                 line=strtrim(line);
+                                 line = strtrim(line);
                                  if max(ismember(num2str(0:9),line(1)))
-                                     ii=ii+1;
-                                     spacePos1=find(line==' ',1,'first');
-                                     spacePos2=find(line==char(9),1,'first');
-                                     spacePos=min([spacePos1,spacePos2]);
+                                     ii = ii+1;
+                                     spacePos1 = find(line==' ',1,'first');
+                                     spacePos2 = find(line==char(9),1,'first');
+                                     spacePos = min([spacePos1,spacePos2]);
                                      eval(['lambdaList(ii)=' line(1:spacePos-1) ';'])
                                      if lambdaList(ii)>1
-                                         lambdaList(ii)=lambdaList(ii)*1e-9;
+                                         lambdaList(ii) = lambdaList(ii)*1e-9;
                                      end
-                                     line=strtrim(line(spacePos:end));
+                                     line = strtrim(line(spacePos:end));
                                      eval(['factorList(ii)=' line ';'])
                                  end
-                                 line=fgetl(fid);
+                                 line = fgetl(fid);
                             end
-                            val=interp1(lambdaList,factorList,lambda,'spline');
+                            val = interp1(lambdaList,factorList,lambda,'spline');
                             % rajouter ici une interpolation à partir de la valeur de lambda.
                             % Si elle n'est pas présente, rappeler à l'utilisateur qu'on doit
                             % munir Microscope d'une illumination pour cette caméra.
                         else
                             eval(['val0=' line(colPos+1:end) ';'])
-                            val=val0*obj.RL.zoom^2; %
+                            val = val0*obj.RL.zoom^2; %
                         end
                     end
-                    line=fgetl(fid);
+                    line = fgetl(fid);
                 end
             end
         end                    
                     
-        function obj=setDistance(obj,val)
+        function obj = setDistance(obj,val)
             % to manually set distance, in case the CGcamera object is built
             % from a camera and a CrossGrating object, and not from a
             % CGcamera file.
             if isnumeric(val)
-                obj.CGpos=val;
+                obj.CGpos = val;
             else
                 error('The input must be an number')
             end
         end
         
-        function val=get.zeta(obj)
-            val=abs(0.5*obj.CG.Gamma/obj.Camera.dxSize*obj.RL.zoom);
+        function val = get.zeta(obj)
+            val = abs(0.5*obj.CG.Gamma/obj.Camera.dxSize*obj.RL.zoom);
         end
             
-        function val=get.zoom(obj)
+        function val = get.zoom(obj)
             if isempty(obj.RL)
                 val = 1;
             else
@@ -280,7 +277,7 @@ classdef CGcamera  <  handle
             end
         end
 
-        function obj=removeRL(obj)
+        function obj = removeRL(obj)
             obj.RL = RelayLens.empty(0,0);
         end
         

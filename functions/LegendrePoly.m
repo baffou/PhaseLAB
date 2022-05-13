@@ -17,8 +17,8 @@ function P = LegendrePoly(x,n)
 
 P = zeros(size(x));                     % Initilization
 
-for k=0:n
-    P=P+nchoosek(n,k)*nchoosek(n+k,k)*((x-1)/2).^k;
+for k = 0:n
+    P = P+nchoosek(n,k)*nchoosek(n+k,k)*((x-1)/2).^k;
 end
 
 

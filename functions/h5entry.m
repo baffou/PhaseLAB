@@ -3,7 +3,7 @@ function h5entry(h5fileName,entryName,data)
 if ~isreal(data)
     if numel(data) == 1
         data0 = [real(data), imag(data)];
-        data=data0;
+        data = data0;
     end
 end
 

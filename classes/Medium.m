@@ -13,7 +13,7 @@
 
 classdef Medium
     
-    properties(Access=public)
+    properties(Access = public)
         n0       % refractive index or nature of the upper medium
         nS0      % refractive index or nature of the substrate
     end
@@ -25,41 +25,41 @@ classdef Medium
     
     methods
         
-        function obj=Medium(n,nS)
+        function obj = Medium(n,nS)
             % . Medium(n) or Medium(n,nS)
             if nargin==2
-                obj.n0=n;
-                obj.nS0=nS;
+                obj.n0 = n;
+                obj.nS0 = nS;
             elseif nargin==1
-                obj.n0=n;
-                obj.nS0=n;
+                obj.n0 = n;
+                obj.nS0 = n;
             end
         end
         
-        function val=get.n(obj)
+        function val = get.n(obj)
             if isnumeric(obj.n0)
-                val=obj.n0;
+                val = obj.n0;
             else
                 if strcmpi(obj.n0,'glass') || strcmpi(obj.n0,'BK7')
-                    val=1.51;
+                    val = 1.51;
                 elseif strcmpi(obj.n0,'water')
-                    val=1.33;
+                    val = 1.33;
                 elseif strcmp(obj.n0,'air')
-                    val=1.;
+                    val = 1.;
                 end
             end
         end
         
-        function val=get.nS(obj)
+        function val = get.nS(obj)
             if isnumeric(obj.nS0)
-                val=obj.nS0;
+                val = obj.nS0;
             else
                 if strcmpi(obj.nS0,'glass') || strcmpi(obj.nS0,'BK7')
-                    val=1.51;
+                    val = 1.51;
                 elseif strcmpi(obj.nS0,'water')
-                    val=1.33;
+                    val = 1.33;
                 elseif strcmp(obj.nS0,'air')
-                    val=1.;
+                    val = 1.;
                 end
             end
         end

@@ -44,27 +44,27 @@ function [cnm, A, Phi] = ZernikeMoment(p,n,m,r0,x0,y0)
 N = min(size(p));
 
 if nargin==3
-    r0=N/2-1;
-    x0=N/2;
-    y0=N/2;
+    r0 = N/2-1;
+    x0 = N/2;
+    y0 = N/2;
 elseif nargin==4
-    x0=N/2;
-    y0=N/2;
+    x0 = N/2;
+    y0 = N/2;
 elseif nargin~=6
     error('not he proper number of inputs')
 end
 
-r0=round(r0);
+r0 = round(r0);
 
 if mod(n,2)~=mod(m,2)
     error('wrong parity of m')
 end
 
 
-Xlist=round(x0-r0):(floor(x0+r0)+1);
-Ylist=round(y0-r0):(floor(y0+r0)+1);
+Xlist = round(x0-r0):(floor(x0+r0)+1);
+Ylist = round(y0-r0):(floor(y0+r0)+1);
 
-pCrop=p(Ylist,Xlist);
+pCrop = p(Ylist,Xlist);
 
 
 N = size(pCrop,1);
@@ -79,7 +79,7 @@ Rad = ZernikeRadialpoly(R,n,m);    % get the radial polynomial
 Product = (R~=0).*pCrop(x,y).*Rad.*exp(-1i*m*Theta);
 cnm = sum(Product(:));        % calculate the moments
 
-epsm=2-mod(m,2);
+epsm = 2-mod(m,2);
 cnt = nnz(R)+1;             % count the number of pixels inside the unit circle, corresponds to the factor pi
 cnm = 2*(n+1)*cnm/cnt/epsm;            % normalize the amplitude of moments
 A = abs(cnm);                 % calculate the amplitude of the moment

@@ -19,23 +19,23 @@ arguments
 end
 
 if strcmpi(opt.ShotNoise,'on')
-    noiseFunction=@poissrnd;
+    noiseFunction = @poissrnd;
 else
-    noiseFunction=@identity;
+    noiseFunction = @identity;
 end
 
 
-T=Image.T;
-OPD=Image.OPD;
-Pha=Image.Ph;
+T = Image.T;
+OPD = Image.OPD;
+Pha = Image.Ph;
 
 %% Parameters
-MI=Image.Microscope;
-Nim=double(opt.Nimages);
+MI = Image.Microscope;
+Nim = double(opt.Nimages);
 
 w = MI.CGcam.Camera.fullWellCapacity;        % full well capacity of the camera
 [Ny,Nx] = size(OPD);        % Desired final image size [px], must be square
-IL=Image.Illumination;
+IL = Image.Illumination;
 %% Definition of some parameters
 
 %% construction of the interferograms (Itf & Ref) according to Fig 2.

@@ -32,9 +32,9 @@ function bin_mask = magicWand(im, ylist, xlist, tolerance)
 % Edith Cowan University
 
 
-S=size(im);
-H=S(1);
-W=S(2);
+S = size(im);
+H = S(1);
+W = S(2);
 
 %H = size(im, 1); % image height
 %W = size(im, 2); % image width

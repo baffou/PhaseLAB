@@ -1,11 +1,11 @@
-function h=drawCircle(x,y,r,h)
+function h = drawCircle(x,y,r,h)
 % rather an ellipse. r can be a 2-vector to draw an ellipse.
 
 
 if length(r)==1
-    R=[r r];
+    R = [r r];
 elseif length(r)==2
-    R=r;
+    R = r;
 end
 
 figure(h)

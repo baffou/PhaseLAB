@@ -1,12 +1,12 @@
 function saveData(hfig,hc)
-hand=hfig.UserData{8};
-data=hfig.UserData{10};
-folder=get(hand.folder,'string');
-k=str2double(get(hand.UIk,'string'));
-fileName=get(hand.file,'string');
+hand = hfig.UserData{8};
+data = hfig.UserData{10};
+folder = get(hand.folder,'string');
+k = str2double(get(hand.UIk,'string'));
+fileName = get(hand.file,'string');
 
 mkdir(folder)
-currFolder=pwd;
+currFolder = pwd;
 cd(folder)
 dlmwrite([fileName '_im' textk(k) '.txt'],data);
 fprintf([folder '/' fileName '_im' textk(k) '.txt\n'])

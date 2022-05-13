@@ -9,23 +9,23 @@
 % affiliation: CNRS, Institut Fresnel
 % date: Feb 10, 2020
 
-function index=indexReadDDA(lambda0,fileName)
+function index = indexReadDDA(lambda0,fileName)
 
-nMetal=dlmread(['n' fileName '.txt']);
-Nl=length(lambda0);
-index=zeros(Nl,1);
+nMetal = dlmread(['n' fileName '.txt']);
+Nl = length(lambda0);
+index = zeros(Nl,1);
 
-eV=nMetal(:,1);
-n=nMetal(:,2);
-k=nMetal(:,3);
-factor=1239.8419e-9;
-eV0=factor./lambda0;
+eV = nMetal(:,1);
+n = nMetal(:,2);
+k = nMetal(:,3);
+factor = 1239.8419e-9;
+eV0 = factor./lambda0;
 
 
-for il=1:Nl
+for il = 1:Nl
 
-    n1=interp1(eV,n,eV0(il));
-    n2=interp1(eV,k,eV0(il));
-    index(il)=complex(n1,n2);
+    n1 = interp1(eV,n,eV0(il));
+    n2 = interp1(eV,k,eV0(il));
+    index(il) = complex(n1,n2);
     
 end  

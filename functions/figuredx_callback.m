@@ -13,14 +13,14 @@ if nFrame==1
         title({'Norm. intensity + phase','mixed representation'})
     end
 
-    c=opendx(IM.T,IM.Ph);
-    cb.Ph=c;
+    c = opendx(IM.T,IM.Ph);
+    cb.Ph = c;
     cb.Ph.Label.String = 'Phase (rad)';
-    cb.T=colorbar('westoutside');
+    cb.T = colorbar('westoutside');
     cb.T.Label.String = 'Normalized intensity';
     colormap(cb.T,gray(1024))
-    minT=min(IM(1).T(:));
-    maxT=max(IM(1).T(:));
+    minT = min(IM(1).T(:));
+    maxT = max(IM(1).T(:));
     if minT>1 && maxT<1
         cb.T.Ticks = [minT,1,maxT];
     else
@@ -31,10 +31,10 @@ if nFrame==1
 
 elseif nFrame==2
     
-    ha(1)=subplot(1,2,1);
-    cb.T=opendx(IM.T,gray(1024));
-    minT=min(IM(1).T(:));
-    maxT=max(IM(1).T(:));
+    ha(1) = subplot(1,2,1);
+    cb.T = opendx(IM.T,gray(1024));
+    minT = min(IM(1).T(:));
+    maxT = max(IM(1).T(:));
     if minT>1 && maxT<1
         cb.T.Ticks = [minT,1,maxT];
     else
@@ -47,12 +47,12 @@ elseif nFrame==2
     else
         title('Transmission image')
     end
-    ha(2)=subplot(1,2,2);
-    cb.Ph=opendx(IM.Ph,phase1024,15); % opendx2(iamge,colorScale,camLightAngle)
-    %cb.Ph=opendx(IM.Ph,hsv(1024),15);
+    ha(2) = subplot(1,2,2);
+    cb.Ph = opendx(IM.Ph,phase1024,15); % opendx2(iamge,colorScale,camLightAngle)
+    %cb.Ph = opendx(IM.Ph,hsv(1024),15);
     cb.Ph.Label.String = 'Phase (rad)';
-    cb.OPD=colorbar('westoutside');
-    cb.OPD.TickLabels=round(100*cb.Ph.Ticks*IM(1).lambda/(2*pi)*1e9)/100;
+    cb.OPD = colorbar('westoutside');
+    cb.OPD.TickLabels = round(100*cb.Ph.Ticks*IM(1).lambda/(2*pi)*1e9)/100;
     cb.OPD.Label.String = 'OPD (nm)';
     camlight(90,180,'infinite')
     linkaxes(ha, 'xy');      
@@ -64,7 +64,7 @@ elseif nFrame==2
     
 end
 
-hfig.UserData=cb;
+hfig.UserData = cb;
 
 
 

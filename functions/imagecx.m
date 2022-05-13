@@ -13,7 +13,7 @@ function imagecx(ImComplex)  % or opendx(Z,nFig)
 % something different from the values of Im. This way, for an Image object,
 % Im is coded in 3D topography while the phase is color-coded.
 
-Int=abs(ImComplex).^2;
-Ph=angle(ImComplex);
+Int = abs(ImComplex).^2;
+Ph = angle(ImComplex);
 
 opendx(Int,Ph)

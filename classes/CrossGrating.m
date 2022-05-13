@@ -11,7 +11,7 @@ classdef CrossGrating  <  handle
         
     methods
 
-        function CG=CrossGrating(name,opt)
+        function CG = CrossGrating(name,opt)
             % CrossGrating()
             % CrossGrating('F2')
             % CrossGrating(Gamma=39e-6,depth=554e-9)
@@ -24,10 +24,10 @@ classdef CrossGrating  <  handle
                 opt.RI (1,1) double = 1.46 % Quartz by default
             end
             if ~strcmpi(name,'undefined') % ('P2')
-                CG=jsonImport(strcat(name,'.json'));
+                CG = jsonImport(strcat(name,'.json'));
             else
-                CG.Gamma=opt.Gamma;
-                CG.RI=opt.RI;
+                CG.Gamma = opt.Gamma;
+                CG.RI = opt.RI;
                 if opt.depth~=0 && opt.lambda0~=0
                     error('You cannot specify at the same time lambda0 and depth')
                 end
@@ -41,7 +41,7 @@ classdef CrossGrating  <  handle
                 end
             end
 
-            function obj=jsonImport(jsonFile)
+            function obj = jsonImport(jsonFile)
                 fileName = jsonFile; % filename in JSON extension
                 fid = fopen(fileName); % Opening the file
                 raw = fread(fid,inf); % Reading the contents
@@ -51,35 +51,35 @@ classdef CrossGrating  <  handle
                 
                 eval(['obj=' data.class '();'])
 
-                objProps=properties(obj);
-                Np=numel(objProps);
+                objProps = properties(obj);
+                Np = numel(objProps);
 
-                for ip=1:Np
+                for ip = 1:Np
                     eval(['obj.' objProps{ip} '=data.' objProps{ip} ';'])
                 end
             end
         end
 
         function set.depth(obj,val)
-            obj.depth=convert_nm(val);
+            obj.depth = convert_nm(val);
         end
 
         function set.lambda0(obj,val)
-            obj.lambda0=convert_nm(val);
+            obj.lambda0 = convert_nm(val);
         end
 
         function set.Gamma(obj,val)
-            obj.Gamma=convert_um(val);
+            obj.Gamma = convert_um(val);
         end
 
         function set_lambda0(obj,val)
-            obj.lambda0=val;
-            obj.depth=obj.lambda0/((obj.RI-1)*2);
+            obj.lambda0 = val;
+            obj.depth = obj.lambda0/((obj.RI-1)*2);
         end
 
         function set_depth(obj,val)
-            obj.depth=val;
-            obj.lambda0=obj.depth*(obj.RI-1)*2;
+            obj.depth = val;
+            obj.lambda0 = obj.depth*(obj.RI-1)*2;
         end
 
     end
