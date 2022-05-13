@@ -80,10 +80,10 @@ crop(3) = FcropParameters(Npx/2+1-2*Rcrop*sin(beta),Npx/2+1+2*Rcrop*cos(beta),Rc
 
 %% Postprocessing of the insilico data
 
-% IM = QLSIprocess(Itf,IL);
-IM = QLSIprocess(Itf,IL,'Fcrops',crop,'resolution','low');
+ IM = QLSIprocess(Itf,IL);
+%IM = QLSIprocess(Itf,IL,'Fcrops',crop,'resolution','low');
 % IM = QLSIprocess(Itf,IL,'Fcrops',IM.crops);
-IM=IM.phaseLevel0([1 1 10 10]);
+IM=IM.phaseLevel0([1 1 200 200]);
 IM.figure
 
 %% comparison
