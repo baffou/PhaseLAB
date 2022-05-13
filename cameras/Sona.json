@@ -1,6 +1,6 @@
 {"class":"Camera",
 "model": "Zyla",
-"pxSize": 6.5e-6,
+"dxSize": 6.5e-6,
 "Nx": 2028,
 "Ny": 2028,
 "fullWellCapacity": 40000

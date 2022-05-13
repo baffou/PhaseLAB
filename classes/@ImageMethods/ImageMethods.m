@@ -10,7 +10,8 @@ classdef ImageMethods
     
     properties(SetAccess=private)
         comment   % any comment regarding the image
-        pxSize
+        pxSize    % pixel size at the focal plane
+        dxSize    % pixel size at the image plane, i.e. dexel size of the camera
     end
     
     properties(Dependent)
@@ -218,8 +219,12 @@ classdef ImageMethods
             end
         end
 
+        function val=get.dxSize(obj)
+            val=obj.Microscope.dxSize();
+        end
+
         function val=get.pxSize(obj)
-            val=obj.pxSize0;
+            val=obj.Microscope.pxSize();
         end
 
         function val=getAreaMean(obj,Narea,hfig)

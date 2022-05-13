@@ -8,27 +8,21 @@ addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/Phas
 format long
 
 %% Construction of the setup
-ME=Medium(1.33);
+ME=Medium(1.5,1.5);
 
-lambda=530e-9;
-d=0.5e-3;
-%lambdaList=500e-9;
-%dList=2.5e-3;
-Nim=30;
+lambda=532e-9;
 OB=Objective(100,1.3,'Olympus');
-%CG=CrossGrating(Gamma=39e-6,lambda0=lambda);
-%CGcam=CGcamera('Zyla',CG);
-%CGcam.RL.zoom=2;
 CGcam=CGcamera('sc8-830');
 MI=Microscope(OB,180,CGcam);
-MI.zo=0e-6;
+
+Nim=10;
+MI.zo=1e-6;
 Npx=300; % should be multiple of 3
 system='NP';
 %system='noise';
 %system='Gaussian';
-shotNoise='on';
+shotNoise='off';
 
-MI.CGcam.setDistance(d);
 IL=Illumination(lambda,ME);
 
 %% Construction of the T/OPD image, of a nanoparticle in this example
@@ -53,7 +47,7 @@ switch system
         Pha = 2*pi/lambda*OPD;
         IM0=ImageQLSI(sqrt(T),OPD,MI,IL);
 end
-IM0.pxSize0=IM0.pxSize*MI.M;
+%IM0.pxSize0=IM0.pxSize*MI.M;
 %% Creation of the inSilico Interfero
 %Itf=CGMinSilico(IM0,,'shotNoise',1,'Nimages',100);
 
@@ -73,8 +67,8 @@ crop(3) = FcropParameters(Npx/2+1-2*Rcrop*sin(beta),Npx/2+1+2*Rcrop*cos(beta),Rc
 
 %% Postprocessing of the insilico data
 
-% IM = QLSIprocess(Itf,IL);
-IM = QLSIprocess(Itf,IL,'Fcrops',crop);
+IM = QLSIprocess(Itf,IL);
+%IM = QLSIprocess(Itf,IL,'Fcrops',crop);
 % IM = QLSIprocess(Itf,IL,'Fcrops',IM.crops);
 IM=IM.phaseLevel0([1 1 10 10]);
 IM.figure

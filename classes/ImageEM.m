@@ -17,6 +17,7 @@ classdef ImageEM  <  ImageMethods
     properties(Access=public)
         %lambda, inherited from ImageMethods
         %pxSize, inherited from ImageMethods
+        %dxSize, inherited from ImageMethods
         zoom
         %Microscope, inherited from ImageMethods
     end

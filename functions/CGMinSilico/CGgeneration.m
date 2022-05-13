@@ -5,7 +5,7 @@ function CG=CGgeneration(MI,IL)
 
 wl = IL.lambda;  % actual wavelength sent to the grating [m]
 eD = MI.CGcam.CG.lambda0;      % wl corresponding to the etching depth of the checkerboard [m].
-camPxSize = MI.CGcam.Camera.pxSize;   % camera chip pixel size [m]
+camPxSize = MI.CGcam.Camera.dxSize;   % camera chip pixel size [m]
 zeta = MI.CGcam.zeta;         % zeta factor: Lambda/(2*camPxSize)
 Npx = MI.CGcam.Camera.Ny;        % Desired final image size [px], must be square
 zoom0 = MI.CGcam.zoom;        % Relay lens zoom

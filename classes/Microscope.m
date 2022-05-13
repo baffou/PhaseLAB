@@ -31,6 +31,8 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
     
     properties (Dependent)
         M (1,1) {mustBeNumeric}        % Microscope magnification, take into accound Mobj, f_TL, relaylensZoom 
+        pxSize      % pixel size at the focal plane (usually in the 60 nm range)
+        dxSize      % pixel size at the image plane, ie dexel size of the camera if zoom=1 (usually in the 6 µm range)
     end
     
     properties(Access=public)
@@ -137,13 +139,13 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
         
         function val=pxSizePhasics(obj)
             % returns the pixel size of the phase image in [m]. When using a Phasics (binning) software.
-            pxSizeC=obj.CGcam.Camera.pxSize;
-            val=abs(pxSizeC*obj.CGcam.zeta/(obj.CGcam.zoom*obj.M));
+            p=obj.CGcam.Camera.dxSize;
+            val=abs(p*obj.CGcam.zeta/(obj.CGcam.zoom*obj.M));
         end
         
         function val=pxSizeItf(obj)
             % returns the pixel size of the interferogram image in the object plane [m].
-            pxSizeCamera=obj.CGcam.Camera.pxSize;
+            pxSizeCamera=obj.CGcam.Camera.dxSize;
             val=abs(pxSizeCamera/(obj.M));
         end
         
@@ -179,12 +181,29 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
             val=m.Objective.NA;
         end
 
+        function val=get.dxSize(obj)
+            % pixel size at the image plane
+            obj.CGcam.Camera.dxSize
+            obj.CGcam.RL.zoom
+            if ~isempty(obj.CGcam.RL)
+                val=obj.CGcam.Camera.dxSize/obj.CGcam.RL.zoom;
+            else
+                val=obj.CGcam.Camera.dxSize;
+            end
+        end
+
+        function val=get.pxSize(obj)
+            % pixel size at the focal plane
+            val=abs( obj.dxSize()/obj.M );
+        end
+
         function val=objBrand(m)      % Magnification of the objective, specified by the manufacturer.
             val=m.Objective.objBrand;
         end
 
         function val=get.M(m)
-            val=-m.Mobj*m.CGcam.zoom*m.f_TL/m.f_brand;
+            %val=-m.Mobj*m.CGcam.zoom*m.f_TL/m.f_brand;
+            val=-m.Mobj*m.f_TL/m.f_brand; % I remove the zoom from this expression to match the camera-shrink description
         end
 
         function sigma=sigmaTheo(MI)
@@ -194,8 +213,8 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
             w=MI.CGcam.Camera.fullWellCapacity;
             Nim=1;
             Npx=MI.CGcam.Camera.Nx;
-            dxSize=MI.CGcam.Camera.pxSize;
-            sigma=dxSize*Z.*Lambda./d .* sqrt(2./(Nim.*w)) .* sqrt(log10(Npx.*Npx))/(8*sqrt(2));
+            p=MI.CGcam.Camera.dxSize;
+            sigma=p*Lambda/(Z*d) * sqrt(2/(Nim*w)) * sqrt(log10(Npx*Npx))/(8*sqrt(2));
         end
         
     end

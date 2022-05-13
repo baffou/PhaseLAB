@@ -25,7 +25,7 @@ function [Fcrops] = FindFourierCrops(Interferos)
     for k = 1:length(Interferos)
         Nx = Interferos(k).Nx; Ny = Interferos(k).Ny;
         [xx,yy] = meshgrid(1:Nx, 1:Ny);
-        RappPixelSize = 0.5*Interferos(k).CGcam.CG.Gamma/Interferos(k).CGcam.Camera.pxSize;
+        RappPixelSize = 0.5*Interferos(k).CGcam.CG.Gamma/Interferos(k).CGcam.Camera.dxSize;
         mat_fft = fftshift(fft2(Interferos(k).Itf));
 
         %Find Rx, Ry the radius of the ellips, add +/- pixels errors to search in 

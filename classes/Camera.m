@@ -1,6 +1,6 @@
 classdef Camera  <  handle
     properties
-        pxSize (1,1) {mustBeNumeric} = 6.5e-6
+        dxSize (1,1) {mustBeNumeric} = 6.5e-6
         Nx (1,1) {mustBeInteger,mustBePositive} = 600
         Ny (1,1) {mustBeInteger,mustBePositive} = 600
         fullWellCapacity (1,1) {mustBeInteger} = 25000
@@ -16,11 +16,11 @@ classdef Camera  <  handle
             if nargin==3 % ex: (6.5e-6,2560,2160)
                 cam.Nx=NX;
                 cam.Ny=NY;
-                cam.pxSize=var1*(var1<1) + var1*(var1>=1)*1e-6;
+                cam.dxSize=var1*(var1<1) + var1*(var1>=1)*1e-6;
             elseif nargin==2 % ex: (6.5e-6,2048)
                 cam.Nx=NX;
                 cam.Ny=NX;
-                cam.pxSize=var1*(var1<1) + var1*(var1>=1)*1e-6;
+                cam.dxSize=var1*(var1<1) + var1*(var1>=1)*1e-6;
             elseif nargin==1 % ex: ('Zyla')
                 if istext(var1)
                     cam=jsonImport(strcat(var1,'.json'));
@@ -47,13 +47,13 @@ classdef Camera  <  handle
             end        
         end
         
-        function set.pxSize(cam,val)
+        function set.dxSize(cam,val)
             if isnumeric(val)
                 if val>0
                     if val>1
-                        cam.pxSize=val*1e-6;
+                        cam.dxSize=val*1e-6;
                     elseif val<50e-6 && val>1e-6
-                        cam.pxSize=val;
+                        cam.dxSize=val;
                     else
                         warning('this length does not look like a pixel size')
                     end

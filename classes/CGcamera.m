@@ -193,7 +193,7 @@ classdef CGcamera  <  handle
                 dist=distance(obj);
             end
             Gamma=obj.CG.Gamma;
-            p=obj.Camera.pxSize;
+            p=obj.Camera.dxSize;
             val=Gamma*p/(4*pi*dist*obj.zoom);
         end                    
                     
@@ -269,7 +269,7 @@ classdef CGcamera  <  handle
         end
         
         function val=get.zeta(obj)
-            val=abs(0.5*obj.CG.Gamma/obj.Camera.pxSize*obj.RL.zoom);
+            val=abs(0.5*obj.CG.Gamma/obj.Camera.dxSize*obj.RL.zoom);
         end
             
         function val=get.zoom(obj)

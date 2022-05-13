@@ -36,7 +36,7 @@ for io=1:No
     
     wl = Image(io).lambda;  % actual wavelength sent to the grating [m]
     eD = MI.CGcam.CG.lambda0;      % wl corresponding to the etching depth of the checkerboard [m].
-    camPxSize = MI.CGcam.Camera.pxSize;   % camera chip pixel size [m]
+    camPxSize = MI.CGcam.Camera.dxSize;   % camera chip pixel size [m]
     zeta = MI.CGcam.zeta;         % zeta factor: Lambda/(2*camPxSize)
     w = MI.CGcam.Camera.fullWellCapacity;        % full well capacity of the camera
     [Ny,Nx] = size(OPD);        % Desired final image size [px], must be square
