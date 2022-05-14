@@ -140,7 +140,9 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
         function val = pxSizePhasics(obj)
             % returns the pixel size of the phase image in [m]. When using a Phasics (binning) software.
             p = obj.CGcam.Camera.dxSize;
-            val = abs(p*obj.CGcam.zeta/(obj.CGcam.zoom*obj.M));
+            zeta = obj.CGcam.zeta;
+            zoom = obj.CGcam.zoom;
+            val = abs(p*zeta/(zoom*obj.M));
         end
         
         function val = pxSizeItf(obj)
@@ -183,12 +185,10 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
 
         function val = get.dxSize(obj)
             % pixel size at the image plane
-            obj.CGcam.Camera.dxSize
-            obj.CGcam.RL.zoom
             if ~isempty(obj.CGcam.RL)
-                val = obj.CGcam.Camera.dxSize/obj.CGcam.RL.zoom;
+                val = obj.CGcam.Camera.dxSize/obj.CGcam.RL.zoom; % p'=p/Z
             else
-                val = obj.CGcam.Camera.dxSize;
+                val = obj.CGcam.Camera.dxSize; % p'=p
             end
         end
 

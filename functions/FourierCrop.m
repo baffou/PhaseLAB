@@ -87,7 +87,7 @@ elseif isempty(Fcrops.R) % The center of the crop is specified, but not the radi
     button = 0;
     while button~=1
         [x2,y2,button] = ginput(1);
-        if button= = 1
+        if button == 1
             button = 1;
             R(1) = sqrt((x2-x1)^2+ex^2*(y2-y1)^2);
             R(2) = R(1)/ex;

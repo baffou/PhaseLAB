@@ -12,7 +12,7 @@ ME=Medium(1.5,1.5);
 
 lambda=532e-9;
 OB=Objective(100,1.3,'Olympus');
-CGcam=CGcamera('sc8-830');
+CGcam=CGcamera('Sid4Element');
 MI=Microscope(OB,180,CGcam);
 
 Nim=10;

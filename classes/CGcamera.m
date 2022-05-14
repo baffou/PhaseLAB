@@ -246,7 +246,7 @@ classdef CGcamera  <  handle
                             % munir Microscope d'une illumination pour cette caméra.
                         else
                             eval(['val0=' line(colPos+1:end) ';'])
-                            val = val0*obj.RL.zoom^2; %
+                            val = val0;%*obj.RL.zoom^2; %
                         end
                     end
                     line = fgetl(fid);
@@ -266,7 +266,7 @@ classdef CGcamera  <  handle
         end
         
         function val = get.zeta(obj)
-            val = abs(0.5*obj.CG.Gamma/obj.Camera.dxSize*obj.RL.zoom);
+            val = abs(obj.RL.zoom*obj.CG.Gamma/(2*obj.Camera.dxSize));
         end
             
         function val = get.zoom(obj)

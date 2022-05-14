@@ -49,7 +49,7 @@ classdef RelayLens
                     error('value outside of the permitted zoom range.')
                 end
             else
-                obj.zoom = val;
+                obj.zoom = abs(val);
             end
         end
 
