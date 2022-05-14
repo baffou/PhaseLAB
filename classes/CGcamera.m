@@ -9,6 +9,7 @@ classdef CGcamera  <  handle
     end
     
     properties(Dependent)
+        dxSize   % apparent dexel size p'=p*Z, can be different from the actual dexel size p=Camera.dxSize
         zeta
         zoom (1,1) {mustBeNumeric}
     end
@@ -190,8 +191,8 @@ classdef CGcamera  <  handle
                 dist = distance(obj);
             end
             Gamma = obj.CG.Gamma;
-            p = obj.Camera.dxSize;
-            val = Gamma*p/(4*pi*dist*obj.zoom);
+            p_p = obj.dxSize;
+            val = Gamma*p_p/(4*pi*dist);
         end                    
                     
         function val = distance(obj,lambda)
@@ -266,7 +267,11 @@ classdef CGcamera  <  handle
         end
         
         function val = get.zeta(obj)
-            val = abs(obj.RL.zoom*obj.CG.Gamma/(2*obj.Camera.dxSize));
+            val = abs(obj.CG.Gamma/(2*obj.dxSize)); % Gamma/(2*p')
+        end
+
+        function val=get.dxSize(obj)
+            val=obj.Camera.dxSize/abs(obj.zoom);
         end
             
         function val = get.zoom(obj)

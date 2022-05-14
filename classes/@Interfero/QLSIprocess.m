@@ -200,9 +200,9 @@ for ii = 1:Nf
     IM(ii) = ImageQLSI(Int,W*corr,MI,IL(ii));
     IM(ii).Microscope = MI;
     if strcmpi(opt.resolution,'low')
-        IM(ii).pxSize0 = MI.pxSizeItf()*corr;
+        IM(ii).pxSize0 = MI.pxSize()*corr;
     elseif strcmpi(opt.resolution,'high')
-        IM(ii).pxSize0 = MI.pxSizeItf();
+        IM(ii).pxSize0 = MI.pxSize();
     else
         error('wrong value of resolution')
     end

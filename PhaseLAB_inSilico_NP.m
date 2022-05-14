@@ -10,18 +10,18 @@ format long
 %% Construction of the setup
 ME=Medium(1.5,1.5);
 
-lambda=532e-9;
+lambda=600e-9;
 OB=Objective(100,1.3,'Olympus');
 CGcam=CGcamera('Sid4Element');
 MI=Microscope(OB,180,CGcam);
 
-Nim=10;
-MI.zo=1e-6;
+Nim=1;
+MI.zo=0e-6;
 Npx=300; % should be multiple of 3
 system='NP';
 %system='noise';
 %system='Gaussian';
-shotNoise='off';
+shotNoise='on';
 
 IL=Illumination(lambda,ME);
 
@@ -49,10 +49,8 @@ switch system
 end
 %IM0.pxSize0=IM0.pxSize*MI.M;
 %% Creation of the inSilico Interfero
-%Itf = CGMinSilico(IM0,,'shotNoise',1,'Nimages',100);
 
-%Itf = CGMinSilico(IM0,shotNoise=shotNoise,Nimages=30);
-Itf = CGMinSilico(IM0,shotNoise='off',Nimages=Nim);
+Itf = CGMinSilico(IM0,shotNoise=shotNoise,Nimages=Nim);
 
 
 %% Definition of the crops

@@ -3,7 +3,7 @@
 %% HEADING 
 
 clear
-addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_v3.0'))
+addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
 
 %% BUILDING OF THE MEDIUM -- ME=Medium(n,nS);
 ME=Medium('water','glass');

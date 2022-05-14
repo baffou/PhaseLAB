@@ -194,8 +194,8 @@ for id = 1:NDI
                 Q1 = Q-dot(conj(kvb),Q)*kvb; % radiated field of the dipole
                 Qs = ts*dot(conj(Q1),sb)*s;  % transmission of s component of the radiated field
                 Qp = tp*dot(conj(Q1),pb)*p;  % transmission of p component of the radiated field
-                % Le problème est avec Qp qui vaut zéro dans le cas
-                % pol=[010] if pour k normal à la surface
+                % Le problÃ¨me est avec Qp qui vaut zÃ©ro dans le cas
+                % pol=[010] if pour k normal Ã  la surface
 
                 
                 eps0 = 8.8541878128e-12;     % vacuum permittivity
@@ -271,7 +271,7 @@ Ezpp = (1/M)*fftshift(fft2(ifftshift(Ekprimez)))*dk*dk;
     
 %alphaS = IM.EE0(1)*sum(1-IM.Ex(:)/IM.EE0(1))
 %     -1.292686673178455e+08 + 9.007486741265880e+07i
-% d'après alpha_Image.m :
+% d'aprÃ¨s alpha_Image.m :
 %alphaSn = sum(1-IM.Ex(:)/IM.EE0(1))
 %   9.928227747032447e+02 - 6.918024425499526e+02i
 %alphaS/IM.EE0(1)

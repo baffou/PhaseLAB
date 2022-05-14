@@ -32,7 +32,6 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
     properties (Dependent)
         M (1,1) {mustBeNumeric}        % Microscope magnification, take into accound Mobj, f_TL, relaylensZoom 
         pxSize      % pixel size at the focal plane (usually in the 60 nm range)
-        dxSize      % pixel size at the image plane, ie dexel size of the camera if zoom=1 (usually in the 6 µm range)
     end
     
     properties(Access = public)
@@ -139,16 +138,9 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
         
         function val = pxSizePhasics(obj)
             % returns the pixel size of the phase image in [m]. When using a Phasics (binning) software.
-            p = obj.CGcam.Camera.dxSize;
+            p_p = obj.CGcam.dxSize;
             zeta = obj.CGcam.zeta;
-            zoom = obj.CGcam.zoom;
-            val = abs(p*zeta/(zoom*obj.M));
-        end
-        
-        function val = pxSizeItf(obj)
-            % returns the pixel size of the interferogram image in the object plane [m].
-            pxSizeCamera = obj.CGcam.Camera.dxSize;
-            val = abs(pxSizeCamera/(obj.M));
+            val = abs(p_p*zeta/obj.M);
         end
         
         function val = camList(obj)
@@ -183,18 +175,9 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
             val = m.Objective.NA;
         end
 
-        function val = get.dxSize(obj)
-            % pixel size at the image plane
-            if ~isempty(obj.CGcam.RL)
-                val = obj.CGcam.Camera.dxSize/obj.CGcam.RL.zoom; % p'=p/Z
-            else
-                val = obj.CGcam.Camera.dxSize; % p'=p
-            end
-        end
-
         function val = get.pxSize(obj)
             % pixel size at the focal plane
-            val = abs( obj.dxSize()/obj.M );
+            val = abs( obj.CGcam.dxSize()/obj.M );
         end
 
         function val = objBrand(m)      % Magnification of the objective, specified by the manufacturer.

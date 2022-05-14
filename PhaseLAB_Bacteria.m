@@ -1,5 +1,5 @@
 %% Heading
-addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_v3.0'))
+addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
 
 %% Building of the medium -- ME=Medium(n,nS);
 %ME=Medium(1.33,1.5);

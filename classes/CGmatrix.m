@@ -125,14 +125,14 @@ classdef CGmatrix
                 impsq = abs(imp3).^2;
                 Fdb2.im = impsq;
                 M = Fdb2;
-            else
+            else % NAill~=0
                 n = 1; %refractive index of the upper medium
-                Mobj = MI.Objective.Mobj;
                 thetaIll = asin(IL.NA/n);
+                Mobj = MI.M;
                 anglemax = atan(tan(thetaIll)/abs(Mobj)); % remplacé par cette formule normalement plus juste
                 dxmax = abs(anglemax*L);
 
-                dnmax = (dxmax/MI.CGcam.Camera.dxSize); % déplacement maximal en dexels de l'interféro quandon fait varier l'angle d'illumination
+                dnmax = (dxmax/MI.CGcam.dxSize); % déplacement maximal en dexels de l'interféro quand on fait varier l'angle d'illumination
                 dn = 1/10; % degree of discretization (fraction of a dexel) for the integration over the illumination angle
                 dnmax = ceil(dnmax/dn)*dn; % rend dnmax multiple de dn pour être sur que la boucle passe par is = 0 et iy = 0 
                     

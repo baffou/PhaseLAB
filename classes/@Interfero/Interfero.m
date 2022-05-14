@@ -168,7 +168,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         end
         
         function val = get.pxSize(obj)
-            val = obj.Microscope.pxSizeItf();
+            val = obj.Microscope.pxSize();
         end
         
         function deleteFcrops(obj)
