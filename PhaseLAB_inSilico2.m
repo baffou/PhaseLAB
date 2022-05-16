@@ -4,33 +4,33 @@
 clear
 close all
 
-addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_v3.0'))
+addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
 format long
 
 %% Construction of the setup
-lambda=625e-9;     % reference wavelength to etch glass
+lambda=550e-9;     % reference wavelength to etch glass
 eD=550e-9;
 %z0=0.5e-3;         % distance between the grating and the camera sensor
 camPxSize=6.5e-6;   % camera chip pixel size
-Nim=1;             % Number of summed images
+Nim=50;             % Number of summed images
 w=40000;            % full well capacity of the camera
-Npx=600;            % Desired final image size [px], must be multiple of 30
+Npx=1200;            % Desired final image size [px], must be multiple of 30
 zoom0=1;            % Relay lens zoom
 theta=acos(3/5);    % possible values to maintain periodicity: 0, acos(3/5)
-ME=Medium(1.,1.5);  % ME.n is here the r.i. of the medium of the condensor, i.e. 1, a priori!
+ME=Medium(1.5,1.5);  % ME.n is here the r.i. of the medium of the condensor, i.e. 1, a priori!
 Mobj=100;
-d=1.5e-3;
-NAobj=1.3;
-NAill=0.4;
+d=0.5e-3;
+NAobj=1.;
+NAill=0;
 Gamma=39e-6;
 shotNoise='on';
-system='Gaussian';
+%system='NP';
 %system='noise';
-%system='Gaussian';
+system='Gaussian';
 
 %% assignments
 OB=Objective(Mobj,NAobj,'Olympus');
-CG=CrossGrating(Gamma=Gamma,depth=eD);
+CG=CrossGrating(Gamma=Gamma,lambda0=eD);
 Cam=Camera(camPxSize,Npx,Npx);
 CGcam=CGcamera(Cam,CG,zoom0);
 MI=Microscope(OB,180,CGcam);
@@ -41,11 +41,17 @@ IL.NA=NAill;
 %% Construction of the T/OPD image, of a nanoparticle in this example
 switch system
     case 'NP'
-        radius=100e-9;
-        DI = Dipole('Au',radius);
+        radius=40e-9;
+        DI0 = Dipole('Au',radius);
+        DI=repmat(DI0,5,1);
+        DI(2)=DI(1).moveBy('x',5e-6,'y',1e-6);
+        DI(3)=DI(1).moveBy('x',3e-6,'y',3e-6);
+        DI(4)=DI(1).moveBy('x',-4.5e-6,'y',6e-6);
+        DI(5)=DI(1).moveBy('x',-2e-6,'y',-4.2e-6);
         DI = DI.shine(IL);
         
         IM0=imaging(DI,IL,MI,Npx);
+        OPD=IM0.OPD;
     case 'noise'
         IM0=ImageQLSI(ones(Npx),zeros(Npx),MI,IL);
     case 'Gaussian'
@@ -67,23 +73,17 @@ end
 %Itf=CGMinSilico(IM0,shotNoise=shotNoise,Nimages=30);
 Itf=CGMinSilico(IM0,shotNoise=shotNoise,Nimages=Nim,NAill=IL.NA);
 
+%Itf=Itf.crop(604);
 
-%% Definition of the crops
-
-crop = repmat(FcropParameters,3,1);
-Rcrop = Npx/(2*MI.CGcam.zeta);
-beta = acos(3/5);
-%(x,y,R,Nx,Ny,opt)
-crop(1) = FcropParameters(Npx/2+1                   ,Npx/2+1                   ,Rcrop,Npx,Npx);
-crop(2) = FcropParameters(Npx/2+1+2*Rcrop*cos(beta),Npx/2+1+2*Rcrop*sin(beta),Rcrop,Npx,Npx);
-crop(3) = FcropParameters(Npx/2+1-2*Rcrop*sin(beta),Npx/2+1+2*Rcrop*cos(beta),Rcrop,Npx,Npx);
 
 %% Postprocessing of the insilico data
 
+% IM = QLSIprocess(Itf,IL,'method','CPM','resolution','low');
  IM = QLSIprocess(Itf,IL);
 %IM = QLSIprocess(Itf,IL,'Fcrops',crop,'resolution','low');
 % IM = QLSIprocess(Itf,IL,'Fcrops',IM.crops);
-IM=IM.phaseLevel0([1 1 200 200]);
+%
+% IM=IM.phaseLevel0([1 1 200 200]);
 IM.figure
 
 %% comparison
@@ -100,4 +100,14 @@ subplot(1,3,1)
 imagegb(Itf.Itf(1:100,1:100))
 subplot(1,3,2)
 histogram(Itf.Itf)
+
+%%
+folder = 'examples/NPsIinSilico';
+mkdir(folder)
+writematrix(Itf.Itf,[folder '/interferogram.txt'],'Delimiter',' ')
+writematrix(Itf.Ref.Itf,[folder '/interferogram_ref.txt'],'Delimiter',' ')
+writematrix(IM.OPD,[folder '/OPD.txt'],'Delimiter',' ')
+writematrix(IM.T,[folder '/T.txt'],'Delimiter',' ')
+writematrix(IM0.OPD - mean(mean(IM0.OPD)),[folder '/OPD0.txt'],'Delimiter',' ')
+writematrix(IM0.T,[folder '/T0.txt'],'Delimiter',' ')
 

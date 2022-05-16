@@ -66,7 +66,7 @@ for io = 1:No
         Grating = superUnitPixelized.tile(Nx,Ny);
     
     Emodel = Grating;
-    Emodel.im = sqrt(T).*exp(1i*Pha);
+    Emodel.im = sqrt(T).*exp(-1i*Pha);
 
     EmodelRef = Grating;
     EmodelRef.im = ones(Ny,Nx);

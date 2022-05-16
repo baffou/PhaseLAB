@@ -159,12 +159,8 @@ for ii = 1:Nf
 
     if ii>=2,tic,end
     if strcmpi(opt.method,'CPM')
-        DWx = DWx/Itfi.CGcam.zeta;
-        DWy = DWy/Itfi.CGcam.zeta;
         W = intgrad_CPM(DWx,DWy);
     elseif strcmpi(opt.method,'Errico')
-        DWx = DWx/Itfi.CGcam.zeta;
-        DWy = DWy/Itfi.CGcam.zeta;
         W = intgrad2(DWx,DWy);
     elseif strcmpi(opt.method,'Tikhonov')
 
