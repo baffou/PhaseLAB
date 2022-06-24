@@ -16,7 +16,7 @@ function [Fcrops] = FindFourierCrops(Interferos)
 %
 % Baptiste Marthy - 2021
 
-Fcrops = cell(length(Interferos),1);
+Fcrops = zeros(length(Interferos),1);
 refineRadius = 0.75;
 %Size based calculus
 
@@ -64,11 +64,11 @@ for k = 1:length(Interferos)
     [x_right,y_right,Rx,Ry] = coordinateValidation(x_right,y_right,Rx,Ry,Nx,Ny);
 
     %Build the 3 crops parameters
-    Fcrops{k} = {...
+    Fcrops = [
         FcropParameters(floor(Nx/2+1),floor(Ny/2+1),[Rx Ry],Nx,Ny), ...
         FcropParameters(x_left,y_left,[Rx Ry],Nx,Ny), ....
         FcropParameters(x_right,y_right,[Rx Ry],Nx,Ny) ...
-        };
+        ];
 end
 end
 

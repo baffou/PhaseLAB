@@ -100,9 +100,9 @@ function [output] = readTiffTag(pathToTheFile,outputFormat,enableWarning)
 
 
             %----CrossGrating creation 
-            % Gamma = 2*GratingPixelSize (37001) + GratingName (37000) opt
+            % Gamma = GratingPixelSize (37001) + GratingName (37000) opt
             CrossGratingArg = [];
-            CrossGratingArg = [CrossGratingArg {'Gamma'} {2 * TiffTagsValue{37001 == TiffTagsID}}]; %Gamma is needed when Grating pixel size is saved
+            CrossGratingArg = [CrossGratingArg {'Gamma'} {TiffTagsValue{37001 == TiffTagsID}}]; %Gamma is needed when Grating pixel size is saved
             if ~isempty(CrossGratingArg)
 %                 CrossGratingArg = [CrossGratingArg {TiffTagsValue{37000 == TiffTagsID}}];
                 CrossGratingObject = CrossGrating(CrossGratingArg{:});
@@ -134,7 +134,7 @@ function [output] = readTiffTag(pathToTheFile,outputFormat,enableWarning)
 
                 CGCameraObject = CGcamera(CGCameraArg{:});
                 CGCameraObject.CGangle = [TiffTagsValue{37004 == TiffTagsID}]; %Set the grating angle
-                CGCameraObject.setDistance([TiffTagsValue{37002 == TiffTagsID}] * 1e-3); %Set the distance
+                CGCameraObject.setDistance([TiffTagsValue{37002 == TiffTagsID}]); %Set the distance
                 if isempty(CGCameraObject.CGpos)
                     CGCameraObject = [];
                 end
@@ -159,7 +159,7 @@ function [output] = readTiffTag(pathToTheFile,outputFormat,enableWarning)
 
             %IL Creation - Wavelength (40002)
             IlluminationArg = [];
-            IlluminationArg = [IlluminationArg {1e-9 * TiffTagsValue{40002 == TiffTagsID}}];
+            IlluminationArg = [IlluminationArg {TiffTagsValue{40002 == TiffTagsID}}];
 
             if ~isempty(IlluminationArg)
                 output.Illumination = Illumination(IlluminationArg{:});
