@@ -77,7 +77,7 @@ for iNP = 1:NNP
         hfigInit = figure;
         imagesc(imT),colormap(gray),colorbar
         if opt.fullscreen
-            fullscreen
+            hfigInit.WindowState = 'maximized';
         end
         if isempty(opt.fhandle) % if a figure handle was not primarily defined
             set(gca,'Ydir','normal')
@@ -195,6 +195,9 @@ for iNP = 1:NNP
             imalpha = imag(alpha);
     
             hfig2 = figure();
+            if opt.fullscreen
+                hfig2.WindowState = 'maximized';
+            end
             plot(coo,realpha)
             %save -ascii realpha_p250 realpha
             hold on
