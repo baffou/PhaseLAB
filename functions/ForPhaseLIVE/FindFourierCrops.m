@@ -16,7 +16,7 @@ function [Fcrops] = FindFourierCrops(Interferos)
 %
 % Baptiste Marthy - 2021
 
-Fcrops = zeros(length(Interferos),1);
+Fcrops = cell(length(Interferos),1);
 refineRadius = 0.75;
 %Size based calculus
 
@@ -28,11 +28,14 @@ for k = 1:length(Interferos)
     RappPixelSize = 0.5*Interferos(k).CGcam.CG.Gamma/Interferos(k).CGcam.Camera.dxSize;
     mat_fft = fftshift(fft2(Interferos(k).Itf));
 
+    PhasePixelBinning = 0.5*-Interferos(k).Microscope.CGcam.zoom*...
+        Interferos(k).Microscope.CGcam.CG.Gamma / Interferos(k).Microscope.CGcam.Camera.dxSize;
+
     %Find Rx, Ry the radius of the ellips, add +/- pixels errors to search in
-    Rx_in = refineRadius * (Nx / (RappPixelSize * Interferos(k).CGcam.zoom) );
-    Rx_out = (1/refineRadius) * (Nx / (RappPixelSize * Interferos(k).CGcam.zoom));
-    Ry_in = refineRadius * (Ny / (RappPixelSize * Interferos(k).CGcam.zoom));
-    Ry_out = (1/refineRadius) * (Ny / (RappPixelSize * Interferos(k).CGcam.zoom));
+    Rx_in = refineRadius * (Nx / PhasePixelBinning);
+    Rx_out = (1/refineRadius) * (Nx / PhasePixelBinning);
+    Ry_in = refineRadius * (Ny / PhasePixelBinning);
+    Ry_out = (1/refineRadius) * (Ny / PhasePixelBinning);
 
     %Mask the space in a ring shape maner between the two ellipses [Rx_in Ry_in] [Rx_in Rx_out]
     CircleMask_In = (xx - floor(Nx)/2 - 1).^2/Rx_in^2 + (yy - floor(Ny/2) - 1).^2/Ry_in^2 > 1;
@@ -56,15 +59,15 @@ for k = 1:length(Interferos)
 
     Zoom = ((Nx/2 - x_left)) / ...
         ( dist * (1/2 - x_left/Nx) * RappPixelSize);
-    Rx = Nx / (2 * Interferos(k).CGcam.CG.Gamma * Zoom);
-    Ry = Ny / (2 * Interferos(k).CGcam.CG.Gamma * Zoom);
+    Rx = Nx / (2*PhasePixelBinning);
+    Ry = Ny / (2*PhasePixelBinning);
 
     %Verify that the crops coordinate are not too big for the image
     [x_left,y_left,Rx,Ry] = coordinateValidation(x_left,y_left,Rx,Ry,Nx,Ny);
     [x_right,y_right,Rx,Ry] = coordinateValidation(x_right,y_right,Rx,Ry,Nx,Ny);
 
     %Build the 3 crops parameters
-    Fcrops = [
+    Fcrops = [...
         FcropParameters(floor(Nx/2+1),floor(Ny/2+1),[Rx Ry],Nx,Ny), ...
         FcropParameters(x_left,y_left,[Rx Ry],Nx,Ny), ....
         FcropParameters(x_right,y_right,[Rx Ry],Nx,Ny) ...
