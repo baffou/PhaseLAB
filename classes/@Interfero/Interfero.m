@@ -180,6 +180,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             objListout = copy(objList);
             No = numel(objList);
             for io = 1:No
+                nargin
                 obj = objListout(io);
                 if nargin==3
                     if numel(xy1)~=2
@@ -199,13 +200,15 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     y1 = (obj.Ny-N)/2+1;
                     y2 = (obj.Ny-N)/2+N;
                 elseif nargin==1
-                    figure,imagegb(obj.Itf);
-                    [x10,y10] = ginput(1);
-                    [x20,y20] = ginput(1);
-                    x1 = round(min([x10,x20]));
-                    x2 = round(max([x10,x20]));
-                    y1 = round(min([y10,y20]));
-                    y2 = round(max([y10,y20]));
+                    if io == 1
+                        figure,imagegb(obj.Itf);
+                        [x10,y10] = ginput(1);
+                        [x20,y20] = ginput(1);
+                        x1 = round(min([x10,x20]));
+                        x2 = round(max([x10,x20]));
+                        y1 = round(min([y10,y20]));
+                        y2 = round(max([y10,y20]));
+                    end
                 else
                     error('Wrong number of inputs')
                 end

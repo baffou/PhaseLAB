@@ -23,6 +23,7 @@ classdef CrossGrating  <  handle
                 opt.lambda0 (1,1) double = 0
                 opt.RI (1,1) double = 1.46 % Quartz by default
             end
+
             if ~strcmpi(name,'undefined') % ('P2')
                 CG = jsonImport(strcat(name,'.json'));
             else

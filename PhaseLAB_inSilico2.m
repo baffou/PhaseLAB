@@ -24,9 +24,9 @@ NAobj=1.;
 NAill=0;
 Gamma=39e-6;
 shotNoise='on';
-%system='NP';
+system='NP';
 %system='noise';
-system='Gaussian';
+%system='Gaussian';
 
 %% assignments
 OB=Objective(Mobj,NAobj,'Olympus');
@@ -51,6 +51,7 @@ switch system
         DI = DI.shine(IL);
         
         IM0=imaging(DI,IL,MI,Npx);
+        IM0=IM0.crop(600);
         OPD=IM0.OPD;
     case 'noise'
         IM0=ImageQLSI(ones(Npx),zeros(Npx),MI,IL);
@@ -71,7 +72,7 @@ end
 %Itf=CGMinSilico(IM0,,'shotNoise',1,'Nimages',100);
 
 %Itf=CGMinSilico(IM0,shotNoise=shotNoise,Nimages=30);
-Itf=CGMinSilico(IM0,shotNoise=shotNoise,Nimages=Nim,NAill=IL.NA);
+Itf=CGMinSilico(IM0,shotNoise=shotNoise,Nimages=Nim,NAill=IL.NA,cut=2);
 
 %Itf=Itf.crop(604);
 

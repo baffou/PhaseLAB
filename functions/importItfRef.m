@@ -1,7 +1,14 @@
-function [INT,REF,IL] = importItfRef(folder,MI,varargin)
-remote = 0;
+function [INT,REF,IL] = importItfRef(folder,MI,opt)
+
+arguments
+    folder
+    MI Microscope
+    opt.nickname = []
+    opt.selection = []
+    opt.remote = 0
+end
+opt.selection
 manual = 0;
-nickname = [];
 
 IL = []; %If metadatas == false, IL will stay blank !
 
@@ -23,29 +30,13 @@ end
 
 Na = nargin-2;
 
-if Na>0
-    if isOdd(Na)
-        error('not the proper number of arguments in importItfRef')
-    end
-    for ii = 1:Na/2
-        if strcmp(varargin{2*ii-1},'nickname')
-            nickname = varargin{2*ii};
-        elseif strcmp(varargin{2*ii-1},'selection')
-            if isnumeric(varargin{2*ii})
-                selection = varargin{2*ii};
-            elseif strcmp(varargin{2*ii},'manual')
-                manual = 1;
-            else
-                error('selection input must be a number or a number, a vector, or ''manual''.')
-            end
-        elseif strcmp(varargin{2*ii-1},'remote')
-            if varargin{2*ii}==1 || strcmp(varargin{2*ii},'yes') || strcmp(varargin{2*ii},'on')
-                remote = 1;
-            elseif varargin{2*ii}==0 || strcmp(varargin{2*ii},'no') || strcmp(varargin{2*ii},'off')
-                remote = 0;
-            end
-        end
-    end
+if strcmpi(opt.selection,'manual')
+    manual = 1;
+end
+if opt.remote==1 || strcmp(opt.remote,'yes') || strcmp(opt.remote,'on')
+    opt.remote = 1;
+elseif opt.remote==0 || strcmp(opt.remote,'no') || strcmp(opt.remote,'off')
+    opt.remote = 0;
 end
 
 % import the interferogram main images (not the refs)
@@ -67,7 +58,7 @@ if manual==1
     
 else
     if strcmpi(acquisitionSoftware,'phast') || strcmpi(acquisitionSoftware,'Sid4Bio')
-        ItfFileList = dir([folder 'SID ' nickname '*.tif']);
+        ItfFileList = dir([folder 'SID ' opt.nickname '*.tif']);
         ItfFileNames0 = {ItfFileList.name};
         Nif = numel(ItfFileNames0);
         
@@ -75,25 +66,25 @@ else
             error(['No file imported from the folder ' folder])
         end
         
-        if exist('selection','var')
-            if isnumeric(selection)
-                if selection <1
-                    if length(selection)~=1
+        if ~isempty(opt.selection)
+            if isnumeric(opt.selection)
+                if opt.selection <1
+                    if length(opt.selection)~=1
                         error('when smaller than unity, selection must be a number, not a vector')
                     end
-                    selection = 1:round(1/selection):Nif;
+                    opt.selection = 1:round(1/opt.selection):Nif;
                 end
-                Nif = numel(selection);
+                Nif = numel(opt.selection);
                 ItfFileNames = cell(Nif,1);
                 for ii = 1:Nif
-                    ItfFileNames{ii} = ItfFileNames0{selection(ii)};
+                    ItfFileNames{ii} = ItfFileNames0{opt.selection(ii)};
                 end
             end
         else
             ItfFileNames = ItfFileNames0;
         end
     elseif strcmpi(acquisitionSoftware,'phaselive')
-        ItfFileList = dir([folder nickname '*.tif']);
+        ItfFileList = dir([folder opt.nickname '*.tif']);
         ItfFileNamesTemp = {ItfFileList.name};
         ItfFileNamesTempBool = ~contains(ItfFileNamesTemp,'REF_');
         ItfFileNames0 = ItfFileNamesTemp(ItfFileNamesTempBool);
@@ -103,18 +94,18 @@ else
             error(['No file imported from the folder ' folder])
         end
         
-        if exist('selection','var')
-            if isnumeric(selection)
-                if selection <1
-                    if length(selection)~=1
+        if ~isempty(opt.selection)
+            if isnumeric(opt.selection)
+                if opt.selection <1
+                    if length(opt.selection)~=1
                         error('when smaller than unity, selection must be a number, not a vector')
                     end
-                    selection = 1:round(1/selection):Nif;
+                    opt.selection = 1:round(1/opt.selection):Nif;
                 end
-                Nif = numel(selection);
+                Nif = numel(opt.selection);
                 ItfFileNames = cell(Nif,1);
                 for ii = 1:Nif
-                    ItfFileNames{ii} = ItfFileNames0{selection(ii)};
+                    ItfFileNames{ii} = ItfFileNames0{opt.selection(ii)};
                 end
             end
         else
@@ -147,12 +138,12 @@ INT = repmat(Interfero(),Nif,1);
 
 if strcmpi(acquisitionSoftware,'phast') || strcmpi(acquisitionSoftware,'Sid4Bio')
     for rr = 1:Nrf
-        REF(rr) = Interfero([folder RefFileNames{rr}],MI,'remote',remote);
+        REF(rr) = Interfero([folder RefFileNames{rr}],MI,'remote',opt.remote);
     end
     
     
     for ii = 1:Nif
-        INT(ii) = Interfero([folder ItfFileNames{ii}],MI,'remote',remote);
+        INT(ii) = Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote);
         INT(ii).Microscope = MI;
         fid = fopen([folder ItfFileNames{ii}(1:end-4) ' REF.txt'],'r');
         if fid==-1
@@ -186,7 +177,7 @@ if strcmpi(acquisitionSoftware,'phast') || strcmpi(acquisitionSoftware,'Sid4Bio'
 elseif strcmpi(acquisitionSoftware,'phaselive')
     if isa(MI,'Microscope')
         for rr = 1:Nrf
-            REF(rr) = Interfero([folder RefFileNames{rr}],MI,'remote',remote);
+            REF(rr) = Interfero([folder RefFileNames{rr}],MI,'remote',opt.remote);
         end
         
         for ii = 1:Nif
@@ -194,7 +185,7 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
             currentRefFileName  =  [getTag(TIFF,270)];
             RefIndice  =  strcmp(RefFileNames,currentRefFileName);
             
-            INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI,'remote',remote);
+            INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote);
             INT(ii).Microscope = MI;
             INT(ii).Reference(REF(RefIndice));
         end
@@ -202,11 +193,11 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
         IL = repmat(Illumination(),Nif,1);
         for rr = 1:Nrf
             S_Ref = readTiffTag([folder RefFileNames{rr}], "PhaseLAB");
-            REF(rr) = Interfero([folder RefFileNames{rr}],S_Ref.Microscope,'remote',remote);
+            REF(rr) = Interfero([folder RefFileNames{rr}],S_Ref.Microscope,'remote',opt.remote);
         end
         for ii = 1:Nif
             S_Itf = readTiffTag([folder ItfFileNames{ii}], "PhaseLAB");
-            INT(ii) = Interfero([folder ItfFileNames{ii}],S_Itf.Microscope,'remote',remote);
+            INT(ii) = Interfero([folder ItfFileNames{ii}],S_Itf.Microscope,'remote',opt.remote);
             RefIndice = strcmp(RefFileNames,S_Itf.Reference);
             INT(ii).Reference(REF(RefIndice));
             IL(ii) = S_Itf.Illumination;

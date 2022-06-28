@@ -512,7 +512,8 @@ classdef ImageMethods
                 % convert the image to a frame
                 
                 hfig=figure;
-                hfig.Position=[1 1 1000 500];
+                fullscreen
+%                hfig.Position=[1 1 1800 800];
                 if nargin==7
                 opendx(IM(u),persp,phi,theta,ampl)
                 else
@@ -520,7 +521,7 @@ classdef ImageMethods
                 end
 %                caxis([-2 18]*1e-8)
                 frame=getframe(hfig);
-                pause(0.5)
+                drawnow
                 writeVideo(writerObj, frame);
                 close(hfig)
                 
@@ -531,12 +532,12 @@ classdef ImageMethods
             
         end
             
-        function opendx     (obj,              persp,phi,theta,ampl,zrange)
-            theta=90-theta;
+        function opendx(obj,persp,AZ_camera,PO_camera,ampl,zrange)
+            EL_camera=90-PO_camera;
             [Ny,Nx]=size(obj.OPD);
             
             if nargin~=6
-                zrange=[min(obj.OPD(:)) max(obj.OPD(:))];
+                zrange=1e0*[min(obj.OPD(:)) max(obj.OPD(:))];
             end
                 DZ=zrange(2)-zrange(1);
             factor=obj.pxSize*1e6;
@@ -549,34 +550,44 @@ classdef ImageMethods
             end
             
             %% handling the number of parameters
-            coloringMap=obj.OPD;
+            coloringMap=obj.OPD*1e9;
             
             %colormap(gca,colorScale);
             %% Display
-            surf(X,Y,obj.OPD,coloringMap,'FaceColor','interp',...
+            surf(X,Y,obj.OPD*1e9,coloringMap,'FaceColor','interp',...
                 'EdgeColor','none',...
                 'FaceLighting','phong')
-            title(obj.OPDfileName)
+            title(obj.OPDfileName, 'Interpreter','none')
+            posS=get(0, 'Screensize');
             daspect([factor factor DZ/10])
             %colormap(gca,parulaNeuron)
             %colormap(gca,flipud(phase1024))
+            set(gcf,'color','w');
+            set(gcf,'Position',[posS(1) posS(2) 2*posS(3)/3 posS(4)])% To change size
             colormap(gca,phase1024)
-            colorbar
+            cb=colorbar('southoutside',FontSize=16);
+            set(gca,'ztick',[])
+            a =  cb.Position; %gets the positon and size of the color bar
+            set(cb,'Position',[a(1) a(2) a(3)/4 a(4)])% To change size
+            cb.Label.String = 'Optical path difference (nm)';
             %axis tight
             view(0,90)
             %camlight left
             %camlight(AZ, EL)
-            theta_camera=0.0;
-            phi_camera=-30;
-            camlight(phi_camera,theta_camera)
+            view(AZ_camera,EL_camera)
+            AZ_light=0;
+            EL_light=45;
+            %camlight(az,el)
+            camlight(AZ_light,EL_light)
             %light('Position',[-1 0 0],'Style','local')
             axis([1 Nx 1 Ny]*factor)
-            view(phi,theta)
             camproj('perspective')
             %axis off
             xlabel('µm'), ylabel('µm')
             zlim(zrange)
             caxis(zrange)
+            camPos=get(gca,"CameraPosition");
+            set(gca,'CameraPosition',camPos/2)
             drawnow
         end
         

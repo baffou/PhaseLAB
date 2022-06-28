@@ -12,6 +12,7 @@ arguments
     opt.NAill double = 0
     opt.setI0 (1,:) char {mustBeMember(opt.setI0,{'max','mean'})} = 'max'
     opt.cut (1,1) double = 0
+    opt.EMimage (1,:) char {mustBeMember(opt.EMimage,{'no','x','y'})} = 'no'
 end
 
 if strcmpi(opt.ShotNoise,'on')
@@ -25,11 +26,7 @@ Itf = repmat(Interfero(),No,1);
 ItfRef = repmat(Interfero(),No,1);
 for io = 1:No
     
-    
-    T = Image(io).T;
-    OPD = Image(io).OPD;
-    Pha = Image(io).Ph;
-    
+        
     %% Parameters
     MI = Image(io).Microscope;
     Nim = double(opt.Nimages);
@@ -39,7 +36,8 @@ for io = 1:No
     camPxSize = MI.CGcam.Camera.dxSize;   % camera chip pixel size [m]
     zeta = MI.CGcam.zeta;         % zeta factor: Lambda/(2*camPxSize)
     w = MI.CGcam.Camera.fullWellCapacity;        % full well capacity of the camera
-    [Ny,Nx] = size(OPD);        % Desired final image size [px], must be square
+    Ny=Image(io).Ny;
+    Nx=Image(io).Nx;
     zoom0 = MI.CGcam.zoom;        % Relay lens zoom
     beta = acos(3/5);% tilt of the cross-grating [rad]. Possible values to maintain periodicity: 0 or acos(3/5)
     IL = Image.Illumination;
@@ -66,7 +64,16 @@ for io = 1:No
         Grating = superUnitPixelized.tile(Nx,Ny);
     
     Emodel = Grating;
-    Emodel.im = sqrt(T).*exp(-1i*Pha);
+
+    if strcmpi(opt.EMimage,'no')
+        T = Image(io).T;
+        Pha = Image(io).Ph;
+        Emodel.im = sqrt(T).*exp(-1i*Pha);
+    elseif  strcmpi(opt.EMimage,'x')
+        Emodel.im = Image.Ex;
+    elseif  strcmpi(opt.EMimage,'y')
+        Emodel.im = Image.Ey;
+    end
 
     EmodelRef = Grating;
     EmodelRef.im = ones(Ny,Nx);
