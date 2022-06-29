@@ -6,7 +6,7 @@
 % affiliation: CNRS, Institut Fresnel
 % date: Feb 23, 2020
 
-classdef ImageMethods
+classdef ImageMethods  <  handle
     
     properties(SetAccess=private)
         comment   % any comment regarding the image
@@ -337,7 +337,7 @@ classdef ImageMethods
             end
         end
         
-        function obj=set.Illumination(obj,val)
+        function set.Illumination(obj,val)
             if isa(val,'Illumination')
                 obj.Illumination=val;
             else
@@ -345,7 +345,7 @@ classdef ImageMethods
             end
         end
         
-        function obj=set.Microscope(obj,val)
+        function set.Microscope(obj,val)
             if isa(val,'Microscope')
                 obj.Microscope=val;
             else
@@ -532,8 +532,8 @@ classdef ImageMethods
             
         end
             
-        function opendx     (obj,              persp,phi,theta,ampl,zrange)
-            theta=90-theta;
+        function opendx(obj,persp,AZ_camera,PO_camera,ampl,zrange)
+            EL_camera=90-PO_camera;
             [Ny,Nx]=size(obj.OPD);
             
             if nargin~=6
@@ -562,8 +562,8 @@ classdef ImageMethods
             daspect([factor factor DZ/10])
             %colormap(gca,parulaNeuron)
             %colormap(gca,flipud(phase1024))
-            hf=gcf;
-            set(hf,'Position',[posS(1) posS(2) 2*posS(3)/3 posS(4)])% To change size
+            set(gcf,'color','w');
+            set(gcf,'Position',[posS(1) posS(2) 2*posS(3)/3 posS(4)])% To change size
             colormap(gca,phase1024)
             cb=colorbar('southoutside',FontSize=16);
             set(gca,'ztick',[])
@@ -574,17 +574,20 @@ classdef ImageMethods
             view(0,90)
             %camlight left
             %camlight(AZ, EL)
-            phi_camera=-30;
+            view(AZ_camera,EL_camera)
+            AZ_light=0;
+            EL_light=45;
             %camlight(az,el)
-            camlight(phi_camera,theta_camera)
+            camlight(AZ_light,EL_light)
             %light('Position',[-1 0 0],'Style','local')
             axis([1 Nx 1 Ny]*factor)
-            view(phi,theta)
             camproj('perspective')
             %axis off
             xlabel('µm'), ylabel('µm')
             zlim(zrange)
             caxis(zrange)
+            camPos=get(gca,"CameraPosition");
+            set(gca,'CameraPosition',camPos/2)
             drawnow
         end
         

@@ -23,7 +23,7 @@ classdef ImageQLSI   <   ImageMethods
         DWy     % OPD gradient along y
     end
     
-    properties(GetAccess = public, SetAccess = private)
+    properties(Access = public)
         %lambda, inherited from ImageMethods
         %pxSize, inherited from ImageMethods
         TfileName
@@ -36,10 +36,10 @@ classdef ImageQLSI   <   ImageMethods
         % processingSoft
     end
     
-    properties(SetAccess=private)
-        Nx =[]
-        Ny =[]
-        Npx =[]
+    properties(Dependent)
+        Nx
+        Ny
+        Npx
     end
     
     properties(Hidden,SetAccess = private)
@@ -56,20 +56,19 @@ classdef ImageQLSI   <   ImageMethods
                 IL  Illumination = Illumination.empty
                 opt.remotePath =[]
                 opt.fileName =[]
-                opt.imageNumber =[]
             end
                 
-            obj.imageNumber=opt.imageNumber;
-            
-            if nargin==1 %ImageQLSI(n)
+            %ImageQLSI(T,OPD,MI,IL)
+            %ImageQLSI(n)
+            if nargin==1
                 if isnumeric(INT)
                     n=INT;
                     obj = repmat(ImageQLSI(),n,1);
                 else
                     error('wrong input type')
                 end
-            elseif nargin==0 %ImageQLSI()
-            elseif nargin==4 %ImageQLSI(T,OPD,MI,IL)
+            elseif nargin==0
+            elseif nargin==4
                 if isnumeric(INT) && isnumeric(OPD) % if both are matrices, they should be of the same size
                     if (sum(size(INT)==size(OPD))~=2)
                         size(INT)
@@ -81,34 +80,28 @@ classdef ImageQLSI   <   ImageMethods
                 if ~isempty(opt.remotePath) % remote yes
                     if ischar(INT)
                         obj.T0=INT;
-                        obj.TfileName=INT;
-                        [obj.Ny, obj.Nx]=size(obj.T);
                     elseif isnumeric(INT)
                         if isempty(opt.fileName)
                             error('A filename must be specified')
                         end
                         obj.T0=[opt.remotePath '/' opt.fileName '_T.txt'];
-                        obj.TfileName=obj.T0;
-                        writematrix(single(INT),obj.T0)
-                        [obj.Ny, obj.Nx]=size(INT);
+                        dlmwrite(obj.T0,INT,' ')
                     end
 
                     if ischar(OPD)
                         obj.OPD0=OPD;
-                        obj.OPDfileName=OPD;
                     elseif isnumeric(OPD)
                         if isempty(opt.fileName)
                             error('A filename must be specified')
                         end
                         obj.OPD0=[opt.remotePath '/' opt.fileName '_OPD.txt'];
-                        writematrix(single(OPD),obj.OPD0)
-                        obj.OPDfileName=obj.OPD0;
+                        dlmwrite(obj.OPD0,OPD,' ')
                     end
 
-                else % no remote
+
+                else
                     if ischar(INT)
-                        obj.T0 = readmatrix(INT);
-                        obj.TfileName=INT;
+                        obj.T0 = dlmread(INT);
                     elseif isnumeric(INT)
                         obj.T0=INT;
                     else
@@ -116,14 +109,13 @@ classdef ImageQLSI   <   ImageMethods
                     end
 
                     if ischar(OPD)
-                        obj.OPD0 = readmatrix(OPD);
-                        obj.OPDfileName=OPD;
+                        obj.OPD0 = dlmread(OPD);
                     elseif isnumeric(OPD)
                         obj.OPD0=OPD;
                     else
                         error('wrong input')
                     end
-                    [obj.Ny, obj.Nx]=size(obj.T0);
+
                 end
                 obj.Illumination = IL;
                 obj.Microscope = MI;
@@ -134,11 +126,10 @@ classdef ImageQLSI   <   ImageMethods
         end
 
         function val = get.T(obj)
-
             if isnumeric(obj.T0) % T is a matrix
                 val=obj.T0;
             elseif ischar(obj.T0) % T is a path/fileName
-                val=readmatrix(obj.T0);
+                val=dlmread(obj.T0);
             else
                 error('not a proper input')
             end
@@ -150,47 +141,41 @@ classdef ImageQLSI   <   ImageMethods
                     obj.T0=val;
                 elseif ischar(obj.T0) % overwrite the file
                     warning(['file overwriting!: ' obj.T0])
-                    writematrix(single(val),obj.T0)
+                    dlmwrite(obj.T0,val)
                 end
             elseif ischar(val) % input is a file name
                 if ischar(obj.T0) % target already a file name
                     obj.T0=val;
                 elseif isnumeric(obj.T0) % target a matrix
-                    obj.T0=readmatrix(val);
+                    obj.T0=dlmread(val);
                 end
             end
         end
         
         function val = get.OPD(obj)
-
             if isnumeric(obj.OPD0) % T is a matrix
                 val=obj.OPD0;
             elseif ischar(obj.OPD0) % T is a path/fileName
-                val=readmatrix(obj.OPD0);
+                val=dlmread(obj.OPD0);
             else
                 error('not a proper input')
             end
         end
-
-        function obj = set.OPD(obj,val)
-            if isnumeric(val) % input is a matrix
-                if isnumeric(obj.OPD0)
-                    obj.OPD0=val;
-                elseif ischar(obj.OPD0) % overwrite the file
-                    warning(['file overwriting!: ' obj.OPD0])
-                    writematrix(single(val),obj.OPD0)
-                end
-            elseif ischar(val) % input is a file name
-                if ischar(obj.OPD0) % target already a file name
-                    obj.OPD0=val;
-                elseif isnumeric(obj.OPD0) % target a matrix
-                    obj.OPD0=readmatrix(val);
-                end
-            end
+        
+        function val = get.Nx(obj)
+            val = [0,1]*size(obj.T).';
         end
-         
+        
+        function val = get.Npx(obj)
+            val = obj.Nx;
+        end
+        
         function val = Ph(obj)
             val = 2*pi/obj.lambda*obj.OPD;
+        end
+        
+        function val = get.Ny(obj)
+            val = [1,0]*size(obj.T).';
         end
         
         function obj = OPDhighPass(obj,nCrop)
@@ -250,13 +235,11 @@ classdef ImageQLSI   <   ImageMethods
             
             No = numel(obj);
             for io = 1:No
-                temp=obj(io).OPD;
                 for n = 1:nmax
                     for m = mod(n,2):2:n
-                        temp = ZernikeRemoval(temp,n,m); % use a temp image to avoid writing several times on the HDD in remote mode.
+                        obj(io).OPD = ZernikeRemoval(obj(io).OPD,n,m);
                     end
                 end
-                obj(io).OPD=temp;
             end
         end
         
@@ -327,7 +310,7 @@ classdef ImageQLSI   <   ImageMethods
             IMout.OPDfileName = 'Average images';
         end
         
-        function IM = smooth(IM,nn,hfigInit)
+        function IMout = smooth(IM,nn,hfigInit)
             %smooth(IM,nn,hfigInit)
             % nn: intensity of the smoothing in pixels
             if nargin>=3
@@ -343,9 +326,10 @@ classdef ImageQLSI   <   ImageMethods
             if nargin==1
                 nn = 4;
             end
+            IMout = IM;
             for ii = 1:numel(IM)
-                IM(ii).T = imgaussfilt(IM(ii).T,nn);
-                IM(ii).OPD = imgaussfilt(IM(ii).OPD,nn);
+                IMout(ii).T = imgaussfilt(IM(ii).T,nn);
+                IMout(ii).OPD = imgaussfilt(IM(ii).OPD,nn);
             end
             if nargin==3
                 hfigInit.UserData{5} = IMout;
@@ -405,10 +389,8 @@ classdef ImageQLSI   <   ImageMethods
             end
             
             for io = 1:numel(obj)
-                temp=obj(io).T(y1:y2,x1:x2); % temp variable to avoid importing the matrix twice for the calculation of Nx and Ny when it is stored in a file.
-                obj(io).T   = temp; 
+                obj(io).T   = obj(io).T(y1:y2,x1:x2);
                 obj(io).OPD = obj(io).OPD(y1:y2,x1:x2);
-                [obj.Ny, obj.Nx]=size(temp);
             end
 
             function drawRect(h,rr,xc,yc)
@@ -482,13 +464,12 @@ classdef ImageQLSI   <   ImageMethods
         end
         
         function obj = binning(obj,n)
-            if nargin==1 || n==3 % ie n = 3 by default
+            if nargin==1 % ie n = 3
                 for ii = 1:numel(obj)
                     imT = binning3x3(obj(ii).T);
                     imOPD = binning3x3(obj(ii).OPD);
                     obj(ii).T = imT;
                     obj(ii).OPD = imOPD;
-                    [obj.Ny, obj.Nx]=size(imT);
                 end
             elseif n==2
                 for ii = 1:numel(obj)
@@ -496,7 +477,6 @@ classdef ImageQLSI   <   ImageMethods
                     imOPD = binning2x2(obj(ii).OPD);
                     obj(ii).T = imT;
                     obj(ii).OPD = imOPD;
-                    [obj.Ny, obj.Nx]=size(imT);
                 end
             else
                 error('not a proper binning dimension. Should be 2 or 3.')
@@ -522,6 +502,14 @@ classdef ImageQLSI   <   ImageMethods
             
         end
  
+        function obj = ModifyProperties(obj)
+            figure
+            
+            
+            
+            
+        end
+
         function objList = phaseLevel0(objList,option)
             % option = [x1 x2 y1 y2]
             if nargin==1

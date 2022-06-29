@@ -7,7 +7,7 @@ arguments
     opt.selection = []
     opt.remote = 0
 end
-opt.selection
+
 manual = 0;
 
 IL = []; %If metadatas == false, IL will stay blank !
@@ -27,8 +27,6 @@ end
 if ~(strcmp(folder(end),'/') || strcmp(folder(end),'\'))
     folder = [folder '/'];
 end
-
-Na = nargin-2;
 
 if strcmpi(opt.selection,'manual')
     manual = 1;
@@ -80,7 +78,7 @@ else
                     ItfFileNames{ii} = ItfFileNames0{opt.selection(ii)};
                 end
             end
-        else
+        else % if not opt.selection
             ItfFileNames = ItfFileNames0;
         end
     elseif strcmpi(acquisitionSoftware,'phaselive')
@@ -110,6 +108,7 @@ else
             end
         else
             ItfFileNames = ItfFileNames0;
+            opt.selection=1:Nif;
         end
     end
     
@@ -184,8 +183,7 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
             TIFF = Tiff([folder ItfFileNames{ii}]);
             currentRefFileName  =  [getTag(TIFF,270)];
             RefIndice  =  strcmp(RefFileNames,currentRefFileName);
-            
-            INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote);
+            INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote,'imageNumber',opt.selection(ii));
             INT(ii).Microscope = MI;
             INT(ii).Reference(REF(RefIndice));
         end

@@ -11,7 +11,7 @@ arguments
     opt.Fcropshape char {mustBeMember(opt.Fcropshape,{'disc','square'})} = 'disc'
     opt.Smatrix {mustBeNumeric} = []
     opt.saveGradients = false
-    opt.remotePath = []
+    opt.remote = []
 end
 Nf = numel(Itf);
 %% Shaping of the Illumination object(s)
@@ -194,10 +194,10 @@ for ii = 1:Nf
         corr = 1;
     end
     
-    if isempty(opt.remotePath)
-        IM(ii) = ImageQLSI(Int,W*corr,MI,IL(ii),imageNumber=Itfi.imageNumber);
+    if isempty(opt.remote)
+        IM(ii) = ImageQLSI(Int,W*corr,MI,IL(ii));
     else
-        IM(ii) = ImageQLSI(Int,W*corr,MI,IL(ii),"remotePath",opt.remotePath,"fileName",removeExtension(Itfi.fileName),imageNumber=Itfi.imageNumber);
+        IM(ii) = ImageQLSI(Int,W*corr,MI,IL(ii),"remotePath",opt.remote,"fileName",opt.fileName);
     end
     IM(ii).Microscope = MI;
     if strcmpi(opt.resolution,'low')
@@ -207,7 +207,8 @@ for ii = 1:Nf
     else
         error('wrong value of resolution')
     end
-    
+    IM(ii).TfileName = Itfi.fileName;
+    IM(ii).OPDfileName = Itfi.fileName;
     IM(ii) = IM(ii).setFcrops([cropParam0, cropParam1, cropParam2]);
     IM(ii) = IM(ii).setProcessingSoftware('PhaseLAB');
 

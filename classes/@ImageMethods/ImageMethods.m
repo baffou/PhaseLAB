@@ -6,7 +6,7 @@
 % affiliation: CNRS, Institut Fresnel
 % date: Feb 23, 2020
 
-classdef ImageMethods
+classdef ImageMethods  <  handle
     
     properties(SetAccess=private)
         comment   % any comment regarding the image
@@ -265,7 +265,7 @@ classdef ImageMethods
             end
             hfig.UserData{10}=val;
             
-            hc=figure
+            hc=figure;
             subplot(1,3,1)
             plot(val(:,1),'o-')
             title('intensity')
@@ -316,7 +316,7 @@ classdef ImageMethods
             for iy=1:Nimy
                 for ix=1:Nimx
                     if iim <= Nim
-                        sb=subplot(Nimy,Nimx,ix+Nimx*(iy-1));
+                        subplot(Nimy,Nimx,ix+Nimx*(iy-1))
                         if mod(ix,2)
                             imagesc(IMlist(iim).T)
                             colormap(gca,'gray(1024)')
@@ -337,7 +337,7 @@ classdef ImageMethods
             end
         end
         
-        function obj=set.Illumination(obj,val)
+        function set.Illumination(obj,val)
             if isa(val,'Illumination')
                 obj.Illumination=val;
             else
@@ -345,7 +345,7 @@ classdef ImageMethods
             end
         end
         
-        function obj=set.Microscope(obj,val)
+        function set.Microscope(obj,val)
             if isa(val,'Microscope')
                 obj.Microscope=val;
             else

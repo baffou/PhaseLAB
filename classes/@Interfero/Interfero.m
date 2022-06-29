@@ -22,6 +22,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         path char
         Nx {mustBeInteger,mustBePositive}% Number of pixel of the image in the horizontal direction
         Ny {mustBeInteger,mustBePositive}% Number of pixel of the image in the vertical direction
+        imageNumber
     end
     
     properties(Dependent)
@@ -41,14 +42,15 @@ classdef Interfero < handle & matlab.mixin.Copyable
     methods
         function obj = Interfero(fileName,MI,opt)
             arguments
-                fileName = []
+                fileName = []  % fileName or matrix
                 MI = []
                 opt.remote (1,1) {mustBeInteger,mustBeGreaterThanOrEqual(opt.remote,0),mustBeLessThanOrEqual(opt.remote,1)} = 0
                 opt.N (1,1) {mustBeInteger} = 0
+                opt.imageNumber =[]
             end
             
             obj.remote = opt.remote;
-
+            obj.imageNumber=opt.imageNumber;
             if opt.N~=0 % Interfero(3) : create 3 blanck interferos
                 if nargin==1
                     obj = repmat(Interfero(),opt.N,1);
