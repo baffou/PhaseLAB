@@ -8,8 +8,8 @@ addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/Phas
 format long
 
 %% Construction of the setup
-lambda=550e-9;     % reference wavelength to etch glass
-eD=550e-9;
+lambda=350e-9;      % light wavelength
+lambda0=350e-9;     % reference wavelength to etch glass    
 %z0=0.5e-3;         % distance between the grating and the camera sensor
 camPxSize=6.5e-6;   % camera chip pixel size
 Nim=50;             % Number of summed images
@@ -23,14 +23,14 @@ d=0.5e-3;
 NAobj=1.;
 NAill=0;
 Gamma=39e-6;
-shotNoise='on';
+shotNoise='off';
 system='NP';
 %system='noise';
 %system='Gaussian';
 
 %% assignments
 OB=Objective(Mobj,NAobj,'Olympus');
-CG=CrossGrating(Gamma=Gamma,lambda0=eD);
+CG=CrossGrating(Gamma=Gamma,lambda0=lambda0);
 Cam=Camera(camPxSize,Npx,Npx);
 CGcam=CGcamera(Cam,CG,zoom0);
 MI=Microscope(OB,180,CGcam);
@@ -70,9 +70,9 @@ end
 
 %% Creation of the inSilico Interfero
 %Itf=CGMinSilico(IM0,,'shotNoise',1,'Nimages',100);
-
+MI.CGcam.RL.mask=0;
 %Itf=CGMinSilico(IM0,shotNoise=shotNoise,Nimages=30);
-Itf=CGMinSilico(IM0,shotNoise=shotNoise,Nimages=Nim,NAill=IL.NA,cut=2);
+Itf=CGMinSilico(IM0,shotNoise=shotNoise,Nimages=Nim,NAill=IL.NA,cut=0);
 
 %Itf=Itf.crop(604);
 

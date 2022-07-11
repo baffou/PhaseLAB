@@ -89,6 +89,7 @@ classdef ImageQLSI   <   ImageMethods
                         end
                         obj.T0=[opt.remotePath '/' opt.fileName '_T.txt'];
                         obj.TfileName=obj.T0;
+                        obj.T0
                         writematrix(single(INT),obj.T0)
                         [obj.Ny, obj.Nx]=size(INT);
                     end
@@ -144,7 +145,7 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
-        function obj = set.T(obj,val)
+        function set.T(obj,val)
             if isnumeric(val) % input is a matrix
                 if isnumeric(obj.T0)
                     obj.T0=val;
@@ -172,7 +173,7 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
-        function obj = set.OPD(obj,val)
+        function set.OPD(obj,val)
             if isnumeric(val) % input is a matrix
                 if isnumeric(obj.OPD0)
                     obj.OPD0=val;
@@ -569,6 +570,10 @@ classdef ImageQLSI   <   ImageMethods
             val = imgaussfilt(dxDWy-dyDWx,3);
         end
 
+        function val = DM(obj)
+            % returns the dry mass density in pg/µm^2
+            val=5.56*obj.OPD;
+        end
         function PDCMdisplay(obj,hfig)
             % plots horizontal and vertical cross cuts.
             if nargin==1
@@ -590,6 +595,19 @@ classdef ImageQLSI   <   ImageMethods
             caxis(hfig.UserData{7}(1),[minval maxval])
             
         end
+
+        function obj2List = download(objList)
+            No=numel(objList);
+            obj2List=ImageQLSI(No);
+            for io = 1:No
+                obj2List(io)=copy(objList(io));
+                obj2List(io).T0=objList(io).T;
+                obj2List(io).OPD0=objList(io).OPD;
+                %obj2List(io).DWx0=objList(io).DWx;
+                %obj2List(io).DWy=objList(io).DWy;
+            end
+        end
+    
     end
     
     

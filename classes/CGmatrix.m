@@ -122,6 +122,23 @@ classdef CGmatrix
                 imp = improp(M.im,M.imSize,lambda,-L,0,0);
                 imp2 = Grating.im.*imp;
                 imp3 = improp(imp2,M.imSize,lambda,L,0,0);
+                
+                % rajouter ici la pastille
+                if MI.CGcam.RL.mask==1
+                    FT = fftshift(fft2(imp3));
+                    [xx, yy] = meshgrid((-M.Nx/2:M.Nx/2-1)/M.Nx,(-M.Ny/2:M.Ny/2-1)/M.Ny);
+                    xx=xx-mean(xx(:));
+                    yy=yy-mean(yy(:));
+                    rr=sqrt(xx.*xx+yy.*yy);
+                    fac=4*MI.CGcam.zeta; % 1/fac is the radius of the crop, as a fraction of the image size
+                    mask=rr<1/fac;
+                    imp3=ifft2(ifftshift(FT.*(1-mask)));
+                    hfig=figure;
+                    imagegb(log(abs(FT.*(1-mask))))
+                    hold on
+                    drawCircle(M.Nx/2+1,M.Ny/2+1,[M.Nx/fac M.Ny/fac],hfig)
+                    drawnow
+                end
                 impsq = abs(imp3).^2;
                 Fdb2.im = impsq;
                 M = Fdb2;
