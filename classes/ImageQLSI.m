@@ -569,6 +569,10 @@ classdef ImageQLSI   <   ImageMethods
             val = imgaussfilt(dxDWy-dyDWx,3);
         end
 
+        function val = DM(obj)
+            % returns the dry mass density in pg/µm^2
+            val=5.56*obj.OPD;
+        end
         function PDCMdisplay(obj,hfig)
             % plots horizontal and vertical cross cuts.
             if nargin==1

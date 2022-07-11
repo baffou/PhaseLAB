@@ -3,6 +3,7 @@ classdef RelayLens
         model 
         zoom (1,1) {mustBeNumeric}
         chromatic  logical = false
+        mask     = 0 % presence of a mask in the Fourier space, within the relay lens to crop order 0
     end
 
     properties(SetAccess = private)
@@ -53,9 +54,13 @@ classdef RelayLens
             end
         end
 
+        function obj = set.mask(obj,val)
+            if val==1 || val==true
+                obj.mask=1;
+            elseif val==0 || val==false
+                obj.mask=0;
+            end
+        end
     end
-
-
-
 
 end
