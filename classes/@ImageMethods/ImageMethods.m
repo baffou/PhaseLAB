@@ -6,7 +6,7 @@
 % affiliation: CNRS, Institut Fresnel
 % date: Feb 23, 2020
 
-classdef ImageMethods  <  handle
+classdef ImageMethods  <  handle & matlab.mixin.Copyable
     
     properties(SetAccess=private)
         comment   % any comment regarding the image
@@ -567,6 +567,8 @@ classdef ImageMethods  <  handle
             colormap(gca,phase1024)
             cb=colorbar('southoutside',FontSize=16);
             set(gca,'ztick',[])
+            set(gca,'XLim',[0 obj.Nx*factor])
+            set(gca,'YLim',[0 obj.Ny*factor])
             a =  cb.Position; %gets the positon and size of the color bar
             set(cb,'Position',[a(1) a(2) a(3)/4 a(4)])% To change size
             cb.Label.String = 'Optical path difference (nm)';
@@ -575,12 +577,11 @@ classdef ImageMethods  <  handle
             %camlight left
             %camlight(AZ, EL)
             view(AZ_camera,EL_camera)
-            AZ_light=0;
+            AZ_light=30;
             EL_light=45;
             %camlight(az,el)
             camlight(AZ_light,EL_light)
             %light('Position',[-1 0 0],'Style','local')
-            axis([1 Nx 1 Ny]*factor)
             camproj('perspective')
             %axis off
             xlabel('µm'), ylabel('µm')
