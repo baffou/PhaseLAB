@@ -12,6 +12,7 @@ arguments
     opt.Smatrix {mustBeNumeric} = []
     opt.saveGradients = false
     opt.remotePath = []
+    opt.Tnormalisation = true
 end
 Nf = numel(Itf);
 %% Shaping of the Illumination object(s)
@@ -144,8 +145,11 @@ for ii = 1:Nf
     Rf_DW2 = ifft2(ifftshift(FRfc));
    
     % intensity image
-    Int = abs(Im_int)./abs(Rf_int);
-
+    if opt.Tnormalisation
+        Int = abs(Im_int)./abs(Rf_int);
+    else
+        Int = abs(Im_int);
+    end
     
     % phase gradient images
 
