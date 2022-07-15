@@ -137,8 +137,8 @@ for n = 1:Nim  % loop on the list of images
         ha2 = subplot(1,2,2);
         A = zeros([size(OPDn) 3]);
         
-         maxval = max(imgaussfilt(OPDn(:),10));
-         minval = min(imgaussfilt(OPDn(:),10));
+         maxval = max(max(imgaussfilt(OPDn,10)));
+         minval = min(max(imgaussfilt(OPDn,10)));
          
         A(:,:,1) = (OPDn-minval)/(maxval-minval);
         A(:,:,2) = (OPDn-minval)/(maxval-minval);
@@ -224,8 +224,8 @@ for n = 1:Nim  % loop on the list of images
         dlmwrite([folder '/masks/Mask_' IM.OPDfileName '_' generateDatedFileName() '.txt'],maskMeas,' ')
         dlmwrite([folder '/masks/pcoord_' IM.OPDfileName '_' generateDatedFileName() '.txt'],xcoord,'\n')
         dlmwrite([folder '/masks/OVprofile_' IM.OPDfileName '_' generateDatedFileName() '.txt'],OV0,'\n')
-        minOPD = min(imgaussfilt(OPDn(:),2));
-        maxOPD = max(imgaussfilt(OPDn(:),2));
+        minOPD = min(min(imgaussfilt(OPDn,2)));
+        maxOPD = max(min(imgaussfilt(OPDn,2)));
         imwrite((OPDn-minOPD)*255/(maxOPD-minOPD),phase1024(256),[folder '/masks/' generateDatedFileName() '_OPDcrop_' IM.OPDfileName '.tif'])
         imwrite(maskMeas*255,gray(256),[folder '/masks/' generateDatedFileName()  '_Mask_' IM.OPDfileName '.tif'])
         imwrite(ringBMeas*255,gray(256),[folder '/masks/' generateDatedFileName()  '_RingB_' IM.OPDfileName '.tif'])
