@@ -6,8 +6,8 @@ ylim0 = ha1.YLim;
 bin_mask = magicWand(image0, ylist, xlist, tolerance);
 mask = double(bin_mask.*hfig1.UserData.maskManual);
 
- maxval = max(imgaussfilt(image0(:),10));
- minval = min(imgaussfilt(image0(:),10));
+ maxval = max(max(imgaussfilt(image0,10)));
+ minval = min(max(imgaussfilt(image0,10)));
  A1 = (image0-minval)/(maxval-minval);
  A2 = A1;
  A3 = A1; 
