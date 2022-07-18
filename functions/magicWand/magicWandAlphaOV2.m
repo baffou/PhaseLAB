@@ -137,8 +137,8 @@ for n = 1:Nim  % loop on the list of images
         ha2 = subplot(1,2,2);
         A = zeros([size(OPDn) 3]);
         
-         maxval = max(max(imgaussfilt(OPDn,10)));
-         minval = min(max(imgaussfilt(OPDn,10)));
+        maxval = max(max(imgaussfilt(OPDn,10)));
+        minval = min(max(imgaussfilt(OPDn,10)));
          
         A(:,:,1) = (OPDn-minval)/(maxval-minval);
         A(:,:,2) = (OPDn-minval)/(maxval-minval);
