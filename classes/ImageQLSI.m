@@ -353,14 +353,21 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
         
-        function obj = crop(obj,opt)
+        function obj = crop(obj0,opt)
             arguments
-                obj
+                obj0
                 opt.xy1 = 0
                 opt.xy2 = 0
                 opt.Center {mustBeMember(opt.Center,{'Auto','Manual','auto','manual'})} = 'Auto'
                 opt.Size = 'Manual'
             end
+
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+
             if opt.xy1~=0 && opt.xy2~=0  % crop('xy1', [a,b], 'xy2', [a,b])
                 if numel(opt.xy1)~=2
                     error('First input must be a 2-vector (x,y)')
@@ -409,7 +416,7 @@ classdef ImageQLSI   <   ImageMethods
                 temp=obj(io).T(y1:y2,x1:x2); % temp variable to avoid importing the matrix twice for the calculation of Nx and Ny when it is stored in a file.
                 obj(io).T   = temp; 
                 obj(io).OPD = obj(io).OPD(y1:y2,x1:x2);
-                [obj.Ny, obj.Nx]=size(temp);
+                [obj(io).Ny, obj(io).Nx]=size(temp);
             end
 
             function drawRect(h,rr,xc,yc)
