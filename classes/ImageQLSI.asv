@@ -376,10 +376,10 @@ classdef ImageQLSI   <   ImageMethods
                 x2=max(xx);
                 y1=min(yy);
                 y2=max(yy);
-                x1=max([1;x1]);
-                x2=min([obj(1).Nx;x2]);
-                y1=max([1;y1]);
-                y2=min([obj(1).Ny;y2]);
+                x1=max([1,x1]);
+                x2=min([obj(1).Nx,x2]);
+                y1=max([1,y1]);
+                y2=min([obj(1).Nx,x2]);
             elseif ~isempty(opt.xy1) && ~isempty(opt.xy2)  % crop('xy1', [a,b], 'xy2', [a,b])
                 if numel(opt.xy1)~=2
                     error('First input must be a 2-vector (x,y)')
@@ -423,6 +423,10 @@ classdef ImageQLSI   <   ImageMethods
                 end
 
             end
+            x1
+            x2
+            y1
+            y2
             for io = 1:numel(obj)
                 temp=obj(io).T(y1:y2,x1:x2); % temp variable to avoid importing the matrix twice for the calculation of Nx and Ny when it is stored in a file.
                 obj(io).T   = temp; 
