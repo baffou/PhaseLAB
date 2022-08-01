@@ -173,6 +173,14 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
+        function val = get.DWx(obj)
+            val = obj.DWx0;
+        end
+
+        function val = get.DWy(obj)
+            val = obj.DWy0;
+        end
+
         function set.OPD(obj,val)
             if isnumeric(val) % input is a matrix
                 if isnumeric(obj.OPD0)
@@ -194,7 +202,13 @@ classdef ImageQLSI   <   ImageMethods
             val = 2*pi/obj.lambda*obj.OPD;
         end
         
-        function obj = OPDhighPass(obj,nCrop)
+        function obj2 = OPDhighPass(obj,nCrop)
+            if nargout
+                obj2=copy(obj);
+            else
+                obj2=obj;
+            end
+
             if nargin==1
                 nCrop = 3;
             end
@@ -208,12 +222,18 @@ classdef ImageQLSI   <   ImageMethods
             %imageT2 = real(ifft2(ifftshift(imageT_F)));
             imageOPD2 = real(ifft2(ifftshift(imageOPD_F)));
             %obj.T = 1+imageT2;
-            obj.OPD = imageOPD2;
+            obj2.OPD = imageOPD2;
             
             
         end
         
-        function obj = ZernikeRemove(obj,n,m,r0)
+        function obj2 = ZernikeRemove(obj,n,m,r0)
+            if nargout
+                obj2=copy(obj);
+            else
+                obj2=obj;
+            end
+
             if nargin==1
                 n = 1;
                 m = 1;
@@ -223,21 +243,26 @@ classdef ImageQLSI   <   ImageMethods
                 for ii = 1:n
                     for jj = 1:ii
                         m = mod(ii,2)+2*(jj-1);
-                        obj.OPD = ZernikeRemoval(obj.OPD,ii,m);
+                        obj2.OPD = ZernikeRemoval(obj.OPD,ii,m);
                     end
                 end
                 
             end
             if nargin==4
-                obj.OPD = ZernikeRemoval(obj.OPD,n,m,r0);
+                obj2.OPD = ZernikeRemoval(obj.OPD,n,m,r0);
             else
-                obj.OPD = ZernikeRemoval(obj.OPD,n,m);
+                obj2.OPD = ZernikeRemoval(obj.OPD,n,m);
             end
             %obj.OPD = ZernikeRemoval(obj.OPD,n,m);
             
         end
         
-        function obj = flatten(obj,nmax)
+        function obj2 = flatten(obj,nmax)
+            if nargout
+                obj2=copy(obj);
+            else
+                obj2=obj;
+            end
             % Removes Zernike moments up to n = nmax
             if nargin==1
                 nmax = 1;
@@ -257,11 +282,16 @@ classdef ImageQLSI   <   ImageMethods
                         temp = ZernikeRemoval(temp,n,m); % use a temp image to avoid writing several times on the HDD in remote mode.
                     end
                 end
-                obj(io).OPD=temp;
+                obj2(io).OPD=temp;
             end
         end
         
-        function [objList,coords] = untilt(objList,coords0)
+        function [objList2,coords] = untilt(objList,coords0)
+            if nargout
+                objList2=copy(objList);
+            else
+                objList2=objList;
+            end
             
             No = numel(objList);
             for io = 1:No
@@ -305,7 +335,7 @@ classdef ImageQLSI   <   ImageMethods
                 Y0 = Y0/max(Y0(:));
                 X0 = X0*Nx0/Nxc*Xm;
                 Y0 = Y0*Ny0/Nyc*Ym;
-                objList(io).OPD = objList(io).OPD-mx*X0-my*Y0-mc;
+                objList2(io).OPD = objList(io).OPD-mx*X0-my*Y0-mc;
             
             end
         end
@@ -328,7 +358,12 @@ classdef ImageQLSI   <   ImageMethods
             IMout.OPDfileName = 'Average images';
         end
         
-        function IM = smooth(IM,nn,hfigInit)
+        function IM2 = smooth(IM,nn,hfigInit)
+            if nargout
+                IM2=copy(IM);
+            else
+                IM2=IM;
+            end
             %smooth(IM,nn,hfigInit)
             % nn: intensity of the smoothing in pixels
             if nargin>=3
@@ -345,8 +380,8 @@ classdef ImageQLSI   <   ImageMethods
                 nn = 4;
             end
             for ii = 1:numel(IM)
-                IM(ii).T = imgaussfilt(IM(ii).T,nn);
-                IM(ii).OPD = imgaussfilt(IM(ii).OPD,nn);
+                IM2(ii).T = imgaussfilt(IM(ii).T,nn);
+                IM2(ii).OPD = imgaussfilt(IM(ii).OPD,nn);
             end
             if nargin==3
                 hfigInit.UserData{5} = IMout;
@@ -444,7 +479,12 @@ classdef ImageQLSI   <   ImageMethods
             
         end
         
-        function objList = square(objList)
+        function objList2 = square(objList)
+            if nargout
+                objList2=copy(objList);
+            else
+                objList2=objList;
+            end
             No = numel(objList);
             for io = 1:No
                 Npx = min(objList(io).Nx,objList(io).Ny);
@@ -452,13 +492,18 @@ classdef ImageQLSI   <   ImageMethods
                 x2 = objList(io).Nx/2  +Npx/2;
                 y1 = objList(io).Ny/2+1-Npx/2;
                 y2 = objList(io).Ny/2  +Npx/2;
-                objList(io).T = objList(io).T(y1:y2,x1:x2);
-                objList(io).OPD = objList(io).OPD(y1:y2,x1:x2);
+                objList2(io).T = objList(io).T(y1:y2,x1:x2);
+                objList2(io).OPD = objList(io).OPD(y1:y2,x1:x2);
             end
             
         end
         
-        function objList = phase0(objList,option)
+        function objList2 = phase0(objList,option)
+            if nargout
+                objList2=copy(objList);
+            else
+                objList2=objList;
+            end
             manual = 0;
             if nargin==2
                 if strcmp(option,'manual')
@@ -477,9 +522,9 @@ classdef ImageQLSI   <   ImageMethods
             No = numel(objList);
             for io = 1:No
                 if manual==1
-                    objList(io).OPD = objList(io).OPD-mean(mean(objList(io).OPD(y1:y2,x1:x2)));
+                    objList2(io).OPD = objList(io).OPD-mean(mean(objList(io).OPD(y1:y2,x1:x2)));
                 else
-                    objList(io).OPD = objList(io).OPD-mean(objList(io).OPD(:));
+                    objList2(io).OPD = objList(io).OPD-mean(objList(io).OPD(:));
                 end
             end
             
@@ -500,22 +545,27 @@ classdef ImageQLSI   <   ImageMethods
             
         end
         
-        function obj = binning(obj,n)
+        function obj2 = binning(obj,n)
+            if nargout
+                obj2=copy(obj);
+            else
+                obj2=obj;
+            end
             if nargin==1 || n==3 % ie n = 3 by default
                 for ii = 1:numel(obj)
                     imT = binning3x3(obj(ii).T);
                     imOPD = binning3x3(obj(ii).OPD);
-                    obj(ii).T = imT;
-                    obj(ii).OPD = imOPD;
-                    [obj.Ny, obj.Nx]=size(imT);
+                    obj2(ii).T = imT;
+                    obj2(ii).OPD = imOPD;
+                    [obj2.Ny, obj2.Nx]=size(imT);
                 end
             elseif n==2
                 for ii = 1:numel(obj)
                     imT = binning2x2(obj(ii).T);
                     imOPD = binning2x2(obj(ii).OPD);
-                    obj(ii).T = imT;
-                    obj(ii).OPD = imOPD;
-                    [obj.Ny, obj.Nx]=size(imT);
+                    obj2(ii).T = imT;
+                    obj2(ii).OPD = imOPD;
+                    [obj2.Ny, obj2.Nx]=size(imT);
                 end
             else
                 error('not a proper binning dimension. Should be 2 or 3.')
@@ -541,7 +591,12 @@ classdef ImageQLSI   <   ImageMethods
             
         end
  
-        function objList = phaseLevel0(objList,option)
+        function objList2 = phaseLevel0(objList,option)
+            if nargout
+                objList2=copy(objList);
+            else
+                objList2=obj;
+            end
             % option = [x1 x2 y1 y2]
             if nargin==1
                     objList.figure
@@ -568,16 +623,21 @@ classdef ImageQLSI   <   ImageMethods
             end
             No = numel(objList);
             for io = 1:No
-                objList(io).OPD = objList(io).OPD-mean(mean(objList(io).OPD(y1:y2,x1:x2)));
+                objList2(io).OPD = objList(io).OPD-mean(mean(objList(io).OPD(y1:y2,x1:x2)));
             end
             
         end
         
-        function obj = gauss(obj,nn)
+        function obj2 = gauss(obj,nn)
+            if nargout
+                obj2=copy(obj);
+            else
+                obj2=obj;
+            end
             No = numel(obj);
             for io = 1:No
-                obj(io).T = obj(io).T-imgaussfilt(obj(io).T,nn);
-                 obj(io).OPD = obj(io).OPD-imgaussfilt(obj(io).OPD,nn);
+                obj2(io).T = obj(io).T-imgaussfilt(obj(io).T,nn);
+                 obj2(io).OPD = obj(io).OPD-imgaussfilt(obj(io).OPD,nn);
             end
             
         end

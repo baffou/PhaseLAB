@@ -1,0 +1,7 @@
+{"class":"Camera",
+"model": "Pixelink",
+"dxSize": 2.4e-6,
+"Nx": 5472,
+"Ny": 3648,
+"fullWellCapacity": 10000
+}

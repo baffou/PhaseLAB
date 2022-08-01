@@ -216,8 +216,8 @@ for ii = 1:Nf
     IM(ii) = IM(ii).setProcessingSoftware('PhaseLAB');
 
     if opt.saveGradients
-        IM(ii).DWx = DWx;
-        IM(ii).DWy = DWy;
+        IM(ii).DWx0 = DWx;
+        IM(ii).DWy0 = DWy;
     end
     
     if updateRefFcrop==1

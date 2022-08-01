@@ -173,6 +173,14 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
+        function val = get.DWx(obj)
+            val = obj.DWx0;
+        end
+
+        function val = get.DWy(obj)
+            val = obj.DWy0;
+        end
+
         function set.OPD(obj,val)
             if isnumeric(val) % input is a matrix
                 if isnumeric(obj.OPD0)
@@ -194,7 +202,13 @@ classdef ImageQLSI   <   ImageMethods
             val = 2*pi/obj.lambda*obj.OPD;
         end
         
-        function obj = OPDhighPass(obj,nCrop)
+        function obj2 = OPDhighPass(obj,nCrop)
+            if nargout
+                obj2=copy(obj);
+            else
+                obj2=obj;
+            end
+
             if nargin==1
                 nCrop = 3;
             end
@@ -208,12 +222,18 @@ classdef ImageQLSI   <   ImageMethods
             %imageT2 = real(ifft2(ifftshift(imageT_F)));
             imageOPD2 = real(ifft2(ifftshift(imageOPD_F)));
             %obj.T = 1+imageT2;
-            obj.OPD = imageOPD2;
+            obj2.OPD = imageOPD2;
             
             
         end
         
-        function obj = ZernikeRemove(obj,n,m,r0)
+        function obj2 = ZernikeRemove(obj,n,m,r0)
+            if nargout
+                obj2=copy(obj);
+            else
+                obj2=obj;
+            end
+
             if nargin==1
                 n = 1;
                 m = 1;
@@ -223,21 +243,26 @@ classdef ImageQLSI   <   ImageMethods
                 for ii = 1:n
                     for jj = 1:ii
                         m = mod(ii,2)+2*(jj-1);
-                        obj.OPD = ZernikeRemoval(obj.OPD,ii,m);
+                        obj2.OPD = ZernikeRemoval(obj.OPD,ii,m);
                     end
                 end
                 
             end
             if nargin==4
-                obj.OPD = ZernikeRemoval(obj.OPD,n,m,r0);
+                obj2.OPD = ZernikeRemoval(obj.OPD,n,m,r0);
             else
-                obj.OPD = ZernikeRemoval(obj.OPD,n,m);
+                obj2.OPD = ZernikeRemoval(obj.OPD,n,m);
             end
             %obj.OPD = ZernikeRemoval(obj.OPD,n,m);
             
         end
         
-        function obj = flatten(obj,nmax)
+        function obj2 = flatten(obj,nmax)
+            if nargout
+                obj2=copy(obj);
+            else
+                obj2=obj;
+            end
             % Removes Zernike moments up to n = nmax
             if nargin==1
                 nmax = 1;
@@ -257,11 +282,16 @@ classdef ImageQLSI   <   ImageMethods
                         temp = ZernikeRemoval(temp,n,m); % use a temp image to avoid writing several times on the HDD in remote mode.
                     end
                 end
-                obj(io).OPD=temp;
+                obj2(io).OPD=temp;
             end
         end
         
         function [objList,coords] = untilt(objList,coords0)
+            if nargout
+                objList2=copy(objList);
+            else
+                objLi2=objList;
+            end
             
             No = numel(objList);
             for io = 1:No
@@ -376,10 +406,10 @@ classdef ImageQLSI   <   ImageMethods
                 x2=max(xx);
                 y1=min(yy);
                 y2=max(yy);
-                x1=max([1,x1]);
-                x2=min([obj(1).Nx,x2]);
-                y1=max([1,y1]);
-                y2=min([obj(1).Nx,x2]);
+                x1=max([1;x1]);
+                x2=min([obj(1).Nx;x2]);
+                y1=max([1;y1]);
+                y2=min([obj(1).Ny;y2]);
             elseif ~isempty(opt.xy1) && ~isempty(opt.xy2)  % crop('xy1', [a,b], 'xy2', [a,b])
                 if numel(opt.xy1)~=2
                     error('First input must be a 2-vector (x,y)')
@@ -423,10 +453,6 @@ classdef ImageQLSI   <   ImageMethods
                 end
 
             end
-            x1
-            x2
-            y1
-            y2
             for io = 1:numel(obj)
                 temp=obj(io).T(y1:y2,x1:x2); % temp variable to avoid importing the matrix twice for the calculation of Nx and Ny when it is stored in a file.
                 obj(io).T   = temp; 
@@ -577,11 +603,16 @@ classdef ImageQLSI   <   ImageMethods
             
         end
         
-        function obj = gauss(obj,nn)
+        function obj2 = gauss(obj,nn)
+            if nargout
+                obj2=copy(obj);
+            else
+                obj2=obj;
+            end
             No = numel(obj);
             for io = 1:No
-                obj(io).T = obj(io).T-imgaussfilt(obj(io).T,nn);
-                 obj(io).OPD = obj(io).OPD-imgaussfilt(obj(io).OPD,nn);
+                obj2(io).T = obj(io).T-imgaussfilt(obj(io).T,nn);
+                 obj2(io).OPD = obj(io).OPD-imgaussfilt(obj(io).OPD,nn);
             end
             
         end

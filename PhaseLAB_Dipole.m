@@ -21,16 +21,17 @@ DI= Dipole('Au',radius);
 %DI=DI1+DI2;
 
 %% BUILDING OF THE OBJECTIVE -- Objective(Mobj,NA,brand);
-OB=Objective(100,1.3,'Olympus');
+OB=Objective(100,0.7,'Olympus');
 
 %% BUILDING OF THE MICROSCOPE -- Microscope(OBJ,tl_f,Sid4model,software)
 MI=Microscope(OB,180);
 
 %% ILLUMINATION OF THE DIPOLE
 DI=DI.shine(IL);
+DI=DI.moveBy('z',0.2e-6);
 
 %% COMPUTATION OF THE IMAGES
-IM=imaging(DI,IL,MI,100);
+IM=imaging(DI,IL,MI,200);
 
 %%
 IM.figure
