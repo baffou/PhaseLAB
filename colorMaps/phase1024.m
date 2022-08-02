@@ -1,4 +1,4 @@
-function phasemap=phase1064(npx)
+function phasemap=phase1024(npx)
 
 phasemap=[...
 1 1 1
