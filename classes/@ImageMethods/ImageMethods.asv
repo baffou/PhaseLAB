@@ -37,7 +37,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 hfig=obj.figure('px');
             else
                 figure(hfig)
-                %if ~strcmp(hfig.UserData{2},'px') % force the unit to be px in case it is µm
+                %if ~strcmp(hfig.UserData{2},'px') % force the unit to be px in case it is Âµm
                 %    figure_callback(hfig,obj,'px',hfig.UserData{3},hfig.UserData{4},str2double(get(hfig.UserData{8}.UIk,'String')),hfig.UserData{8})
                 %end
             end
@@ -48,7 +48,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             x0=round(x0);
             y0=round(y0);
             if nargin==2
-                if strcmp(hfig.UserData{2},'µm')
+                if strcmp(hfig.UserData{2},'Âµm')
                     factorAxis=obj.pxSize*1e6;
                 elseif strcmp(hfig.UserData{2},'px')
                     factorAxis=1;
@@ -96,7 +96,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 hfig=obj.figure('px');
             else
                 figure(hfig)
-                %if ~strcmp(hfig.UserData{2},'px') % force the unit to be px in case it is µm
+                %if ~strcmp(hfig.UserData{2},'px') % force the unit to be px in case it is Âµm
                 %    figure_callback(hfig,obj,'px',hfig.UserData{3},hfig.UserData{4},str2double(get(hfig.UserData{8}.UIk,'String')),hfig.UserData{8})
                 %end
             end
@@ -123,11 +123,11 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
         function distance(obj,hfig)
             % measures a distance between two points.
             if nargin==1
-                hfig=obj.figure('µm');
+                hfig=obj.figure('Âµm');
             else
                 figure(hfig)
-                figure_callback(hfig,obj,'µm',hfig.UserData{3},hfig.UserData{4},'1')
-                %if ~strcmp(hfig.UserData{2},'px') % force the unit to be px in case it is µm
+                figure_callback(hfig,obj,'Âµm',hfig.UserData{3},hfig.UserData{4},'1')
+                %if ~strcmp(hfig.UserData{2},'px') % force the unit to be px in case it is Âµm
                 %    figure_callback(hfig,obj,'px',hfig.UserData{3},hfig.UserData{4},str2double(get(hfig.UserData{8}.UIk,'String')),hfig.UserData{8})
                 %end
             end
@@ -136,7 +136,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             clipboard('copy',sprintf([hfig.UserData{5}.OPDfileName '\t%.4g\t' hfig.UserData{2}],dist))
 
             %             if nargin==2
-            %                 if strcmp(hfig.UserData{2},'µm')
+            %                 if strcmp(hfig.UserData{2},'Âµm')
             %                     factorAxis=obj.pxSize*1e6;
             %                 elseif strcmp(hfig.UserData{2},'px')
             %                     factorAxis=1;
@@ -166,7 +166,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
             [cx,cy]=ginput(2);
             if nargin==2
-                if strcmp(hfig.UserData{2},'µm')
+                if strcmp(hfig.UserData{2},'Âµm')
                     factorAxis=obj.pxSize*1e6;
                 elseif strcmp(hfig.UserData{2},'px')
                     factorAxis=1;
@@ -383,7 +383,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             open(writerObj);
             % write the frames to the video
             AxesColor=[0 0 0];
-            unit='µm';
+            unit='Âµm';
             for u=1:numel(IM)
                 % convert the image to a frame
                 factorX=IM(u).pxSize*1e6;
@@ -607,7 +607,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             %light('Position',[-1 0 0],'Style','local')
             camproj('perspective')
             %axis off
-            xlabel('µm'), ylabel('µm')
+            xlabel('Âµm'), ylabel('Âµm')
             zlim(zrange)
             caxis(zrange)
             camPos=get(gca,"CameraPosition");

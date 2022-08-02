@@ -7,7 +7,7 @@
 
 classdef ImageEM  <  ImageMethods
     
-    properties(GetAccess = public , SetAccess = private)
+    properties(GetAccess = public , SetAccess={?ImageMethods})
         EE0   (1,3) {mustBeNumeric}   % Excitation vector field at the image plane (may be complex if zo~=0)
         Ex
         Ey
@@ -139,18 +139,7 @@ classdef ImageEM  <  ImageMethods
             val = abs(norExtot).^2+abs(norEytot).^2+abs(norEztot).^2; % Transmittance
         end
         
-        function obj = crop(obj0,Npx0)
-            % crop an image to get a Npx0 x Npx0 image
-            x1 = (obj0(1).Npx-Npx0)/2+1;
-            x2 = x1+Npx0-1;
-            obj = obj0;
-            for ii = 1: numel(obj0)
-                obj(ii).EE0 = obj0(ii).EE0;
-                obj(ii).Ex = obj0(ii).Ex(x1:x2,x1:x2);
-                obj(ii).Ey = obj0(ii).Ey(x1:x2,x1:x2);
-                obj(ii).Ez = obj0(ii).Ez(x1:x2,x1:x2);
-            end
-        end
+
         
         function val = integral(obj)
             Nim = length(obj);
