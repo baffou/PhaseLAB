@@ -559,7 +559,7 @@ classdef ImageQLSI   <   ImageMethods
 
         function val = DM(obj)
             % returns the dry mass density in pg/µm^2
-            val=5.56*obj.OPD;
+            val=5.56*1e-3 * obj.OPD*1e9;
         end
         function PDCMdisplay(obj,hfig)
             % plots horizontal and vertical cross cuts.

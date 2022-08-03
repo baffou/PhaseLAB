@@ -353,6 +353,85 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             end
         end
 
+        function opendx(obj,opt)
+            arguments
+                obj
+                opt.persp = 1
+                opt.AZ_camera = 45
+                opt.PO_camera = 45
+                opt.ampl = 10
+                opt.zrange = []
+                opt.colorMap =  parulaNeuron
+                opt.title (1,:) char = char.empty()
+            end
+
+            % zrange in nm
+            EL_camera=90-opt.PO_camera;
+            [Ny,Nx]=size(obj.OPD);
+
+            if isempty(opt.zrange)
+                zrange=1e9*[min(obj.OPD(:)) max(obj.OPD(:))];
+            else
+                zrange=opt.zrange;
+            end
+            DZ=zrange(2)-zrange(1);
+            factor=obj.pxSize*1e6;
+            [X,Y] = meshgrid(0:Nx-1,0:Ny-1);
+            X=X*factor;
+            Y=Y*factor;
+
+            if opt.persp==1
+                DZ=DZ/opt.ampl;
+            end
+
+            %% handling the number of parameters
+            coloringMap=obj.OPD*1e9;
+
+            %colormap(gca,colorScale);
+            %% Display
+            surf(X,Y,obj.OPD*1e9,coloringMap,'FaceColor','interp',...
+                'EdgeColor','none',...
+                'FaceLighting','phong')
+            if ~isempty(opt.title)
+                figTitle=opt.title;
+            elseif isprop(obj,'OPDfileName') % ie if ImageQLSI object
+                figTitle=obj.OPDfileName;
+            else
+                figTitle=' ';
+            end
+            title(figTitle, 'Interpreter','none')
+            posS=get(0, 'Screensize');
+            daspect([factor factor DZ/10])
+            set(gcf,'color','w');
+            set(gcf,'Position',[posS(1) posS(2) 2*posS(3)/3 posS(4)])% To change size
+            colormap(gca,opt.colorMap)
+            cb=colorbar('southoutside',FontSize=16);
+            set(gca,'ztick',[])
+            set(gca,'XLim',[0 obj.Nx*factor])
+            set(gca,'YLim',[0 obj.Ny*factor])
+            a =  cb.Position; %gets the positon and size of the color bar
+            set(cb,'Position',[a(1) a(2) a(3)/4 a(4)])% To change size
+            cb.Label.String = 'Optical path difference (nm)';
+            %axis tight
+            %view(0,90)
+            %camlight left
+            %camlight(AZ, EL)
+            view(opt.AZ_camera,EL_camera)
+            camPos=get(gca,"CameraPosition");
+            set(gca,'CameraPosition',camPos/2)
+            AZ_light=30;
+            EL_light=45;
+            %camlight(az,el)
+            camlight(AZ_light,EL_light)
+            %light('Position',[-1 0 0],'Style','local')
+            camproj('perspective')
+            %axis off
+            xlabel('µm'), ylabel('µm')
+            zlim(zrange)
+            caxis(zrange)
+            drawnow
+        end
+
         function makeMovie(IM,videoName,rate)
             %makeMovie(IM,videoName,rate)
 
@@ -541,85 +620,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             % close the writer object
             close(writerObj);
 
-        end
-
-        function opendx(obj,opt)
-            arguments
-                obj
-                opt.persp = 1
-                opt.AZ_camera = 45
-                opt.PO_camera = 45
-                opt.ampl = 10
-                opt.zrange = []
-                opt.colorMap =  parulaNeuron
-                opt.title (1,:) char = char.empty()
-            end
-
-            % zrange in nm
-            EL_camera=90-opt.PO_camera;
-            [Ny,Nx]=size(obj.OPD);
-
-            if isempty(opt.zrange)
-                zrange=1e9*[min(obj.OPD(:)) max(obj.OPD(:))];
-            else
-                zrange=opt.zrange;
-            end
-            DZ=zrange(2)-zrange(1);
-            factor=obj.pxSize*1e6;
-            [X,Y] = meshgrid(0:Nx-1,0:Ny-1);
-            X=X*factor;
-            Y=Y*factor;
-
-            if opt.persp==1
-                DZ=DZ/opt.ampl;
-            end
-
-            %% handling the number of parameters
-            coloringMap=obj.OPD*1e9;
-
-            %colormap(gca,colorScale);
-            %% Display
-            surf(X,Y,obj.OPD*1e9,coloringMap,'FaceColor','interp',...
-                'EdgeColor','none',...
-                'FaceLighting','phong')
-            if ~isempty(opt.title)
-                figTitle=opt.title;
-            elseif isprop(obj,'OPDfileName') % ie if ImageQLSI object
-                figTitle=obj.OPDfileName;
-            else
-                figTitle=' ';
-            end
-            title(figTitle, 'Interpreter','none')
-            posS=get(0, 'Screensize');
-            daspect([factor factor DZ/10])
-            set(gcf,'color','w');
-            set(gcf,'Position',[posS(1) posS(2) 2*posS(3)/3 posS(4)])% To change size
-            colormap(gca,opt.colorMap)
-            cb=colorbar('southoutside',FontSize=16);
-            set(gca,'ztick',[])
-            set(gca,'XLim',[0 obj.Nx*factor])
-            set(gca,'YLim',[0 obj.Ny*factor])
-            a =  cb.Position; %gets the positon and size of the color bar
-            set(cb,'Position',[a(1) a(2) a(3)/4 a(4)])% To change size
-            cb.Label.String = 'Optical path difference (nm)';
-            %axis tight
-            view(0,90)
-            %camlight left
-            %camlight(AZ, EL)
-            view(opt.AZ_camera,EL_camera)
-            AZ_light=30;
-            EL_light=45;
-            %camlight(az,el)
-            camlight(AZ_light,EL_light)
-            %light('Position',[-1 0 0],'Style','local')
-            camproj('perspective')
-            %axis off
-            xlabel('µm'), ylabel('µm')
-            zlim(zrange)
-            caxis(zrange)
-            camPos=get(gca,"CameraPosition");
-            set(gca,'CameraPosition',camPos/2)
-            drawnow
         end
 
         function val=sizeof(IM)

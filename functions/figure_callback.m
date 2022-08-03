@@ -121,7 +121,7 @@ ha(1) = subplot(1,2,1);
 ha(1).Units = 'pixels';
 ha(1).XColor = 'w'; 
 
-imPhase = IM.Ph;
+imOPD = IM.OPD*1e9;
 
 xx = [0 IM.Nx*factorX];
 yy = [0 IM.Ny*factorY];
@@ -139,12 +139,12 @@ if dx==0  %normal imagesc display
     minT = min(IM(1).T(:));
     maxT = max(IM(1).T(:));
     
-    if minT<1 && maxT>1
-        cb.T.Ticks = [minT,1,maxT];
-    elseif maxT==minT
-    else
-        cb.T.Ticks = [minT,maxT];
-    end
+%     if minT<1 && maxT>1
+%         cb.T.Ticks = [minT,1,maxT];
+%     elseif maxT==minT
+%     else
+%         cb.T.Ticks = [minT,maxT];
+%     end
 
     if isa(IM,'ImageEM')
         if norm(IM.EE0)==0
@@ -155,7 +155,6 @@ if dx==0  %normal imagesc display
     else
         cb.T.Label.String = 'Normalized intensity';
     end
-    
     cb.T.Label.FontSize = 14;
     axis([xLim yLim])
 
@@ -177,17 +176,17 @@ elseif dx==1 % standard mix
 %     ax = gca;
 %     ax.YDir = 'normal';
 
-    colorScale = colorPhaseMap(imPhase);
+    colorScale = colorPhaseMap(imOPD);
 
     imagesc(xx,yy,IM(1).Ph)
     axis equal
 
     colormap(gca,colorScale);
 
-    cb.Ph = colorbar;
-    cb.Ph.Label.String = 'Phase (rad)';
-    cb.Ph.Label.FontSize = 14;
-    cb.Ph.Color = AxesColor;
+    cb.OPD = colorbar;
+    cb.OPD.Label.String = 'Phase (rad)';
+    cb.OPD.Label.FontSize = 14;
+    cb.OPD.Color = AxesColor;
     axis([0 IM.Nx*factorX 0 IM.Ny*factorY])
     if isa(IM,'ImageQLSI')
         title({IM.TfileName,IM.OPDfileName}, 'Interpreter', 'none')
@@ -205,11 +204,11 @@ elseif dx==2  %3D duo
 elseif dx==3  %3D mix
 
     %c = opendx(IM.T,IM.Ph);
-    c = opendx2(xx,yy,IM.T,imPhase);
-    cb.Ph = c;
-    cb.Ph.Color = AxesColor;
-    cb.Ph.Label.String = 'Phase (rad)';
-    cb.Ph.Label.FontSize = 14;
+    c = opendx2(xx,yy,IM.T,imOPD);
+    cb.OPD = c;
+    cb.OPD.Color = AxesColor;
+    cb.OPD.Label.String = 'Phase (rad)';
+    cb.OPD.Label.FontSize = 14;
     cb.T = colorbar('westoutside');
     cb.T.Label.String = 'Normalized intensity';
     cb.T.Color = AxesColor;
@@ -240,12 +239,12 @@ if dx==0 || dx==2  %duo
     minT = min(IM(1).T(:));
     maxT = max(IM(1).T(:));
     
-    if minT<1 && maxT>1
-        cb.T.Ticks = [minT,1,maxT];
-    elseif maxT==minT
-    else
-        cb.T.Ticks = [minT,maxT];
-    end
+%     if minT<1 && maxT>1
+%         cb.T.Ticks = [minT,1,maxT];
+%     elseif maxT==minT
+%     else
+%         cb.T.Ticks = [minT,maxT];
+%     end
 
     if isa(IM,'ImageEM')
         if norm(IM.EE0)== 0
@@ -287,20 +286,20 @@ end
 
 
 if dx==0  %normal imagesc display
-    imagesc(xx,yy,imPhase);
+    imagesc(xx,yy,imOPD);
     axis equal
     colormap(gca,phase1024());
-    cb.Ph = colorbar;
+    cb.OPD = colorbar;
     ax = gca;
     ax.YDir = 'normal';
-    cb.Ph.Color = AxesColor;
+    cb.OPD.Color = AxesColor;
     
     % to avoid bright pixels distorting the colorscale
     %vec = sort(IM.Ph(:));
     %Nv = numel(vec);
     %caxis([vec(500) vec(Nv-500) ]);
     
-    IMg = imgaussfilt(imPhase,2);
+    IMg = imgaussfilt(imOPD,2);
     caxis([min(IMg(:)) max(IMg(:))]);
     
     
@@ -308,20 +307,20 @@ if dx==0  %normal imagesc display
 elseif dx==1 || dx==3 %3D mix
     delete(ha(2))
 elseif dx==2  %3D duo
-    cb.Ph = opendx2(xx,yy,imPhase,phase1024,15); % opendx2(iamge,colorScale,camLightAngle)
-    cb.Ph = colorbar;
-    cb.Ph.Color = AxesColor;
+    cb.OPD = opendx2(xx,yy,imOPD,phase1024,15); % opendx2(iamge,colorScale,camLightAngle)
+    cb.OPD = colorbar;
+    cb.OPD.Color = AxesColor;
 end
 
 
 if dx==0 || dx==2 % duo image mode
 
-    cb.Ph.Label.String = 'Phase (rad)';
-    cb.Ph.Label.FontSize = 14;
-    cb.OPD = colorbar('westoutside');
     cb.OPD.Label.String = 'OPD (nm)';
     cb.OPD.Label.FontSize = 14;
-    cb.OPD.Color = AxesColor;
+    cb.DM = colorbar('westoutside');
+    cb.DM.Label.String = 'Dry mass (pg/µm^2)';
+    cb.DM.Label.FontSize = 14;
+    cb.DM.Color = AxesColor;
     camlight(90,180,'infinite')
     axis([xLim yLim])
     if isa(IM,'ImageQLSI')
@@ -332,7 +331,8 @@ if dx==0 || dx==2 % duo image mode
     xlabel(unit,'FontSize',14);
     set(gca,'FontSize',14);
 
-    cb.OPD.TickLabels = round(100*cb.Ph.Ticks*IM(1).lambda/(2*pi)*1e9)/100;
+%    cb.DM.TickLabels = round(100*1e-9*cb.OPD.Ticks*(2*pi)/IM(1).lambda)/100;
+     cb.DM.TickLabels = 5.56*1e-3 * cb.OPD.Ticks;
     
     linkaxes(ha, 'xy');      
     set(ha(2),'XColor',AxesColor);
