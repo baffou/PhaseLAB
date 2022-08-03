@@ -36,7 +36,7 @@ classdef ImageQLSI   <   ImageMethods
         % processingSoft
     end
     
-    properties(SetAccess=private)
+    properties(SetAccess={?ImageMethods})
         Nx =[]
         Ny =[]
         Npx =[]
@@ -387,9 +387,7 @@ classdef ImageQLSI   <   ImageMethods
                 hfigInit.UserData{5} = IMout;
             end
         end
-        
-
-        
+               
         function objList2 = square(objList)
             if nargout
                 objList2=copy(objList);
@@ -506,7 +504,7 @@ classdef ImageQLSI   <   ImageMethods
             if nargout
                 objList2=copy(objList);
             else
-                objList2=obj;
+                objList2=objList;
             end
             % option = [x1 x2 y1 y2]
             if nargin==1

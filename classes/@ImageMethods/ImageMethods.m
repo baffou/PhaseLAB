@@ -552,7 +552,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.ampl = 10
                 opt.zrange = []
                 opt.colorMap =  parulaNeuron
-
+                opt.title (1,:) char = char.empty()
             end
 
             % zrange in nm
@@ -582,7 +582,14 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             surf(X,Y,obj.OPD*1e9,coloringMap,'FaceColor','interp',...
                 'EdgeColor','none',...
                 'FaceLighting','phong')
-            title(obj.OPDfileName, 'Interpreter','none')
+            if ~isempty(opt.title)
+                figTitle=opt.title;
+            elseif isprop(obj,'OPDfileName') % ie if ImageQLSI object
+                figTitle=obj.OPDfileName;
+            else
+                figTitle=' ';
+            end
+            title(figTitle, 'Interpreter','none')
             posS=get(0, 'Screensize');
             daspect([factor factor DZ/10])
             set(gcf,'color','w');
@@ -634,7 +641,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
         end
     end
 
-    methods%(Access={?ImageEM,?ImageQLSI})
+    methods
         function obj = crop(obj0,opt)
             arguments
                 obj0

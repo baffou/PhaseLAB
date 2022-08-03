@@ -185,7 +185,6 @@ classdef Interfero < handle & matlab.mixin.Copyable
             objListout = copy(objList);
             No = numel(objList);
             for io = 1:No
-                nargin
                 obj = objListout(io);
                 if nargin==3
                     if numel(xy1)~=2
