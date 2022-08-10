@@ -51,7 +51,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             
             obj.remote = opt.remote;
             obj.imageNumber=opt.imageNumber;
-            if opt.N~=0 % Interfero(3) : create 3 blanck interferos
+            if opt.N~=0 % Interfero(N=3) : create 3 blanck interferos
                 if nargin==0
                     obj = repmat(Interfero(),opt.N,1);
                     return
@@ -64,7 +64,16 @@ classdef Interfero < handle & matlab.mixin.Copyable
             
             %% Interfero(fileName,MI). fileName: char that is the txt of tif file name of the interferogram to be read and imported. MI:       Microscope object. Represents the microscope used to acquire the image
             if nargin==1
-                error('the input microscope is missing')
+                if isnumeric(fileName)
+                    if numel(fileName)==1 % Interfero(3)
+                        obj=Interfero(N=fileName);
+                        return
+                    else
+                        error('the input microscope is missing')
+                    end
+                else
+                    error('the input microscope is missing')
+                end
             end
             if nargin>=2
                 obj.Microscope = MI;

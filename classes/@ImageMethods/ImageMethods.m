@@ -109,7 +109,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 dist=dist+sqrt((cx(ni)-cx(ni+1))^2+(cy(ni)-cy(ni+1))^2);
             end
             figure,
-            crossplot=obj.lambda*c*1e9/(2*pi);
+            crossplot=c;%obj.lambda*c*1e9/(2*pi);
             hp=plot(  crossplot);
             hp.XData=hp.XData/max(hp.XData)*dist;
             xlabel(hfig.UserData{2})
@@ -405,26 +405,34 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             set(gcf,'color','w');
             set(gcf,'Position',[posS(1) posS(2) 2*posS(3)/3 posS(4)])% To change size
             colormap(gca,opt.colorMap)
-            cb=colorbar('southoutside',FontSize=16);
             set(gca,'ztick',[])
             set(gca,'XLim',[0 obj.Nx*factor])
             set(gca,'YLim',[0 obj.Ny*factor])
-            a =  cb.Position; %gets the positon and size of the color bar
-            set(cb,'Position',[a(1) a(2) a(3)/4 a(4)])% To change size
-            cb.Label.String = 'Optical path difference (nm)';
             %axis tight
             %view(0,90)
             %camlight left
             %camlight(AZ, EL)
-            view(opt.AZ_camera,EL_camera)
-            camPos=get(gca,"CameraPosition");
-            set(gca,'CameraPosition',camPos/2)
-            AZ_light=30;
-            EL_light=45;
+            if opt.AZ_camera==0 &&  opt.PO_camera==0
+                cb=colorbar(FontSize=16);
+                cb.Label.String = 'Optical path difference (nm)';
+                view(2)
+                AZ_light=30;
+                EL_light=25;
+            else
+                cb=colorbar('southoutside',FontSize=16);
+                a =  cb.Position; %gets the positon and size of the color bar
+                set(cb,'Position',[a(1) a(2) a(3)/4 a(4)])% To change size
+                cb.Label.String = 'Optical path difference (nm)';
+                view(opt.AZ_camera,EL_camera)
+                camPos=get(gca,"CameraPosition");
+                set(gca,'CameraPosition',camPos/2)
+                camproj('perspective')
+                AZ_light=30;
+                EL_light=45;
+            end
             %camlight(az,el)
             camlight(AZ_light,EL_light)
             %light('Position',[-1 0 0],'Style','local')
-            camproj('perspective')
             %axis off
             xlabel('µm'), ylabel('µm')
             zlim(zrange)

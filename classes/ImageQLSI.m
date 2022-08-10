@@ -299,7 +299,7 @@ classdef ImageQLSI   <   ImageMethods
                 if nargin==2
                     coords = coords0;
                 else
-                    opendx(obj.OPD)
+                    obj.figure
                     h = gcf;
                     roi = drawrectangle;
                     button = 0;
