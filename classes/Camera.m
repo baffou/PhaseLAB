@@ -32,6 +32,9 @@ classdef Camera  <  handle
             function obj = jsonImport(jsonFile)
                 fileName = jsonFile; % filename in JSON extension
                 fid = fopen(fileName); % Opening the file
+                if fid==-1
+                    error(['File ' fileName ' does not exist. If the problem persists, you may need to restart Matlab.'])
+                end
                 raw = fread(fid,inf); % Reading the contents
                 str = char(raw'); % Transformation
                 fclose(fid); % Closing the file

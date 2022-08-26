@@ -13,6 +13,7 @@ classdef FcropParameters  %parameters of the crop in the Fourier plane
         shiftx
         shifty
         angle
+        zeta
     end
     
     methods
@@ -104,5 +105,9 @@ classdef FcropParameters  %parameters of the crop in the Fourier plane
             obj2 = FcropParameters(x2, y2, obj.R, obj.Nx, obj.Ny, resolution = obj.resolution, FcropShape = obj.FcropShape);
         end
         
+        function val = get.zeta(obj)
+            val=obj.Ny/sqrt( (obj.shiftx*obj.Ny/obj.Nx)^2 + (obj.shifty)^2 );
+
+        end
     end
 end

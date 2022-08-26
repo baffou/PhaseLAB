@@ -224,7 +224,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
         end
 
         function val=get.pxSize(obj)
-            val=obj.Microscope.pxSize();
+            val=obj.pxSize0;
         end
 
         function val=getAreaMean(obj,Narea,hfig)

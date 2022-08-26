@@ -1,7 +1,7 @@
 function [SImout, SRfout, cropParamsout] = FourierCrop(FItf,FRef,zeta,opt)
-%Imout: the image, the Fourier transform of which has been croped
-%Rfout: the reference image, which has undergone the same crop
-%cropParams: the parameters of the crop
+% Imout: the image, the Fourier transform of which has been croped
+% Rfout: the reference image, which has undergone the same crop
+% cropParams: the parameters of the crop
 % possible flags are
     % 'cropParams'
     % 'Method'      : 'normal', 'fast' 
@@ -40,7 +40,7 @@ end
 if isempty(Fcrops.R) && (isempty(Fcrops.x) || isempty(Fcrops.y)) % No parameter specified
     h = figure;
     set(h,'Visible','on')
-    imagetf(FItf)
+    imagetf(FItf,'log10')
     %sound:
 %    Fs = 8192;t = 0:1/Fs:1;y=sin(2*pi*440*erf(t));soundsc(y)
     
@@ -71,7 +71,7 @@ if isempty(Fcrops.R) && (isempty(Fcrops.x) || isempty(Fcrops.y)) % No parameter 
 elseif isempty(Fcrops.R) % The center of the crop is specified, but not the radius.
     h = figure;
     set(h,'Visible','on')
-    imagetf(FItf)
+    imagetf(FItf,'log10')
 %    Fs = 8192;t = 0:1/Fs:1;y=sin(2*pi*440*erf(t));soundsc(y)
     
     x0 = Fcrops.x;
@@ -104,7 +104,7 @@ elseif isempty(Fcrops.R) % The center of the crop is specified, but not the radi
 elseif isempty(Fcrops.x) || isempty(Fcrops.y) % no center position, but R determined
     h = figure;
     set(h,'Visible','on')
-    imagetf(FItf)
+    imagetf(FItf,'log10')
 %    Fs = 8192;t = 0:1/Fs:1;y=sin(2*pi*440*erf(t));soundsc(y)
     
     title('Zoom in on the order of interest, and click enter')

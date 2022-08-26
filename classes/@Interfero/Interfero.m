@@ -42,8 +42,8 @@ classdef Interfero < handle & matlab.mixin.Copyable
     methods
         function obj = Interfero(fileName,MI,opt)
             arguments
-                fileName = []  % fileName or matrix
-                MI = []
+                fileName  % fileName or matrix
+                MI
                 opt.remote (1,1) {mustBeInteger,mustBeGreaterThanOrEqual(opt.remote,0),mustBeLessThanOrEqual(opt.remote,1)} = 0
                 opt.N (1,1) {mustBeInteger} = 0
                 opt.imageNumber =[]
