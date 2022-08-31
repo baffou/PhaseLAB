@@ -551,6 +551,19 @@ classdef ImageQLSI   <   ImageMethods
             
         end
         
+        function val = DWnorm(obj)
+            if isempty(obj.DWx)
+                error('The gradients have not been calculated upon using QLSIprocess. Please use the option saveGradients=1')
+            end
+            val = sqrt(obj.DWx.^2 + obj.DWy.^2);
+        end
+
+        function val = D2Wnorm(obj)
+            dxDWx  = imgradientxy(obj.DWx);
+            [~, dyDWy] = imgradientxy(obj.DWy);
+            val = sqrt(dxDWx.^2+dyDWy.^2);
+        end
+
         function val = PDCM(obj)
             dxDWy  = imgradientxy(obj.DWy);
             [~, dyDWx] = imgradientxy(obj.DWx);

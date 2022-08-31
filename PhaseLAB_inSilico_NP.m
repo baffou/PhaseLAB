@@ -5,14 +5,14 @@ clear
 close all
 
 addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
-format long
 
 %% Construction of the setup
 ME=Medium(1.5,1.5);
 
 lambda=600e-9;
 OB=Objective(100,1.3,'Olympus');
-CGcam=CGcamera('Sid4Element');
+CGcam=CGcamera('Zyla','F2');
+CGcam.setDistance(0.8e-3);
 MI=Microscope(OB,180,CGcam);
 
 Nim=1;

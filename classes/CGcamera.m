@@ -3,7 +3,7 @@ classdef CGcamera  <  handle
         Camera   Camera %Camera object
         RL       RelayLens % RelayLens object
         CG       CrossGrating %CrossGrating object
-        fileName char = 'sC8-830'% fileName of the CGcamera, if any
+        fileName char  = 'sC8-944'% fileName of the CGcamera, if any
         CGangle  (1,1) {mustBeNumeric} = 0% grating angle
         CGpos    (1,1) {mustBeNumeric} % grating position
     end
@@ -22,7 +22,8 @@ classdef CGcamera  <  handle
         
         function obj = CGcamera(varargin)
             %CGcamera('Zyla')
-            %CGcamera('sc8-830')
+            %CGcamera('Zyla')
+            %CGcamera('sc8-944')
             %CGcamera('Zyla','P4')
             %CGcamera('Zyla','P4',zoom)
             %CGcamera(Camera(),CrossGrating())

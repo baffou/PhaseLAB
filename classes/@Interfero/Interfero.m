@@ -42,22 +42,24 @@ classdef Interfero < handle & matlab.mixin.Copyable
     methods
         function obj = Interfero(fileName,MI,opt)
             arguments
-                fileName  % fileName or matrix
-                MI
+                fileName =[]  % fileName or matrix
+                MI = Microscope.empty()
                 opt.remote (1,1) {mustBeInteger,mustBeGreaterThanOrEqual(opt.remote,0),mustBeLessThanOrEqual(opt.remote,1)} = 0
                 opt.N (1,1) {mustBeInteger} = 0
                 opt.imageNumber =[]
             end
             
+            if nargin==0
+                obj=Interfero.empty();
+                return
+            end
+
             obj.remote = opt.remote;
             obj.imageNumber=opt.imageNumber;
             if opt.N~=0 % Interfero(N=3) : create 3 blanck interferos
-                if nargin==0
-                    obj = repmat(Interfero(),opt.N,1);
-                    return
-                else
-                    error('When specifying a number of blank interfero, N must be the only parameter')
-                end
+                obj = repmat(Interfero(),opt.N,1);
+                obj.Microscope=MI;
+                return
             end
 
 

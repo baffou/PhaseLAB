@@ -116,6 +116,11 @@ for ii = 1:Nf
         cropParam0 = FcropParameters(Nx/2+1,Ny/2+1,[],Nx,Ny);
         cropParam1 = FcropParameters([],[],[],Nx,Ny);
         cropParam2 = FcropParameters([],[],[],Nx,Ny);
+        fprintf(['Measured zeta factor: ' num2str(cropParam1.zeta) '\n'])
+        fprintf(['Theoreti zeta factor: ' num2str(MI.CGcam.zeta) '\n'])
+        if cropParam1.zeta-MI.CGcam.zeta>0.1
+            warning('the zeta measured and theoretical values are much different\n')
+        end
     end
     
     FIm = fftshift(fft2(Itfi.Itf));
@@ -133,11 +138,6 @@ for ii = 1:Nf
     cropParam2.R = cropParam0.R;
     [FImc,FRfc,cropParam1] = FourierCrop(FIm,FRf,Fcrops=cropParam1,resolution=opt.resolution,FcropShape=opt.Fcropshape);
     
-    fprintf(['Measured zeta factor: ' num2str(cropParam1.zeta) '\n'])
-    fprintf(['Theoreti zeta factor: ' num2str(MI.CGcam.zeta) '\n'])
-    if cropParam1.zeta-MI.CGcam.zeta>0.1
-        warning('the zeta measured and theoretical values are much different\n')
-    end
 
     %figure('Name','QLSIprocess.m/ TF Fourier crop 1st order'),imagetf(FImc)
     
