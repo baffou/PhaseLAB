@@ -298,7 +298,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         
         function obj = mean(objList)
             obj = Interfero();
-            obj.Ref = Interfero();
+            %obj.Ref = Interfero();
             No = numel(objList);
             if No==1
                 warning('Only one object to average. Not consistent.')

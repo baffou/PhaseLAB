@@ -287,7 +287,6 @@ Eixtot = eexim(1)+Expp;
 Eiytot = eexim(2)+Eypp;
 image = ImageEM(eexim,Eixtot,Eiytot,Ezpp);
 image.zoom = Npx*lambda/ImSize;
-image.pxSize0 = pxSize;
 image.Illumination = IL;
 image.Microscope = MI;
 

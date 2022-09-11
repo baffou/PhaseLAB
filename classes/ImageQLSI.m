@@ -353,7 +353,6 @@ classdef ImageQLSI   <   ImageMethods
             OPD = OPDsum/Nim;
             IMout = ImageQLSI(INT,OPD,IM(1).Microscope,IM(1).Illumination);
             IMout.Microscope = IM.Microscope;
-            IMout.pxSize0 = IM.pxSize0;
             IMout.TfileName = 'Average images';
             IMout.OPDfileName = 'Average images';
         end

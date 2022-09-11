@@ -212,11 +212,7 @@ for ii = 1:Nf
     end
     IM(ii).Microscope = MI;
     if strcmpi(opt.resolution,'low')
-        IM(ii).pxSize0 = MI.pxSize()*corr;
-    elseif strcmpi(opt.resolution,'high')
-        IM(ii).pxSize0 = MI.pxSize();
-    else
-        error('wrong value of resolution')
+        IM(ii).pxSizeCorrection=corr;
     end
     
     IM(ii) = IM(ii).setFcrops([cropParam0, cropParam1, cropParam2]);

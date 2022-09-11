@@ -22,7 +22,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
         Microscope Microscope
         Illumination Illumination % Illumination object
         processingSoft
-        pxSize0 %hidden actual pxSize that can be modified.
+        pxSizeCorrection = 1
     end
 
     methods
@@ -224,7 +224,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
         end
 
         function val=get.pxSize(obj)
-            val=obj.pxSize0;
+            val=obj.pxSizeCorrection*obj.Microscope.pxSize;
         end
 
         function val=getAreaMean(obj,Narea,hfig)
