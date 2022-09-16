@@ -587,6 +587,47 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
         end
 
+        function makeMovie2(IM,videoName,opt)
+            arguments
+                IM
+                videoName
+                opt.rate = 25
+                opt.zrange = []
+                opt.colorMap =  phase1024
+            end
+
+            % create the video writer with 1 fps
+            writerObj = VideoWriter(videoName);
+            writerObj.FrameRate = opt.rate;
+            % open the video writer
+            open(writerObj);
+            % write the frames to the video
+            for u=1:numel(IM)
+                % convert the image to a frame
+                fac=5.6e-3;
+                hfig=figure;
+                imagesc(1e6*IM(1).pxSize*[0:IM(1).Nx-1],1e6*IM(1).pxSize*[0:IM(1).Ny-1],fac*IM(u).OPD*1e9)
+                set(gca,'FontSize',16)
+                xlabel('µm')
+                set(gca,'ytick',[])
+                set(gca,'YDir','normal')
+                caxis(fac*opt.zrange)
+                set(gca,'dataAspectRatio',[1 1 1])
+                colormap(gca,opt.colorMap)
+                cc=colorbar('fontSize',16);
+                cc.Label.String='dry mass (pg/µm^2)';
+                annotation ('textbox',[.2 .8 .1 .1],'String',sprintf('%.1f s',(u-1)*0.4),'FontSize',16,'LineStyle','none','HorizontalAlignment','right')
+                drawnow
+                frame=getframe(hfig);
+                writeVideo(writerObj, frame);
+                close(hfig)
+            end
+            % close the writer object
+            close(writerObj);
+
+        end
+
+
         function makeMoviedx(IM,videoName,opt)
             arguments
                 IM

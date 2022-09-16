@@ -1,0 +1,43 @@
+function obj2 = flatten(obj,method,nmax)
+methodList={'Zernike','Waves'};
+
+
+if nargout
+    obj2=copy(obj);
+else
+    obj2=obj;
+end
+
+if nargin==1 % if obj = flatten(3), then consider flatten('Zernike',3)
+    nmax=method;
+    method='Zernike';
+end
+
+if ~ismember(method,methodList)
+    error('Wrong method')
+end
+
+if strcmp(method,'Zernike')
+    % Removes Zernike moments up to n = nmax
+    if nargin==1
+        nmax = 1;
+    end
+    if ~(round(nmax)==nmax)
+        error('The input must be an integer (array).')
+    end
+    if length(nmax)>=2
+        error('The order must be a scalar.')
+    end
+
+    No = numel(obj);
+    for io = 1:No
+        temp=obj(io).OPD;
+        for n = 1:nmax
+            for m = mod(n,2):2:n
+                temp = ZernikeRemoval(temp,n,m); % use a temp image to avoid writing several times on the HDD in remote mode.
+            end
+        end
+        obj2(io).OPD=temp;
+    end
+end
+end

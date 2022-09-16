@@ -257,35 +257,7 @@ classdef ImageQLSI   <   ImageMethods
             
         end
         
-        function obj2 = flatten(obj,nmax)
-            if nargout
-                obj2=copy(obj);
-            else
-                obj2=obj;
-            end
-            % Removes Zernike moments up to n = nmax
-            if nargin==1
-                nmax = 1;
-            end
-            if ~(round(nmax)==nmax)
-                error('The input must be an integer (array).')
-            end
-            if length(nmax)>=2
-                error('The order must be a scalar.')
-            end
-            
-            No = numel(obj);
-            for io = 1:No
-                temp=obj(io).OPD;
-                for n = 1:nmax
-                    for m = mod(n,2):2:n
-                        temp = ZernikeRemoval(temp,n,m); % use a temp image to avoid writing several times on the HDD in remote mode.
-                    end
-                end
-                obj2(io).OPD=temp;
-            end
-        end
-        
+
         function [objList2,coords] = untilt(objList,coords0)
             if nargout
                 objList2=copy(objList);
@@ -506,32 +478,45 @@ classdef ImageQLSI   <   ImageMethods
                 objList2=objList;
             end
             % option = [x1 x2 y1 y2]
-            if nargin==1
-                    objList.figure
-                    roi = drawrectangle;
-                    x1 = round(roi.Position(1));
-                    x2 = round(roi.Position(1)+roi.Position(3));
-                    y1 = round(roi.Position(2));
-                    y2 = round(roi.Position(2)+roi.Position(4));
-                    mean(mean(objList(1).OPD(y1:y2,x1:x2)))
-            elseif nargin==2
-                if ~isnumeric(nargin)
-                    error('the input must be numeric, and a 4-vector.')
+            if nargin==1 % IM.phaseLevel0()
+                objList.figure
+                roi = drawrectangle;
+                x1 = round(roi.Position(1));
+                x2 = round(roi.Position(1)+roi.Position(3));
+                y1 = round(roi.Position(2));
+                y2 = round(roi.Position(2)+roi.Position(4));
+%                    mean(mean(objList(1).OPD(y1:y2,x1:x2)))
+                No = numel(objList);
+                for io = 1:No
+                    objList2(io).OPD = objList(io).OPD-mean(mean(objList(io).OPD(y1:y2,x1:x2)));
                 end
-                if length(option)==4
-                    x1 = option(1);
-                    x2 = option(2);
-                    y1 = option(3);
-                    y2 = option(4);
+            elseif nargin==2 % IM.phaseLevel0('...')
+                if isnumeric(option)
+                    if length(option)==4
+                        x1 = option(1);
+                        x2 = option(2);
+                        y1 = option(3);
+                        y2 = option(4);
+                        No = numel(objList);
+                        for io = 1:No
+                            objList2(io).OPD = objList(io).OPD-mean(mean(objList(io).OPD(y1:y2,x1:x2)));
+                        end
+                    else
+                        error('The input must be a 4-vector')
+                    end
+                elseif strcmpi(option,'mean') || strcmpi(option,'average')
+                    No = numel(objList);
+                    for io = 1:No
+                        objList2(io).OPD = objList(io).OPD-mean(objList(io).OPD(:));
+                    end
+                elseif strcmpi(option,'median')
+                    No = numel(objList);
+                    for io = 1:No
+                        objList2(io).OPD = objList(io).OPD-median(objList(io).OPD(:));
+                    end
                 else
-                    error('The input must be a 4-vector')
-                end
-            else
                 error('unkown option')
-            end
-            No = numel(objList);
-            for io = 1:No
-                objList2(io).OPD = objList(io).OPD-mean(mean(objList(io).OPD(y1:y2,x1:x2)));
+                end
             end
             
         end
@@ -573,6 +558,7 @@ classdef ImageQLSI   <   ImageMethods
             % returns the dry mass density in pg/µm^2
             val=5.56*1e-3 * obj.OPD*1e9;
         end
+
         function PDCMdisplay(obj,hfig)
             % plots horizontal and vertical cross cuts.
             if nargin==1

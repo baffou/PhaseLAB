@@ -76,9 +76,9 @@ IM2.figure
 %%
 
 %makeMoviedx(IM2(1:10),'neurite1.avi',5,1,45,45,[0.8 1.2])
-makeMoviedx(IMhigh,'neurite1.avi',5,1,45,45,1)
+%makeMoviedx(IMhigh,'neurite1.avi',5,1,45,45,1)
 
 %%
 
-Pha1217=dlmread('/Volumes/NanoBio/PARTAGE/ljiljana/210503_DryMass/V4/V4/phase/PHA V9 001217.txt');
+%Pha1217=dlmread('/Volumes/NanoBio/PARTAGE/ljiljana/210503_DryMass/V4/V4/phase/PHA V9 001217.txt');
 
