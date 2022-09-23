@@ -116,11 +116,7 @@ for ii = 1:Nf
         cropParam0 = FcropParameters(Nx/2+1,Ny/2+1,[],Nx,Ny);
         cropParam1 = FcropParameters([],[],[],Nx,Ny);
         cropParam2 = FcropParameters([],[],[],Nx,Ny);
-        fprintf(['Measured zeta factor: ' num2str(cropParam1.zeta) '\n'])
-        fprintf(['Theoreti zeta factor: ' num2str(MI.CGcam.zeta) '\n'])
-        if cropParam1.zeta-MI.CGcam.zeta>0.1
-            warning('the zeta measured and theoretical values are much different\n')
-        end
+        opt.Smatrix=[];
     end
     
     FIm = fftshift(fft2(Itfi.Itf));
@@ -165,6 +161,15 @@ for ii = 1:Nf
 
     DWx = cropParam1.angle.cos*DW1-cropParam1.angle.sin*DW2;
     DWy = cropParam1.angle.sin*DW1+cropParam1.angle.cos*DW2;
+
+
+    % artificial aberrations
+    %[Ny, Nx]=size(DWx);
+    %[X,~]=meshgrid(1:Nx,1:Ny);
+    %n=3;
+    %Cxn=cos(n*2*pi*X/(2*Nx));
+    %DWx = DWx + Cxn*3e-10;
+
 
     DWx = DWx-mean( DWx(:));
     DWy = DWy-mean( DWy(:));
@@ -225,6 +230,11 @@ for ii = 1:Nf
     
     if updateRefFcrop==1
         Itfi.Ref.Fcrops = [cropParam0; cropParam1; cropParam2];
+        fprintf(['Measured zeta factor: ' num2str(cropParam1.zeta) '\n'])
+        fprintf(['Theoreti zeta factor: ' num2str(MI.CGcam.zeta) '\n'])
+        if cropParam1.zeta-MI.CGcam.zeta>0.1
+            warning('the zeta measured and theoretical values are much different\n')
+        end
     end
 
 end

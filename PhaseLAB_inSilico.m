@@ -15,16 +15,16 @@ d=0.5e-3;
 %lambdaList=500e-9;
 %dList=2.5e-3;
 I0=40000;
-Nim=30;
-eD=550e-9;
-OB=Objective(100,1.0,'Olympus');
-CG=CrossGrating(39e-6,eD);
+Nim=10;
+eD=530e-9;
+OB=Objective(100,1.3,'Olympus');
+CG=CrossGrating("Gamma",39e-6,"lambda0",eD);
 CGcam=CGcamera('Zyla',CG);
 CGcam.RL.zoom=1;
 MI=Microscope(OB,180,CGcam);
 MI.zo=0e-6;
 Npx=300; % should be multiple of 3
-system='Gaussian';
+system='NP';
 %system='noise';
 %system='Gaussian';
 w=40000;
@@ -37,7 +37,7 @@ IL.NA=0.5;
 %% Construction of the T/OPD image, of a nanoparticle in this example
 switch system
     case 'NP'
-        radius=100e-9;
+        radius=50e-9;
         DI = Dipole('Au',radius);
         DI = DI.shine(IL);
         
@@ -64,22 +64,23 @@ end
 Itf=CGMinSilico(IM0,shotNoise=shotNoise,Nimages=Nim,NAill=IL.NA);
 
 
-%% Definition of the crops
-
-crop = repmat(FcropParameters,3,1);
-Rcrop = Npx/(2*MI.CGcam.zeta);
-beta = acos(3/5);
-%(x,y,R,Nx,Ny,opt)
-crop(1) = FcropParameters(Npx/2+1                   ,Npx/2+1                   ,Rcrop,Npx,Npx);
-crop(2) = FcropParameters(Npx/2+1+2*Rcrop*cos(beta),Npx/2+1+2*Rcrop*sin(beta),Rcrop,Npx,Npx);
-crop(3) = FcropParameters(Npx/2+1-2*Rcrop*sin(beta),Npx/2+1+2*Rcrop*cos(beta),Rcrop,Npx,Npx);
+% %% Definition of the crops
+% 
+% crop = repmat(FcropParameters,3,1);
+% Rcrop = Npx/(2*MI.CGcam.zeta);
+% beta = acos(3/5);
+% %(x,y,R,Nx,Ny,opt)
+% crop(1) = FcropParameters(Npx/2+1                   ,Npx/2+1                   ,Rcrop,Npx,Npx);
+% crop(2) = FcropParameters(Npx/2+1+2*Rcrop*cos(beta),Npx/2+1+2*Rcrop*sin(beta),Rcrop,Npx,Npx);
+% crop(3) = FcropParameters(Npx/2+1-2*Rcrop*sin(beta),Npx/2+1+2*Rcrop*cos(beta),Rcrop,Npx,Npx);
 
 %% Postprocessing of the insilico data
 
 % IM = QLSIprocess(Itf,IL);
-IM = QLSIprocess(Itf,IL,'Fcrops',crop);
-% IM = QLSIprocess(Itf,IL,'Fcrops',IM.crops);
-IM=IM.phaseLevel0([1 1 10 10]);
+IM = QLSIprocess(Itf,IL);
+% IM = QLSI
+% process(Itf,IL,'Fcrops',IM.crops);
+%IM=IM.phaseLevel0([1 1 10 10]);
 IM.figure
 
 %% comparison

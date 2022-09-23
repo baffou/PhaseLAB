@@ -181,6 +181,7 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
         
         for ii = 1:Nif
             TIFF = Tiff([folder ItfFileNames{ii}]);
+            fprintf([folder ItfFileNames{ii} '\n'])
             currentRefFileName  =  [getTag(TIFF,270)];
             RefIndice  =  strcmp(RefFileNames,currentRefFileName);
             INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote,'imageNumber',opt.selection(ii));

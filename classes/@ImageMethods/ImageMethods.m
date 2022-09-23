@@ -364,7 +364,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.colorMap =  parulaNeuron
                 opt.title (1,:) char = char.empty()
             end
-
             % zrange in nm
             EL_camera=90-opt.PO_camera;
             [Ny,Nx]=size(obj.OPD);

@@ -543,6 +543,9 @@ classdef ImageQLSI   <   ImageMethods
         end
 
         function val = D2Wnorm(obj)
+            if isempty(obj.DWx)
+                error('The image gradients are not saved during the wavefront retrieval algo.')
+            end
             dxDWx  = imgradientxy(obj.DWx);
             [~, dyDWy] = imgradientxy(obj.DWy);
             val = sqrt(dxDWx.^2+dyDWy.^2);

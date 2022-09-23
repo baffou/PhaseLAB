@@ -28,7 +28,7 @@ MI=Microscope(OB,180);
 
 %% ILLUMINATION OF THE DIPOLE
 DI=DI.shine(IL);
-DI=DI.moveBy('z',0.2e-6);
+DI=DI.moveBy('z',0.8e-6,'x',0.8e-6);
 
 %% COMPUTATION OF THE IMAGES
 IM=imaging(DI,IL,MI,200);

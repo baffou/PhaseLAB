@@ -281,7 +281,6 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     obj(io).Ref = val;
                 end
             end
-
             if isempty(obj(1).Ref.TF)
                 obj(1).Ref.TF = fftshift(fft2(obj(1).Ref.Itf));
             end

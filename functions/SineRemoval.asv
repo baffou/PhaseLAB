@@ -1,24 +1,38 @@
 % Remove the Zernike polynomial image component (n,m) from the image.
 % Useful to remove, e.g., an image tilt.
 
-function Imout = SineRemoval(Im,n)
-
+function Imout = SineRemoval(Im,n,mask)
+if nargin==2
+    mask = ones(size(Im));
+end
 [Ny, Nx]=size(Im);
 
 [X,Y]=meshgrid(1:Nx,1:Ny);
 %X=X-mean(X(:));
 %Y=Y-mean(Y(:));
 
+% Sines
 Sxn=sin(n*2*pi*X/(2*Nx));
 Syn=sin(n*2*pi*Y/(2*Ny));
-Sxn=Sxn-mean(Syn(:));
+Sxn=Sxn-mean(Sxn(:));
 Syn=Syn-mean(Syn(:));
-
 Sxn0=Sxn/sqrt(sum(Sxn(:).*Sxn(:)));
 Syn0=Syn/sqrt(sum(Syn(:).*Syn(:)));
 
-mx=sum(sum(Im.*Sxn0))
-my=sum(sum(Im.*Syn0))
+msx=sum(sum(Im.*Sxn0.*mask))*sum(mask(:))/(Nx*Ny)
+msy=sum(sum(Im.*Syn0.*mask))*sum(mask(:))/(Nx*Ny)
 
-Imout = Im-mx*Sxn0-my*Syn0;
+
+% Cosines
+Cxn=co(n*2*pi*X/(2*Nx));
+Cyn=sin(n*2*pi*Y/(2*Ny));
+Cxn=Sxn-mean(Sxn(:));
+Cyn=Syn-mean(Syn(:));
+Cxn0=Sxn/sqrt(sum(Sxn(:).*Sxn(:)));
+Cyn0=Syn/sqrt(sum(Syn(:).*Syn(:)));
+
+msx=sum(sum(Im.*Sxn0.*mask))*sum(mask(:))/(Nx*Ny)
+msy=sum(sum(Im.*Syn0.*mask))*sum(mask(:))/(Nx*Ny)
+
+Imout = Im-msx*Sxn0-msy*Syn0;
 
