@@ -1,9 +1,9 @@
 function [obj2, mask] = flatten(obj,method,opt)
 arguments
     obj (1,:) ImageMethods
-    method (1,:) char {mustBeMember(method,{'Waves','Zernike','Chebyshev','Hermite'})} = 'Waves'
+    method (1,:) char {mustBeMember(method,{'Waves','Zernike','Chebyshev','Hermite','Legendre'})} = 'Waves'
     opt.nmax (1,1) {mustBeInteger(opt.nmax)} = 2
-    opt.threshold double = double.empty
+    opt.threshold double = double.empty() % if not empty, segment the cells and create a mask
     opt.kind  (1,1) {mustBeInteger(opt.kind)} = 1
 end
 
@@ -43,7 +43,7 @@ for io = 1:No
         %mask=obj(io).OPD~=max(max(obj(io).OPD));
         mask=im20<threshold;
     else
-        mask = ones(obj(io).Ny, obj(io).Nx);
+        mask = ones(obj(io).Ny, obj(io).Nx)==1;
     end
 
     if strcmp(method,'Zernike')
@@ -74,6 +74,12 @@ for io = 1:No
         temp=obj(io).OPD;
         for n = 1:opt.nmax
             temp = polynomialRemoval(temp,'Hermite',n,'mask',mask); % use a temp image to avoid writing several times on the HDD in remote mode.
+        end
+        obj2(io).OPD=temp;
+    elseif strcmpi(method,'Legendre')
+        temp=obj(io).OPD;
+        for n = 1:opt.nmax
+            temp = polynomialRemoval(temp,'Legendre',n,'mask',mask); % use a temp image to avoid writing several times on the HDD in remote mode.
         end
         obj2(io).OPD=temp;
     end
