@@ -626,7 +626,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
         end
 
-
         function makeMoviedx(IM,videoName,opt)
             arguments
                 IM
@@ -766,6 +765,10 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     obj(io).T   = temp;
                     obj(io).OPD = obj(io).OPD(y1:y2,x1:x2);
                     [obj(io).Ny, obj(io).Nx]=size(temp);
+                    if ~isempty(obj(io).DWx)
+                        obj(io).DWx0=obj(io).DWx(y1:y2,x1:x2);
+                        obj(io).DWy0=obj(io).DWy(y1:y2,x1:x2);
+                    end
                 else
                     obj(io).Ex = obj0(io).Ex(x1:x2,x1:x2);
                     obj(io).Ey = obj0(io).Ey(x1:x2,x1:x2);

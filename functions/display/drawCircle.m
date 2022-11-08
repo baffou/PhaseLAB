@@ -12,7 +12,6 @@ figure(h)
 
 hold on
 th = 0:pi/50:2*pi;
-R(1)
 xunit = R(1) * cos(th) + x;
 yunit = R(2) * sin(th) + y;
 plot(xunit, yunit,'LineWidth',2);

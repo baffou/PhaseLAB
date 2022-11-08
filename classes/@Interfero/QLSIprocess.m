@@ -10,6 +10,7 @@ arguments
     opt.resolution char {mustBeMember(opt.resolution,{'high','low'})} = 'high'
     opt.Fcropshape char {mustBeMember(opt.Fcropshape,{'disc','square'})} = 'disc'
     opt.Smatrix {mustBeNumeric} = []
+    opt.apodization = []        % true, 1, or the width of the apodization in px
     opt.saveGradients = false
     opt.remotePath = []
     opt.Tnormalisation = true
@@ -119,9 +120,30 @@ for ii = 1:Nf
         opt.Smatrix=[];
     end
     
-    FIm = fftshift(fft2(Itfi.Itf));
-    FRf = Itfi.Ref.TF;
-    
+
+    if ~isempty(opt.apodization) % if apodization required
+        fprintf("apodization \n")
+        if opt.apodization == 1 % if apo value not specified, then equals 20
+            apoNpx=20;
+        else
+            apoNpx=opt.apodization;
+        end
+        [~,mask]=apodization(Itfi.Itf,apoNpx);
+
+        FIm = fftshift(fft2(Itfi.Itf.*mask));
+        if Itfi.Ref.TFapo == apoNpx  % if the apo TF has already been calculated for Ref and matches the one of the Itf
+            FRf = Itfi.Ref.TF;
+        else   % else calculate the TF of the Ref with apodization
+            Itfi.Ref.computeTF(apoNpx)
+            FRf = Itfi.Ref.TF;
+        end
+
+    else
+        FIm = fftshift(fft2(Itfi.Itf));
+        FRf = Itfi.Ref.TF;
+    end
+
+
     %    fprintf('ZERO ORDER\n')
     zeta = Itfi.Microscope.CGcam.zeta;
     [FImc,FRfc,cropParam0] = FourierCrop(FIm,FRf,zeta,Fcrops=cropParam0,resolution=opt.resolution,FcropShape=opt.Fcropshape);

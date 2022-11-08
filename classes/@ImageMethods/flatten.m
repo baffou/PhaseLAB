@@ -5,6 +5,7 @@ arguments
     opt.nmax (1,1) {mustBeInteger(opt.nmax)} = 2
     opt.threshold double = double.empty() % if not empty, segment the cells and create a mask
     opt.kind  (1,1) {mustBeInteger(opt.kind)} = 1
+    opt.display logical = false
 end
 
 % method:
@@ -32,7 +33,9 @@ for io = 1:No
         im20=imgaussfilt(stdfilt(obj(io).D2Wnorm,true(9)),10);
         %        imP=imgaussfilt(stdfilt(obj(io).PDCM,true(9)),10);
         %        hi=histogram(2*imP);
-        figure,subplot(2,2,1)
+        if opt.display
+            figure,subplot(2,2,1)
+        end
         hi=histogram(im20);
         posM=find(hi.Values==max(hi.Values));
         x=hi.BinEdges(posM);
@@ -84,16 +87,18 @@ for io = 1:No
         obj2(io).OPD=temp;
     end
     if ~isempty(opt.threshold) && ~strcmp(method,'Zernike')
-        subplot(2,2,2)
-        imageph(temp)
-        title('final image')
-        subplot(2,2,3)
-        imageph(temp.*(1-mask)+mask.*max(temp(:)))
-        title('masked area')
-        subplot(2,2,4)
-        imageph(temp.*mask+(1-mask).*max(temp(:)))
-        title('considered area')
-        fullscreen
+        if opt.display
+            subplot(2,2,2)
+            imageph(temp)
+            title('final image')
+            subplot(2,2,3)
+            imageph(temp.*(1-mask)+mask.*max(temp(:)))
+            title('masked area')
+            subplot(2,2,4)
+            imageph(temp.*mask+(1-mask).*max(temp(:)))
+            title('considered area')
+            fullscreen
+        end
     end
 end
 

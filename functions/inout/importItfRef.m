@@ -142,6 +142,7 @@ if strcmpi(acquisitionSoftware,'phast') || strcmpi(acquisitionSoftware,'Sid4Bio'
     
     
     for ii = 1:Nif
+        fprintf([ItfFileNames{ii} '\n'])
         INT(ii) = Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote);
         INT(ii).Microscope = MI;
         fid = fopen([folder ItfFileNames{ii}(1:end-4) ' REF.txt'],'r');
@@ -180,6 +181,7 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
         end
         
         for ii = 1:Nif
+            fprintf([ItfFileNames{ii} '\n'])
             TIFF = Tiff([folder ItfFileNames{ii}]);
             fprintf([folder ItfFileNames{ii} '\n'])
             currentRefFileName  =  [getTag(TIFF,270)];
@@ -195,6 +197,7 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
             REF(rr) = Interfero([folder RefFileNames{rr}],S_Ref.Microscope,'remote',opt.remote);
         end
         for ii = 1:Nif
+            fprintf([ItfFileNames{ii} '\n'])
             S_Itf = readTiffTag([folder ItfFileNames{ii}], "PhaseLAB");
             INT(ii) = Interfero([folder ItfFileNames{ii}],S_Itf.Microscope,'remote',opt.remote);
             RefIndice = strcmp(RefFileNames,S_Itf.Reference);

@@ -11,6 +11,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         Itf0     % interferogram (matrix or path)
         Ref      Interfero % interfero object corresponding to the reference image
         TF       % Fourier transform of the interfero
+        TFapo    = []% tells wether the TF has been calculated with an apodization (equals the width of the apodization
     end
     
     properties (Dependent)
@@ -34,7 +35,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
     properties(Hidden)
         Fimc   (3,1) cell % 3-cell containing the 3 demodulated images
         Microscope Microscope
-        Fcrops  (3,1) FcropParameters
+        Fcrops  FcropParameters = FcropParameters.empty(3,0)
         crops
         remote {mustBeInteger,mustBeLessThanOrEqual(remote,1),mustBeGreaterThanOrEqual(remote,0)}  % 1 if images are not stored (only path/fileName), 0 if images are stored
     end
@@ -216,7 +217,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     y2 = (obj.Ny-N)/2+N;
                 elseif nargin==1
                     if io == 1
-                        figure,imagegb(obj.Itf);
+                        figure,imagegb(imgaussfilt(obj.Itf,3));
                         [x10,y10] = ginput(1);
                         [x20,y20] = ginput(1);
                         x1 = round(min([x10,x20]));
@@ -282,11 +283,21 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 end
             end
             if isempty(obj(1).Ref.TF)
-                obj(1).Ref.TF = fftshift(fft2(obj(1).Ref.Itf));
+                %obj(1).Ref.TF = fftshift(fft2(obj(1).Ref.Itf));
+                obj(1).Ref.computeTF();
             end
             
         end
         
+        function obj=computeTF(obj,apoNpx) % Computes the TF of an interfero and store it in the TF property
+            if nargin == 1
+                obj.TF = fftshift(fft2(obj.Itf));
+            elseif nargin == 2
+                obj.TF = fftshift(fft2(apodization(obj.Itf,apoNpx)));
+                obj.TFapo=apoNpx;
+            end
+        end
+
         function set.Microscope(obj,val)
             if isa(val,'Microscope')
                 obj.Microscope = val;
@@ -464,6 +475,14 @@ classdef Interfero < handle & matlab.mixin.Copyable
             obj2.Reference(copy(obj.Ref));
         end
 
+        function obj = clearFcrops(obj)
+            Nim=numel(obj);
+            for ii=1:Nim
+                obj(ii).Ref.Fcrops(1)=FcropParameters();
+                obj(ii).Ref.Fcrops(2)=FcropParameters();
+                obj(ii).Ref.Fcrops(3)=FcropParameters();
+            end
+        end
     end
 end
         

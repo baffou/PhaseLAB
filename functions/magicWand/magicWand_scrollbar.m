@@ -194,7 +194,7 @@ if isempty(hOPD.UserData.roiDraw) % no hand-made exact and final roi has be defi
     
     %% To adapt the tolerance if the magic wand fit of the bacteria is not good
     
-    uicontrol('style','slider','Position',[20 5 400 20],'Min',log10(toleranceStart)-3,'Max',log10(toleranceStart)+3,'value',log10(toleranceStart),'callback',@(src,evt)dispWandSelection(10^get(src,'value'),image0, ylist, xlist ,hfig1,ha1));
+    uicontrol('style','slider','Position',[20 5 400 20],'Min',log10(toleranceStart)-3,'Max',log10(toleranceStart)+3,'value',log10(toleranceStart),'callback',@(src,evt)dispWandSelection(10^get(src,'value'),image0, ylist, xlist ,hfig1,ha1, maxval,minval));
     uicontrol('style','pushbutton','String','validate','Position',[500 5 40 20],'callback',@(src,evt)endWandSelection(hfig1));
     uicontrol('style','pushbutton','String','reclick','Position', [450 5 40 20],'callback',@(src,evt)redoWandSelection(hfig1));
     

@@ -1,4 +1,4 @@
-function dispWandSelection(tolerance, image0, ylist, xlist ,hfig1, ha1)
+function dispWandSelection(tolerance, image0, ylist, xlist ,hfig1, ha1, maxval, minval)
 hfig1.UserData.tolerance = tolerance;
 xlim0 = ha1.XLim;
 ylim0 = ha1.YLim;
@@ -6,8 +6,6 @@ ylim0 = ha1.YLim;
 bin_mask = magicWand(image0, ylist, xlist, tolerance);
 mask = double(bin_mask.*hfig1.UserData.maskManual);
 
- maxval = max(max(imgaussfilt(image0,10)));
- minval = min(max(imgaussfilt(image0,10)));
  A1 = (image0-minval)/(maxval-minval);
  A2 = A1;
  A3 = A1; 

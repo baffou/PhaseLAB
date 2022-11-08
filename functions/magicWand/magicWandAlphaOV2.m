@@ -12,7 +12,7 @@
 %Guillaume Baffou - 30 Apr 2021
 
 
-function [alpha,OV] = magicWandAlphaOV2(hfig)
+function [alpha,OV,maskMeas] = magicWandAlphaOV2(hfig)
 
 %bkTh: thickness of the background ring in pixels
 IM = hfig.UserData{5};
@@ -125,7 +125,7 @@ for n = 1:Nim  % loop on the list of images
             mask = masks;
         end
         %LOOP TO BE REMOVED
-        for ij=1:10
+        %for ij=1:10
         
         hfig2 = figure;
         hfig2.UserData.goon = 0;
@@ -169,6 +169,10 @@ for n = 1:Nim  % loop on the list of images
         xp(1) = hfig2.UserData.p1
         xp(2) = hfig2.UserData.p2
 
+        warning('pmin and pmaw forced to 1')
+        xp(1)=1;
+        xp(2)=1;
+        
         close(hfig2)
       
         pxmin = round(min(N*xp));
@@ -264,7 +268,7 @@ for n = 1:Nim  % loop on the list of images
         if nargin==2
             set(hand.UIresult,'String',sprintf([alpha2print '\n' OV2print]));
         end
-        end
+        %end
     end
 end
 hfig.UserData{10} = alpha(iNP,n);
