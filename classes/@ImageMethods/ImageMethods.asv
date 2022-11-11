@@ -37,7 +37,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 hfig=obj.figure('px');
             else
                 figure(hfig)
-                %if ~strcmp(hfig.UserData{2},'px') % force the unit to be px in case it is µm
+                %if ~strcmp(hfig.UserData{2},'px') % force the unit to be px in case it is Âµm
                 %    figure_callback(hfig,obj,'px',hfig.UserData{3},hfig.UserData{4},str2double(get(hfig.UserData{8}.UIk,'String')),hfig.UserData{8})
                 %end
             end
@@ -48,7 +48,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             x0=round(x0);
             y0=round(y0);
             if nargin==2
-                if strcmp(hfig.UserData{2},'µm')
+                if strcmp(hfig.UserData{2},'Âµm')
                     factorAxis=obj.pxSize*1e6;
                 elseif strcmp(hfig.UserData{2},'px')
                     factorAxis=1;
@@ -96,7 +96,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 hfig=obj.figure('px');
             else
                 figure(hfig)
-                %if ~strcmp(hfig.UserData{2},'px') % force the unit to be px in case it is µm
+                %if ~strcmp(hfig.UserData{2},'px') % force the unit to be px in case it is Âµm
                 %    figure_callback(hfig,obj,'px',hfig.UserData{3},hfig.UserData{4},str2double(get(hfig.UserData{8}.UIk,'String')),hfig.UserData{8})
                 %end
             end
@@ -123,11 +123,11 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
         function distance(obj,hfig)
             % measures a distance between two points.
             if nargin==1
-                hfig=obj.figure('µm');
+                hfig=obj.figure('Âµm');
             else
                 figure(hfig)
-                figure_callback(hfig,obj,'µm',hfig.UserData{3},hfig.UserData{4},'1')
-                %if ~strcmp(hfig.UserData{2},'px') % force the unit to be px in case it is µm
+                figure_callback(hfig,obj,'Âµm',hfig.UserData{3},hfig.UserData{4},'1')
+                %if ~strcmp(hfig.UserData{2},'px') % force the unit to be px in case it is Âµm
                 %    figure_callback(hfig,obj,'px',hfig.UserData{3},hfig.UserData{4},str2double(get(hfig.UserData{8}.UIk,'String')),hfig.UserData{8})
                 %end
             end
@@ -136,7 +136,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             clipboard('copy',sprintf([hfig.UserData{5}.OPDfileName '\t%.4g\t' hfig.UserData{2}],dist))
 
             %             if nargin==2
-            %                 if strcmp(hfig.UserData{2},'µm')
+            %                 if strcmp(hfig.UserData{2},'Âµm')
             %                     factorAxis=obj.pxSize*1e6;
             %                 elseif strcmp(hfig.UserData{2},'px')
             %                     factorAxis=1;
@@ -166,7 +166,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
             [cx,cy]=ginput(2);
             if nargin==2
-                if strcmp(hfig.UserData{2},'µm')
+                if strcmp(hfig.UserData{2},'Âµm')
                     factorAxis=obj.pxSize*1e6;
                 elseif strcmp(hfig.UserData{2},'px')
                     factorAxis=1;
@@ -357,17 +357,16 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             arguments
                 obj
                 opt.persp = 1
-                opt.phi = 45
-                opt.theta = 45
+                opt.AZ_camera = 45
+                opt.PO_camera = 45
                 opt.ampl = 10
                 opt.zrange = []
                 opt.colorMap =  parulaNeuron
                 opt.title (1,:) char = char.empty()
                 opt.factor = 1 % correction factor, for instance 5.55e-3 to convert the OPD color scale into dry mass
-                opt.label (1,:) char = 'Optical path difference (nm)'
             end
             % zrange in nm
-            EL_camera=90-opt.theta;
+            EL_camera=90-opt.PO_camera;
             [Ny,Nx]=size(obj.OPD);
             fac=opt.factor;
 
@@ -414,9 +413,13 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             %view(0,90)
             %camlight left
             %camlight(AZ, EL)
-            if opt.phi==0 &&  opt.theta==0
-                cb=colorbar(FontSize=20);
-                cb.Label.String = opt.label;
+            if opt.AZ_camera==0 &&  opt.PO_camera==0
+                cb=colorbar(FontSize=16);
+                if fac~=1
+                    cb.Label.String = ['Optical path difference (nm) x ' num2str(fac)];
+                else
+                      cb.Label.String = ['Optical path difference (nm) x ' num2str(fac)];
+                end
                 view(2)
                 AZ_light=30;
                 EL_light=25;
@@ -424,9 +427,8 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 cb=colorbar('southoutside',FontSize=16);
                 a =  cb.Position; %gets the positon and size of the color bar
                 set(cb,'Position',[a(1) a(2) a(3)/4 a(4)])% To change size
-                cb.Label.String = opt.label;
-                cb.Label.FontSize = 20;
-                view(opt.phi,EL_camera)
+                cb.Label.String = 'Optical path difference (nm)';
+                view(opt.AZ_camera,EL_camera)
                 camPos=get(gca,"CameraPosition");
                 set(gca,'CameraPosition',camPos/2)
                 camproj('perspective')
@@ -437,9 +439,9 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             camlight(AZ_light,EL_light)
             %light('Position',[-1 0 0],'Style','local')
             %axis off
-            xlabel('µm','FontSize',20), ylabel('µm','FontSize',20)
-            clim(zrange)
-            set(gca,'FontSize',18)
+            xlabel('Âµm'), ylabel('Âµm')
+            zlim(zrange)
+            caxis(zrange)
             drawnow
         end
 
@@ -473,7 +475,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             open(writerObj);
             % write the frames to the video
             AxesColor=[0 0 0];
-            unit='µm';
+            unit='Âµm';
             for u=1:numel(IM)
                 % convert the image to a frame
                 factorX=IM(u).pxSize*1e6;
@@ -611,14 +613,14 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 hfig=figure;
                 imagesc(1e6*IM(1).pxSize*[0:IM(1).Nx-1],1e6*IM(1).pxSize*[0:IM(1).Ny-1],fac*IM(u).OPD*1e9)
                 set(gca,'FontSize',16)
-                xlabel('µm')
+                xlabel('Âµm')
                 set(gca,'ytick',[])
                 set(gca,'YDir','normal')
                 caxis(fac*opt.zrange)
                 set(gca,'dataAspectRatio',[1 1 1])
                 colormap(gca,opt.colorMap)
                 cc=colorbar('fontSize',16);
-                cc.Label.String='dry mass (pg/µm^2)';
+                cc.Label.String='dry mass (pg/Âµm^2)';
                 annotation ('textbox',[.2 .8 .1 .1],'String',sprintf('%.1f s',(u-1)*0.4),'FontSize',16,'LineStyle','none','HorizontalAlignment','right')
                 drawnow
                 frame=getframe(hfig);
@@ -641,10 +643,8 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.ampl = 3
                 opt.zrange = []
                 opt.colorMap =  parulaNeuron
-                opt.title (1,:) char = char.empty()
-                opt.factor = 1 % correction factor, for instance 5.55e-3 to convert the OPD color scale into dry mass
-                opt.label (1,:) char = 'Optical path difference (nm)'
             end
+
 
             % create the video writer with 1 fps
             writerObj = VideoWriter(videoName);
@@ -659,11 +659,9 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 fullscreen
                 %                hfig.Position=[1 1 1800 800];
                 if isempty(opt.zrange)
-                    opendx(IM(u),persp=opt.persp,phi=opt.phi,theta=opt.theta,...
-                        ampl=opt.ampl,colorMap=opt.colorMap,title=opt.title,factor=opt.factor,label=opt.label)
+                    opendx(IM(u),persp=opt.persp,AZ_camera=opt.phi,PO_camera=opt.theta,ampl=opt.ampl,colorMap=opt.colorMap)
                 else
-                    opendx(IM(u),persp=opt.persp,phi=opt.phi,theta=opt.theta,...
-                        ampl=opt.ampl,zrange=opt.zrange,colorMap=opt.colorMap,title=opt.title,factor=opt.factor,label=opt.label)
+                    opendx(IM(u),persp=opt.persp,AZ_camera=opt.phi,PO_camera=opt.theta,ampl=opt.ampl,zrange=opt.zrange,colorMap=opt.colorMap)
                 end
                 frame=getframe(hfig);
                 drawnow

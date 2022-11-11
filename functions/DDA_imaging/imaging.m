@@ -6,7 +6,7 @@
 % date: Jul 29, 2019
 
 
-function image = imaging(DIs,IL,MI,Npx)
+function IM = imaging(DIs,IL,MI,Npx)
 % imaging(DIs,IL,MI[,ImSize,Npx])
 % DIs: array of Dipole objects, or Nanoparticle object
 % IL: Illumination object
@@ -285,10 +285,10 @@ Ezpp = (1/M)*fftshift(fft2(ifftshift(Ekprimez)))*dk*dk;
 eexim = tr/M*sqrt(nS)*e0*exp(1i*nS*k0*zo)*IL.polar; % excitation field image plane
 Eixtot = eexim(1)+Expp;
 Eiytot = eexim(2)+Eypp;
-image = ImageEM(eexim,Eixtot,Eiytot,Ezpp);
-image.zoom = Npx*lambda/ImSize;
-image.Illumination = IL;
-image.Microscope = MI;
+IM = ImageEM(eexim,Eixtot,Eiytot,Ezpp);
+IM.zoom = Npx*lambda/ImSize;
+IM.Illumination = IL;
+IM.Microscope = MI;
 
 
 
