@@ -194,7 +194,15 @@ classdef Interfero < handle & matlab.mixin.Copyable
         end
 
         function objListout = crop(objList,xy1,xy2)
-            objListout = copy(objList);
+            if ~isnumeric(objList(1).Itf0)
+                error('this function cannot be applied if the image is remote')
+            end
+
+            if nargout
+                objListout = copy(objList);
+            else
+                objListout = objList;
+            end
             No = numel(objList);
             for io = 1:No
                 obj = objListout(io);
@@ -229,16 +237,12 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     error('Wrong number of inputs')
                 end
                 obj.Itf0 = obj.Itf(y1:y2,x1:x2);
-                if io==1
-                    obj.Ref = copy(obj.Ref);
-                    obj.Ref.Itf0 = obj.Ref.Itf(y1:y2,x1:x2);
-                    obj.Ref.TF = fftshift(fft2(obj.Ref.Itf));
-                else  % if the Ref handle has not been croped already
-                    obj.Ref = objListout(1).Ref;
-                end
+                obj.Ref = copy(obj.Ref);
+                obj.Ref.Itf0 = obj.Ref.Itf(y1:y2,x1:x2);
+                obj.Ref.TF = fftshift(fft2(obj.Ref.Itf));
             end
         end
-
+    
         function objList = square(objList)
             No = numel(objList);
             for io = 1:No
@@ -297,6 +301,14 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 obj.TFapo=apoNpx;
             end
         end
+
+        function clearTF(objList) % Clear the computed TF of the Ref.
+            for io=1:numel(objList)
+                objList(io).Ref.TF = [];
+            end
+        end
+
+        
 
         function set.Microscope(obj,val)
             if isa(val,'Microscope')

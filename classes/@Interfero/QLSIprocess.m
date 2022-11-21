@@ -143,9 +143,16 @@ for ii = 1:Nf
         FRf = Itfi.Ref.TF;
     end
 
+    if isempty(FRf)
+        computeTF(Itfi.Ref);
+        FRf = Itfi.Ref.TF;
+    end
+
 
     %    fprintf('ZERO ORDER\n')
     zeta = Itfi.Microscope.CGcam.zeta;
+    size(FIm)
+    size(FRf)
     [FImc,FRfc,cropParam0] = FourierCrop(FIm,FRf,zeta,Fcrops=cropParam0,resolution=opt.resolution,FcropShape=opt.Fcropshape);
 
     Im_int = ifft2(ifftshift(FImc));

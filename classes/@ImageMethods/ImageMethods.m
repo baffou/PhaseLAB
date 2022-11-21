@@ -150,21 +150,31 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
         end
 
-        function profile=radialAverage(obj,hfig)
+        function profile=radialAverage(obj,opt)
+            arguments
+                obj
+                opt.figure = []
+                opt.coords =[]
+            end
             % plots the radial average from a clicked point, usually a
             % nanoparticle location.
             % hfig is optional. If specified, must be the hfig of the main image panel: IM.figure.
-            if nargin==1
+            if isempty(opt.figure)
                 hfig=obj.figure('px');
             else
+                hfig=opt.figure;
                 figure(hfig)
                 linkaxes(hfig.UserData{7},'off');
                 linkaxes(hfig.UserData{7},'x');
             end
             linkaxes(hfig.UserData{7},'off');
             linkaxes(hfig.UserData{7},'x');
-
-            [cx,cy]=ginput(2);
+            if isempty(opt.coords)
+                [cx,cy]=ginput(2);
+            else
+                cx=opt.coords(:,1);
+                cy=opt.coords(:,2);
+            end
             if nargin==2
                 if strcmp(hfig.UserData{2},'µm')
                     factorAxis=obj.pxSize*1e6;
@@ -175,12 +185,12 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 factorAxis=1;
             end
             D=sqrt((cx(1)-cx(2))^2+(cy(1)-cy(2))^2);
-            w=1:obj.Npx;
+            %w=1:obj.Npx;
             profile.T  =radialAverage0(obj.T,   [cx(1)/factorAxis, cy(1)/factorAxis], round(D/factorAxis));
             profile.OPD=radialAverage0(obj.OPD, [cx(1)/factorAxis, cy(1)/factorAxis], round(D/factorAxis));
-
+            profile.coords=[cx,cy];
             Np=length(profile.T);
-            size(profile.T)
+            
             subplot(1,2,1)
             plot((-Np+1:Np-1)*factorAxis,[flip(profile.T);profile.T(2:end)],'LineWidth',2)
             xlabel(hfig.UserData{2})
@@ -760,10 +770,17 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     y1 = floor(yc-Size/2+1);
                     y2 = floor(yc-Size/2+Size);
                 elseif isnumeric(opt.Size)
-                    x1 = floor(xc-opt.Size/2+1);
-                    x2 = floor(xc-opt.Size/2+opt.Size);
-                    y1 = floor(yc-opt.Size/2+1);
-                    y2 = floor(yc-opt.Size/2+opt.Size);
+                    if length(opt.Size)==1
+                        x1 = floor(xc-opt.Size/2+1);
+                        x2 = floor(xc-opt.Size/2+opt.Size);
+                        y1 = floor(yc-opt.Size/2+1);
+                        y2 = floor(yc-opt.Size/2+opt.Size);
+                    elseif length(opt.Size)==2
+                        x1 = floor(xc-opt.Size(2)/2+1);
+                        x2 = floor(xc-opt.Size(2)/2+opt.Size(2));
+                        y1 = floor(yc-opt.Size(1)/2+1);
+                        y2 = floor(yc-opt.Size(1)/2+opt.Size(1));
+                    end                        
                 end
 
             end

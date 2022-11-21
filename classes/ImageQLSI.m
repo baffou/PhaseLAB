@@ -257,7 +257,6 @@ classdef ImageQLSI   <   ImageMethods
             
         end
         
-
         function [objList2,coords] = untilt(objList,coords0)
             if nargout
                 objList2=copy(objList);
