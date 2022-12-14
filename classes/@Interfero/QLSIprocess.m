@@ -185,8 +185,8 @@ for ii = 1:Nf
     
     % phase gradient images
 
-    DW1 = sign(MI.CGcam.RL.zoom)*angle(Im_DW1.*conj(Rf_DW1))* MI.CGcam.alpha(IL(ii).lambda);
-    DW2 = sign(MI.CGcam.RL.zoom)*angle(Im_DW2.*conj(Rf_DW2))* MI.CGcam.alpha(IL(ii).lambda);
+    DW1 = sign(MI.CGcam.zoom)*angle(Im_DW1.*conj(Rf_DW1))* MI.CGcam.alpha(IL(ii).lambda);
+    DW2 = sign(MI.CGcam.zoom)*angle(Im_DW2.*conj(Rf_DW2))* MI.CGcam.alpha(IL(ii).lambda);
 
     DWx = cropParam1.angle.cos*DW1-cropParam1.angle.sin*DW2;
     DWy = cropParam1.angle.sin*DW1+cropParam1.angle.cos*DW2;

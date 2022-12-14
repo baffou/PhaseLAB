@@ -124,7 +124,7 @@ classdef CGmatrix
                 imp3 = improp(imp2,M.imSize,lambda,L,0,0);
                 
                 % rajouter ici la pastille
-                if MI.CGcam.RL.mask==1
+                if ~isempty(MI.CGcam.RL) & MI.CGcam.RL.mask==1
                     FT = fftshift(fft2(imp3));
                     [xx, yy] = meshgrid((-M.Nx/2:M.Nx/2-1)/M.Nx,(-M.Ny/2:M.Ny/2-1)/M.Ny);
                     xx=xx-mean(xx(:));

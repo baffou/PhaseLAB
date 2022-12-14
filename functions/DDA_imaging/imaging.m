@@ -285,8 +285,7 @@ Ezpp = (1/M)*fftshift(fft2(ifftshift(Ekprimez)))*dk*dk;
 eexim = tr/M*sqrt(nS)*e0*exp(1i*nS*k0*zo)*IL.polar; % excitation field image plane
 Eixtot = eexim(1)+Expp;
 Eiytot = eexim(2)+Eypp;
-IM = ImageEM(eexim,Eixtot,Eiytot,Ezpp);
-IM.zoom = Npx*lambda/ImSize;
+IM = ImageEM(Eixtot,Eiytot,Ezpp,eexim);
 IM.Illumination = IL;
 IM.Microscope = MI;
 

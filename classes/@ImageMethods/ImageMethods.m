@@ -8,26 +8,20 @@
 
 classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
-    properties(SetAccess=private)
+    properties
+        Microscope Microscope
+        Illumination Illumination % Illumination object
         comment   % any comment regarding the image
-        pxSize    % pixel size at the focal plane
-        dxSize    % pixel size at the image plane, i.e. dexel size of the camera
-    end
-
-    properties(Dependent)
-        lambda % = Illumination.lambda
     end
 
     properties(Hidden)
-        Microscope Microscope
-        Illumination Illumination % Illumination object
         processingSoft
         pxSizeCorrection = 1
     end
 
     methods
 
-        function val=get.lambda(obj)
+        function val=lambda(obj)
             val=obj.Illumination.lambda;
         end
 
@@ -229,11 +223,11 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             end
         end
 
-        function val=get.dxSize(obj)
-            val=obj.Microscope.dxSize();
+        function val=dxSize(obj)
+            val=obj.Microscope.CGcam.dxSize;
         end
 
-        function val=get.pxSize(obj)
+        function val=pxSize(obj)
             val=obj.pxSizeCorrection*obj.Microscope.pxSize;
         end
 
@@ -347,19 +341,17 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             end
         end
 
-        function set.Illumination(obj,val)
-            if isa(val,'Illumination')
-                obj.Illumination=val;
-            else
-                error('Illumination property must by an Illumination object')
+        function set.Microscope(objList,MI)
+            No=numel(objList);
+            for io=1:No
+                objList(io).Microscope=MI;
             end
         end
 
-        function set.Microscope(obj,val)
-            if isa(val,'Microscope')
-                obj.Microscope=val;
-            else
-                error('Microscope property must by an Microscope object')
+        function set.Illumination(objList,IL)
+            No=numel(objList);
+            for io=1:No
+                objList(io).Illumination=IL;
             end
         end
 

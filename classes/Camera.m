@@ -4,7 +4,7 @@ classdef Camera  <  handle
         Nx (1,1) {mustBeInteger,mustBePositive} = 600
         Ny (1,1) {mustBeInteger,mustBePositive} = 600
         fullWellCapacity (1,1) {mustBeInteger} = 25000
-        model char 
+        model char
     end
     
     methods
@@ -24,6 +24,10 @@ classdef Camera  <  handle
             elseif nargin==1 % ex: ('Zyla')
                 if istext(var1)
                     cam = jsonImport(strcat(var1,'.json'));
+                elseif isnumeric(var1)
+                    cam.Nx = 2048;
+                    cam.Ny = 2048;
+                    cam.dxSize = var1*(var1<1) + var1*(var1>=1)*1e-6;
                 else
                     error('If only one input, must be a camera name')
                 end

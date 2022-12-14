@@ -6,58 +6,91 @@
 % date: Jul 31, 2019
 
 classdef ImageEM  <  ImageMethods
-    
+
     properties(GetAccess = public , SetAccess={?ImageMethods})
-        EE0   (1,3) {mustBeNumeric}   % Excitation vector field at the image plane (may be complex if zo~=0)
         Ex
         Ey
         Ez
+        Einc ImageEM
     end
-    
+
     properties(Access = public)
         %lambda, inherited from ImageMethods
         %pxSize, inherited from ImageMethods
         %dxSize, inherited from ImageMethods
-        zoom
         %Microscope, inherited from ImageMethods
     end
-    
+
     properties(Dependent)
-        Ph      %Phase
-        T       %Transmittance
-        OPD
-        E
-        E2
         Nx
         Ny
-        Npx
+        E2
+        E
+        Ph
+        OPD
+        T
     end
-    
+
     methods
-        function obj = ImageEM(EE0,Ex,Ey,Ez)
+        function obj = ImageEM(Ex,Ey,Ez,Eincx,Eincy,Eincz,opt)
+            arguments
+                Ex {mustBeNumeric} =[]
+                Ey {mustBeNumeric} =[]
+                Ez {mustBeNumeric} =[]
+                Eincx {mustBeNumeric} =[]
+                Eincy {mustBeNumeric} =[]
+                Eincz {mustBeNumeric} =[]
+                opt.n {mustBeNumeric} = []
+                opt.Microscope Microscope = Microscope.empty()
+                opt.Illumination Illumination = Illumination.empty()
+            end
             %ImageEM()
-            %ImageEM(n)
-            %ImageEM(E0,Ex,Ey,Ez)
-            if nargin==1
-                obj = repmat(ImageEM(),EE0,1);
-            elseif nargin==4
-                obj.EE0 = EE0;
+            %ImageEM(n=n)
+            %ImageEM(Eincx,Eincy,Eincz)
+            %ImageEM(Ex,Ey,Ez,Einc||EE0)
+            %ImageEM(Ex,Ey,Ez,Eincx,Eincy,Eincz)
+            if nargin==0
+                if ~isempty(opt.n) % ImageEM(n=N)
+                    obj = repmat(ImageEM(),opt.n,1);
+                else % ImageEM()     1 empty object
+                    % do nothing
+                end
+            elseif nargin==1 % ImageEM(n)    n empty objects
+                obj = repmat(ImageEM,Ex,0);
+            elseif nargin<=3 % ImageEM(Eincx,Eincy,Eincz) typically when defining an incident field
                 obj.Ex = Ex;
                 obj.Ey = Ey;
                 obj.Ez = Ez;
-            elseif nargin==0
-            else
-                error('Wrong number of inputs in the Image constructor.')
+            end
+            if nargin==4% ImageEM(Ex,Ey,Ez,Einc||E0)    total field
+                if numel(Eincx) == 3 % E0 is a vector, meaning that the illumination is uniform and at normal incidence
+                    ONE = ones(size(Ex));
+                    obj.Einc = ImageEM(Eincx(1).*ONE,Eincx(2).*ONE, Eincx(3).*ONE);
+                else
+                    error('The 4th argument must be a 3-vector')
+                end
+            elseif nargin==6% ImageEM(Ex,Ey,Ez,Eincx,Eincy,Eincz)    total field
+                obj.Ex = Ex;
+                obj.Ey = Ey;
+                obj.Ez = Ez;
+                obj.Einc = ImageEM();
+                obj.Einc.Ex = Eincx;
+                obj.Einc.Ey = Eincy;
+                obj.Einc.Ez = Eincz;
+            end
+            if ~isempty(opt.Microscope)
+                obj.Microscope=opt.Microscope;
+            end
+            if ~isempty(opt.Illumination)
+                obj.Illumination=opt.Illumination;
             end
         end
-        
-        function objs = plus(obj1,obj2)
+
+        function objs = plus(obj1,obj2) % coherent sum of the fields
             warning('By summing images of different particles/dipoles, there is no self-consistent optical coupling between these objects. Prefer summing dipoles and then imaging the dipole array, which will run a DDA self consistent calculation of the dipolar moments.')
             if obj1.lambda~=obj2.lambda
                 error('You are trying to sum two images corresponding to two different wavelengths.')
             elseif obj1.pxSize~=obj2.pxSize
-                error('You are trying to sum two images corresponding to two different pixel sizes.')
-            elseif obj1.EE0~=obj2.EE0
                 error('You are trying to sum two images corresponding to two different pixel sizes.')
             elseif obj1.zoom~=obj2.zoom
                 error('You are trying to sum two images corresponding to two different sizes of field of view (''zoom'' properties differ).')
@@ -65,39 +98,42 @@ classdef ImageEM  <  ImageMethods
                 error('You are trying to sum two images with different pixel numbers.')
             end
             objs = obj1;
-            objs.Ex = obj1.Ex + obj2.Ex - obj1.EE0(1);
-            objs.Ey = obj1.Ey + obj2.Ey - obj1.EE0(2);
-            objs.Ez = obj1.Ez + obj2.Ez - obj1.EE0(3);
+            objs.Ex = obj1.Ex + obj2.Ex;
+            objs.Ey = obj1.Ey + obj2.Ey;
+            objs.Ez = obj1.Ez + obj2.Ez;
+            objs.Einc.Ex = obj1.Einc.Ex + obj2.Einc.Ex;
+            objs.Einc.Ey = obj1.Einc.Ey + obj2.Einc.Ey;
+            objs.Einc.Ez = obj1.Einc.Ez + obj2.Einc.Ez;
         end
-        
-        function objs = sum(objList)
+
+        function objs = sum(objList) % coherent sum of the fields
             objs = objList(1);
             No = numel(objList);
             for io = 2:No
                 objs = objs+objList(io);
             end
         end
-        
-        function val = get.Npx(obj) % the images of the class ImageEM are supposed to be squared anyway: Npx=Nx=Ny
-            val = size(obj.Ex)*[1;0];
+
+        function val = Npx(obj) % the images of the class ImageEM are supposed to be squared anyway: Npx=Nx=Ny
+            val = obj.Nx;
         end
-    
+
         function val = get.Nx(obj)
-            val = size(obj.Ex)*[1;0];
+            val = size(obj.Ex,2);
         end
-    
+
         function val = get.Ny(obj)
-            val = size(obj.Ex)*[0;1];
+            val = size(obj.Ex,1);
         end
-    
+
         function val = get.E2(obj)
             val = abs(obj.Ex).^2+abs(obj.Ey).^2+abs(obj.Ez).^2;
         end
-    
+
         function val = get.E(obj)
             val = sqrt(abs(obj.Ex).^2+abs(obj.Ey).^2+abs(obj.Ez).^2);
         end
-    
+
         function val = get.Ph(obj)
             nor = norm(obj.EE0);
             if nor==0
@@ -105,23 +141,23 @@ classdef ImageEM  <  ImageMethods
             else
                 nor = obj.EE0;
             end
-            %v6.0:
-            %polar = obj.EE0'/norm(obj.EE0);
-            %E_along_polar = obj.Ex*polar(1)+obj.Ey*polar(2)+obj.Ez*polar(3);
-            %val  =  angle(E_along_polar/norm(obj.EE0)); % phase
-            %%val  =  angle(obj.Ex*obj.EE0'/norm(obj.EE0)^2); % phase
-            % These expressions only work for scalar polarizabilities:
-            Ex_norm = obj.Ex*nor(1)';%enables the phase subtraction of E0x
-            Ey_norm = obj.Ey*nor(2)';%enables the phase subtraction of E0y
-            
-            pha_x = angle(Ex_norm);% phase image of the x-polarized wavefront
-            pha_y = angle(Ey_norm);% phase image of the y-polarized wavefront
-            
-            polar = nor'/norm(nor);
-            val = pha_x*abs(polar(1))^2+pha_y*abs(polar(2))^2;% weighted average of the phase images
-            
+
+
+            Ex_norm = abs(obj.Ex).^2;%enables the phase subtraction of E0x
+            Ey_norm = abs(obj.Ey).^2;%enables the phase subtraction of E0y
+
+            if isempty(obj.Einc) % if already an indicent field
+                pha_x = angle(obj.Ex);% phase image of the x-polarized wavefront
+                pha_y = angle(obj.Ey);% phase image of the y-polarized wavefront
+            else
+                pha_x = angle(obj.Ex.*conj(obj.Einc.Ex));% phase image of the x-polarized wavefront
+                pha_y = angle(obj.Ey.*conj(obj.Einc.Ey));% phase image of the y-polarized wavefront
+            end
+
+            val0 = pha_x.*Ex_norm+pha_y.*Ey_norm;% weighted average of the phase images
+            val = val0./(Ex_norm+Ey_norm);
         end
-    
+
         function val = get.OPD(obj)
             k0 = 2*pi/obj.lambda;
             val = obj.Ph/k0; % Optical path difference
@@ -138,9 +174,11 @@ classdef ImageEM  <  ImageMethods
             norEztot = obj.Ez/nor;
             val = abs(norExtot).^2+abs(norEytot).^2+abs(norEztot).^2; % Transmittance
         end
-        
 
-        
+        function val = zoom(obj)
+            val=obj.Microscope.CGcam.zoom;
+        end
+
         function val = integral(obj)
             Nim = length(obj);
             val = zeros(Nim,1);
@@ -153,7 +191,7 @@ classdef ImageEM  <  ImageMethods
             end
 
         end
-        
+
         function val = crossSections(obj)
 
             Nim = length(obj);
@@ -168,23 +206,23 @@ classdef ImageEM  <  ImageMethods
                 val(iim) = NPprop(al,Cext,Csca,Cabs);
             end
         end
-        
+
         function [IMs,mat] = Jones(IM,varargin)
             Nvar = numel(varargin);
             if mod(Nvar,2)
                 error('Must have an even number of inputs')
             end
-            
+
             % Quarter waveplate
-                QWP = [1 0;0 1i];
+            QWP = [1 0;0 1i];
             % Half waveplate
-                HWP = [1 0;0 -1];
+            HWP = [1 0;0 -1];
             % Polarizer
-                P = [1 0;0 0];
+            P = [1 0;0 0];
             % Rotation matrix
-                R = @(theta) [cosd(theta) -sind(theta);sind(theta) cosd(theta)];
- 
-            
+            R = @(theta) [cosd(theta) -sind(theta);sind(theta) cosd(theta)];
+
+
             mat = eye(2,2);
             for ii = 1:2:Nvar
                 if ~ischar(varargin{ii})
@@ -202,19 +240,19 @@ classdef ImageEM  <  ImageMethods
                 end
             end
             IMs = Jones0(IM,mat);
-            
+
         end
-        
+
         function IMs = Jones0(IM,mat)
             IMs = IM;
             Nim = numel(IM);
             for iim = 1:Nim
-                E_x = IM(iim).Ex*mat(1,1)+IM(iim).Ey*mat(1,2);            
-                E_y = IM(iim).Ex*mat(2,1)+IM(iim).Ey*mat(2,2);            
+                E_x = IM(iim).Ex*mat(1,1)+IM(iim).Ey*mat(1,2);
+                E_y = IM(iim).Ex*mat(2,1)+IM(iim).Ey*mat(2,2);
                 E0 = IM(iim).EE0;
                 E0(1) = IM(iim).EE0(1)*mat(1,1)+IM(iim).EE0(2)*mat(1,2);
                 E0(2) = IM(iim).EE0(1)*mat(2,1)+IM(iim).EE0(2)*mat(2,2);
-                        
+
                 IMs(iim) = IM(iim);
                 IMs(iim).EE0 = E0;
                 IMs(iim).Ex = E_x;
@@ -222,14 +260,100 @@ classdef ImageEM  <  ImageMethods
                 IMs(iim).Ez = IM.Ez*0;  % any wave plate is assumed to kill the polarization along z. It is not important anymway in any case.
             end
         end
-        
-        function obj = Escat(obj) 
-            obj.Ex = obj.Ex-obj.EE0(1);
-            obj.Ey = obj.Ey-obj.EE0(2);
-            obj.Ez = obj.Ez-obj.EE0(3);
-            obj.EE0 = [0 0 0];
+
+        function objList = Escat(objList0)
+            if nargout
+                objList=copy(objList0);
+            else
+                objList=objList0;
+            end
+            No=numel(objList0);
+            for io=1:No
+                objList(io).Ex = objList0(io).Ex-objList0(io).Einc.Ex;
+                objList(io).Ey = objList0(io).Ey-objList0(io).Einc.Ey;
+                objList(io).Ez = objList0(io).Ez-objList0(io).Einc.Ez;
+            end
+        end
+
+        function val = EE0(obj)
+            if isempty(obj.Einc) % if the object if already an incident field
+                valx=obj.Ex(end/2,end/2);
+                valy=obj.Ey(end/2,end/2);
+                valz=obj.Ez(end/2,end/2);
+                val = [valx, valy, valz];
+            else % take the EE0 of the Einc
+                val = obj.Einc.EE0;
+            end
+        end
+
+        function obj = applyPCmask(objList,Plist)
+            % Recalculate a field when an annular mask is implemented in the
+            % objective back aperture.
+            % BackFourierTranform the field, apply an annular
+            % intensity/phase mask ,and Fourier transform. Used to model
+            % Phase Contrast or SLIM images.
+            arguments
+                objList ImageEM
+                Plist PCmask
+            end
+            No=numel(objList);
+            if numel(Plist)==1
+                P=repmat(Plist,No,1);
+            elseif numel(Plist)==No
+                P=Plist;
+            else
+                error('wrong number of PCmask or ImageEM')
+            end
+            obj = ImageEM(No);
+            for io=1:No
+                FEx = fftshift(fft2(objList(io).Ex));
+                FEy = fftshift(fft2(objList(io).Ey));
+                FEz = fftshift(fft2(objList(io).Ez));
+                FEincx = fftshift(fft2(objList(io).Einc.Ex));
+                FEincy = fftshift(fft2(objList(io).Einc.Ey));
+                FEincz = fftshift(fft2(objList(io).Einc.Ez));
+
+                FExm =  FEx .* P(io).mask(objList(io));
+                FEym =  FEy .* P(io).mask(objList(io));
+                FEzm =  FEz .* P(io).mask(objList(io));
+                FEincxm =  FEincx .* P(io).mask(objList(io));
+                FEincym =  FEincy .* P(io).mask(objList(io));
+                FEinczm =  FEincz .* P(io).mask(objList(io));
+
+                Exm = ifft2(ifftshift(FExm));
+                Eym = ifft2(ifftshift(FEym));
+                Ezm = ifft2(ifftshift(FEzm));
+                Eincxm = ifft2(ifftshift(FEincxm));
+                Eincym = ifft2(ifftshift(FEincym));
+                Einczm = ifft2(ifftshift(FEinczm));
+
+                obj(io) = ImageEM(Exm,Eym,Ezm,Eincxm,Eincym,Einczm,...
+                    "Illumination",objList(io).Illumination,"Microscope",objList(io).Microscope);
+            end
+        end
+
+        function objList = applyPhaseShift(objList0,phi)
+            % applies of phase shift to all the components of a field, but
+            % not to its Einc. Useful to articially simulate SLIM imaging.
+            if nargout
+                objList=copy(objList0);
+            else
+                objList=objList0;
+            end
+            No=numel(objList0);
+            for io=1:No
+                objList(io).Ex=objList0(io).Ex*exp(1i*phi);
+                objList(io).Ey=objList0(io).Ey*exp(1i*phi);
+                objList(io).Ez=objList0(io).Ez*exp(1i*phi);
+            end
+        end
+
+        function I = FT(obj)
+            FEx = fftshift(fft2(obj.Ex));
+            FEy = fftshift(fft2(obj.Ey));
+            I = abs(FEx).^2 + abs(FEy).^2;
         end
 
     end
-    
+
 end

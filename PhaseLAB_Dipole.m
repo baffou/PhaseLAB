@@ -31,9 +31,11 @@ DI=DI.shine(IL);
 DI=DI.moveBy('z',0.8e-6,'x',0.8e-6);
 
 %% COMPUTATION OF THE IMAGES
+clc
 IM=imaging(DI,IL,MI,200);
 
 %%
+clc
 IM.figure
 
 

@@ -4,14 +4,28 @@ arguments
     Amin = 0
     Amax = 0
     opt.reverseColor = false
+    opt.pxSize = []
 end
-if nargout
-    ai=imagesc(A);
+
+[Ny, Nx] = size(A);
+
+
+if ~isempty(opt.pxSize)
+    if nargout
+        ai=imagesc(opt.pxSize*(1:Nx),opt.pxSize*(1:Ny),A);
+    else
+           imagesc(opt.pxSize*(1:Nx),opt.pxSize*(1:Ny),A)
+    end
 else
-    imagesc(A);
+    if nargout
+        ai=imagesc(A);
+    else
+        imagesc(A)
+    end
 end
+
 set(gca,'dataAspectRatio',[1 1 1])
-colorbar
+cb=colorbar;
 set(gca,'YDir','normal')
 
 if opt.reverseColor

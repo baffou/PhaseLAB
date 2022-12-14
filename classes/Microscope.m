@@ -56,6 +56,11 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
     methods
 
         function m = Microscope(OB,f_TL,CGcam,software)
+            %Microscope(OB)
+            %Microscope(OB,f_TL)
+            %Microscope(OB,f_TL,CGcam)
+            %Microscope(OB,f_TL,Cam)
+            %Microscope(OB,f_TL,CGcam,'software')
             m.Objective = Objective();
             m.CGcam = CGcamera();
             if nargin~=0
@@ -130,8 +135,10 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
                 end
             elseif isa(str,'CGcamera')
                 m.CGcam = str;
+            elseif isa(str,'Camera')
+                m.CGcam = CGcamera(str);
             else
-                error('the property software must be a string')
+                error('not a proper input type')
             end                    
             
         end

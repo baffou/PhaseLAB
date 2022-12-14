@@ -11,7 +11,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         Itf0     % interferogram (matrix or path)
         Ref      Interfero % interfero object corresponding to the reference image
         TF       % Fourier transform of the interfero
-        TFapo    = []% tells wether the TF has been calculated with an apodization (equals the width of the apodization
+        TFapo    = []% tells wether the TF has been calculated with an apodization (equals the width of the apodization)
     end
     
     properties (Dependent)
@@ -495,6 +495,23 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 obj(ii).Ref.Fcrops(3)=FcropParameters();
             end
         end
+
+        function obj = plus(obj1,obj2)
+            obj=copy(obj1);
+            obj.Ref=copy(obj1.Ref);
+            obj.clearTF()
+            obj.Itf0 = obj1.Itf() + obj2.Itf();
+            obj.Ref.Itf0 = obj1.Ref.Itf() + obj2.Ref.Itf();
+        end
+
+        function obj = sum(objList)
+            No=numel(objList);
+            obj=copy(objList(1));
+            for io = 2:No
+                obj=obj+objList(io);
+            end
+        end
+
     end
 end
         

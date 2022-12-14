@@ -7,7 +7,7 @@ function [Itf, Grating] = CGMinSilico(Image,opt)
 arguments
     Image ImageMethods
     opt.Nimages (1,1) {mustBeInteger,mustBePositive} = 1
-    opt.ShotNoise (1,:) char {mustBeMember(opt.ShotNoise,{'on','off'})} = 'on'
+    opt.ShotNoise (1,:) logical = true
     opt.Grating char ='QLSI'
     opt.NAill double = 0
     opt.setI0 (1,:) char {mustBeMember(opt.setI0,{'max','mean'})} = 'max'
@@ -15,7 +15,7 @@ arguments
     opt.EMimage (1,:) char {mustBeMember(opt.EMimage,{'no','x','y'})} = 'no'
 end
 
-if strcmpi(opt.ShotNoise,'on')
+if opt.ShotNoise
     noiseFunction = @poissrnd;
 else
     noiseFunction = @identity;
@@ -43,15 +43,15 @@ for io = 1:No
     IL = Image.Illumination;
     %% Definition of some parameters
     nCell = 20;     % Initial overdimensioned size[px] of the grating unit cell: 6*nCellx6*nCell
-    Lambda = MI.CGcam.CG.Gamma;       % size [m] of the unit cell of the grating
+    Gamma = MI.CGcam.CG.Gamma;       % size [m] of the unit cell of the grating
     
     %% construction of the interferograms (Itf & Ref) according to Fig 2.
     
     % (Fig 2a) Build the unit cell :
     if strcmpi(opt.Grating,'QLSI')
-        grexel = QLSIunitCell(nCell,pi*wl/eD,Lambda);
+        grexel = QLSIunitCell(nCell,pi*wl/eD,Gamma);
     elseif strcmpi(opt.Grating,'QLSI0')
-        grexel = QLSIunitCell0(nCell,pi*wl/eD,Lambda);
+        grexel = QLSIunitCell0(nCell,pi*wl/eD,Gamma);
     end
     % (Fig 2b) 5x5-tile and rotate by acos(4/5) the unit cell to form the superunit cell
     % image, enabling periodicity when further tiling :
@@ -63,7 +63,7 @@ for io = 1:No
     % px number of the image :
         Grating = superUnitPixelized.tile(Nx,Ny);
     
-    Emodel = Grating;
+    Emodel = Grating;  % initialisation to have to good size
 
     if strcmpi(opt.EMimage,'no')
         T = Image(io).T;
@@ -75,9 +75,21 @@ for io = 1:No
         Emodel.im = Image.Ey;
     end
 
-    EmodelRef = Grating;
-    EmodelRef.im = ones(Ny,Nx);
-    
+    EmodelRef = Grating;  % initialisation to have to good size
+
+    if isa(Image,'ImageEM')
+        if strcmpi(opt.EMimage,'no')
+            T = Image(io).Einc.T;
+            Pha = Image(io).Einc.Ph;
+            EmodelRef.im = sqrt(T).*exp(-1i*Pha);
+        elseif  strcmpi(opt.EMimage,'x')
+            EmodelRef.im = Image.Einc.Ex;
+        elseif  strcmpi(opt.EMimage,'y')
+            EmodelRef.im = Image.Einc.Ey;
+        end
+    else % not sure what it can be else
+        EmodelRef.im = ones(Ny,Nx);
+    end   
     %Emodelb = Emodel.propagation(wl,-d0);% Backpropagation of the light from the camera chip
     %Emodelb = Emodel.propagation2(MI,IL,dir='backward');% Backpropagation of the light from the camera chip
     %Egrating = Grating.*Emodelb;

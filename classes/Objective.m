@@ -19,6 +19,7 @@ classdef Objective  <  handle
         Mobj (1,1) {mustBeInteger, mustBePositive} = 100     % Magnification of the objective, specified by the manufacturer.
         NA   (1,1) {mustBeNumeric, mustBePositive} = 1.3     % Numerical aperture of the microscope objective
         objBrand char ='Olympus'  % Brand of the objective (can be 'Nikon', 'Thorlabs', 'Leica', 'Olympus' or 'Zeiss', nothing else. Proper specification is MANDATORY to properly estimate the magnification).
+        mask PCmask
     end
     
     
