@@ -49,17 +49,12 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 opt.N (1,1) {mustBeInteger} = 0
                 opt.imageNumber =[]
             end
-            
-            if nargin==0
-                obj=Interfero.empty();
-                return
-            end
 
             obj.remote = opt.remote;
             obj.imageNumber=opt.imageNumber;
+
             if opt.N~=0 % Interfero(N=3) : create 3 blanck interferos
                 obj = repmat(Interfero(),opt.N,1);
-                obj.Microscope=MI;
                 return
             end
 

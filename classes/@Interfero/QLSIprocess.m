@@ -70,6 +70,7 @@ Nx0 = 0;
 Ny0 = 0;
 
 for ii = 1:Nf
+    fprintf('Interfero %d / %d, ',ii,Nf)
     if ~isempty(opt.crop)
         if ischar(opt.crop) % ie manual
             hroi = figure;
@@ -153,6 +154,10 @@ for ii = 1:Nf
     zeta = Itfi.Microscope.CGcam.zeta;
     size(FIm)
     size(FRf)
+    if ~isequal(size(FIm),size(FRf))
+        pause(1)
+    end
+
     [FImc,FRfc,cropParam0] = FourierCrop(FIm,FRf,zeta,Fcrops=cropParam0,resolution=opt.resolution,FcropShape=opt.Fcropshape);
 
     Im_int = ifft2(ifftshift(FImc));
@@ -266,9 +271,12 @@ for ii = 1:Nf
         end
     end
 
+    IM(ii).ItfFileName = Itf(ii).fileName;
+
+    fprintf('\n')
 end
 
-if Nf>=2
+if Nf>=2 % delete waitbar
     delete(fwb)
 end
 
