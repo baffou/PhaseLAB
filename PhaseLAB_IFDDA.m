@@ -2,10 +2,11 @@
 clc
 clear
 
-addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
+%addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
+addpath(genpath('/home/gb/Documents/MATLAB/PhaseLAB_Git/'))
 
-folder = '/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB';
-namefileh5 = 'IFDDAexample1.h5';
+folder = '/home/gb/Documents/surface/if-dda-m/tests/loop';
+namefileh5 = 'essai.h5';
 
 fileh5 = [folder '/' namefileh5];
 
@@ -15,21 +16,21 @@ IF.disp_h5(fileh5)
 % import images from the hfd5 file
 IM = IF.import_h5(fileh5);
 
-
+IM.figure
 %% calculation of the CGM images, one by one, for each illumination
 % add a CG (add it automatically to all images because microscope handle:
 IM(1).Microscope.CGcam.CG=CrossGrating(Gamma=IM(1).dxSize*6,lambda0=IM(1).Illumination.lambda);
 IM(1).Microscope.CGcam.setDistance(1e-3);
-Itf=CGMinSilico(IM,shotNoise='off');
+Itf=CGMinSilico(IM,shotNoise=false);
 IMis = QLSIprocess(Itf,IM(1).Illumination);
 
-% display the images
-n=4
+%% display the images
+n=3
 figure
 subplot(1,2,1)
-imageph(IM(n).OPD)
+imageph(IM(n).OPD(end/4:3*end/4,end/4:3*end/4))
 subplot(1,2,2)
-imageph(-IMis(n).OPD)
+imageph(IMis(n).OPD(end/4:3*end/4,end/4:3*end/4))
 
 %% Calculation of the CGM image when all the interferograms are summed
 
@@ -45,7 +46,7 @@ imagegb(IMsum.T)
 title('intensity')
 set(gca,'ColorMap',gray)
 subplot(1,2,2)
-imageph(-IMsum.OPD)
+imageph(IMsum.OPD)
 title('OPD')
 
 %% Phase contrast

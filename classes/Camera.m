@@ -62,9 +62,10 @@ classdef Camera  <  handle
                     elseif val<50e-6 && val>1e-6
                         cam.dxSize = val;
                     else
-                        warning('this length does not look like a pixel size')
+                        error('this length does not look like a pixel size')
                     end
                 else
+                    val
                     error('A pixel size must be a positive number')
                 end
             else

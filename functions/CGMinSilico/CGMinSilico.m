@@ -68,7 +68,7 @@ for io = 1:No
     if strcmpi(opt.EMimage,'no')
         T = Image(io).T;
         Pha = Image(io).Ph;
-        Emodel.im = sqrt(T).*exp(-1i*Pha);
+        Emodel.im = sqrt(T).*exp(1i*Pha);
     elseif  strcmpi(opt.EMimage,'x')
         Emodel.im = Image.Ex;
     elseif  strcmpi(opt.EMimage,'y')

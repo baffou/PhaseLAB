@@ -188,56 +188,37 @@ classdef Interfero < handle & matlab.mixin.Copyable
             obj.Ref.Fcrops = [FcropParameters(); FcropParameters(); FcropParameters()];
         end
 
-        function objListout = crop(objList,xy1,xy2)
-            if ~isnumeric(objList(1).Itf0)
-                error('this function cannot be applied if the image is remote')
+        function obj = crop(obj0,opt)
+            arguments
+                obj0
+                opt.xy1 = []
+                opt.xy2 = []
+                opt.Center {mustBeMember(opt.Center,{'Auto','Manual','auto','manual'})} = 'Auto'
+                opt.Size = 'Manual'
+                opt.twoPoints logical = false
             end
 
             if nargout
-                objListout = copy(objList);
+                obj=copy(obj0);
             else
-                objListout = objList;
+                obj=obj0;
             end
-            No = numel(objList);
-            for io = 1:No
-                obj = objListout(io);
-                if nargin==3
-                    if numel(xy1)~=2
-                        error('First input must be a 2-vector (x,y)')
-                    end
-                    if numel(xy2)~=2
-                        error('Second input must be a 2-vector (x,y)')
-                    end
-                    x1 = min([xy1(1),xy2(1)]);
-                    x2 = max([xy1(1),xy2(1)]);
-                    y1 = min([xy1(2),xy2(2)]);
-                    y2 = max([xy1(2),xy2(2)]);
-                elseif nargin==2 %crop(Npx)
-                    N = xy1;
-                    x1 = (obj.Nx-N)/2+1;
-                    x2 = (obj.Nx-N)/2+N;
-                    y1 = (obj.Ny-N)/2+1;
-                    y2 = (obj.Ny-N)/2+N;
-                elseif nargin==1
-                    if io == 1
-                        figure,imagegb(imgaussfilt(obj.Itf,3));
-                        [x10,y10] = ginput(1);
-                        [x20,y20] = ginput(1);
-                        x1 = round(min([x10,x20]));
-                        x2 = round(max([x10,x20]));
-                        y1 = round(min([y10,y20]));
-                        y2 = round(max([y10,y20]));
-                    end
-                else
-                    error('Wrong number of inputs')
-                end
-                obj.Itf0 = obj.Itf(y1:y2,x1:x2);
-                obj.Ref = copy(obj.Ref);
-                obj.Ref.Itf0 = obj.Ref.Itf(y1:y2,x1:x2);
-                obj.Ref.TF = fftshift(fft2(obj.Ref.Itf));
+            
+            [x1, x2, y1, y2] = crop0(obj,opt);
+            
+            for io = 1:numel(obj)
+                obj(io).Itf0 = obj(io).Itf(y1:y2,x1:x2);
+                obj(io).Ref = copy(obj(io).Ref);
+                obj(io).Ref.Itf0 = obj(io).Ref.Itf(y1:y2,x1:x2);
+                obj(io).Ref.TF = fftshift(fft2(obj(io).Ref.Itf));
+
             end
+
+
         end
-    
+
+
+
         function objList = square(objList)
             No = numel(objList);
             for io = 1:No

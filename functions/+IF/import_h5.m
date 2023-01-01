@@ -21,7 +21,7 @@ info=h5info(fileh5);
 % import parameters
 opts = IF.import_h5_options(fileh5);
 
-opts.pxSize = opts.dxSize/opts.Mobj;
+opts.dxSize = opts.pxSize*opts.Mobj;
 
 %IF.disp_h5(fileh5)
 
@@ -31,10 +31,9 @@ IL=Illumination(opts.lambda);
 %pxSize=dxSize/opts.Mobj;
 
 OB=Objective(opts.Mobj,opts.NA,'Olympus');
-Cam=Camera(opts.dxSize);
+Cam=Camera(opts.dxSize,opts.nfft,opts.nfft);
 f_TL=180;
 MI=Microscope(OB,f_TL,Cam);
-
 
 % import images
 
