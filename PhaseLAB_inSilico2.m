@@ -8,8 +8,8 @@ addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/Phas
 format long
 
 %% Construction of the setup
-lambda=350e-9;      % light wavelength
-lambda0=350e-9;     % reference wavelength to etch glass    
+lambda=550e-9;     % reference wavelength to etch glass
+eD=550e-9;
 %z0=0.5e-3;         % distance between the grating and the camera sensor
 camPxSize=6.5e-6;   % camera chip pixel size
 Nim=50;             % Number of summed images
