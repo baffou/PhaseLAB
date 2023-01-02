@@ -208,7 +208,12 @@ for n = 1:Nim  % loop on the list of images
             OV2print = sprintf('%.4ge-21',1e21*OV(iNP,n));
         end
         fprintf([alpha2print '\n'])
-        disp(IM.OPDfileName)
+        if isa(IM,'ImageQLSI')
+            fileName=IM.OPDfileName;
+        else
+            fileName='image';
+        end
+        disp(fileName)
         fprintf('\t=COMPLEX(%.4g,%.4g)\n',1e21*alphaRealMean,1e21*alphaImagMean);
         clipboard('copy',sprintf('=COMPLEX(%.4g,%.4g)',1e21*alphaRealMean,1e21*alphaImagMean))
         fprintf('OV:\n')
@@ -222,7 +227,7 @@ for n = 1:Nim  % loop on the list of images
         end
         
         fid = fopen([folder '/alphaOV_' prefix '.txt'],'a');
-        fprintf(fid,[IM.OPDfileName '\t' alpha2print '\t' OV2print '\t' num2str(XLim) '\t' num2str(YLim)]);
+        fprintf(fid,[fileName '\t' alpha2print '\t' OV2print '\t' num2str(XLim) '\t' num2str(YLim)]);
         fclose(fid);
   
         
@@ -231,15 +236,15 @@ for n = 1:Nim  % loop on the list of images
             mkdir([folder '/masks'])
         end
         
-        dlmwrite([folder '/masks/OPDcrop_' IM.OPDfileName '_' generateDatedFileName() '.txt'],OPDn,' ')
-        dlmwrite([folder '/masks/Mask_' IM.OPDfileName '_' generateDatedFileName() '.txt'],maskMeas,' ')
-        dlmwrite([folder '/masks/pcoord_' IM.OPDfileName '_' generateDatedFileName() '.txt'],xcoord,'\n')
-        dlmwrite([folder '/masks/OVprofile_' IM.OPDfileName '_' generateDatedFileName() '.txt'],OV0,'\n')
+        dlmwrite([folder '/masks/OPDcrop_' fileName '_' generateDatedFileName() '.txt'],OPDn,' ')
+        dlmwrite([folder '/masks/Mask_' fileName '_' generateDatedFileName() '.txt'],maskMeas,' ')
+        dlmwrite([folder '/masks/pcoord_' fileName '_' generateDatedFileName() '.txt'],xcoord,'\n')
+        dlmwrite([folder '/masks/OVprofile_' fileName '_' generateDatedFileName() '.txt'],OV0,'\n')
         minOPD = min(min(imgaussfilt(OPDn,2)));
         maxOPD = max(min(imgaussfilt(OPDn,2)));
-        imwrite((OPDn-minOPD)*255/(maxOPD-minOPD),phase1024(256),[folder '/masks/' generateDatedFileName() '_OPDcrop_' IM.OPDfileName '.tif'])
-        imwrite(maskMeas*255,gray(256),[folder '/masks/' generateDatedFileName()  '_Mask_' IM.OPDfileName '.tif'])
-        imwrite(ringBMeas*255,gray(256),[folder '/masks/' generateDatedFileName()  '_RingB_' IM.OPDfileName '.tif'])
+        imwrite((OPDn-minOPD)*255/(maxOPD-minOPD),phase1024(256),[folder '/masks/' generateDatedFileName() '_OPDcrop_' fileName '.tif'])
+        imwrite(maskMeas*255,gray(256),[folder '/masks/' generateDatedFileName()  '_Mask_' fileName '.tif'])
+        imwrite(ringBMeas*255,gray(256),[folder '/masks/' generateDatedFileName()  '_RingB_' fileName '.tif'])
         dlmwrite([folder '/masks/' generateDatedFileName()  '_pmean.txt'],[pxmin pxmax mean(pxmin:pxmax)],'\n')
         
         
@@ -253,7 +258,7 @@ for n = 1:Nim  % loop on the list of images
         % defines the line to write
         posList = [XLim(1)+xList,YLim(1)+yList].';
         date = generateDatedFileName();
-        Tab = table({IM.OPDfileName},{date},efactor,{sprintf('=COMPLEX(%.4g,%.4g)',alphaRealMean/efactor,alphaImagMean/efactor)},{sprintf('%.4g',OV(iNP,n)/efactor)},{sprintf('%.4g',OVmin/efactor)},{sprintf('%.4g',OVmax/efactor)},{num2str(posList(:).')});
+        Tab = table({fileName},{date},efactor,{sprintf('=COMPLEX(%.4g,%.4g)',alphaRealMean/efactor,alphaImagMean/efactor)},{sprintf('%.4g',OV(iNP,n)/efactor)},{sprintf('%.4g',OVmin/efactor)},{sprintf('%.4g',OVmax/efactor)},{num2str(posList(:).')});
         % writes this line in a temporary csv file
         fileNamecsv = [folder '/data_' date '.csv'];
         writetable(Tab,fileNamecsv,'WriteVariableNames',0);
