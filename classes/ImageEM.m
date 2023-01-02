@@ -5,7 +5,7 @@
 % affiliation: CNRS, Institut Fresnel
 % date: Jul 31, 2019
 
-classdef ImageEM  <  ImageMethods
+classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
     properties(GetAccess = public , SetAccess={?ImageMethods})
         Ex
@@ -101,7 +101,7 @@ classdef ImageEM  <  ImageMethods
             elseif obj1.Npx~=obj2.Npx
                 error('You are trying to sum two images with different pixel numbers.')
             end
-            objs = obj1;
+            objs = copy(obj1);
             objs.Ex = obj1.Ex + obj2.Ex;
             objs.Ey = obj1.Ey + obj2.Ey;
             objs.Ez = obj1.Ez + obj2.Ez;
@@ -111,12 +111,21 @@ classdef ImageEM  <  ImageMethods
         end
 
         function objs = sum(objList) % coherent sum of the fields
-            objs = objList(1);
+            objs = copy(objList(1));
             No = numel(objList);
             for io = 2:No
                 objs = objs+objList(io);
             end
         end
+
+        function T = sumT(objList) % coherent sum of the fields
+            No = numel(objList);
+            T=0;
+            for io = 1:No
+                T = T+objList(io).T;
+            end
+        end
+
 
         function val = Npx(obj) % the images of the class ImageEM are supposed to be squared anyway: Npx=Nx=Ny
             val = obj.Nx;
@@ -140,14 +149,6 @@ classdef ImageEM  <  ImageMethods
 
         function val = get.Ph(obj)
 
-            nor = norm(obj.EE0);
-            if nor==0
-                nor = [1/sqrt(2) 1/sqrt(2)];
-            else
-                nor = obj.EE0;
-            end
-
-
             Ex_norm = abs(obj.Ex).^2;%enables the phase subtraction of E0x
             Ey_norm = abs(obj.Ey).^2;%enables the phase subtraction of E0y
 
@@ -168,14 +169,14 @@ classdef ImageEM  <  ImageMethods
             Ex_norm = abs(obj.Ex).^2;%enables the phase subtraction of E0x
             Ey_norm = abs(obj.Ey).^2;%enables the phase subtraction of E0y
             tic
-            pha_x = Unwrap_TIE_DCT_Iter(angle(obj.Ex));% phase image of the x-polarized wavefront
-            pha_y = Unwrap_TIE_DCT_Iter(angle(obj.Ey));% phase image of the y-polarized wavefront
+            pha_x = angle(obj.Ex);% phase image of the x-polarized wavefront
+            pha_y = angle(obj.Ey);% phase image of the y-polarized wavefront
             toc
             % ERREUR : cette formule est fausse si on illumine avec un
             % angle. Q: que mesure-t-on en QLSI alors ???
             val0 = pha_x.*Ex_norm+pha_y.*Ey_norm;% weighted average of the phase images
             
-            val = mod(val0./(Ex_norm+Ey_norm),2*pi)-pi;
+            val = val0./(Ex_norm+Ey_norm);
         end
 
         function val = get.OPD(obj)
@@ -324,7 +325,7 @@ classdef ImageEM  <  ImageMethods
             else
                 error('wrong number of PCmask or ImageEM')
             end
-            obj = ImageEM(No);
+            obj = ImageEM(n=No);
             for io=1:No
                 FEx = fftshift(fft2(objList(io).Ex));
                 FEy = fftshift(fft2(objList(io).Ey));

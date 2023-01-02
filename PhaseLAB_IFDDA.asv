@@ -40,6 +40,14 @@ IM(1).Microscope.CGcam.setDistance(1e-3);
 Itf=CGMinSilico(IM,shotNoise=false);
 IMis = QLSIprocess(Itf,IM(1).Illumination);
 
+%% display the images
+n=3;
+figure
+subplot(1,2,1)
+imageph(IM(n).OPD(end/4:3*end/4,end/4:3*end/4))
+subplot(1,2,2)
+imageph(IMis(n).OPD(end/4:3*end/4,end/4:3*end/4))
+
 %% Calculation of the CGM image when all the interferograms are summed
 
 %Itfsum=Itf(1)+Itf(2)+Itf(3)+Itf(4);
@@ -47,7 +55,15 @@ Itfsum=sum(Itf);
 
 IMsum = QLSIprocess(Itfsum,IM(1).Illumination);
 
-IMsum.figure
+% display the images
+figure
+subplot(1,2,1)
+imagegb(IMsum.T)
+title('intensity')
+set(gca,'ColorMap',gray)
+subplot(1,2,2)
+imageph(IMsum.OPD)
+title('OPD')
 
 %% Phase contrast
 P=PCmask(0.3,0.1,phi=pi/2,A=0.5);
@@ -56,19 +72,19 @@ P.setRadius(IM(1));
 IMm = applyPCmask(IM,P);
 IMm.figure
 IM.figure
-%%
+
 figure
 subplot(1,2,1)
-Ttotal=sumT(IM);
+Ttotal=IM(1).T+IM(2).T+IM(3).T+IM(4).T;
 imagegb(Ttotal)
 subplot(1,2,2)
-TtotalPC=sumT(IMm);
+TtotalPC=IMm(1).T+IMm(2).T+IMm(3).T+IMm(4).T;
 imagegb(TtotalPC)
 colormap(gray)
 
 %% SLIM (page 229, book Popescu)
 
-Nim = 12; % number of theta incidences involved in the calculations.
+Nim = 4; % number of theta incidences involved in the calculations.
 
 P=repmat(PCmask(),4,1);
 

@@ -67,27 +67,30 @@ for io = 1:No
 
     % ERREUR ici : Il faudrait faire en sorte que Emodel puisse être
     % vectoriel, que la backfor propagation puisse être veectorielle.
-    if isa(Image(io),'ImageEM')
-        Emodelx.im = Image(io).Ex;
-        Emodely.im = Image(io).Ey;
+    if isa(Image,'ImageEM')
+        Emodelx.im = Image.Ex;
+        Emodely.im = Image.Ey;
     else
         T = Image(io).T;
         Pha = Image(io).Ph0; % takes the non-normalized Ph image
         Emodelx.im = sqrt(T).*exp(1i*Pha);
-        Emodely.im = 0 .* Emodelx.im;
+        Emodely.im = 0 .* ;
     end
 
-    EmodelRefx = Grating;  % initialisation to have to good size
-    EmodelRefy = Grating;  % initialisation to have to good size
+    EmodelRef = Grating;  % initialisation to have to good size
 
-    if isa(Image(io),'ImageEM')
-        EmodelRefx.im = Image(io).Einc.Ex;
-        EmodelRefy.im = Image(io).Einc.Ey;
-    else
-        T = Image(io).Einc.T;
-        Pha = Image(io).Einc.Ph;
-        EmodelRefx.im = sqrt(T).*exp(1i*Pha);
-        EmodelRefy.im = 0 .* Emodelx.im;
+    if isa(Image,'ImageEM')
+        if strcmpi(opt.EMimage,'no')
+            T = Image(io).Einc.T;
+            Pha = Image(io).Einc.Ph;
+            EmodelRef.im = sqrt(T).*exp(1i*Pha);
+        elseif  strcmpi(opt.EMimage,'x')
+            EmodelRef.im = Image.Einc.Ex;
+        elseif  strcmpi(opt.EMimage,'y')
+            EmodelRef.im = Image.Einc.Ey;
+        end
+    else % not sure what it can be else
+        EmodelRef.im = ones(Ny,Nx);
     end   
     %Emodelb = Emodel.propagation(wl,-d0);% Backpropagation of the light from the camera chip
     %Emodelb = Emodel.propagation2(MI,IL,dir='backward');% Backpropagation of the light from the camera chip
@@ -102,12 +105,9 @@ for io = 1:No
     %E    = Egrating.propagation2(MI,IL,dir='forward');
     %Eref = ErefGrating.propagation2(MI,IL,dir='forward');
 
-    E20x    =    Emodelx.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
-    E2Ref0x = EmodelRefx.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
-    E20y    =    Emodely.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
-    E2Ref0y = EmodelRefy.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
-    E20 = E20x+E20y;
-    E2Ref0 = E2Ref0x+E2Ref0y;
+    E20    =    Emodel.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
+    E2Ref0 = EmodelRef.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
+
     % (Fig 2h,i) compute the intensity images:
     [E2,fac] = E20.setI0(w*Nim,mode=opt.setI0); % set the max counts of the interferogram
     E2Ref = E2Ref0.timesC(fac);% Apply the same correction factor to the reference interferogram

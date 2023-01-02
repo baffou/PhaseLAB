@@ -218,8 +218,6 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         end
 
-
-
         function objList = square(objList)
             No = numel(objList);
             for io = 1:No
@@ -284,8 +282,6 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 objList(io).Ref.TF = [];
             end
         end
-
-        
 
         function set.Microscope(obj,val)
             if isa(val,'Microscope')

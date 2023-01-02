@@ -224,6 +224,16 @@ classdef CGmatrix
             obj = obj1;
             obj.im = obj1.im.*obj2.im;
         end
+
+        function obj = plus(obj1,obj2)
+            if obj1.Nx~=obj2.Nx || obj1.Ny~=obj2.Ny
+                error('Different image sizes')
+            elseif obj1.pxSize~=obj2.pxSize
+                error('Different pixel sizes')
+            end
+            obj = obj1;
+            obj.im = obj1.im + obj2.im;
+        end
     end
     
 end
