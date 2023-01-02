@@ -132,7 +132,7 @@ if dx==0  %normal imagesc display
     colormap(gca,gray(1024))
     cb.T = colorbar;
     cb.T.Color = AxesColor;
-    imsm = imgaussfilt(IM.T,4);
+    imsm = imgaussfilt(IM.T,1);
     maxVal = max(imsm(:));
     minVal = min(imsm(:));
     caxis([minVal maxVal]);

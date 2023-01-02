@@ -2,11 +2,12 @@
 clc
 clear
 
-%addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
+addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
 addpath(genpath('/home/gb/Documents/MATLAB/PhaseLAB_Git/'))
 
-folder = '/home/gb/Documents/surface/if-dda-m/tests/loop';
-namefileh5 = 'essai.h5';
+%folder = '/home/gb/Documents/surface/if-dda-m/tests/loop';
+folder = pwd;
+namefileh5 = '../essai.h5';
 
 fileh5 = [folder '/' namefileh5];
 
@@ -17,15 +18,30 @@ IF.disp_h5(fileh5)
 IM = IF.import_h5(fileh5);
 
 IM.figure
+
+%%
+
+IMc=IM.crop(Size=600);
+
+%% try to find the mistake
+figure
+subplot(1,2,1)
+imagesc(angle(IM(1).Ey))
+subplot(1,2,2)
+imagesc(angle(IM(1).Einc.Ey))
+
+
+
 %% calculation of the CGM images, one by one, for each illumination
 % add a CG (add it automatically to all images because microscope handle:
+
 IM(1).Microscope.CGcam.CG=CrossGrating(Gamma=IM(1).dxSize*6,lambda0=IM(1).Illumination.lambda);
 IM(1).Microscope.CGcam.setDistance(1e-3);
 Itf=CGMinSilico(IM,shotNoise=false);
 IMis = QLSIprocess(Itf,IM(1).Illumination);
 
 %% display the images
-n=3
+n=3;
 figure
 subplot(1,2,1)
 imageph(IM(n).OPD(end/4:3*end/4,end/4:3*end/4))

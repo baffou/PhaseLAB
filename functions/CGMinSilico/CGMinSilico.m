@@ -12,7 +12,6 @@ arguments
     opt.NAill double = 0
     opt.setI0 (1,:) char {mustBeMember(opt.setI0,{'max','mean'})} = 'max'
     opt.cut (1,1) double = 0
-    opt.EMimage (1,:) char {mustBeMember(opt.EMimage,{'no','x','y'})} = 'no'
 end
 
 if opt.ShotNoise
@@ -65,14 +64,15 @@ for io = 1:No
     
     Emodel = Grating;  % initialisation to have to good size
 
-    if strcmpi(opt.EMimage,'no')
-        T = Image(io).T;
-        Pha = Image(io).Ph;
-        Emodel.im = sqrt(T).*exp(1i*Pha);
-    elseif  strcmpi(opt.EMimage,'x')
+    % ERREUR ici : Il faudrait faire en sorte que Emodel puisse être
+    % vectoriel, que la backfor propagation puisse être veectorielle.
+    if isa(Image,'ImageEM')
         Emodel.im = Image.Ex;
-    elseif  strcmpi(opt.EMimage,'y')
         Emodel.im = Image.Ey;
+    else
+        T = Image(io).T;
+        Pha = Image(io).Ph0; % takes the non-normalized Ph image
+        Emodel.im = sqrt(T).*exp(1i*Pha);
     end
 
     EmodelRef = Grating;  % initialisation to have to good size
@@ -81,7 +81,7 @@ for io = 1:No
         if strcmpi(opt.EMimage,'no')
             T = Image(io).Einc.T;
             Pha = Image(io).Einc.Ph;
-            EmodelRef.im = sqrt(T).*exp(-1i*Pha);
+            EmodelRef.im = sqrt(T).*exp(1i*Pha);
         elseif  strcmpi(opt.EMimage,'x')
             EmodelRef.im = Image.Einc.Ex;
         elseif  strcmpi(opt.EMimage,'y')

@@ -729,6 +729,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     obj(io).Ex = obj0(io).Ex(x1:x2,x1:x2);
                     obj(io).Ey = obj0(io).Ey(x1:x2,x1:x2);
                     obj(io).Ez = obj0(io).Ez(x1:x2,x1:x2);
+                    obj(io).Einc = copy(obj(io).Einc);
                     obj(io).Einc.Ex = obj0(io).Einc.Ex(x1:x2,x1:x2);
                     obj(io).Einc.Ey = obj0(io).Einc.Ey(x1:x2,x1:x2);
                     obj(io).Einc.Ez = obj0(io).Einc.Ez(x1:x2,x1:x2);

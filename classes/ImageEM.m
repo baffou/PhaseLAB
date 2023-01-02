@@ -27,6 +27,7 @@ classdef ImageEM  <  ImageMethods
         E2
         E
         Ph
+        Ph0 % Ph image not normalized by the phase of the reference image
         OPD
         T
     end
@@ -64,6 +65,9 @@ classdef ImageEM  <  ImageMethods
             end
             if nargin==4% ImageEM(Ex,Ey,Ez,Einc||E0)    total field
                 if numel(Eincx) == 3 % E0 is a vector, meaning that the illumination is uniform and at normal incidence
+                    obj.Ex = Ex;
+                    obj.Ey = Ey;
+                    obj.Ez = Ez;
                     ONE = ones(size(Ex));
                     obj.Einc = ImageEM(Eincx(1).*ONE,Eincx(2).*ONE, Eincx(3).*ONE);
                 else
@@ -135,6 +139,7 @@ classdef ImageEM  <  ImageMethods
         end
 
         function val = get.Ph(obj)
+
             nor = norm(obj.EE0);
             if nor==0
                 nor = [1/sqrt(2) 1/sqrt(2)];
@@ -156,6 +161,21 @@ classdef ImageEM  <  ImageMethods
 
             val0 = pha_x.*Ex_norm+pha_y.*Ey_norm;% weighted average of the phase images
             val = val0./(Ex_norm+Ey_norm);
+        end
+
+        function val = get.Ph0(obj)
+
+            Ex_norm = abs(obj.Ex).^2;%enables the phase subtraction of E0x
+            Ey_norm = abs(obj.Ey).^2;%enables the phase subtraction of E0y
+            tic
+            pha_x = Unwrap_TIE_DCT_Iter(angle(obj.Ex));% phase image of the x-polarized wavefront
+            pha_y = Unwrap_TIE_DCT_Iter(angle(obj.Ey));% phase image of the y-polarized wavefront
+            toc
+            % ERREUR : cette formule est fausse si on illumine avec un
+            % angle. Q: que mesure-t-on en QLSI alors ???
+            val0 = pha_x.*Ex_norm+pha_y.*Ey_norm;% weighted average of the phase images
+            
+            val = mod(val0./(Ex_norm+Ey_norm),2*pi)-pi;
         end
 
         function val = get.OPD(obj)

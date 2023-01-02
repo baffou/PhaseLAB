@@ -41,6 +41,7 @@ Nf = (numel(info.Groups(1).Datasets)-3)/14; % number of simulations
 IM = ImageEM(n=Nf);
 
 for nim = 1:Nf
+    printLoop(nim,Nf)
     % import images
 
     Exreal=h5read(fileh5,strcat('/Image/Image+incident',IF.compose3(nim),'kz>0 field x component real part'));

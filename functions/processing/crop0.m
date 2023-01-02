@@ -11,14 +11,14 @@ function [x1, x2, y1, y2] = crop0(obj,opt)
 if opt.twoPoints
     obj(1).figure
     [xx,yy]=ginput(2);
-    x1=min(xx);
-    x2=max(xx);
-    y1=min(yy);
-    y2=max(yy);
-    x1=max([1;x1]);
-    x2=min([obj(1).Nx;x2]);
-    y1=max([1;y1]);
-    y2=min([obj(1).Ny;y2]);
+    x1=round(min(xx));
+    x2=round(max(xx));
+    y1=round(min(yy));
+    y2=round(max(yy));
+    x1=round(max([1;x1]));
+    x2=round(min([obj(1).Nx;x2]));
+    y1=round(max([1;y1]));
+    y2=round(min([obj(1).Ny;y2]));
 elseif ~isempty(opt.xy1) && ~isempty(opt.xy2)  % crop('xy1', [a,b], 'xy2', [a,b])
     if numel(opt.xy1)~=2
         error('First input must be a 2-vector (x,y)')
@@ -81,7 +81,17 @@ else
         end
     end
 
+    
 end
+
+if mod(x2-x1,2)==0
+    x2=x2-1;
+end
+if mod(y2-y1,2)==0
+    y2=y2-1;
+end
+
+
 
     function drawRect(h,rr,xc,yc)
         C = get (h.UserData{7}(2), 'CurrentPoint');
