@@ -393,7 +393,16 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 for io = 1:Nim
                     clear imName
                     % Automatic definition of the name of the file
-                    imName = [type '_' textkkk(io)];
+                    if ~isempty(objList(io).OPDfileName)
+                        imName = objList(io).OPDfileName;
+                    elseif ~isempty(objList(io).ItfFileName)
+                        imName = [type '_' objList(io).ItfFileName];
+                    elseif ~isempty(objList(io).imageNumber)
+                        imName = [type '_' textkkk(objList(io).imageNumber)];
+                    else
+                        imName = [type '_' textkkk(io)];
+                    end
+                    imName = removeExtension(imName);
                     imNamejpg = [imName '.jpg'];
                     imwrite(ImageQLSI.im2int8(objList(io).(type)),phase1024(256),[folder imNamejpg])
                     disp(imNamejpg)
