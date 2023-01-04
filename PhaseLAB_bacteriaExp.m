@@ -35,10 +35,10 @@ folder='/Volumes/NanoBio/_Maelle/Experimental data/20220204/exp1';
 
 %% INTERFEROGRAM PROCESSING -- Im.QLSIprocess(IL);
 
-IMlow=Im.QLSIprocess(IL,'Method','lowres');
+IMlow = Im.QLSIprocess(IL,'resolution','low');
 %IMhigh=Im.QLSIprocess(IL);
 
-IMlowf=IMlow.gauss(20);
+IMlowf = IMlow.gauss(20);
 %IM.phaseLevel0('manual')
 
 IMlowf.figure
@@ -47,5 +47,5 @@ IMlowf.figure
 % with perspective
 %makeMoviedx(IMlowf,'bacteria1.avi',5,1,45,45,1)
 % without perspective
-makeMoviedx(IMlowf,'bacteria2.avi',5,0,0,0,1)
+%makeMoviedx(IMlowf,'bacteria2.avi',5,0,0,0,1)
 

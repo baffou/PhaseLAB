@@ -68,7 +68,7 @@ colormap(gray)
 
 %% SLIM (page 229, book Popescu)
 
-Nim = 12; % number of theta incidences involved in the calculations.
+Nim = numel(IM); % number of theta incidences involved in the calculations.
 
 P=repmat(PCmask(),4,1);
 

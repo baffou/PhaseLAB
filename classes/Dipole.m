@@ -46,7 +46,7 @@ classdef Dipole
     methods
 
         function obj = Dipole(mat,radius,z)
-            %Dipole(radius,mat,[z]). By default, z = radius.
+            %Dipole(mat,radius,[z]). By default, z = radius.
             if nargin~=0
                 if ~isnumeric(radius)
                     error('The 2nd input (radius) must be a real number')

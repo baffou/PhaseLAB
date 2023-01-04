@@ -10,8 +10,8 @@ format long
 ME=Medium(1.5,1.5);
 
 %% CREATION OF THE ILLUMINATION -- IL=Illumination(lambda,Medium,irradiance[,polar])
-lambda=530e-9;
-IL=Illumination(lambda,ME,100e9);
+lambda=532e-9;
+IL=Illumination(lambda,ME);
 
 %% CREATION OF A DIPOLE -- DI=Dipole(material,radius);
 radius=75e-9;
@@ -28,7 +28,7 @@ MI=Microscope(OB,180);
 
 %% ILLUMINATION OF THE DIPOLE
 DI=DI.shine(IL);
-DI=DI.moveBy('z',0.8e-6,'x',0.8e-6);
+%DI=DI.moveBy('z',0.8e-6,'x',0.8e-6);
 
 %% COMPUTATION OF THE IMAGES
 clc
