@@ -127,7 +127,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             end
             hp=drawpolyline;
             dist=lineLength(hp);
-            clipboard('copy',sprintf([hfig.UserData{5}.OPDfileName '\t%.4g\t' hfig.UserData{2}],dist))
+            %clipboard('copy',sprintf([hfig.UserData{5}.OPDfileName '\t%.4g\t' hfig.UserData{2}],dist))
 
             %             if nargin==2
             %                 if strcmp(hfig.UserData{2},'µm')

@@ -299,7 +299,7 @@ if dx==0  %normal imagesc display
     %Nv = numel(vec);
     %caxis([vec(500) vec(Nv-500) ]);
     
-    IMg = imgaussfilt(imOPD,2);
+    IMg = imgaussfilt(imOPD,1);
     caxis([min(IMg(:)) max(IMg(:))]);
     
     
