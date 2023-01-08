@@ -8,6 +8,15 @@
 classdef ImageQLSI   <   ImageMethods
 
     %    properties(GetAccess = public, SetAccess = private)
+    properties(Dependent)
+        T       % Transmittance image
+        OPD     % Optical path difference image
+        DWx     % OPD gradient along x
+        DWy     % OPD gradient along y
+        Nx
+        Ny
+    end
+
     properties(Access = public, Hidden)
         T0       % matrix of path
         OPD0
@@ -16,33 +25,18 @@ classdef ImageQLSI   <   ImageMethods
         % comment
     end
 
-    properties(Dependent)
-        T       % Transmittance image
-        OPD     % Optical path difference image
-        DWx     % OPD gradient along x
-        DWy     % OPD gradient along y
-    end
-
     properties(SetAccess={?Interfero})
         ItfFileName
     end
 
     properties(GetAccess = public, SetAccess = private)
-        %lambda, inherited from ImageMethods
-        %pxSize, inherited from ImageMethods
         TfileName
         OPDfileName
         imageNumber
         folder
         % Microscope, inherited from ImageMethods
         % Illumination = Illumination() % Illumination object
-        % pxSize0 %hidden actual pxSize that can be modified.
         % processingSoft
-    end
-
-    properties(Dependent)
-        Nx
-        Ny
     end
 
 
