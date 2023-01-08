@@ -15,10 +15,9 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
     end
 
     properties(Access = public)
-        %lambda, inherited from ImageMethods
-        %pxSize, inherited from ImageMethods
-        %dxSize, inherited from ImageMethods
         %Microscope, inherited from ImageMethods
+        %Illumination, inherited from ImageMethods
+        %comment, inherited from ImageMethods
     end
 
     properties(Dependent)
@@ -98,7 +97,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 error('You are trying to sum two images corresponding to two different pixel sizes.')
             elseif obj1.zoom~=obj2.zoom
                 error('You are trying to sum two images corresponding to two different sizes of field of view (''zoom'' properties differ).')
-            elseif obj1.Npx~=obj2.Npx
+            elseif obj1.Nx~=obj2.Nx || obj1.Ny~=obj2.Ny
                 error('You are trying to sum two images with different pixel numbers.')
             end
             objs = copy(obj1);

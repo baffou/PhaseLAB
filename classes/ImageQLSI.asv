@@ -40,10 +40,9 @@ classdef ImageQLSI   <   ImageMethods
         % processingSoft
     end
 
-    properties(SetAccess={?ImageMethods})
-        Nx =[]
-        Ny =[]
-        Npx =[]
+    properties(Dependent)
+        Nx
+        Ny
     end
 
 
@@ -65,8 +64,15 @@ classdef ImageQLSI   <   ImageMethods
             end
 
             obj.imageNumber=opt.imageNumber;
+            if isa(INT,'ImageEM')
+                objEM=INT;
+                obj.T0 = objEM.T;
+                obj.OPD0 = objEM.OPD;
+                obj.Microscope=objEM.Microscope
+                obj.Illumination=objEM.Illumination
+                
 
-            if nargin==1 %ImageQLSI(n)
+            elseif nargin==1 %ImageQLSI(n)
                 if isnumeric(INT)
                     n=INT;
                     obj = repmat(ImageQLSI(),n,1);
@@ -137,6 +143,14 @@ classdef ImageQLSI   <   ImageMethods
             else
                 error('Not the proper number of inputs')
             end
+        end
+
+        function val = get.Nx(obj)
+            val = size(obj.OPD,2);
+        end
+
+        function val = get.Ny(obj)
+            val = size(obj.OPD,1);
         end
 
         function val = get.T(obj)

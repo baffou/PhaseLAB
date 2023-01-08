@@ -40,10 +40,9 @@ classdef ImageQLSI   <   ImageMethods
         % processingSoft
     end
 
-    properties(SetAccess={?ImageMethods})
-        Nx =[]
-        Ny =[]
-        Npx =[]
+    properties(Dependent)
+        Nx
+        Ny
     end
 
 
@@ -55,7 +54,7 @@ classdef ImageQLSI   <   ImageMethods
     methods
         function obj = ImageQLSI(INT,OPD,MI,IL,opt)
             arguments
-                INT = []     % fileName or Matrix
+                INT     % fileName or Matrix
                 OPD = []     % fileName or Matrix
                 MI  Microscope = Microscope.empty()
                 IL  Illumination = Illumination.empty
@@ -65,8 +64,15 @@ classdef ImageQLSI   <   ImageMethods
             end
 
             obj.imageNumber=opt.imageNumber;
+            if isa(INT,'ImageEM')
+                objEM=INT;
+                obj.T0 = objEM.T;
+                obj.OPD0 = objEM.OPD;
+                obj.Microscope=objEM.Microscope
+                obj.Illumination=objEM.Illumination
+                
 
-            if nargin==1 %ImageQLSI(n)
+            elseif nargin==1 %ImageQLSI(n)
                 if isnumeric(INT)
                     n=INT;
                     obj = repmat(ImageQLSI(),n,1);
@@ -87,7 +93,6 @@ classdef ImageQLSI   <   ImageMethods
                     if ischar(INT)
                         obj.T0=INT;
                         obj.TfileName=INT;
-                        [obj.Ny, obj.Nx]=size(obj.T);
                     elseif isnumeric(INT)
                         if isempty(opt.fileName)
                             error('A filename must be specified')
@@ -96,7 +101,6 @@ classdef ImageQLSI   <   ImageMethods
                         obj.TfileName=obj.T0;
                         obj.T0
                         writematrix(single(INT),obj.T0)
-                        [obj.Ny, obj.Nx]=size(INT);
                     end
 
                     if ischar(OPD)
@@ -129,7 +133,6 @@ classdef ImageQLSI   <   ImageMethods
                     else
                         error('wrong input')
                     end
-                    [obj.Ny, obj.Nx]=size(obj.T0);
                 end
                 obj.Illumination = IL;
                 obj.Microscope = MI;
@@ -137,6 +140,14 @@ classdef ImageQLSI   <   ImageMethods
             else
                 error('Not the proper number of inputs')
             end
+        end
+
+        function val = get.Nx(obj)
+            val = size(obj.OPD,2);
+        end
+
+        function val = get.Ny(obj)
+            val = size(obj.OPD,1);
         end
 
         function val = get.T(obj)
@@ -441,7 +452,6 @@ classdef ImageQLSI   <   ImageMethods
                     imOPD = binning3x3(obj(ii).OPD);
                     obj2(ii).T = imT;
                     obj2(ii).OPD = imOPD;
-                    [obj2.Ny, obj2.Nx]=size(imT);
                 end
             elseif n==2
                 for ii = 1:numel(obj)
@@ -449,7 +459,6 @@ classdef ImageQLSI   <   ImageMethods
                     imOPD = binning2x2(obj(ii).OPD);
                     obj2(ii).T = imT;
                     obj2(ii).OPD = imOPD;
-                    [obj2.Ny, obj2.Nx]=size(imT);
                 end
             else
                 error('not a proper binning dimension. Should be 2 or 3.')

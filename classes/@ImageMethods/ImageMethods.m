@@ -179,7 +179,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 factorAxis=1;
             end
             D=sqrt((cx(1)-cx(2))^2+(cy(1)-cy(2))^2);
-            %w=1:obj.Npx;
             profile.T  =radialAverage0(obj.T,   [cx(1)/factorAxis, cy(1)/factorAxis], round(D/factorAxis));
             profile.OPD=radialAverage0(obj.OPD, [cx(1)/factorAxis, cy(1)/factorAxis], round(D/factorAxis));
             profile.coords=[cx,cy];
@@ -720,7 +719,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     temp=obj(io).T(y1:y2,x1:x2); % temp variable to avoid importing the matrix twice for the calculation of Nx and Ny when it is stored in a file.
                     obj(io).T   = temp;
                     obj(io).OPD = obj(io).OPD(y1:y2,x1:x2);
-                    [obj(io).Ny, obj(io).Nx]=size(temp);
                     if ~isempty(obj(io).DWx)
                         obj(io).DWx0=obj(io).DWx(y1:y2,x1:x2);
                         obj(io).DWy0=obj(io).DWy(y1:y2,x1:x2);
