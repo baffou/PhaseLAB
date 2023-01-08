@@ -9,7 +9,6 @@ arguments
     opt.zoom = 1
     opt.step = 1
     opt.keepPoint = false
-    opt.display = false
 end
 
 
@@ -90,11 +89,10 @@ for io = 1:Nim
         else
             while(button~=1) % i.e. as long as pmax is not a mouse click it is not a mouse click
                 figure(hfigInit)
-                if ~opt.keepPoint || (opt.keepPoint && io==1)
-                    [x,y] = ginput(1);
-                    fprintf('x=%d, y=%d\n',round(x), round(y))
-                    xList(iNP) = x;
-                    yList(iNP) = y;
+                if ~opt.keepPoint || (pt.keepPoint && )
+                [x,y] = ginput(1);
+                xList(iNP) = x;
+                yList(iNP) = y;
                 %% starting pixel for sum
                 %n = input('nothing');
 
@@ -103,7 +101,6 @@ for io = 1:Nim
                 nmax = min(IM.Ny-round(y)-1,nmax);
                 nmax = min(IM.Nx-round(x)-1,nmax);
 
-                end
 
                 imPcrop = imph(round(y)-nmax:round(y)+nmax,round(x)-nmax:round(x)+nmax); %crop OPD image
                 imTcrop = imT(round(y)-nmax:round(y)+nmax,round(x)-nmax:round(x)+nmax); %crop intensity image
@@ -159,7 +156,7 @@ for io = 1:Nim
                     alpha(co) = sum(alpha2D(:))*taillePx.*taillePx;
 
                     OV(co) = sum(Phnormask*IM.lambda/(2*pi))*taillePx.*taillePx;
-                    OVw(co) = sum(sqrt(imTcropnormask).*Phnormask*IM.lambda/(2*pi))*taillePx.*taillePx;
+                    OVw(co) = sum(imTcropnormask.*Phnormask*IM.lambda/(2*pi))*taillePx.*taillePx;
                     %sqrtTsum(co) = sum(sqrtT(:));
                     %expPhsum(co) = sum(expPh(:));
 
@@ -176,7 +173,7 @@ for io = 1:Nim
 
                 realpha = real(alpha);
                 imalpha = imag(alpha);
-                hfigInit.Visible="off";
+
                 hfig2 = figure();
                 plot(coo,realpha)
                 %save -ascii realpha_p250 realpha
@@ -190,12 +187,8 @@ for io = 1:Nim
                 %% mean value of alpha and error bares
                 %pxmin = input('valeur de pxmin'); %faire la moyene de alpha entre pxmin et pxmax
                 %pxmax = input('valeur de pxmax');
-                figure(hfig2)
-                fullwidth
                 [xp,~,button] = ginput(2);  % click twice on any key to restart the loop. Other, click twice with the mouse to keep on going.
                 close(hfig2)
-                hfigInit.Visible="on";
-
             end
 
 
@@ -213,7 +206,7 @@ for io = 1:Nim
 %            realphamean+1i*imalphamean;
             alphaNP(iNP,io) = realphamean+1i*imalphamean;
             OVNP(iNP,io) = mean(OV(pxmin:pxmax));
-            OVwNP(iNP,io) = mean(OVw(pxmin:pxmax));
+            OVwNP(iNP,io) = mean(OV(pxmin:pxmax));
             %close(hfig)
         end %if nmax==0
         fprintf('alpha [x10^-21]:\n')
@@ -256,12 +249,5 @@ params.alpha = alphaNP.';
 params.OV    = OVNP.';
 params.OVw   = OVwNP.';
 
-if opt.display
-    figure
-    hold on
-    plot(real(params.alpha))
-    plot(imag(params.alpha))
-    plot(params.OV)
-    plot(params.OVw)
-    legend({'real alpha','imag alpha','OV','OV weighted'})
+
 end
