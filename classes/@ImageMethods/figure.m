@@ -304,7 +304,7 @@ set(hand.Z20,  'callback',{@(src,event)figure_callback(hfig0,ZernikeRemove(hfig0
 set(hand.Z22,  'callback',{@(src,event)figure_callback(hfig0,ZernikeRemove(hfig0.UserData{5},2,2,str2double(get(hand.UIzernike_R,'String'))   ),hfig0.UserData{2},hfig0.UserData{3},hfig0.UserData{4},str2double(get(hand.UIk,'String')))});
 set(hand.Z31,  'callback',{@(src,event)figure_callback(hfig0,ZernikeRemove(hfig0.UserData{5},3,1,str2double(get(hand.UIzernike_R,'String'))   ),hfig0.UserData{2},hfig0.UserData{3},hfig0.UserData{4},str2double(get(hand.UIk,'String')))});
 set(hand.Z33,  'callback',{@(src,event)figure_callback(hfig0,ZernikeRemove(hfig0.UserData{5},3,3,str2double(get(hand.UIzernike_R,'String'))   ),hfig0.UserData{2},hfig0.UserData{3},hfig0.UserData{4},str2double(get(hand.UIk,'String')))});
-set(hand.alpha,    'callback', @(src,event)alpha_ImageProfile(hfig0.UserData{5},hfig0));
+set(hand.alpha,    'callback', @(src,event)alpha_ImageProfile(hfig0.UserData{5},figure=hfig0));
 set(hand.smooth,   'callback',{@(src,event)figure_callback(hfig0,smooth(hfig0.UserData{5},str2double(get(hand.UIsmooth,'String'))),hfig0.UserData{2},hfig0.UserData{3},hfig0.UserData{4},str2double(get(hand.UIk,'String')))});
 set(hand.OV,  'callback', @(src,event)OV(hfig0.UserData{5},str2double(get(hand.UIalpha_NNP,'String')),str2double(get(hand.UIalpha_nmax,'String')),hfig0));
 set(hand.pixels,   'callback', @(src,event)getPixel(hfig0.UserData{5},hfig0));
