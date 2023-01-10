@@ -187,7 +187,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             if norm(obj.EE0)==0 % happens when using crossed polarizers that kill E0 on the image plane.
                 nor = 1;
             else
-                nor = norm(obj.EE0);
+                nor = obj.EE0n();
             end
             norExtot = obj.Ex/nor;
             norEytot = obj.Ey/nor;
@@ -296,6 +296,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
         function val = EE0(obj)
+            % complex vectorial incident field at the center of the image
             if isempty(obj.Einc) % if the object if already an incident field
                 valx=obj.Ex(end/2,end/2);
                 valy=obj.Ey(end/2,end/2);
@@ -303,6 +304,15 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 val = [valx, valy, valz];
             else % take the EE0 of the Einc
                 val = obj.Einc.EE0;
+            end
+        end
+
+        function val = EE0n(obj)
+            % norm of the incident field
+            if isempty(obj.Einc) % if the object if already an incident field
+                val=mean(mean(sqrt(abs(obj.Ex).^2+abs(obj.Ey).^2+abs(obj.Ez).^2)));
+            else % take the EE0 of the Einc
+                val = obj.Einc.EE0n();
             end
         end
 

@@ -60,7 +60,7 @@ for io = 1:Nim
     n2 = IM.Illumination.nS;
     taillePx = IM.pxSize;
 
-    imph = IM.OPD;
+    imOPD = IM.OPD;
     imT = IM.T; %./imTref; %intensity normalization
 
     xList = zeros(NNP,1);
@@ -105,7 +105,7 @@ for io = 1:Nim
 
                 end
 
-                imPcrop = imph(round(y)-nmax:round(y)+nmax,round(x)-nmax:round(x)+nmax); %crop OPD image
+                imOPDcrop = imOPD(round(y)-nmax:round(y)+nmax,round(x)-nmax:round(x)+nmax); %crop OPD image
                 imTcrop = imT(round(y)-nmax:round(y)+nmax,round(x)-nmax:round(x)+nmax); %crop intensity image
 
 
@@ -134,11 +134,11 @@ for io = 1:Nim
                     circle = array2D <= rr.^2; %mask circle for each cooeration
                     ring = array2D >= rr.^2 & array2D <= (rr+n_bkg0).^2; %mask ring
 
-                    imP = imPcrop.*circle;
-                    imP_0 = imPcrop.*ring; %only the borders of background image are different from 0
+                    imOPDD = imOPDcrop.*circle;
+                    imOPD_0 = imOPDcrop.*ring; %only the borders of background image are different from 0
 
-                    backgroundOPD = sum(imP_0(:))/(sum(ring(:))); %mean backgound
-                    OPDnorm = (imP-backgroundOPD);
+                    backgroundOPD = sum(imOPD_0(:))/(sum(ring(:))); %mean backgound
+                    OPDnorm = (imOPDD-backgroundOPD);
                     %figure,imagesc(OPDnorm),colorbar
                     Phnorm = 2*pi*OPDnorm./IM.lambda;
 
@@ -151,7 +151,12 @@ for io = 1:Nim
                     %% experimental polarizability
                     imTcropnormask = imTcropnorm(circle); %take only values included in the circle
                     Phnormask = Phnorm(circle); %take only values included in the circle
-
+                    
+                    %imTcropnormask=imT(:);
+                    %Phnormask=2*pi/IM.lambda*imOPD(:);
+                    %imTcropnormask=imTcrop(:);
+                    %Phnormask=2*pi/IM.lambda*imOPDcrop(:);
+                    
                     sqrtT = sqrt(imTcropnormask);
                     expPh = exp(1i*Phnormask);
 

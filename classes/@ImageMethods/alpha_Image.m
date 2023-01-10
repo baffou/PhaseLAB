@@ -9,10 +9,12 @@
 % For the moment, works for a uniform medium n=nS. Uncertain for a
 % non-uniform medium
 
-function [alpha,NPprops] = alpha_Image(Image,z0)
+function [alpha,NPprops,OV,E] = alpha_Image(Image,z0)
 ME = Image(1).Illumination.Medium;
 Nim = length(Image);
 alpha = zeros(Nim,1);
+OV = zeros(Nim,1);
+E = zeros(Nim,1);
 lambda0 = zeros(Nim,1);
 k0 = zeros(Nim,1);
 
@@ -25,6 +27,8 @@ for iim = 1:Nim
     alphaS = 1i*2*ME.n/k0(iim)*(1-sqtT.*expPh);
 
     alpha(iim) = sum(alphaS(:))*Image(iim).pxSize*Image(iim).pxSize;
+    OV(iim) = sum(Image(iim).OPD(:))*Image(iim).pxSize*Image(iim).pxSize;
+    E(iim) = sum(1-Image(iim).T(:))*Image(iim).pxSize*Image(iim).pxSize;
 end
 
 if ME.n~=ME.nS && nargin==1
