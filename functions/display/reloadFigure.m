@@ -1,7 +1,7 @@
 function reloadFigure(hfig,IM,unit,dx0,mix,k)
 
 %% zoom reset
-if strcmp(unit,'px') || dx==2 || dx==3  % presents the µm mode with dx
+if strcmp(unit,'px')  % presents the µm mode with dx
     factorX = 1;
     factorY = 1;
     unit = 'px';  % present the µm mode with dx, mess up a bit the image, I don't know why

@@ -48,7 +48,7 @@ classdef ImageQLSI   <   ImageMethods
     methods
         function obj = ImageQLSI(INT,OPD,MI,IL,opt)
             arguments
-                INT     % fileName or Matrix
+                INT = []     % fileName or Matrix
                 OPD = []     % fileName or Matrix
                 MI  Microscope = Microscope.empty()
                 IL  Illumination = Illumination.empty

@@ -19,8 +19,7 @@ Nim=10;
 eD=530e-9;
 OB=Objective(100,1.3,'Olympus');
 CG=CrossGrating("Gamma",39e-6,"lambda0",eD);
-CGcam=CGcamera('Zyla',CG);
-CGcam.RL.zoom=1;
+CGcam=CGcamera('Zyla',CG,-1);
 MI=Microscope(OB,180,CGcam);
 MI.zo=0e-6;
 Npx=300; % should be multiple of 3
@@ -73,6 +72,7 @@ Itf=CGMinSilico(IM0,shotNoise=shotNoise,Nimages=Nim,NAill=IL.NA);
 % crop(1) = FcropParameters(Npx/2+1                   ,Npx/2+1                   ,Rcrop,Npx,Npx);
 % crop(2) = FcropParameters(Npx/2+1+2*Rcrop*cos(beta),Npx/2+1+2*Rcrop*sin(beta),Rcrop,Npx,Npx);
 % crop(3) = FcropParameters(Npx/2+1-2*Rcrop*sin(beta),Npx/2+1+2*Rcrop*cos(beta),Rcrop,Npx,Npx);
+
 
 %% Postprocessing of the insilico data
 
