@@ -21,6 +21,11 @@ classdef Medium
     properties(Dependent)
         n       % refractive index of the upper medium
         nS      % refractive index of the substrate
+        lambda
+    end
+
+    properties(Hidden)
+        Illumination Illumination
     end
     
     methods
@@ -46,6 +51,10 @@ classdef Medium
                     val = 1.33;
                 elseif strcmp(obj.n0,'air')
                     val = 1.;
+                elseif ~isempty(obj.Illumination)
+                    val = real(indexReadDDA(obj.Illumination.lambda,obj.n0));
+                else
+                    error('There is a problem with the definition of the material')
                 end
             end
         end
@@ -60,6 +69,10 @@ classdef Medium
                     val = 1.33;
                 elseif strcmp(obj.nS0,'air')
                     val = 1.;
+                elseif ~isempty(obj.Illumination)
+                    val = real(indexReadDDA(obj.Illumination.lambda,obj.n0));
+                else
+                    error('There is a problem with the definition of the material')
                 end
             end
         end
@@ -72,12 +85,20 @@ classdef Medium
                 if min(obj.nS~=obj.nS0)
                     fprintf(['   sub mat: ' obj.nS0 '\n'])
                 end
-                    fprintf('   n\t  : %.4g\n',obj.n)
-                    fprintf('   nS\t  : %.4g\n',obj.nS)
+                fprintf('   n\t  : %.4g\n',obj.n)
+                fprintf('   nS\t  : %.4g\n',obj.nS)
+                if ~isempty(obj.Illumination)
+                    fprintf('   lambda : %.1f nm\n',obj.Illumination.lambda*1e9)
+                end
             else
                 disp('empty object')
             end
         end
+
+        function val = get.lambda(obj)
+            val=obj.Illumination.lambda;
+        end
+
 
     end
 
