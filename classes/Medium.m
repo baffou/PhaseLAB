@@ -24,7 +24,7 @@ classdef Medium
         lambda
     end
 
-    properties(Hidden)
+    properties
         Illumination Illumination
     end
     

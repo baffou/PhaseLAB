@@ -12,7 +12,7 @@
 % affiliation: CNRS, Institut Fresnel
 % date: Jul 31, 2019
 
-classdef Illumination
+classdef Illumination  <  handle & matlab.mixin.Copyable
     properties(GetAccess = public , SetAccess = private)
         lambda   {mustBeNumeric, mustBePositive}       % free-space illumination wavelength [m]
     end
