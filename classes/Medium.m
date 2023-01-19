@@ -11,7 +11,7 @@
 % affiliation: CNRS, Institut Fresnel
 % date: Jul 31, 2019
 
-classdef Medium
+classdef Medium <  handle & matlab.mixin.Copyable
     
     properties(Access = public)
         n0       % refractive index or nature of the upper medium

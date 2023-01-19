@@ -40,6 +40,7 @@ else
         yc = obj(1).Ny/2;
     end
     if strcmpi(opt.Size,'Manual') % crop('Center','Manual')
+        1111
         h = obj(1).figure;
         h.UserData{12}.getPoint = 0;
         rr = rectangle();

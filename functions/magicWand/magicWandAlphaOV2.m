@@ -166,12 +166,12 @@ for n = 1:Nim  % loop on the list of images
         pause(0.1)
         end
         
-        xp(1) = hfig2.UserData.p1
-        xp(2) = hfig2.UserData.p2
+        xp(1) = hfig2.UserData.p1;
+        xp(2) = hfig2.UserData.p2;
 
-        warning('pmin and pmaw forced to 1')
-        xp(1)=1;
-        xp(2)=1;
+%         warning('pmin and pmax forced to 1')
+%         xp(1)=1;
+%         xp(2)=1;
         
         close(hfig2)
       

@@ -13,8 +13,8 @@
 % date: Jul 31, 2019
 
 classdef Illumination  <  handle & matlab.mixin.Copyable
-    properties(GetAccess = public , SetAccess = private)
-        lambda   {mustBeNumeric, mustBePositive}       % free-space illumination wavelength [m]
+    properties
+        lambda  double {mustBeNumeric, mustBePositive}       % free-space illumination wavelength [m]
     end
     
     properties(Access = public)
@@ -73,20 +73,16 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
             obj.identity = rand(1,1);
         end
         
-        function obj = set.lambda(obj,val)
-            if ~isnumeric(val)
-                error('The 1st input (lambda) must be a number')
-            elseif val<0
-                error('The 1st input (lambda) must be positive')
-            elseif val>1
+        function set.lambda(obj,val)
+            if val>1
                 obj.lambda = val*1e-9;
-                warning('lambda converted in nm')
+                warning('lambda assumed to be [nm], converted into [m]')
             else
                 obj.lambda = val;
             end
         end
         
-        function obj = set.polar(obj,val)
+        function set.polar(obj,val)
             if ~isnumeric(val)
                 error('the input polarization must be a vector')
             elseif norm(val)==0
@@ -100,7 +96,7 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
             end
         end
 
-        function obj = set.I(obj,val)
+        function set.I(obj,val)
             if val>0
                 obj.I = val;
             else
@@ -108,7 +104,7 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
             end
         end
         
-        function obj = set.direct(obj,val)
+        function set.direct(obj,val)
             if ~isnumeric(val)
                 error('the input direction must be a number')
             elseif norm(val)==0
