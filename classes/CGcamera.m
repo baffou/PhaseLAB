@@ -200,7 +200,7 @@ classdef CGcamera  <  handle
             end
             Gamma = obj.CG.Gamma;
             p_p = obj.dxSize;
-            val = -Gamma*p_p/(4*pi*dist);  % sign "-" because thick object (OPD>0) create a delay (phi<0)
+            val = Gamma*p_p/(4*pi*dist);  % sign "-" because thick object (OPD>0) create a delay (phi<0)
         end
 
         function val = distance(obj,lambda)

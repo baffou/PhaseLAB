@@ -46,7 +46,14 @@ Hm=Hm-mean(Hm(:));
 Hm0=Hm;
 
 Hm0(opt.mask==1)=Hm(opt.mask==1)-mean(Hm(opt.mask==1));
-mnorm=sqrt(sum(Hm0(:).*Hm0(:)));
+
+
+if n~=0 || m~=0 % normalization unless for a flat profile
+    mnorm=sqrt(sum(Hm0(:).*Hm0(:)));
+else
+    mnorm=1;
+end
+
 Hm0n=Hm0/mnorm;
 
 % moments of the image on these basis functions
@@ -56,10 +63,10 @@ ms=sum(sum((Im-I0).*Hm0n));
 
 Imout = Im-ms*Hx.*Hy/mnorm;
 
-
+Imout=Imout-mean(Imout(:));
 %fprintf('n=%d, m=%d\n',n,m)
 
-% 
+% % 
 % figure
 % subplot(1,3,1),imagesc (Im),colorbar
 % set(gca,'DataAspectRatio',[1 1 1])
@@ -68,7 +75,8 @@ Imout = Im-ms*Hx.*Hy/mnorm;
 % subplot(1,3,3),imagesc (Imout),colorbar
 % set(gca,'DataAspectRatio',[1 1 1])
 % fullwidth
-
+% 
+% 
 
 
 if n==3

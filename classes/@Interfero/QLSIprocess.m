@@ -152,8 +152,7 @@ for ii = 1:Nf
 
     %    fprintf('ZERO ORDER\n')
     zeta = Itfi.Microscope.CGcam.zeta;
-    size(FIm)
-    size(FRf)
+
     if ~isequal(size(FIm),size(FRf))
         pause(1)
     end

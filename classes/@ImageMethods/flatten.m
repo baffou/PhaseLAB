@@ -68,11 +68,13 @@ for io = 1:No
             temp = SineRemoval(temp,n,mask);
         end
         obj2(io).OPD=temp;
-    else    
+    else  
+
         temp=obj(io).OPD;
+
         for n = 0:opt.nmax
             for m = 0:opt.nmax
-                if n+m < opt.nmax
+                if n+m <= opt.nmax
                     temp = polynomialRemoval(temp,method,n,m,'mask',mask);
                 end
             end
@@ -81,65 +83,13 @@ for io = 1:No
     end
     
     
+if opt.display
+    subplot(2,2,2)
+    imagesc(mask)
+end
     
     
     
-    if strcmp(method,'Zernike')
-        temp=obj(io).OPD;
-        for n = 1:opt.nmax
-            for m = mod(n,2):2:n
-                temp = ZernikeRemoval(temp,n,m); % use a temp image to avoid writing several times on the HDD in remote mode.
-            end
-        end
-        obj2(io).OPD=temp;
-    elseif strcmp(method,'Waves')
-        temp=obj(io).OPD;
-        for n = 1:opt.nmax
-            temp = SineRemoval(temp,n,mask); % use a temp image to avoid writing several times on the HDD in remote mode.
-        end
-        obj2(io).OPD=temp;
-    elseif strcmpi(method,'Chebyshev')
-        temp=obj(io).OPD;
-        for n = 1:opt.nmax
-            if opt.kind == 1
-                temp = polynomialRemoval(temp,'Chebyshev', n,'mask',mask); % use a temp image to avoid writing several times on the HDD in remote mode.
-            elseif opt.kind==2
-                temp = polynomialRemoval(temp,'Chebyshev2',n,'mask',mask); % use a temp image to avoid writing several times on the HDD in remote mode.
-            end
-        end
-        obj2(io).OPD=temp;
-    elseif strcmpi(method,'Hermite')
-        temp=obj(io).OPD;
-        for n = 1:opt.nmax
-            temp = polynomialRemoval(temp,'Hermite',n,'mask',mask); % use a temp image to avoid writing several times on the HDD in remote mode.
-        end
-        obj2(io).OPD=temp;
-    elseif strcmpi(method,'Legendre')
-        temp=obj(io).OPD;
-        for n = 0:opt.nmax
-            for m = 0:opt.nmax
-                if n+m < opt.nmax
-                    %fprintf('n=%d, m=%d\n',n,m)
-                    temp = polynomialRemoval(temp,'Legendre',n,m,'mask',mask); % use a temp image to avoid writing several times on the HDD in remote mode.
-                end
-            end
-        end
-        obj2(io).OPD=temp;
-    end
-    if ~isempty(opt.threshold) && ~strcmp(method,'Zernike')
-        if opt.display
-            subplot(2,2,2)
-            imageph(temp)
-            title('final image')
-            subplot(2,2,3)
-            imageph(temp.*(1-mask)+mask.*max(temp(:)))
-            title('masked area')
-            subplot(2,2,4)
-            imageph(temp.*mask+(1-mask).*max(temp(:)))
-            title('considered area')
-            fullscreen
-        end
-    end
 end
 
 end
