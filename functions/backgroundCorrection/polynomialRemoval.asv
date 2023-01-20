@@ -50,24 +50,22 @@ mnorm=sqrt(sum(Hm0(:).*Hm0(:)));
 Hm0n=Hm0/mnorm;
 
 % moments of the image on these basis functions
-I0=mean(Im(:));
-
-ms=sum(sum((Im-I0).*Hm0n));
+ms=sum(sum(Im.*Hm0n));
 
 Imout = Im-ms*Hx.*Hy/mnorm;
 
 
-%fprintf('n=%d, m=%d\n',n,m)
+fprintf('n=%d, m=%d\n',n,m)
 
-% 
-% figure
-% subplot(1,3,1),imagesc (Im),colorbar
-% set(gca,'DataAspectRatio',[1 1 1])
-% subplot(1,3,2),imagesc (ms*Hm/mnorm),colorbar
-% set(gca,'DataAspectRatio',[1 1 1])
-% subplot(1,3,3),imagesc (Imout),colorbar
-% set(gca,'DataAspectRatio',[1 1 1])
-% fullwidth
+n
+figure
+subplot(1,3,1),imagesc (Im),colorbar
+set(gca,'DataAspectRatio',[1 1 1])
+subplot(1,3,2),imagesc (ms*Hm/mnorm),colorbar
+set(gca,'DataAspectRatio',[1 1 1])
+subplot(1,3,3),imagesc (Imout),colorbar
+set(gca,'DataAspectRatio',[1 1 1])
+fullwidth
 
 
 

@@ -31,7 +31,14 @@ elseif ~isempty(opt.xy1) && ~isempty(opt.xy2)  % crop('xy1', [a,b], 'xy2', [a,b]
     y1 = min([opt.xy1(2),opt.xy2(2)]);
     y2 = max([opt.xy1(2),opt.xy2(2)]);
 else
-    if strcmpi(opt.Center,'Manual') % crop('Center','Manual')
+    if isnumeric(opt.Center) % crop('Center',[300, 200])
+        if numel(opt.Center)==2
+            xc=opt.Center(1);
+            yc=opt.Center(2);
+        else
+            error('the Center argument must be a 2-vector [x, y], or a char array ''Manual'' or ''Auto''.')
+        end        
+    elseif strcmpi(opt.Center,'Manual') % crop('Center','Manual')
         h = obj(1).figure;
         [xc, yc] = ginput(1);
         close(h)
@@ -40,7 +47,6 @@ else
         yc = obj(1).Ny/2;
     end
     if strcmpi(opt.Size,'Manual') % crop('Center','Manual')
-        1111
         h = obj(1).figure;
         h.UserData{12}.getPoint = 0;
         rr = rectangle();
