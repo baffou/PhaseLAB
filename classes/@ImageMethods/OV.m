@@ -30,8 +30,9 @@
             
             for iNP = 1:NNP
                 
-                fprintf(['Nanoparticle #' num2str(iNP) '/' num2str(NNP) '\n'])
-                
+                if NNP~=1
+                    fprintf(['Nanoparticle #' num2str(iNP) '/' num2str(NNP) '\n'])
+                end
                 if nargin<4
                     hfigInit = figure;imagesc(imT),colormap(gray),colorbar
                     %% zoom on the particle of interest
@@ -112,7 +113,7 @@
                     error('The second click must correspond to a higher x value.')
                 end
                 DMmean(iNP) = mean(DM(pxmin:pxmax));
-                fprintf('Optical volume: %.4g µm^3\n',1e18*DMmean(iNP))
+                %fprintf('Optical volume: %.4g µm^3\n',1e18*DMmean(iNP))
                 
                 if nargin>=4
                     set(UIresult,'String',sprintf('%.3g',DMmean));
@@ -121,6 +122,7 @@
             if nargin>=4
                 hfigInit.UserData{10} = DMmean;
             end
-            DMmean*1e20
+            fprintf(num2str(DMmean))
+            fprintf('\n')
         end
         

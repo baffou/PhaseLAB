@@ -83,10 +83,20 @@ for io = 1:No
     end
     
     
-if opt.display
-    subplot(2,2,2)
-    imagesc(mask)
-end
+    if ~isempty(opt.threshold) && ~strcmp(method,'Zernike')
+        if opt.display
+            subplot(2,2,2)
+            imageph(temp)
+            title('final image')
+            subplot(2,2,3)
+            imageph(temp.*(1-mask)+mask.*max(temp(:)))
+            title('masked area')
+            subplot(2,2,4)
+            imageph(temp.*mask+(1-mask).*max(temp(:)))
+            title('considered area')
+            fullscreen
+        end
+    end
     
     
     
