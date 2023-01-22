@@ -654,10 +654,12 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             open(writerObj);
             % write the frames to the video
             for u=1:numel(IM)
+                printLoop(u,numel(IM))
                 % convert the image to a frame
 
                 hfig=figure;
                 fullscreen
+                
                 %                hfig.Position=[1 1 1800 800];
                 if isempty(opt.zrange)
                     opendx(IM(u),persp=opt.persp,phi=opt.phi,theta=opt.theta,...
@@ -666,8 +668,8 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     opendx(IM(u),persp=opt.persp,phi=opt.phi,theta=opt.theta,...
                         ampl=opt.ampl,zrange=opt.zrange,colorMap=opt.colorMap,title=opt.title,factor=opt.factor,label=opt.label)
                 end
-                frame=getframe(hfig);
                 drawnow
+                frame=getframe(hfig);
                 writeVideo(writerObj, frame);
                 close(hfig)
 
