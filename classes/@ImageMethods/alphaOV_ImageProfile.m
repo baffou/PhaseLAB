@@ -203,7 +203,8 @@ for iNP = 1:NNP
             plot(coo,OVn)
             legend({'Realpha(nm^3)';'Imalpha(nm^3)';'Optical Volume';'Optical Volume (norm)'},'Location','northwest')
             title('Click on two values xmin and xmax, or click twice the bar space to try again.')
-            
+            fullscreen
+            drawnow
             %% mean value of alpha and error bares
             %pxmin = input('valeur de pxmin'); %faire la moyene de alpha entre pxmin et pxmax
             %pxmax = input('valeur de pxmax');
