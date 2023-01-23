@@ -208,18 +208,16 @@ classdef Interfero < handle & matlab.mixin.Copyable
             
             for io = 1:numel(obj)
                 printLoop(io,numel(obj))    
-                if ~exist('Ref0','var')
-                    Ref0 = obj(io).Ref;
-                    Ref0im=Ref0.Itf;
-                elseif Ref0 ~= obj(io).Ref
-                    Ref0 = copy(obj(io).Ref);
-                    Ref0im=Ref0.Itf;
-                end
-                obj(io).Ref=Ref0;
+                1
                 obj(io).Itf0 = obj(io).Itf(y1:y2,x1:x2);
-                obj(io).Ref = copy(obj(io).Ref);
-                obj(io).Ref.Itf0 = Ref0im(y1:y2,x1:x2);
+                2
+                obj(io).Ref=copy(obj(io).Ref);
+                4
+                obj(io).Ref.Itf0 = obj(io).Ref.Itf(y1:y2,x1:x2);
+                5
                 obj(io).Ref.TF = fftshift(fft2(obj(io).Ref.Itf));
+                6
+
             end
 
 

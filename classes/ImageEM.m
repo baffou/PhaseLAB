@@ -362,6 +362,30 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
         end
 
+        function obj = rot90(obj0,k)
+            % rotate the images of the object by k*90°
+            arguments
+                obj0
+                k {mustBeInteger(k)} = 1
+            end
+
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+            for io=1:numel(obj0)
+                obj(io).Ex=rot90(obj0(io).Ex,k);
+                obj(io).Ey=rot90(obj0(io).Ey,k);
+                obj(io).Ez=rot90(obj0(io).Ez,k);
+                obj(io).Einc.Ex=rot90(obj0(io).Einc.Ex,k);
+                obj(io).Einc.Ey=rot90(obj0(io).Einc.Ey,k);
+                obj(io).Einc.Ez=rot90(obj0(io).Einc.Ez,k);
+            end
+
+        end   
+
+
         function objList = applyPhaseShift(objList0,phi)
             % applies of phase shift to all the components of a field, but
             % not to its Einc. Useful to articially simulate SLIM imaging.

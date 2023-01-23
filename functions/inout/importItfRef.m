@@ -115,7 +115,6 @@ else
 end
 %% determine all the reference images' names in the folder
 
-
 RefFileList = dir([folder 'REF_*.tif']);
 RefFileNames = {RefFileList.name};
 

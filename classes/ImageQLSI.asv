@@ -13,7 +13,6 @@ classdef ImageQLSI   <   ImageMethods
         OPD     % Optical path difference image
         DWx     % OPD gradient along x
         DWy     % OPD gradient along y
-        Ph      % Phase image
         Nx
         Ny
     end
@@ -63,8 +62,8 @@ classdef ImageQLSI   <   ImageMethods
                 objEM=INT;
                 obj.T0 = objEM.T;
                 obj.OPD0 = objEM.OPD;
-                obj.Microscope=objEM.Microscope;
-                obj.Illumination=objEM.Illumination;
+                obj.Microscope=objEM.Microscope
+                obj.Illumination=objEM.Illumination
                 
 
             elseif nargin==1 %ImageQLSI(n)

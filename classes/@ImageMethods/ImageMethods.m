@@ -183,7 +183,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             profile.OPD=radialAverage0(obj.OPD, [cx(1)/factorAxis, cy(1)/factorAxis], round(D/factorAxis));
             profile.coords=[cx,cy];
             Np=length(profile.T);
-            
+
             subplot(1,2,1)
             plot((-Np+1:Np-1)*factorAxis,[flip(profile.T);profile.T(2:end)],'LineWidth',2)
             xlabel(hfig.UserData{2})
@@ -363,85 +363,144 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.ampl = 10
                 opt.zrange = []
                 opt.colorMap =  parulaNeuron
-                opt.title (1,:) char = char.empty()
+                opt.title = []
                 opt.factor = 1 % correction factor, for instance 5.55e-3 to convert the OPD color scale into dry mass
-                opt.label (1,:) char = 'Optical path difference (nm)'
+                opt.label = 'Optical path difference (nm)'
+                opt.imType = 'OPD'
             end
             % zrange in nm
             EL_camera=90-opt.theta;
             [Ny,Nx]=size(obj.OPD);
-            fac=opt.factor;
 
-            if isempty(opt.zrange)
-                zrange=1e9*[min(obj.OPD(:)) max(obj.OPD(:))]*fac;
-            else
-                zrange=opt.zrange;
-            end
-            DZ=zrange(2)-zrange(1);
-            factor=obj.pxSize*1e6;
-            [X,Y] = meshgrid(0:Nx-1,0:Ny-1);
-            X=X*factor;
-            Y=Y*factor;
-
-            if opt.persp==1
-                DZ=DZ/opt.ampl;
+            % make sure some variables are in cell type
+            if ~isa(opt.imType,'cell')
+                opt.imType={opt.imType};
             end
 
-            %% handling the number of parameters
-            coloringMap=obj.OPD*1e9*fac;
+            Nim=numel(opt.imType);
 
-            %colormap(gca,colorScale);
-            %% Display
-            surf(X,Y,obj.OPD*1e9*fac,coloringMap,'FaceColor','interp',...
-                'EdgeColor','none',...
-                'FaceLighting','phong')
-            if ~isempty(opt.title)
-                figTitle=opt.title;
-            elseif isprop(obj,'OPDfileName') % ie if ImageQLSI object
-                figTitle=obj.OPDfileName;
-            else
-                figTitle=' ';
+            if ~isa(opt.ampl,'cell')
+                val=opt.ampl;
+                opt.ampl=cell(1,Nim);
+                opt.ampl(:)={val};
             end
-            title(figTitle, 'Interpreter','none')
-            posS=get(0, 'Screensize');
-            daspect([factor factor DZ/10])
-            set(gcf,'color','w');
-            set(gcf,'Position',[posS(1) posS(2) 2*posS(3)/3 posS(4)])% To change size
-            colormap(gca,opt.colorMap)
-            set(gca,'ztick',[])
-            set(gca,'XLim',[0 obj.Nx*factor])
-            set(gca,'YLim',[0 obj.Ny*factor])
-            %axis tight
-            %view(0,90)
-            %camlight left
-            %camlight(AZ, EL)
-            if opt.phi==0 &&  opt.theta==0
-                cb=colorbar(FontSize=20);
-                cb.Label.String = opt.label;
-                view(2)
-                AZ_light=30;
-                EL_light=25;
-            else
-                cb=colorbar('southoutside',FontSize=16);
-                a =  cb.Position; %gets the positon and size of the color bar
-                set(cb,'Position',[a(1) a(2) a(3)/4 a(4)])% To change size
-                cb.Label.String = opt.label;
-                cb.Label.FontSize = 20;
-                view(opt.phi,EL_camera)
-                camPos=get(gca,"CameraPosition");
-                set(gca,'CameraPosition',camPos/2)
-                camproj('perspective')
-                AZ_light=30;
-                EL_light=45;
+            if ~isa(opt.zrange,'cell')
+                val=opt.zrange;
+                opt.zrange=cell(1,Nim);
+                opt.zrange(:)={val};
             end
-            %camlight(az,el)
-            camlight(AZ_light,EL_light)
-            %light('Position',[-1 0 0],'Style','local')
-            %axis off
-            xlabel('µm','FontSize',20), ylabel('µm','FontSize',20)
-            clim(zrange)
-            set(gca,'FontSize',18)
-            drawnow
+            if ~isa(opt.colorMap,'cell')
+                val=opt.colorMap;
+                opt.colorMap=cell(1,Nim);
+                opt.colorMap(:)={val};
+            end
+            if ~isa(opt.title,'cell')
+                val=opt.title;
+                opt.title=cell(1,Nim);
+                opt.title(:)={val};
+            end
+            if ~isa(opt.factor,'cell')
+                val=opt.factor;
+                opt.factor=cell(1,Nim);
+                opt.factor(:)={val};
+            end
+            if ~isa(opt.label,'cell')
+                val=opt.label;
+                opt.label=cell(1,Nim);
+                opt.label(:)={val};
+            end
+
+
+            for ii=1:Nim
+                if ~isempty(opt.imType{ii})
+                    fac=opt.factor{ii};
+
+                    img = obj.(opt.imType{ii});
+
+                    if strcmpi(opt.imType{ii},'OPD')
+                        img=img*1e9;
+                    end
+
+                    if isempty(opt.zrange{ii})
+                        zrange=[min(img(:)) max(img(:))]*fac;
+                    else
+                        zrange=opt.zrange{ii};
+                    end
+                    DZ=zrange(2)-zrange(1);
+                    factor=obj.pxSize*1e6;
+                    [X,Y] = meshgrid(0:Nx-1,0:Ny-1);
+                    X=X*factor;
+                    Y=Y*factor;
+
+                    if opt.persp==1
+                        DZ=DZ/opt.ampl{ii};
+                    end
+
+                    %% handling the number of parameters
+                    coloringMap=img*fac;
+
+                    %colormap(gca,colorScale);
+                    %% Display
+                    if Nim<=3
+                        nRow=1;
+                        nCol=Nim;
+                    else
+                        nRow=2;
+                        nCol=ceil(Nim/2);
+                    end
+                    subplot(nRow,nCol,ii)
+                    surf(X,Y,img*fac,coloringMap,'FaceColor','interp',...
+                        'EdgeColor','none',...
+                        'FaceLighting','phong')
+                    if ~isempty(opt.title{ii})
+                        figTitle=opt.title{ii};
+                    elseif isprop(obj,'OPDfileName') % ie if ImageQLSI object
+                        figTitle=obj.OPDfileName;
+                    else
+                        figTitle=' ';
+                    end
+                    title(figTitle, 'Interpreter','none')
+                    posS=get(0, 'Screensize');
+                    daspect([factor factor DZ/10])
+                    set(gcf,'color','w');
+                    set(gcf,'Position',[posS(1) posS(2) 2*posS(3)/3 posS(4)])% To change size
+                    colormap(gca,opt.colorMap{ii})
+                    set(gca,'ztick',[])
+                    set(gca,'XLim',[0 obj.Nx*factor])
+                    set(gca,'YLim',[0 obj.Ny*factor])
+                    %axis tight
+                    %view(0,90)
+                    %camlight left
+                    %camlight(AZ, EL)
+                    if opt.phi==0 &&  opt.theta==0
+                        cb=colorbar(FontSize=20);
+                        cb.Label.String = opt.label{ii};
+                        view(2)
+                        AZ_light=30;
+                        EL_light=25;
+                    else
+                        cb=colorbar('southoutside',FontSize=16);
+                        a =  cb.Position; %gets the positon and size of the color bar
+                        set(cb,'Position',[a(1) a(2) a(3)/4 a(4)])% To change size
+                        cb.Label.String = opt.label{ii};
+                        cb.Label.FontSize = 20;
+                        view(opt.phi,EL_camera)
+                        camPos=get(gca,"CameraPosition");
+                        set(gca,'CameraPosition',camPos/2)
+                        camproj('perspective')
+                        AZ_light=30;
+                        EL_light=45;
+                    end
+                    %camlight(az,el)
+                    camlight(AZ_light,EL_light)
+                    %light('Position',[-1 0 0],'Style','local')
+                    %axis off
+                    xlabel('µm','FontSize',20), ylabel('µm','FontSize',20)
+                    clim(zrange)
+                    set(gca,'FontSize',18)
+                    drawnow
+                end
+            end
         end
 
         function makeMovie(IM,videoName,rate)
@@ -591,46 +650,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
         end
 
-        function makeMovie2(IM,videoName,opt)
-            arguments
-                IM
-                videoName
-                opt.rate = 25
-                opt.zrange = []
-                opt.colorMap =  phase1024
-            end
-
-            % create the video writer with 1 fps
-            writerObj = VideoWriter(videoName);
-            writerObj.FrameRate = opt.rate;
-            % open the video writer
-            open(writerObj);
-            % write the frames to the video
-            for u=1:numel(IM)
-                % convert the image to a frame
-                fac=5.6e-3;
-                hfig=figure;
-                imagesc(1e6*IM(1).pxSize*[0:IM(1).Nx-1],1e6*IM(1).pxSize*[0:IM(1).Ny-1],fac*IM(u).OPD*1e9)
-                set(gca,'FontSize',16)
-                xlabel('µm')
-                set(gca,'ytick',[])
-                set(gca,'YDir','normal')
-                caxis(fac*opt.zrange)
-                set(gca,'dataAspectRatio',[1 1 1])
-                colormap(gca,opt.colorMap)
-                cc=colorbar('fontSize',16);
-                cc.Label.String='dry mass (pg/µm^2)';
-                annotation ('textbox',[.2 .8 .1 .1],'String',sprintf('%.1f s',(u-1)*0.4),'FontSize',16,'LineStyle','none','HorizontalAlignment','right')
-                drawnow
-                frame=getframe(hfig);
-                writeVideo(writerObj, frame);
-                close(hfig)
-            end
-            % close the writer object
-            close(writerObj);
-
-        end
-
         function makeMoviedx(IM,videoName,opt)
             arguments
                 IM
@@ -642,9 +661,10 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.ampl = 3
                 opt.zrange = []
                 opt.colorMap =  parulaNeuron
-                opt.title (1,:) char = char.empty()
+                opt.title = []
                 opt.factor = 1 % correction factor, for instance 5.55e-3 to convert the OPD color scale into dry mass
-                opt.label (1,:) char = 'Optical path difference (nm)'
+                opt.label = 'Optical path difference (nm)'
+                opt.imType  = 'OPD'
             end
 
             % create the video writer with 1 fps
@@ -654,22 +674,22 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             open(writerObj);
             % write the frames to the video
             for u=1:numel(IM)
-                printLoop(u,numel(IM))
                 % convert the image to a frame
 
                 hfig=figure;
                 fullscreen
-                
                 %                hfig.Position=[1 1 1800 800];
                 if isempty(opt.zrange)
                     opendx(IM(u),persp=opt.persp,phi=opt.phi,theta=opt.theta,...
-                        ampl=opt.ampl,colorMap=opt.colorMap,title=opt.title,factor=opt.factor,label=opt.label)
+                        ampl=opt.ampl,colorMap=opt.colorMap,title=opt.title, ...
+                        factor=opt.factor,label=opt.label,imType=opt.imType)
                 else
                     opendx(IM(u),persp=opt.persp,phi=opt.phi,theta=opt.theta,...
-                        ampl=opt.ampl,zrange=opt.zrange,colorMap=opt.colorMap,title=opt.title,factor=opt.factor,label=opt.label)
+                        ampl=opt.ampl,zrange=opt.zrange,colorMap=opt.colorMap, ...
+                        title=opt.title,factor=opt.factor,label=opt.label,imType=opt.imType)
                 end
-                drawnow
                 frame=getframe(hfig);
+                drawnow
                 writeVideo(writerObj, frame);
                 close(hfig)
 
@@ -713,9 +733,9 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             else
                 obj=obj0;
             end
-            
+
             [x1, x2, y1, y2] = crop0(obj,opt);
-            
+
             for io = 1:numel(obj)
                 if isa (obj,'ImageQLSI')
                     temp=obj(io).T(y1:y2,x1:x2); % temp variable to avoid importing the matrix twice for the calculation of Nx and Ny when it is stored in a file.
@@ -738,6 +758,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
 
         end
+
     end
 
 end
