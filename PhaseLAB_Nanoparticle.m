@@ -13,7 +13,7 @@ MI=Microscope(OB);
 IL=Illumination(530e-9,ME,1e9);
 
 %% Creation of a dipole -- NP=Nanoparticle(material,geometry,param1,param2);
-NP=Nanoparticle('Au','rod',[600e-9 20e-9], 8e-9);
+NP=Nanoparticle(1.5^2,'cuboid',[4000e-9 4000e-9 64e-9], 64e-9);
 NP.figure
 
 %% Illumination of the dipole
@@ -21,7 +21,7 @@ NP=NP.shine(IL);
 
 %% Computation of the images
 %IM=imaging(NP,IL,MI);
-IM=imaging(NP,IL,MI,3e-6,100);
+IM=imaging(NP,IL,MI,100);
 
 %% Image display
 IM.figure()
