@@ -290,14 +290,6 @@ classdef Interfero < handle & matlab.mixin.Copyable
             end
         end
 
-        function set.Microscope(obj,val)
-            if isa(val,'Microscope')
-                obj.Microscope = val;
-            else
-                error('the input must be a Microscope object')
-            end
-        end
-        
         function obj = mean(objList)
             obj = Interfero();
             %obj.Ref = Interfero();

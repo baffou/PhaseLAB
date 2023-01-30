@@ -14,6 +14,7 @@ arguments
     opt.saveGradients = false
     opt.remotePath = []
     opt.Tnormalisation = true
+    opt.RemoveCameraOffset = false
 end
 Nf = numel(Itf);
 %% Shaping of the Illumination object(s)
@@ -39,6 +40,7 @@ if numel(IL)==1
 elseif numel(IL)~=Nf
     error(['The number of images (' num2str(Nf) ') is not the number Illumination objects (' num2str(length(IL)) ')'])
 end
+
 
 %% shaping of the crops
 updateRefFcrop = 0;
@@ -71,6 +73,19 @@ Ny0 = 0;
 
 for ii = 1:Nf
     fprintf('Interfero %d / %d, ',ii,Nf)
+
+    % cancels the offset of the camera
+    if isnumeric(opt.RemoveCameraOffset) && opt.RemoveCameraOffset~=1 % an offset is set manually
+        offset = opt.RemoveCameraOffset;
+    elseif opt.RemoveCameraOffset % if true
+        offset = Itf(1).Microscope.CGcam.Camera.offset;
+    else
+        offset = 0;
+    end
+
+
+
+
     if ~isempty(opt.crop)
         if ischar(opt.crop) % ie manual
             hroi = figure;
@@ -182,15 +197,17 @@ for ii = 1:Nf
    
     % intensity image
     if opt.Tnormalisation
-        Int = abs(Im_int)./abs(Rf_int);
+        Int = abs(Im_int-offset)./abs(Rf_int-offset);
     else
-        Int = abs(Im_int);
+        Int = abs(Im_int-offset);
     end
     
     % phase gradient images
 
-    DW1 = sign(MI.CGcam.zoom)*angle(Im_DW1.*conj(Rf_DW1))* MI.CGcam.alpha(IL(ii).lambda);
-    DW2 = sign(MI.CGcam.zoom)*angle(Im_DW2.*conj(Rf_DW2))* MI.CGcam.alpha(IL(ii).lambda);
+%    DW1 = sign(MI.CGcam.zoom)*angle(Im_DW1.*conj(Rf_DW1))* MI.CGcam.alpha(IL(ii).lambda);
+%    DW2 = sign(MI.CGcam.zoom)*angle(Im_DW2.*conj(Rf_DW2))* MI.CGcam.alpha(IL(ii).lambda);
+    DW1 = -angle(Im_DW1.*conj(Rf_DW1))* MI.CGcam.alpha(IL(ii).lambda);
+    DW2 = -angle(Im_DW2.*conj(Rf_DW2))* MI.CGcam.alpha(IL(ii).lambda);
 
     DWx = cropParam1.angle.cos*DW1-cropParam1.angle.sin*DW2;
     DWy = cropParam1.angle.sin*DW1+cropParam1.angle.cos*DW2;

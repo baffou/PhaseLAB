@@ -1,9 +1,10 @@
 classdef Camera  <  handle
-    properties
+    properties(SetAccess = private)
         dxSize (1,1) {mustBeNumeric} = 6.5e-6
         Nx (1,1) {mustBeInteger,mustBePositive} = 600
         Ny (1,1) {mustBeInteger,mustBePositive} = 600
         fullWellCapacity (1,1) {mustBeInteger} = 25000
+        offset (1,1) double = 100
         model char
     end
     
@@ -49,7 +50,8 @@ classdef Camera  <  handle
                 Np = numel(objProps);
 
                 for ip = 1:Np
-                    eval(['obj.' objProps{ip} '=data.' objProps{ip} ';'])
+                    %eval(['obj.' objProps{ip} '=data.' objProps{ip} ';'])
+                    obj.(objProps{ip}) =data.(objProps{ip});
                 end
             end        
         end
@@ -62,7 +64,9 @@ classdef Camera  <  handle
                     elseif val<50e-6 && val>1e-6
                         cam.dxSize = val;
                     else
-                        error('this length does not look like a pixel size')
+                        cam.dxSize = val;
+                        val
+                        warning('this length does not look like a pixel size')
                     end
                 else
                     val

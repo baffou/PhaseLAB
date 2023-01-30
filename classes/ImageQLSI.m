@@ -479,7 +479,8 @@ classdef ImageQLSI   <   ImageMethods
 
         end
 
-        function objList2 = phaseLevel0(objList,option)
+        function objList2 = level0(objList,option)
+            No = numel(objList);
             if nargout
                 objList2=copy(objList);
             else
@@ -494,7 +495,6 @@ classdef ImageQLSI   <   ImageMethods
                 y1 = round(roi.Position(2));
                 y2 = round(roi.Position(2)+roi.Position(4));
                 %                    mean(mean(objList(1).OPD(y1:y2,x1:x2)))
-                No = numel(objList);
                 for io = 1:No
                     objList2(io).OPD = objList(io).OPD-mean(mean(objList(io).OPD(y1:y2,x1:x2)));
                 end
@@ -505,7 +505,6 @@ classdef ImageQLSI   <   ImageMethods
                         x2 = option(2);
                         y1 = option(3);
                         y2 = option(4);
-                        No = numel(objList);
                         for io = 1:No
                             objList2(io).OPD = objList(io).OPD-mean(mean(objList(io).OPD(y1:y2,x1:x2)));
                         end
@@ -513,14 +512,21 @@ classdef ImageQLSI   <   ImageMethods
                         error('The input must be a 4-vector')
                     end
                 elseif strcmpi(option,'mean') || strcmpi(option,'average')
-                    No = numel(objList);
                     for io = 1:No
                         objList2(io).OPD = objList(io).OPD-mean(objList(io).OPD(:));
                     end
                 elseif strcmpi(option,'median')
-                    No = numel(objList);
                     for io = 1:No
                         objList2(io).OPD = objList(io).OPD-median(objList(io).OPD(:));
+                    end
+                elseif strcmpi(option,'boundary')
+                    for io = 1:No
+                        top=objList2(io).OPD(end,:);
+                        bottom=objList2(io).OPD(1,:);
+                        left=objList2(io).OPD(2:end-1,1);
+                        right=objList2(io).OPD(2:end-1,end);
+                        bound=[top(:);bottom(:);left(:);right(:)];
+                        objList2(io).OPD = objList(io).OPD-mean(bound);
                     end
                 else
                     error('unkown option')

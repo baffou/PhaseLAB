@@ -9,7 +9,6 @@ classdef PCmask < handle & matlab.mixin.Copyable
         dNA     % thickness of the ring, or diameter of the disc
         theta   % angular position of the disc, meaningful onlly for type='disc'
         type {mustBeMember(type,{'ring','disc'})} = 'ring'
-        inverted logical = false
     end
 
     methods
@@ -132,9 +131,7 @@ classdef PCmask < handle & matlab.mixin.Copyable
                 pattern = (R>=(Rpx-dRpx/2)).*(R<=(Rpx+dRpx/2));
             end
             val = (1-pattern + obj.A*pattern) .* exp(1i*obj.phi*pattern);
-            if obj.inverted
-                val=1-val;
-            end
+                
         end
 
         function figure(obj,IM)
@@ -179,6 +176,8 @@ classdef PCmask < handle & matlab.mixin.Copyable
         end
 
 
-
+        function invert(obj)
+            %inverts the mask
+            obj.A=
     end
 end

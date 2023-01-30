@@ -3,5 +3,6 @@
 "dxSize": 2.4e-6,
 "Nx": 5472,
 "Ny": 3648,
-"fullWellCapacity": 10000
+"fullWellCapacity": 10000,
+"offset":16
 }
