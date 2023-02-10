@@ -1,6 +1,6 @@
 function grapheneGenerator(opt)
 arguments
-    opt.da double = 65e-9
+    opt.pxSize double = 65e-9
     opt.C double = [] % side of the square
     opt.R double = 2e-6 % radius of the disc
     opt.D double = [] % diameter of the disc
@@ -15,7 +15,7 @@ end
 
 fileName=opt.fileName;
 
-da=opt.da;
+pxSize=opt.pxSize;
 
 if ~isempty(opt.eps)
     eps= opt.eps;
@@ -40,8 +40,8 @@ if strcmp(opt.shape,'disc')
     end
 
 
-    nx=ceil(R/da);
-    ny=ceil(R/da);
+    nx=ceil(R/pxSize);
+    ny=ceil(R/pxSize);
 
     if exist('fileName','file')
         delete fileName
@@ -49,15 +49,15 @@ if strcmp(opt.shape,'disc')
 
     hf=fopen(fileName,'w');
     fprintf(hf,'%d %d %d\n',2*nx+1,2*ny+1,nz);
-    fprintf(hf,'%d\n',da*1e9);
+    fprintf(hf,'%d\n',pxSize*1e9);
 
-    zshift = -da/2;
+    zshift = -pxSize/2;
     %figure
     %hold on
     for z=0:nz-1
         for y=-ny:ny
             for x=-nx:nx
-                fprintf(hf,'%f %f %f\n',x*da*1e9,y*da*1e9,-z*da*1e9+zshift*1e9);
+                fprintf(hf,'%f %f %f\n',x*pxSize*1e9,y*pxSize*1e9,-z*pxSize*1e9+zshift*1e9);
             end
         end
     end
@@ -66,7 +66,7 @@ if strcmp(opt.shape,'disc')
     for z=0:nz-1
         for y=-ny:ny
             for x=-nx:nx
-                if y*y + x*x <= R*R/(da*da)
+                if y*y + x*x <= R*R/(pxSize*pxSize)
                     nCell=nCell+1;
                     fprintf(hf,'(%f, 0) \n',eps);
                 else
@@ -77,13 +77,13 @@ if strcmp(opt.shape,'disc')
     end
 
     fprintf('Ncell=%d\n',nCell)
-    fprintf('OV=%d\n',nCell*da^3*(sqrt(eps)-sqrt(eps0)))
+    fprintf('OV=%d\n',nCell*pxSize^3*(sqrt(eps)-sqrt(eps0)))
     fclose(hf);
 
 else
 
-    nx=ceil(opt.C/(2*da));
-    ny=ceil(opt.C/(2*da));
+    nx=ceil(opt.C/(2*pxSize));
+    ny=ceil(opt.C/(2*pxSize));
 
     if exist('fileName','file')
         delete fileName
@@ -91,15 +91,15 @@ else
 
     hf=fopen(fileName,'w');
     fprintf(hf,'%d %d %d\n',2*nx+1,2*ny+1,nz);
-    fprintf(hf,'%d\n',da*1e9);
+    fprintf(hf,'%d\n',pxSize*1e9);
 
-    zshift = -da/2;
+    zshift = -pxSize/2;
     %figure
     %hold on
     for z=0:nz-1
         for y=-ny:ny
             for x=-nx:nx
-                fprintf(hf,'%f %f %f\n',x*da*1e9,y*da*1e9,-z*da*1e9+zshift*1e9);
+                fprintf(hf,'%f %f %f\n',x*pxSize*1e9,y*pxSize*1e9,-z*pxSize*1e9+zshift*1e9);
             end
         end
     end
@@ -114,18 +114,18 @@ else
             end
         end
     end
+    fclose(hf);
 end
-fclose(hf);
 
 fprintf([fileName '\n'])
-fprintf('da = %.4g nm\n',da*1e9)
+fprintf('da = %.4g nm\n',pxSize*1e9)
 fprintf('Ncell = %d\n',nCell)
-fprintf('OV = %d m^3\n',nCell*da^3*(sqrt(eps)-sqrt(eps0)))
+fprintf('OV = %d m^3\n',nCell*pxSize^3*(sqrt(eps)-sqrt(eps0)))
 
 hf=fopen([fileName(1:end-4) '_OV.txt'],'w');
-fprintf(hf,'da = %.4g nm\n',da*1e9);
+fprintf(hf,'da = %.4g nm\n',pxSize*1e9);
 fprintf(hf,'Ncell = %d\n',nCell);
-fprintf(hf,'OV = %d m^3\n',nCell*da^3*(sqrt(eps)-sqrt(eps0)));
+fprintf(hf,'OV = %d m^3\n',nCell*pxSize^3*(sqrt(eps)-sqrt(eps0)));
 fclose(hf);
 
 
