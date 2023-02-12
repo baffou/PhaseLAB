@@ -199,6 +199,46 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             val=obj.Microscope.CGcam.zoom;
         end
 
+        function obj2 = binning(obj,n)
+            arguments
+                obj
+                n = 3
+            end
+            if nargout
+                obj2=copy(obj);
+                obj2.Einc=copy(obj.Einc);
+            else
+                obj2=obj;
+            end
+            if n==3 % ie n = 3 by default
+                binfun=@binning3x3;
+            elseif n==2
+                binfun=@binning2x2;
+            elseif n==4
+                binfun=@(x) binning2x2(binning2x2(x));
+            elseif n==6
+                binfun=@(x) binning3x3(binning2x2(x));
+            else
+                error('not a proper binning dimension. Should be 2 or 3.')
+            end
+            for ii = 1:numel(obj)
+                imEx = binfun(obj(ii).Ex);
+                imEy = binfun(obj(ii).Ey);
+                imEz = binfun(obj(ii).Ez);
+                obj2(ii).Ex = imEx;
+                obj2(ii).Ey = imEy;
+                obj2(ii).Ez = imEz;
+                imEx = binfun(obj(ii).Einc.Ex);
+                imEy = binfun(obj(ii).Einc.Ey);
+                imEz = binfun(obj(ii).Einc.Ez);
+                obj2(ii).Einc.Ex = imEx;
+                obj2(ii).Einc.Ey = imEy;
+                obj2(ii).Einc.Ez = imEz;
+            end
+
+        end
+        
+
         function val = integral(obj)
             Nim = length(obj);
             val = zeros(Nim,1);

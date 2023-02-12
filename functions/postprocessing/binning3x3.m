@@ -12,6 +12,13 @@ end
 Nys=floor((Ny)/3);
 Nxs=floor((Nx)/3);
 
+if mod(Nxs,2)==1
+    Nxs=Nxs-1;
+end
+if mod(Nys,2)==1
+    Nys=Nys-1;
+end
+
 image=zeros(Nys,Nxs,9);
 
 image(:,:,1)=image0(1:3:3*Nys,1:3:3*Nxs);

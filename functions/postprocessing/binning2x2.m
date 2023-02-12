@@ -21,6 +21,16 @@ else
     Nxs=Nx/2;
 end
 
+% make sure the final image has an even size
+if mod(Nxs,2)==1
+    Nx=Nx-2;
+    Nxs=Nxs-1;
+end
+if mod(Nys,2)==1
+    Ny=Ny-2;
+    Nys=Nys-1;
+end
+
 out=zeros(Nys,Nxs);
 
 for ix=1:Nx/2

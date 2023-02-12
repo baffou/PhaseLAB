@@ -15,10 +15,9 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
     end
 
     properties(Access = public)
-        %lambda, inherited from ImageMethods
-        %pxSize, inherited from ImageMethods
-        %dxSize, inherited from ImageMethods
         %Microscope, inherited from ImageMethods
+        %Illumination, inherited from ImageMethods
+        %comment, inherited from ImageMethods
     end
 
     properties(Dependent)
@@ -98,7 +97,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 error('You are trying to sum two images corresponding to two different pixel sizes.')
             elseif obj1.zoom~=obj2.zoom
                 error('You are trying to sum two images corresponding to two different sizes of field of view (''zoom'' properties differ).')
-            elseif obj1.Npx~=obj2.Npx
+            elseif obj1.Nx~=obj2.Nx || obj1.Ny~=obj2.Ny
                 error('You are trying to sum two images with different pixel numbers.')
             end
             objs = copy(obj1);
@@ -188,7 +187,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             if norm(obj.EE0)==0 % happens when using crossed polarizers that kill E0 on the image plane.
                 nor = 1;
             else
-                nor = norm(obj.EE0);
+                nor = obj.EE0n();
             end
             norExtot = obj.Ex/nor;
             norEytot = obj.Ey/nor;
@@ -199,6 +198,49 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         function val = zoom(obj)
             val=obj.Microscope.CGcam.zoom;
         end
+
+        function obj2 = binning(obj,n)
+            arguments
+                obj
+                n double {mustBeMember(opt.n,{2,3})} = 3
+            end
+            if nargout
+                obj2=copy(obj);
+            else
+                obj2=obj;
+            end
+            if n==3 % ie n = 3 by default
+                binfun=@binning3x3;
+            elseif n==2
+                binfun=@binning2x2;
+            else
+                error('not a proper binning dimension. Should be 2 or 3.')
+            end
+            for ii = 1:numel(obj)
+                    imEx = binfun(obj(ii).Ex);
+                    imEy = binfun(obj(ii).Ey);
+                    imEz = binfun(obj(ii).Ez);
+                    obj2(ii).Ex = imEx;
+                    obj2(ii).Ey = imEy;
+                    obj2(ii).Ez = imEz;
+                    imEx = binning3x3(obj(ii).Einc.Ex);
+                    imEy = binning3x3(obj(ii).Einc.Ey);
+                    imEz = binning3x3(obj(ii).Einc.Ez);
+                    obj2(ii).Einc.Ex = imEx;
+                    obj2(ii).Einc.Ey = imEy;
+                    obj2(ii).Einc.Ez = imEz;
+                end
+                for ii = 1:numel(obj)
+                    imT = binning2x2(obj(ii).T);
+                    imOPD = binning2x2(obj(ii).OPD);
+                    obj2(ii).T = imT;
+                    obj2(ii).OPD = imOPD;
+                end
+            end
+
+
+        end
+        
 
         function val = integral(obj)
             Nim = length(obj);
@@ -297,6 +339,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
         function val = EE0(obj)
+            % complex vectorial incident field at the center of the image
             if isempty(obj.Einc) % if the object if already an incident field
                 valx=obj.Ex(end/2,end/2);
                 valy=obj.Ey(end/2,end/2);
@@ -304,6 +347,15 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 val = [valx, valy, valz];
             else % take the EE0 of the Einc
                 val = obj.Einc.EE0;
+            end
+        end
+
+        function val = EE0n(obj)
+            % norm of the incident field
+            if isempty(obj.Einc) % if the object if already an incident field
+                val=mean(mean(sqrt(abs(obj.Ex).^2+abs(obj.Ey).^2+abs(obj.Ez).^2)));
+            else % take the EE0 of the Einc
+                val = obj.Einc.EE0n();
             end
         end
 
@@ -353,6 +405,30 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
         end
 
+        function obj = rot90(obj0,k)
+            % rotate the images of the object by k*90°
+            arguments
+                obj0
+                k {mustBeInteger(k)} = 1
+            end
+
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+            for io=1:numel(obj0)
+                obj(io).Ex=rot90(obj0(io).Ex,k);
+                obj(io).Ey=rot90(obj0(io).Ey,k);
+                obj(io).Ez=rot90(obj0(io).Ez,k);
+                obj(io).Einc.Ex=rot90(obj0(io).Einc.Ex,k);
+                obj(io).Einc.Ey=rot90(obj0(io).Einc.Ey,k);
+                obj(io).Einc.Ez=rot90(obj0(io).Einc.Ez,k);
+            end
+
+        end   
+
+
         function objList = applyPhaseShift(objList0,phi)
             % applies of phase shift to all the components of a field, but
             % not to its Einc. Useful to articially simulate SLIM imaging.
@@ -393,16 +469,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 for io = 1:Nim
                     clear imName
                     % Automatic definition of the name of the file
-                    if ~isempty(objList(io).OPDfileName)
-                        imName = objList(io).OPDfileName;
-                    elseif ~isempty(objList(io).ItfFileName)
-                        imName = [type '_' objList(io).ItfFileName];
-                    elseif ~isempty(objList(io).imageNumber)
-                        imName = [type '_' textkkk(objList(io).imageNumber)];
-                    else
-                        imName = [type '_' textkkk(io)];
-                    end
-                    imName = removeExtension(imName);
+                    imName = [type '_' textkkk(io)];
                     imNamejpg = [imName '.jpg'];
                     imwrite(ImageQLSI.im2int8(objList(io).(type)),phase1024(256),[folder imNamejpg])
                     disp(imNamejpg)
