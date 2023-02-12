@@ -9,7 +9,7 @@
 % affiliation: CNRS, Institut Fresnel
 % date: Feb 10, 2020
 
-function EPS = epsReadDDA(lambda0,fileName)
+function EPS = epsRead(lambda0,fileName)
 
 nMetal = dlmread(['n' fileName '.txt']);
 Nl = length(lambda0);
