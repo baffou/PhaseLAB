@@ -278,16 +278,17 @@ for ii = 1:Nf
         IM(ii).DWy0 = DWy;
     end
     
-    if updateRefFcrop==1
+%    if updateRefFcrop==1
         Itfi.Ref.Fcrops = [cropParam0; cropParam1; cropParam2];
         fprintf(['Measured zeta factor: ' num2str(cropParam1.zeta) '\n'])
         fprintf(['Theoreti zeta factor: ' num2str(MI.CGcam.zeta) '\n'])
         if cropParam1.zeta-MI.CGcam.zeta>0.1
             warning('the zeta measured and theoretical values are much different\n')
         end
-    end
+%    end
 
     IM(ii).ItfFileName = Itf(ii).fileName;
+    IM(ii).comment = Itf(ii).comment;
 
     fprintf('\n')
 end

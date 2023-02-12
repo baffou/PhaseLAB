@@ -14,6 +14,10 @@ classdef Interfero < handle & matlab.mixin.Copyable
         TFapo    = []% tells wether the TF has been calculated with an apodization (equals the width of the apodization)
     end
     
+    properties
+        comment  % Any comment to leave to this image
+    end
+
     properties (Dependent)
         Itf     (:,:) double
     end
@@ -188,7 +192,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             obj.Ref.Fcrops = [FcropParameters(); FcropParameters(); FcropParameters()];
         end
 
-        function obj = crop(obj0,opt)
+        function [obj,xy1,xy2] = crop(obj0,opt)
             arguments
                 obj0
                 opt.xy1 = []
@@ -197,8 +201,10 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 opt.Size = 'Manual'
                 opt.twoPoints logical = false
             end
-
-            if nargout
+            xy1=opt.xy1;
+            xy2=opt.xy2;
+            if nargout==1
+                fprintf('copying the object')
                 obj=copy(obj0);
             else
                 obj=obj0;
@@ -206,6 +212,11 @@ classdef Interfero < handle & matlab.mixin.Copyable
             
             [x1, x2, y1, y2] = crop0(obj,opt);
             
+            %if ~isempty(opt.xy1)
+                xy1=[x1,y1];
+                xy2=[x2,y2];
+            %end
+
             for io = 1:numel(obj)
                 printLoop(io,numel(obj))    
                 if ~exist('Ref0','var')
@@ -468,6 +479,31 @@ classdef Interfero < handle & matlab.mixin.Copyable
             end
         end
 
+        function [ImG,ImR]=splitColors(Im)
+            % Im comes froma 2-color camera
+            % These function creates to Interfero objects, for each colors
+            % Use interpolation to keep the same number of pixels
+            arguments
+                Im Interfero
+            end
+            
+            ImG=copy(Im);
+            ImR=copy(Im);
+            
+            ImG.Itf0=colorInterpolation(Im.Itf,'g');
+            ImG.comment = 'Green Channel';
+            ImR.Itf0=colorInterpolation(Im.Itf,'r');
+            ImR.comment = 'Red Channel';
+            ImG.Ref.Itf0=colorInterpolation(Im.Ref.Itf,'g');
+            ImR.Ref.Itf0=colorInterpolation(Im.Ref.Itf,'r');
+            
+        end
+
+
+
+
+        
+        
         function obj = plus(obj1,obj2)
             obj=copy(obj1);
             obj.Ref=copy(obj1.Ref);

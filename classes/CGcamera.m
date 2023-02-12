@@ -102,7 +102,6 @@ classdef CGcamera  <  handle
                     error('When only one input, must be a text or a camera')
                 end
             elseif nargin>=2
-                nargin
                 if istext(varargin{1}) %CGcamera('Zyla','P4',zoom)
                     obj.Camera = Camera(varargin{1});
                 elseif isa(varargin{1},'Camera') %CGcamera(Cam)

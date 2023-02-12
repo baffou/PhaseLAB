@@ -526,7 +526,7 @@ classdef ImageQLSI   <   ImageMethods
                         left=objList2(io).OPD(2:end-1,1);
                         right=objList2(io).OPD(2:end-1,end);
                         bound=[top(:);bottom(:);left(:);right(:)];
-                        objList2(io).OPD = objList(io).OPD-mean(bound);
+                        objList2(io).OPD = objList(io).OPD-median(bound);
                     end
                 else
                     error('unkown option')
