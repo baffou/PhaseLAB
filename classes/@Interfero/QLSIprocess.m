@@ -1,6 +1,6 @@
 % Method of the Interfero class.
 
-function [IM,DWx,DWy] = QLSIprocess(Itf,IL,opt)
+function [IM,DWx,DWy,Im_int] = QLSIprocess(Itf,IL,opt)
 arguments
     Itf Interfero
     IL % Illumination object or wavelength

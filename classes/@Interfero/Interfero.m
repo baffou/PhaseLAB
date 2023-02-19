@@ -218,7 +218,9 @@ classdef Interfero < handle & matlab.mixin.Copyable
             %end
 
             for io = 1:numel(obj)
-                printLoop(io,numel(obj))    
+                printLoop(io,numel(obj))  
+                obj(io).Itf0 = obj(io).Itf(y1:y2,x1:x2);
+                if ~isempty(obj(io).Ref)
                 if ~exist('Ref0','var')
                     Ref0 = obj(io).Ref;
                     Ref0im=Ref0.Itf;
@@ -227,11 +229,12 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     Ref0im=Ref0.Itf;
                 end
                 obj(io).Ref=Ref0;
-                obj(io).Itf0 = obj(io).Itf(y1:y2,x1:x2);
                 obj(io).Ref = copy(obj(io).Ref);
                 obj(io).Ref.Itf0 = Ref0im(y1:y2,x1:x2);
                 obj(io).Ref.TF = fftshift(fft2(obj(io).Ref.Itf));
+                end
             end
+                
 
 
         end
@@ -480,23 +483,28 @@ classdef Interfero < handle & matlab.mixin.Copyable
         end
 
         function [ImG,ImR]=splitColors(Im)
-            % Im comes froma 2-color camera
+            % Im comes from a 2-color camera
             % These function creates to Interfero objects, for each colors
             % Use interpolation to keep the same number of pixels
             arguments
                 Im Interfero
             end
-            
-            ImG=copy(Im);
-            ImR=copy(Im);
-            
-            ImG.Itf0=colorInterpolation(Im.Itf,'g');
-            ImG.comment = 'Green Channel';
-            ImR.Itf0=colorInterpolation(Im.Itf,'r');
-            ImR.comment = 'Red Channel';
-            ImG.Ref.Itf0=colorInterpolation(Im.Ref.Itf,'g');
-            ImR.Ref.Itf0=colorInterpolation(Im.Ref.Itf,'r');
-            
+            No=numel(Im);
+            ImG=Interfero(No);
+            ImR=Interfero(No);
+            for io=1:No
+                ImG(io)=copy(Im(io));
+                ImR(io)=copy(Im(io));
+                
+                ImG(io).Itf0=colorInterpolation(Im(io).Itf,'g');
+                ImG(io).comment = 'Green Channel';
+                ImR(io).Itf0=colorInterpolation(Im(io).Itf,'r');
+                ImR(io).comment = 'Red Channel';
+                if ~isempty(ImG(io).Ref)
+                    ImG(io).Ref.Itf0=colorInterpolation(Im(io).Ref.Itf,'g');
+                    ImR(io).Ref.Itf0=colorInterpolation(Im(io).Ref.Itf,'r');
+                end
+            end            
         end
 
 

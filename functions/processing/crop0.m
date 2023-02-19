@@ -1,24 +1,32 @@
 function [x1, x2, y1, y2] = crop0(obj,opt)
-% arguments
-%     obj    % Interfero or ImageMethods
-%     opt.xy1 = []
-%     opt.xy2 = []
-%     opt.Center {mustBeMember(opt.Center,{'Auto','Manual','auto','manual'})} = 'Auto'
-%     opt.Size = 'Manual'
-%     opt.twoPoints logical = false
-% end
+
+
+if nargin == 1
+    opt.twoPoints = true;
+end
+
+if isa(obj,'Interfero') || isa(obj,'ImageMethods')
+    dispfun=@figure;
+    im=obj(1);
+    Nx=im.Nx;
+    Ny=im.Ny;
+else
+    dispfun=@imagegb;
+    [Ny,Nx]=size(obj);
+    im=obj;
+end
 
 if opt.twoPoints
-    obj(1).figure
+    dispfun(im)
     [xx,yy]=ginput(2);
     x1=round(min(xx));
     x2=round(max(xx));
     y1=round(min(yy));
     y2=round(max(yy));
     x1=round(max([1;x1]));
-    x2=round(min([obj(1).Nx;x2]));
+    x2=round(min([Nx;x2]));
     y1=round(max([1;y1]));
-    y2=round(min([obj(1).Ny;y2]));
+    y2=round(min([Ny;y2]));
 elseif ~isempty(opt.xy1) && ~isempty(opt.xy2)  % crop('xy1', [a,b], 'xy2', [a,b])
     if numel(opt.xy1)~=2
         error('First input must be a 2-vector (x,y)')
@@ -37,17 +45,17 @@ else
             yc=opt.Center(2);
         else
             error('the Center argument must be a 2-vector [x, y], or a char array ''Manual'' or ''Auto''.')
-        end        
+        end
     elseif strcmpi(opt.Center,'Manual') % crop('Center','Manual')
-        h = obj(1).figure;
+        h = dispfun(im);
         [xc, yc] = ginput(1);
         close(h)
     else
-        xc = obj(1).Nx/2;
-        yc = obj(1).Ny/2;
+        xc = im.Nx/2;
+        yc = im.Ny/2;
     end
     if strcmpi(opt.Size,'Manual') % crop('Center','Manual')
-        h = obj(1).figure;
+        h = dispfun(im);
         h.UserData{12}.getPoint = 0;
         rr = rectangle();
         set (h, 'WindowButtonMotionFcn', @(src,event)drawRect(h,rr,xc,yc))
@@ -88,7 +96,7 @@ else
         end
     end
 
-    
+
 end
 
 if mod(x2-x1,2)==0

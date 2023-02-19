@@ -667,7 +667,12 @@ classdef ImageQLSI   <   ImageMethods
                     end
                     imName = removeExtension(imName);
                     imNamejpg = [imName '.jpg'];
-                    imwrite(ImageQLSI.im2int8(objList(io).(type)),phase1024(256),[folder imNamejpg])
+                    if strcmpi(varargin{ia},'T')
+                        colorM=gray;
+                    else
+                        colorM=phase1024(256);
+                    end
+                    imwrite(ImageQLSI.im2int8(objList(io).(type)),colorM,[folder imNamejpg])
                     disp(imNamejpg)
                     imNametxt = [imName '.txt'];
                     writematrix(objList(io).(type),[folder imNametxt])

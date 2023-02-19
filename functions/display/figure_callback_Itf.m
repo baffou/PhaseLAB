@@ -85,7 +85,7 @@ ha(2) = subplot(1,2,2);
 ha(1).Position(3) = ha(2).Position(3);
 ha(1).Position(1) = ha(1).Position(1)*1.2;
 
-if strcmp(fft,'ref')
+if strcmp(fft,'ref') && ~isempty(IM.Ref)
     reference = IM.Ref.Itf;
     set(hand.ref,'BackgroundColor',ButtonOnColor)
     set(hand.fft,'BackgroundColor',ButtonOffColor)
