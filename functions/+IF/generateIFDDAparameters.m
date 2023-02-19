@@ -36,12 +36,12 @@ fprintf(hf,'%u\n',opt.Npx);  %=512       %nfft2d
 fprintf(hf,'%u\n',Obj.nxm);  %=632.8d0       %wavelength
 fprintf(hf,'%u\n',Obj.nym);  %=632.8d0       %wavelength
 fprintf(hf,'%u\n',Obj.nzm);  %=632.8d0       %wavelength
+fprintf(hf,'%u\n',opt.nmaxloop); % nombre de sources sur l'anneau
 fprintf(hf,'%u\n',opt.nphi);  %=632.8d0       %wavelength
 fprintf(hf,'%u\n',opt.ntheta);  %=632.8d0       %wavelength
 fprintf(hf,'%f\n',lambda*1e9);  %=632.8d0       %wavelength
 fprintf(hf,'%s\n',opt.beam);   %='pwavecircular'    %Circular plane wave
 fprintf(hf,'%f\n',opt.theta);
-fprintf(hf,'%u\n',opt.nmaxloop); % nombre de sources sur l'anneau
 fprintf(hf,'%f\n',opt.pp);
 fprintf(hf,'%f\n',opt.ss);
 fprintf(hf,'%s\n',Obj.name); %='arbitrary' %Arbitrary object

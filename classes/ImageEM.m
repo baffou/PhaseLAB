@@ -218,6 +218,8 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 binfun=@(x) binning2x2(binning2x2(x));
             elseif n==6
                 binfun=@(x) binning3x3(binning2x2(x));
+            elseif n==1
+                binfun=@(x) x; % identity
             else
                 error('not a proper binning dimension. Should be 2 or 3.')
             end
