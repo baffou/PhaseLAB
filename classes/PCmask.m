@@ -7,7 +7,7 @@ classdef PCmask < handle & matlab.mixin.Copyable
         phi     % phase shift of the mask
         NA0     % radius of the ring, or shift from the center of the disc
         dNA     % thickness of the ring, or diameter of the disc
-        theta   % angular position of the disc, meaningful onlly for type='disc'
+        theta   = 0 % angular position of the disc, meaningful only for type='disc'
         type {mustBeMember(type,{'ring','disc'})} = 'ring'
         inverted logical = false
     end
@@ -52,7 +52,8 @@ classdef PCmask < handle & matlab.mixin.Copyable
                 
                 figure
                 imagegb(log(abs(imgaussfilt(var(1).FT,2))))
-                zoom(8)
+                zoom(6)
+                fullscreen
                 pause(0.7)
                 [x,y]=ginput(1);
                 dx=x-(var(1).Nx/2+1);
@@ -150,12 +151,13 @@ classdef PCmask < handle & matlab.mixin.Copyable
             title('intensity')
             colorbar
             colormap(gca,"gray")
+            clim([0 1]);
             ax3=subplot(1,3,3);
             imagesc(angle(obj.mask(IM(1))));
             set(gca,'DataAspectRatio',[1,1,1])
-            colormap(gca,phase1024)
+            colormap(gca,Pradeep)
             colorbar
-            clim([0 2*pi]);
+            clim([-pi pi]);
 %            cb=colorbar;
 %            cb.Label.String='phase';
             title('Phase')
