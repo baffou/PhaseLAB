@@ -1,6 +1,5 @@
-%clear
-function cellGenerator(im0,pxSize,opt)
-%% generate an IFDDA object from a image, typically a biocell
+function meshFromImage(im0,pxSize,opt)
+%% generate an IFDDA object from an image, typically a biocell
 arguments
     im0 (:,:) double
     pxSize
@@ -8,8 +7,8 @@ arguments
     opt.epsCell (1,1) double = 1.38^2
     opt.n0 double = []
     opt.nCell double = []
-    opt.folder char = pwd
-    opt.fileName char = 'cell3D.txt'
+    opt.folder char = pwd % output folder
+    opt.fileName char = 'cell3D.txt'  % output file
     opt.Zresize double = 1
 end
 %pxSize=97.5e-9;
@@ -40,16 +39,16 @@ end
 
 hf=fopen(fileN,'w');
 fprintf(hf,'%d %d %d\n',Nx,Ny,Nz);
-fprintf(hf,'%d\n',pxSize*1e9);
+fprintf(hf,'%f\n',pxSize*1e9);
 close all
 
 positionList=zeros(Nx*Ny*Nz,3);
 ii=0;
-for y=1:Ny
-    for x=1:Nx
-        for z=1:Nz
+for z=1:Nz
+    for y=1:Ny
+        for x=1:Nx
             ii=ii+1;
-            positionList(ii,:)=[x*pxSize*1e9,y*pxSize*1e9,z*pxSize*1e9];
+            positionList(ii,:)=[(x-Nx/2)*pxSize*1e9,(y-Ny/2)*pxSize*1e9,-z*pxSize*1e9];
         end
     end
 end
@@ -74,11 +73,13 @@ end
 len=length(aa);
 tab=zeros(Nx*Ny*Nz,len);
 ii=0;
-for y=1:Ny
-    for x=1:Nx
-        for z=1:Nz
+reconstructedHeight=zeros(Ny,Nx);
+for z=1:Nz
+    for y=1:Ny
+        for x=1:Nx
             ii=ii+1;
             if z <= im(y,x)/pxSize
+                reconstructedHeight(y,x)=reconstructedHeight(y,x)+1;
                 tab(ii,:)=sprintf('(%f, 0)',opt.epsCell);
             else
                 tab(ii,:)=sprintf('(%f, 0)',opt.eps0);
@@ -86,7 +87,9 @@ for y=1:Ny
         end
     end
 end
+figure, imagegb(reconstructedHeight),drawnow
 writematrix(char(tab),fileN,'WriteMode','append',QuoteStrings='none')
+fclose(hf);
 %%
 s=dir(fileN);
 the_size=s.bytes;

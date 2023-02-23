@@ -339,7 +339,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
         function val = EE0(obj)
             % complex vectorial incident field at the center of the image
-            if isempty(obj.Einc) % if the object if already an incident field
+            if isempty(obj.Einc) % if the object is already an incident field
                 valx=obj.Ex(end/2,end/2);
                 valy=obj.Ey(end/2,end/2);
                 valz=obj.Ez(end/2,end/2);

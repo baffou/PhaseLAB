@@ -22,6 +22,7 @@ arguments
     opt.nObj (1,1) double = 1.38
     opt.nlecture logical = 0
     opt.h5fileName (1,:) char = 'data.h5'
+    opt.nrig (1,1) double = 0 % or 7
 end
 
 if strcmp(opt.object,'arbitrary') && strcmp(opt.objFileName,'none')
@@ -61,6 +62,7 @@ fprintf(hf,'%f\n',Obj.z0*1e9);  % output hdf5 file name ='SLIM_graphene.h5'
 fprintf(hf,'%f\n',Obj.dim(1)*1e9);  % output hdf5 file name ='SLIM_graphene.h5'
 fprintf(hf,'%f\n',Obj.dim(2)*1e9);  % output hdf5 file name ='SLIM_graphene.h5'
 fprintf(hf,'%f\n',Obj.dim(3)*1e9);  % output hdf5 file name ='SLIM_graphene.h5'
+fprintf(hf,'%u\n',opt.nrig);  % computation method (0: rigourous, 7: approxim.)
 
 
 

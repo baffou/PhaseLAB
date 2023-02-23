@@ -1,4 +1,5 @@
 function rodGenerator(opt)
+%% generate a rod object, typically a bacteria or a nanorod, oriented along x
 arguments
     opt.pxSize (1,1) double = 65e-9 % size of the mesh unit cell
     opt.R (1,1) double = 250e-9 % radius of the rod
@@ -16,7 +17,7 @@ if ~isempty(opt.D) % if a diameter is specified
     opt.R = opt.D/2;
 end
 Rrod=opt.R;
-Lrod=opt.L;
+Hrod=opt.L;
 
 fileName=opt.fileName;
 
@@ -34,19 +35,24 @@ else
     eps0= opt.n0^2;
 end
 
-Lrod=(Lrod -2*Rrod)/2; % half length of the cylinder
+Lrod=(Hrod -2*Rrod)/2; % half length of the cylinder
 
 
-nx=ceil(Lrod/(2*pxSize));
+nx=ceil(Hrod/(2*pxSize));
 ny=ceil(Rrod/pxSize);
 nz=floor(Rrod/pxSize);
+
+nz=6;
+
+
+
 fprintf('Ncells=%d\n',(2*nx+1)*(2*ny+1)*(2*nz+1))
 if exist("fileName","file")
     delete fileName
 end
 hf=fopen(fileName,'w');
 fprintf(hf,'%d %d %d\n',2*nx+1,2*ny+1,2*nz+1);
-fprintf(hf,'%d\n',pxSize*1e9);
+fprintf(hf,'%f\n',pxSize*1e9);
 
 zshift = -Rrod-pxSize/2;
 %figure
@@ -59,6 +65,7 @@ for z=-nz:nz
     end
 end
 nCell=0;
+reconstructedHeight=zeros(2*ny+1,2*nx+1);
 for z=-nz:nz
     for y=-ny:ny
         for x=-nx:nx
@@ -68,6 +75,7 @@ for z=-nz:nz
                         || (x+Lrod/pxSize)*(x+Lrod/pxSize) + y*y + z*z <= Rrod*Rrod/(pxSize*pxSize) 
                     fprintf(hf,'(%f, %f) \n',real(eps),imag(eps));
                     nCell=nCell+1;
+                    reconstructedHeight(ny+y+1,nx+x+1)=reconstructedHeight(ny+y+1,nx+x+1)+1;
                 else
                     fprintf(hf,'(%f, %f) \n',real(eps0),imag(eps0));
                 end
@@ -77,6 +85,7 @@ for z=-nz:nz
         end
     end
 end
+figure, imagegb(reconstructedHeight),drawnow
 fclose(hf);
 
 fprintf('cell count: %d\n',nCell)
