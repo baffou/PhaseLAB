@@ -192,7 +192,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             obj.Ref.Fcrops = [FcropParameters(); FcropParameters(); FcropParameters()];
         end
 
-        function [obj,xy1,xy2] = crop(obj0,opt)
+        function [obj,params] = crop(obj0,opt)
             arguments
                 obj0
                 opt.xy1 = []
@@ -200,9 +200,8 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 opt.Center = 'Auto'
                 opt.Size = 'Manual'
                 opt.twoPoints logical = false
-            end
-            xy1=opt.xy1;
-            xy2=opt.xy2;
+                opt.params double = double.empty()
+           end
             if nargout==1
                 fprintf('copying the object')
                 obj=copy(obj0);
@@ -210,13 +209,17 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 obj=obj0;
             end
             
-            [x1, x2, y1, y2] = crop0(obj,opt);
+            if isempty(opt.params)
+                [x1, x2, y1, y2] = crop0(obj,opt);
+                params=[x1, x2, y1, y2];
+            else
+                x1 = opt.params(1);
+                x2 = opt.params(2);
+                y1 = opt.params(3);
+                y2 = opt.params(4);
+                params=opt.params;
+            end
             
-            %if ~isempty(opt.xy1)
-                xy1=[x1,y1];
-                xy2=[x2,y2];
-            %end
-
             for io = 1:numel(obj)
                 printLoop(io,numel(obj))  
                 obj(io).Itf0 = obj(io).Itf(y1:y2,x1:x2);
@@ -445,6 +448,56 @@ classdef Interfero < handle & matlab.mixin.Copyable
             
         end
         
+        function val=getAreaMean(obj,Narea,hfig)
+            if nargin==1
+                obj.figure()
+                Narea=1;
+            end
+
+            val=zeros(Narea,2);
+            valstd=zeros(Narea,2);
+            for ia=1:Narea
+
+                [x,y]=ginput(2);
+                xmin=round(min(x));
+                xmax=round(max(x));
+                ymin=round(min(y));
+                ymax=round(max(y));
+
+                valItf=mean(mean(obj.Itf(ymin:ymax,xmin:xmax)));
+                valRef=mean(mean(obj.Ref.Itf(ymin:ymax,xmin:xmax)));
+                val(ia,1)=valItf;
+                val(ia,2)=valRef;
+
+                valstdItf=std2(obj.Itf(ymin:ymax,xmin:xmax));
+                valstdRef=std2(obj.Ref.Itf(ymin:ymax,xmin:xmax));
+                valstd(ia,1)=valstdItf;
+                valstd(ia,2)=valstdRef;
+
+                if nargin==3
+                    UIresult=hfig.UserData{8}.UIresult;
+                    set(UIresult,'String',[sprintf('%.4g',valItf) '\pm' sprintf('%.4g',valstdItf) ', ' sprintf('%.3g',1e9*valRef) '\pm' sprintf('%.4g',valstdRef) ' nm']);
+                end
+
+            end
+            hfig.UserData{10}=val;
+
+            hc=figure;
+            subplot(1,2,1)
+            plot(val(:,1),'o-')
+            title('Interfero')
+            subplot(1,2,2)
+            plot(val(:,2),'o-')
+            title('Reference')
+
+            if get(hfig.UserData{8}.autosave,'value')
+                saveData(hfig,hc)
+            end
+
+
+        end
+        
+        
         function val = sizeof(IM)
             Nim = numel(IM);
             val = 0;
@@ -506,11 +559,6 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 end
             end            
         end
-
-
-
-
-        
         
         function obj = plus(obj1,obj2)
             obj=copy(obj1);

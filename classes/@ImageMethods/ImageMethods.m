@@ -144,65 +144,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
         end
 
-        function profile=radialAverage(obj,opt)
-            arguments
-                obj
-                opt.figure = []
-                opt.coords =[]
-            end
-            % plots the radial average from a clicked point, usually a
-            % nanoparticle location.
-            % hfig is optional. If specified, must be the hfig of the main image panel: IM.figure.
-            if isempty(opt.figure)
-                hfig=obj.figure('px');
-            else
-                hfig=opt.figure;
-                figure(hfig)
-                linkaxes(hfig.UserData{7},'off');
-                linkaxes(hfig.UserData{7},'x');
-            end
-            linkaxes(hfig.UserData{7},'off');
-            linkaxes(hfig.UserData{7},'x');
-            if isempty(opt.coords)
-                [cx,cy]=ginput(2);
-            else
-                cx=opt.coords(:,1);
-                cy=opt.coords(:,2);
-            end
-            if nargin==2
-                if strcmp(hfig.UserData{2},'µm')
-                    factorAxis=obj.pxSize*1e6;
-                elseif strcmp(hfig.UserData{2},'px')
-                    factorAxis=1;
-                end
-            else
-                factorAxis=1;
-            end
-            D=sqrt((cx(1)-cx(2))^2+(cy(1)-cy(2))^2);
-            profile.T  =radialAverage0(obj.T,   [cx(1)/factorAxis, cy(1)/factorAxis], round(D/factorAxis));
-            profile.OPD=radialAverage0(obj.OPD, [cx(1)/factorAxis, cy(1)/factorAxis], round(D/factorAxis));
-            profile.coords=[cx,cy];
-            Np=length(profile.T);
-
-            subplot(1,2,1)
-            plot((-Np+1:Np-1)*factorAxis,[flip(profile.T);profile.T(2:end)],'LineWidth',2)
-            xlabel(hfig.UserData{2})
-            ylabel('normalized intensity')
-            hold on
-            ax=gca;
-            plot([0 0],ax.YLim,'k--','LineWidth',2);%vertical line
-            set(ax,'FontSize',14)
-            hold off
-            subplot(1,2,2)
-            plot((-Np+1:Np-1)*factorAxis,[flip(profile.OPD);profile.OPD(2:end)]*1e9,'LineWidth',2)
-            hold on
-            ax=gca;
-            plot([0 0],ax.YLim,'k--','LineWidth',2);%vertical line
-            set(ax,'FontSize',14)
-            hold off
-            xlabel(hfig.UserData{2})
-            ylabel('Optical path difference [nm]')
-        end
 
         function val=getPixel(obj,hfig)
             if nargin==1
@@ -718,7 +659,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             fprintf('%.3g Ko\n',val)
         end
 
-        function obj = crop(obj0,opt)
+        function [obj, params] = crop(obj0,opt)
             arguments
                 obj0
                 opt.xy1 = []
@@ -726,6 +667,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.Center = 'Auto'
                 opt.Size = 'Manual'
                 opt.twoPoints logical = false
+                opt.params double = double.empty()
             end
 
             if nargout
@@ -734,7 +676,16 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 obj=obj0;
             end
 
-            [x1, x2, y1, y2] = crop0(obj,opt);
+            if isempty(opt.params)
+                [x1, x2, y1, y2] = crop0(obj,opt);
+                params=[x1, x2, y1, y2];
+            else
+                x1 = opt.params(1);
+                x2 = opt.params(2);
+                y1 = opt.params(3);
+                y2 = opt.params(4);
+                params=opt.params;
+            end
 
             for io = 1:numel(obj)
                 if isa (obj,'ImageQLSI')
