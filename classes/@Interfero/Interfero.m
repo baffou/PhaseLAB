@@ -497,6 +497,35 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         end
         
+        function distance(obj,hfig)
+            % measures a distance between two points.
+            if nargin==1
+                hfig=obj.figure('µm');
+            else
+                figure(hfig)
+                figure_callback(hfig,obj,'µm',hfig.UserData{3},hfig.UserData{4},'1')
+                %if ~strcmp(hfig.UserData{2},'px') % force the unit to be px in case it is µm
+                %    figure_callback(hfig,obj,'px',hfig.UserData{3},hfig.UserData{4},str2double(get(hfig.UserData{8}.UIk,'String')),hfig.UserData{8})
+                %end
+            end
+            hp=drawpolyline;
+            dist=lineLength(hp);
+            %clipboard('copy',sprintf([hfig.UserData{5}.OPDfileName '\t%.4g\t' hfig.UserData{2}],dist))
+
+            %             if nargin==2
+            %                 if strcmp(hfig.UserData{2},'µm')
+            %                     factorAxis=obj.pxSize*1e6;
+            %                 elseif strcmp(hfig.UserData{2},'px')
+            %                     factorAxis=1;
+            %                 end
+            %             else
+            %                 factorAxis=1;
+            %             end
+            UIresult=hfig.UserData{8}.UIresult;
+            set(UIresult,'String',[sprintf('%.4g',dist) ' ' hfig.UserData{2}]);
+            hfig.UserData{10}=dist;
+
+        end
         
         function val = sizeof(IM)
             Nim = numel(IM);
