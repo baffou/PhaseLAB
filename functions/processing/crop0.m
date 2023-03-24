@@ -3,6 +3,7 @@ function [x1, x2, y1, y2] = crop0(obj,opt)
 
 if nargin == 1
     opt.twoPoints = true;
+    opt.figure = [];
 end
 
 if isa(obj,'Interfero') || isa(obj,'ImageMethods')
@@ -16,9 +17,31 @@ else
     im=obj;
 end
 
+if ~isempty(opt.figure) % The image is already displayed, no need to display it again
+    dispfun = @(x) x;
+end
+
 if opt.twoPoints
-    dispfun(im)
-    [xx,yy]=ginput(2);
+    if isempty(opt.figure)
+        figure,imagegb(im)
+        [xx,yy]=ginput(2);
+    elseif isa(opt.figure,'matlab.ui.Figure')
+        figure(opt.figure),imagegb(im)
+        [xx,yy]=ginput(2);        
+    elseif isa(opt.figure,'phaseLABgui') || isa(opt.figure,'phaseLABgui2')
+       app=opt.figure;
+       % Check Matlab version, throw error if prior to r2020b
+        %assert(~verLessThan('Matlab', '9.9'), 'ginput not supported prior to Matlab r2020b.')
+        
+        % Set up figure handle visibility, run ginput, and return state
+        fhv = app.UIFigure.HandleVisibility;        % Current status
+        app.UIFigure.HandleVisibility = 'callback'; % Temp change (or, 'on') 
+        set(0, 'CurrentFigure', app.UIFigure)       % Make fig current
+        
+        [xx,yy]=ginput(2);                          % run ginput
+        
+        opt.app.UIFigure.HandleVisibility = fhv;    % return original state
+    end
     x1=round(min(xx));
     x2=round(max(xx));
     y1=round(min(yy));
@@ -47,9 +70,14 @@ else
             error('the Center argument must be a 2-vector [x, y], or a char array ''Manual'' or ''Auto''.')
         end
     elseif strcmpi(opt.Center,'Manual') % crop('Center','Manual')
-        h = dispfun(im);
+    if isempty(opt.Axes)
+        figure,imagegb(im)
+    else
+
+        imagegb(opt.Axes,im)
+    end
         [xc, yc] = ginput(1);
-        close(h)
+        close(gcf)
     else
         xc = im.Nx/2;
         yc = im.Ny/2;

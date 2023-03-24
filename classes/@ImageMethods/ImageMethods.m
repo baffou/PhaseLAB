@@ -320,6 +320,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
             Nim=numel(opt.imType);
 
+            % convert all the options into cells:
             if ~isa(opt.ampl,'cell')
                 val=opt.ampl;
                 opt.ampl=cell(1,Nim);
@@ -668,6 +669,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.Size = 'Manual'
                 opt.twoPoints logical = false
                 opt.params double = double.empty()
+                opt.figure = []; % figure uifigure object to be considered in case the image is already open
             end
 
             if nargout
@@ -676,18 +678,24 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 obj=obj0;
             end
 
-            if isempty(opt.params)
-                [x1, x2, y1, y2] = crop0(obj,opt);
-                params=[x1, x2, y1, y2];
-            else
-                x1 = opt.params(1);
-                x2 = opt.params(2);
-                y1 = opt.params(3);
-                y2 = opt.params(4);
-                params=opt.params;
-            end
-
+            sizeIm = [0 0]; 
             for io = 1:numel(obj)
+                if sum(sizeIm ~= size(obj(io).OPD)) % if the size of the image is not the same as the previous one
+                    if isempty(opt.params)
+                        [x1, x2, y1, y2] = crop0(obj,opt);
+                        params=[x1, x2, y1, y2];
+                    else
+                        x1 = opt.params(1);
+                        x2 = opt.params(2);
+                        y1 = opt.params(3);
+                        y2 = opt.params(4);
+                        params=opt.params;
+                    end
+                end
+
+                sizeIm = size(obj(io).OPD);
+
+
                 if isa (obj,'ImageQLSI')
                     temp=obj(io).T(y1:y2,x1:x2); % temp variable to avoid importing the matrix twice for the calculation of Nx and Ny when it is stored in a file.
                     obj(io).T   = temp;

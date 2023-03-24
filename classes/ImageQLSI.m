@@ -575,6 +575,50 @@ classdef ImageQLSI   <   ImageMethods
 
         end            
     
+        function obj = mirrorH(obj0)
+            % Mirror image with an horizontal mirror
+
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+
+            if isnumeric(obj0(1).T0)
+                for io=1:numel(obj0)
+                    obj(io).T0  =obj0(io).T0(end:-1:1,:);
+                    obj(io).OPD0=obj0(io).OPD0(end:-1:1,:);
+                    obj(io).DWx0=obj0(io).DWx0(end:-1:1,:);
+                    obj(io).DWy0=obj0(io).DWy0(end:-1:1,:);
+                end
+            else
+                error('A ImageQLSI object cannot be rotated if it is remote.')
+            end
+
+        end            
+    
+        function obj = mirrorV(obj0)
+            % Mirror image with an horizontal mirror
+
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+
+            if isnumeric(obj0(1).T0)
+                for io=1:numel(obj0)
+                    obj(io).T0  =obj0(io).T0(:,end:-1:1);
+                    obj(io).OPD0=obj0(io).OPD0(:,end:-1:1);
+                    obj(io).DWx0=obj0(io).DWx0(:,end:-1:1);
+                    obj(io).DWy0=obj0(io).DWy0(:,end:-1:1);
+                end
+            else
+                error('A ImageQLSI object cannot be rotated if it is remote.')
+            end
+
+        end        
+
     
 
         function val = DWnorm(obj)

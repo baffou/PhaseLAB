@@ -427,7 +427,46 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
         end   
 
+        function obj = mirrorH(obj0)
+            % Mirror image with an horizontal mirror
 
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+
+            for io=1:numel(obj0)
+                obj(io).Ex=obj0(io).Ex(end:-1:1,:);
+                obj(io).Ey=obj0(io).Ey(end:-1:1,:);
+                obj(io).Ez=obj0(io).Ez(end:-1:1,:);
+                obj(io).Einc.Ex=obj0(io).Einc.Ex(end:-1:1,:);
+                obj(io).Einc.Ey=obj0(io).Einc.Ey(end:-1:1,:);
+                obj(io).Einc.Ez=obj0(io).Einc.Ez(end:-1:1,:);
+            end
+
+        end            
+    
+        function obj = mirrorV(obj0)
+            % Mirror image with an horizontal mirror
+
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+
+            for io=1:numel(obj0)
+                obj(io).Ex=obj0(io).Ex(:,end:-1:1);
+                obj(io).Ey=obj0(io).Ey(:,end:-1:1);
+                obj(io).Ez=obj0(io).Ez(:,end:-1:1);
+                obj(io).Einc.Ex=obj0(io).Einc.Ex(:,end:-1:1);
+                obj(io).Einc.Ey=obj0(io).Einc.Ey(:,end:-1:1);
+                obj(io).Einc.Ez=obj0(io).Einc.Ez(:,end:-1:1);
+            end
+
+        end            
+    
         function objList = applyPhaseShift(objList0,phi)
             % applies of phase shift to all the components of a field, but
             % not to its Einc. Useful to articially simulate SLIM imaging.
