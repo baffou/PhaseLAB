@@ -21,6 +21,13 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
     methods
 
+        function app = figure(IM)
+            if nargout
+                app=PhaseLABgui(IM);
+            else
+                PhaseLABgui(IM);
+            end
+        end
         function val=lambda(obj)
             val=obj.Illumination.lambda;
         end
