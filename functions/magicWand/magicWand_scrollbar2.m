@@ -1,11 +1,9 @@
 %% To zoom on the particle on interest and keep the zoomed images for the following images
 
-function  [mask,maskRemove,fail,xlist,ylist,roiIN,roiOUT] = magicWand_scrollbar(app)
-% This code is meant to replace magicWand_scrollbar2, and to be used with the
-% new gui interface PhaseLABgui
+function  [mask,maskRemove,fail,xlist,ylist,roiIN,roiOUT] = magicWand_scrollbar2(hfig)
 
 
-image0 = app.IM(app.jim).OPD;
+image0 = hfig.UserData{5}.OPD;
 
 [Ny,Nx] = size(image0);
 
@@ -50,8 +48,8 @@ toleranceStart = OPDamplitude/20;
 %To allow to click on multiple part of the particle of interest
 
 hOPD = figure;
-hOPD.UserData.roiIN = app.roiIN;
-hOPD.UserData.roiOUT = app.roiOUT;
+hOPD.UserData.roiIN = hfig.UserData{12}.roiIN;
+hOPD.UserData.roiOUT = hfig.UserData{12}.roiOUT;
 hOPD.UserData.roiDraw = [];
 
 imageph(image0)
@@ -73,20 +71,20 @@ uicontrol('Style','pushbutton','FontSize',14,'BackgroundColor',[1 1 1],      ...
 
 drawnow
 
-if ~isempty(app.roiIN)
-    Nroi = numel(app.roiIN);
+if ~isempty(hfig.UserData{12}.roiIN{1})
+    Nroi = numel(hfig.UserData{12}.roiIN);
     for ii = 1:Nroi
-        if isvalid(app.roiIN{ii})
-            app.roiIN{ii}.Parent = gca;
+        if isvalid(hfig.UserData{12}.roiIN{ii})
+            hfig.UserData{12}.roiIN{ii}.Parent = gca;
         end
     end
 end
 
-if ~isempty(app.roiOUT)
-    Nroi = numel(app.roiOUT);
+if ~isempty(hfig.UserData{12}.roiOUT{1})
+    Nroi = numel(hfig.UserData{12}.roiOUT);
     for ii = 1:Nroi
-        if isvalid(app.roiOUT{ii})
-            app.roiOUT{ii}.Parent = gca;
+        if isvalid(hfig.UserData{12}.roiOUT{ii})
+            hfig.UserData{12}.roiOUT{ii}.Parent = gca;
         end
     end
 end
@@ -96,24 +94,24 @@ while hOPD.UserData.processok==0
     pause(0.5);
 end
 
-if ~isempty(hOPD.UserData.roiIN)
-    app.roiIN = cell(1,1);
-    nn = 0;
+if ~isempty(hOPD.UserData.roiIN{1})
+     hfig.UserData{12}.roiIN = cell(1,1);
+     nn = 0;
     for ii = 1:numel(hOPD.UserData.roiIN)
         if isvalid(hOPD.UserData.roiIN{ii})
             nn = nn+1;
-            app.roiIN{nn} = copy(hOPD.UserData.roiIN{ii});% copy, otherwise the handles disappear as soon as hOPD is closed
+            hfig.UserData{12}.roiIN{nn} = copy(hOPD.UserData.roiIN{ii});% copy, otherwise the handles disappear as soon as hOPD is closed
         end
     end
 end
 
-if ~isempty(hOPD.UserData.roiOUT)
-    app.roiOUT = cell(1,1);
-    nn = 0;
+if ~isempty(hOPD.UserData.roiOUT{1})
+     hfig.UserData{12}.roiOUT = cell(1,1);
+     nn = 0;
     for ii = 1:numel(hOPD.UserData.roiOUT)
         if isvalid(hOPD.UserData.roiOUT{ii})
             nn = nn+1;
-            app.roiOUT{nn} = copy(hOPD.UserData.roiOUT{ii});% copy, otherwise the handles disappear as soon as hOPD is closed
+            hfig.UserData{12}.roiOUT{nn} = copy(hOPD.UserData.roiOUT{ii});% copy, otherwise the handles disappear as soon as hOPD is closed
         end
     end
 end
@@ -125,7 +123,7 @@ S = size(image0);
 if isempty(hOPD.UserData.roiDraw) % no hand-made exact and final roi has be defined
     
     
-    if isempty(hOPD.UserData.roiIN) % roiIN selection
+    if isempty(hOPD.UserData.roiIN{1}) % roiIN selection
         hOPD.UserData.maskManual = true(S(1),S(2));
     else
         hOPD.UserData.maskManual = false(S(1),S(2));
@@ -133,7 +131,7 @@ if isempty(hOPD.UserData.roiDraw) % no hand-made exact and final roi has be defi
     
     
     
-    if ~isempty(hOPD.UserData.roiIN)
+    if ~isempty(hOPD.UserData.roiIN{1})
         Nroi = numel(hOPD.UserData.roiIN);
         for ii = 1:Nroi
             if isvalid(hOPD.UserData.roiIN{ii})
@@ -146,7 +144,7 @@ if isempty(hOPD.UserData.roiDraw) % no hand-made exact and final roi has be defi
         end
     end
     
-    if ~isempty(hOPD.UserData.roiOUT)
+    if ~isempty(hOPD.UserData.roiOUT{1})
         Nroi = numel(hOPD.UserData.roiOUT);
         for ii = 1:Nroi
             if isvalid(hOPD.UserData.roiOUT{ii})
@@ -216,7 +214,7 @@ if isempty(hOPD.UserData.roiDraw) % no hand-made exact and final roi has be defi
 else % if a direct manual segmentation has been done, without magic wand
     
     
-    if ~isempty(hOPD.UserData.roiOUT) % if additionally, remove regions have been drawn
+    if ~isempty(hOPD.UserData.roiOUT{1}) % if additionally, remove regions have been drawn
         hOPD.UserData.maskManual = true(S(1),S(2));
         Nroi = numel(hOPD.UserData.roiOUT);
         for ii = 1:Nroi

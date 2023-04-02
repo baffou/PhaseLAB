@@ -12,27 +12,37 @@
 %Guillaume Baffou - 30 Apr 2021
 
 
-function [alpha,OV,maskMeas] = magicWandAlphaOV2(hfig)
+function [alpha,OV,maskMeas] = magicWandAlphaOV(obj,opt)
+% This code is meant to replace magicWandAlphaOV2, and to be used with the
+% new gui interface PhaseLABgui
 
-%bkTh: thickness of the background ring in pixels
+% magicWandAlphaOV(app)
+% magicWandAlphaOV(IM)
+% magicWandAlphaOV(IMlist)
 
-if isa(hfig,'PhaseLABgui')
+arguments
+    obj % ImageMethods or PhaseLABgui
+    opt.bkTh = 3
+    opt.step = 1
+    opt.NNP = 1
+    opt.nmax = 200
+end
+
+
+if isa(obj,'ImageMethods')
+    app=PhaseLABgui;app.IM=obj;
+    bkTh = opt.bkTh;
+    step = opt.step;
+    NNP = opt.NNP;
+    nmax = opt.nmax;
+elseif isa(obj,'PhaseLABgui')
+    app = obj;
     IM = app.IM(app.jim);
     bkTh = app.bkgRingEditField.Value;
     step = app.stepEditField.Value;
     NNP = 1;
     nmax = app.NmaxEditField.Value;
-
-
-else
-    IM = hfig.UserData{5};
-    hand = hfig.UserData{8};
-    bkTh = str2double(get(hand.UIalpha_bkgThick,'String'));
-    step = str2double(get(hand.UIalpha_step,'String'));
-    NNP = str2double(get(hand.UIalpha_NNP,'String'));
-    nmax = str2double(get(hand.UIalpha_nmax,'String'));
 end
-
 
 n2 = IM.Illumination.nS;
 Nim = numel(IM);
@@ -50,14 +60,12 @@ for io = 1:Nim  % loop on the list of images
         fail = 1;
         while fail==1 % until space bar or c are pressed
             
-            ha = gca;
-            YLim = ha.YLim;
-            XLim = ha.XLim;
             OPDcrop = OPD;
             Tcrop = T;
             Phcrop = Ph;
             
-            [mask,maskRemove,fail,xList,yList] = magicWand_scrollbar2(hfig);
+            [mask,maskRemove,fail,xList,yList] = magicWand_scrollbar(app);
+
         end %end while fail==1
         
         maskRef = mask;
@@ -216,77 +224,13 @@ for io = 1:Nim  % loop on the list of images
             end
             OV2print = sprintf('%.4ge-21',1e21*OV(iNP,io));
         end
-        fprintf([alpha2print '\n'])
-        if isa(IM,'ImageQLSI')
-            fileName=IM.OPDfileName;
-        else
-            fileName='image';
-        end
-        disp(fileName)
-        fprintf('\t=COMPLEX(%.4g,%.4g)\n',1e21*alphaRealMean,1e21*alphaImagMean);
-        clipboard('copy',sprintf('=COMPLEX(%.4g,%.4g)',1e21*alphaRealMean,1e21*alphaImagMean))
-        fprintf('OV:\n')
-        fprintf('\t%.4g\n',OV(iNP,io));
+        app.displayMessage([OV2print '\n' alpha2print '\n'])
 
-        
-        prefix = get(hand.file,'String');
-        folder = get(hand.folder,'String');
-        if ~isfolder(folder)
-            mkdir(folder)
-        end
-        
-        fid = fopen([folder '/alphaOV_' prefix '.txt'],'a');
-        fprintf(fid,[fileName '\t' alpha2print '\t' OV2print '\t' num2str(XLim) '\t' num2str(YLim)]);
-        fclose(fid);
-  
-        
-        %% save the images
-        if ~isfolder([folder '/masks'])
-            mkdir([folder '/masks'])
-        end
-        
-        dlmwrite([folder '/masks/OPDcrop_' fileName '_' generateDatedFileName() '.txt'],OPDn,' ')
-        dlmwrite([folder '/masks/Mask_' fileName '_' generateDatedFileName() '.txt'],maskMeas,' ')
-        dlmwrite([folder '/masks/pcoord_' fileName '_' generateDatedFileName() '.txt'],xcoord,'\n')
-        dlmwrite([folder '/masks/OVprofile_' fileName '_' generateDatedFileName() '.txt'],OV0,'\n')
-        minOPD = min(min(imgaussfilt(OPDn,2)));
-        maxOPD = max(min(imgaussfilt(OPDn,2)));
-        imwrite((OPDn-minOPD)*255/(maxOPD-minOPD),phase1024(256),[folder '/masks/' generateDatedFileName() '_OPDcrop_' fileName '.tif'])
-        imwrite(maskMeas*255,gray(256),[folder '/masks/' generateDatedFileName()  '_Mask_' fileName '.tif'])
-        imwrite(ringBMeas*255,gray(256),[folder '/masks/' generateDatedFileName()  '_RingB_' fileName '.tif'])
-        dlmwrite([folder '/masks/' generateDatedFileName()  '_pmean.txt'],[pxmin pxmax mean(pxmin:pxmax)],'\n')
-        
-        
-        %% save the csv file
-        % if csv file not already created, write the first line with the row's names.
-        if ~exist([folder '/data.csv'],'file') 
-            Tab0 = table({'file name','time','factor','alpha','OV','OVmin','OVmax','XY'});
-            writetable(Tab0,[folder '/data.csv'],'WriteVariableNames',0);
-        end
-        
-        % defines the line to write
-        posList = [XLim(1)+xList,YLim(1)+yList].';
-        date = generateDatedFileName();
-        Tab = table({fileName},{date},efactor,{sprintf('=COMPLEX(%.4g,%.4g)',alphaRealMean/efactor,alphaImagMean/efactor)},{sprintf('%.4g',OV(iNP,io)/efactor)},{sprintf('%.4g',OVmin/efactor)},{sprintf('%.4g',OVmax/efactor)},{num2str(posList(:).')});
-        % writes this line in a temporary csv file
-        fileNamecsv = [folder '/data_' date '.csv'];
-        writetable(Tab,fileNamecsv,'WriteVariableNames',0);
-        % concatenates the current data.csv file with the new one 
-        copyfile([folder '/data.csv'],[folder '/data_ref.csv'])
-        command = ['cat ' folder '/data_ref.csv ' fileNamecsv ' > ' folder '/data.csv'];
-        system(command);
-        %delete(fileNamecsv)
-        delete([folder '/data_ref.csv'])
-        
-        
-        if nargin==2
-            set(hand.UIresult,'String',sprintf([alpha2print '\n' OV2print]));
-        end
-        %end
+        app.saveData('tech','MW','alpha',alphaRealMean+1i*abs(alphaImagMean),'OV',OV(iNP,io),'writeData',app.autoSave)
+
+
     end
 end
-hfig.UserData{10} = alpha(iNP,io);
-figure(hfig)
 
 end
 

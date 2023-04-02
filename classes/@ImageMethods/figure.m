@@ -291,7 +291,7 @@ set(hand.single,   'callback',{@(src,event)figure_callback(hfig0,hfig0.UserData{
 set(hand.px,       'callback',{@(src,event)figure_callback(hfig0,hfig0.UserData{5},'px',hfig0.UserData{3},hfig0.UserData{4},str2double(get(hand.UIk,'String')))});
 set(hand.um,       'callback',{@(src,event)figure_callback(hfig0,hfig0.UserData{5},'µm',hfig0.UserData{3},hfig0.UserData{4},str2double(get(hand.UIk,'String')))});
 set(hand.HVcrosscuts,'callback', @(src,event)HVcrosscuts(hfig0.UserData{5},gcf));
-set(hand.radialCrosscut,   'callback', @(src,event)radialAverage(hfig0.UserData{5},hfig0));
+set(hand.radialCrosscut,   'callback', @(src,event)radialAverage(hfig0.UserData{5},figure=hfig0));
 set(hand.crosscut,'callback', @(src,event)crosscut(hfig0.UserData{5},gcf));
 set(hand.PDCM,'callback', @(src,event)PDCMdisplay(hfig0.UserData{5},gcf));
 set(hand.roiAlphaOV,  'callback', @(src,event)roiAlphaOV(hfig0.UserData{5},hand));

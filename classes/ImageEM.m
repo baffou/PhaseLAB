@@ -34,12 +34,12 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
     methods
         function obj = ImageEM(Ex,Ey,Ez,Eincx,Eincy,Eincz,opt)
             arguments
-                Ex {mustBeNumeric} =[]
-                Ey {mustBeNumeric} =[]
-                Ez {mustBeNumeric} =[]
-                Eincx {mustBeNumeric} =[]
-                Eincy {mustBeNumeric} =[]
-                Eincz {mustBeNumeric} =[]
+                Ex {mustBeNumeric} = []
+                Ey {mustBeNumeric} = []
+                Ez {mustBeNumeric} = []
+                Eincx {mustBeNumeric} = []
+                Eincy {mustBeNumeric} = []
+                Eincz {mustBeNumeric} = []
                 opt.n {mustBeNumeric} = []
                 opt.Microscope Microscope = Microscope.empty()
                 opt.Illumination Illumination = Illumination.empty()
@@ -179,20 +179,28 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
         function val = get.OPD(obj)
-            k0 = 2*pi/obj.lambda;
-            val = obj.Ph/k0; % Optical path difference
+            if isempty(obj.Ex)
+                val = [];
+            else
+                k0 = 2*pi/obj.lambda;
+                val = obj.Ph/k0; % Optical path difference
+            end
         end
 
         function val = get.T(obj)
-            if norm(obj.EE0)==0 % happens when using crossed polarizers that kill E0 on the image plane.
-                nor = 1;
+            if isempty(obj.Ex)
+                val = [];
             else
-                nor = obj.EE0n();
+                if norm(obj.EE0)==0 % happens when using crossed polarizers that kill E0 on the image plane.
+                    nor = 1;
+                else
+                    nor = obj.EE0n();
+                end
+                norExtot = obj.Ex/nor;
+                norEytot = obj.Ey/nor;
+                norEztot = obj.Ez/nor;
+                val = abs(norExtot).^2+abs(norEytot).^2+abs(norEztot).^2; % Transmittance
             end
-            norExtot = obj.Ex/nor;
-            norEytot = obj.Ey/nor;
-            norEztot = obj.Ez/nor;
-            val = abs(norExtot).^2+abs(norEytot).^2+abs(norEztot).^2; % Transmittance
         end
 
         function val = zoom(obj)
@@ -524,6 +532,20 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
         end
 
+        function write(obj,obj_in)
+            % makes obj2 = obj, but without giving a new handle
+            propList = ["Ex","Ey","Ez","Einc",...
+                "Microscope","Illumination","comment","processingSoft","pxSizeCorrection"];
+ 
+            if numel(obj) ~= numel(obj_in) 
+                error('The input and output image lists must have the same number of elements')
+            end
+            for io = 1:numel(obj_in)
+                for propName = propList
+                    obj(io).(propName) = obj_in(io).(propName);
+                end
+            end
+        end
 
 
 

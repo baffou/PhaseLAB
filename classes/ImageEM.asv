@@ -34,12 +34,12 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
     methods
         function obj = ImageEM(Ex,Ey,Ez,Eincx,Eincy,Eincz,opt)
             arguments
-                Ex {mustBeNumeric} =[]
-                Ey {mustBeNumeric} =[]
-                Ez {mustBeNumeric} =[]
-                Eincx {mustBeNumeric} =[]
-                Eincy {mustBeNumeric} =[]
-                Eincz {mustBeNumeric} =[]
+                Ex {mustBeNumeric} = []
+                Ey {mustBeNumeric} = []
+                Ez {mustBeNumeric} = []
+                Eincx {mustBeNumeric} = []
+                Eincy {mustBeNumeric} = []
+                Eincz {mustBeNumeric} = []
                 opt.n {mustBeNumeric} = []
                 opt.Microscope Microscope = Microscope.empty()
                 opt.Illumination Illumination = Illumination.empty()
@@ -179,8 +179,11 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
         function val = get.OPD(obj)
-            k0 = 2*pi/obj.lambda;
-            val = obj.Ph/k0; % Optical path difference
+            if isempty(obj.Ex)
+                val = []
+            else
+                k0 = 2*pi/obj.lambda;
+                val = obj.Ph/k0; % Optical path difference
         end
 
         function val = get.T(obj)
@@ -202,10 +205,11 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         function obj2 = binning(obj,n)
             arguments
                 obj
-                n double {mustBeMember(opt.n,{2,3})} = 3
+                n = 3
             end
             if nargout
                 obj2=copy(obj);
+                obj2.Einc=copy(obj.Einc);
             else
                 obj2=obj;
             end
@@ -213,31 +217,29 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 binfun=@binning3x3;
             elseif n==2
                 binfun=@binning2x2;
+            elseif n==4
+                binfun=@(x) binning2x2(binning2x2(x));
+            elseif n==6
+                binfun=@(x) binning3x3(binning2x2(x));
+            elseif n==1
+                binfun=@(x) x; % identity
             else
                 error('not a proper binning dimension. Should be 2 or 3.')
             end
             for ii = 1:numel(obj)
-                    imEx = binfun(obj(ii).Ex);
-                    imEy = binfun(obj(ii).Ey);
-                    imEz = binfun(obj(ii).Ez);
-                    obj2(ii).Ex = imEx;
-                    obj2(ii).Ey = imEy;
-                    obj2(ii).Ez = imEz;
-                    imEx = binning3x3(obj(ii).Einc.Ex);
-                    imEy = binning3x3(obj(ii).Einc.Ey);
-                    imEz = binning3x3(obj(ii).Einc.Ez);
-                    obj2(ii).Einc.Ex = imEx;
-                    obj2(ii).Einc.Ey = imEy;
-                    obj2(ii).Einc.Ez = imEz;
-                end
-                for ii = 1:numel(obj)
-                    imT = binning2x2(obj(ii).T);
-                    imOPD = binning2x2(obj(ii).OPD);
-                    obj2(ii).T = imT;
-                    obj2(ii).OPD = imOPD;
-                end
+                imEx = binfun(obj(ii).Ex);
+                imEy = binfun(obj(ii).Ey);
+                imEz = binfun(obj(ii).Ez);
+                obj2(ii).Ex = imEx;
+                obj2(ii).Ey = imEy;
+                obj2(ii).Ez = imEz;
+                imEx = binfun(obj(ii).Einc.Ex);
+                imEy = binfun(obj(ii).Einc.Ey);
+                imEz = binfun(obj(ii).Einc.Ez);
+                obj2(ii).Einc.Ex = imEx;
+                obj2(ii).Einc.Ey = imEy;
+                obj2(ii).Einc.Ez = imEz;
             end
-
 
         end
         
@@ -340,7 +342,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
         function val = EE0(obj)
             % complex vectorial incident field at the center of the image
-            if isempty(obj.Einc) % if the object if already an incident field
+            if isempty(obj.Einc) % if the object is already an incident field
                 valx=obj.Ex(end/2,end/2);
                 valy=obj.Ey(end/2,end/2);
                 valz=obj.Ez(end/2,end/2);
@@ -428,7 +430,46 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
         end   
 
+        function obj = mirrorH(obj0)
+            % Mirror image with an horizontal mirror
 
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+
+            for io=1:numel(obj0)
+                obj(io).Ex=obj0(io).Ex(end:-1:1,:);
+                obj(io).Ey=obj0(io).Ey(end:-1:1,:);
+                obj(io).Ez=obj0(io).Ez(end:-1:1,:);
+                obj(io).Einc.Ex=obj0(io).Einc.Ex(end:-1:1,:);
+                obj(io).Einc.Ey=obj0(io).Einc.Ey(end:-1:1,:);
+                obj(io).Einc.Ez=obj0(io).Einc.Ez(end:-1:1,:);
+            end
+
+        end            
+    
+        function obj = mirrorV(obj0)
+            % Mirror image with an horizontal mirror
+
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+
+            for io=1:numel(obj0)
+                obj(io).Ex=obj0(io).Ex(:,end:-1:1);
+                obj(io).Ey=obj0(io).Ey(:,end:-1:1);
+                obj(io).Ez=obj0(io).Ez(:,end:-1:1);
+                obj(io).Einc.Ex=obj0(io).Einc.Ex(:,end:-1:1);
+                obj(io).Einc.Ey=obj0(io).Einc.Ey(:,end:-1:1);
+                obj(io).Einc.Ez=obj0(io).Einc.Ez(:,end:-1:1);
+            end
+
+        end            
+    
         function objList = applyPhaseShift(objList0,phi)
             % applies of phase shift to all the components of a field, but
             % not to its Einc. Useful to articially simulate SLIM imaging.

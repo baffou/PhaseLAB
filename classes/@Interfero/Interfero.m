@@ -210,7 +210,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             end
             
             if isempty(opt.params)
-                [x1, x2, y1, y2] = crop0(obj,opt);
+                [x1, x2, y1, y2] = boxSelection(obj,opt);
                 params=[x1, x2, y1, y2];
             else
                 x1 = opt.params(1);
