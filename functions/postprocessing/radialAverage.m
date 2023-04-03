@@ -1,4 +1,4 @@
-function [profile,coords]=radialAverage(obj,opt)
+function [profile,rCoords]=radialAverage(obj,opt)
 % obj can be Interfero, ImageMethods or a simple image.
 % radialAverage(image)
 % radialAverage(image,figure = hfig)
@@ -106,6 +106,7 @@ ax=gca;
 plot([0 0],ax.YLim,'k--','LineWidth',2);%vertical line
 set(ax,'FontSize',14)
 hold off
+rCoords = (1:Np)*pxSize;
 if QLSIclass || appClass
     subplot(1,2,2)
     plot((-Np+1:Np-1)*pxSize,[flip(profile.OPD);profile.OPD(2:end)]*1e9,'LineWidth',2)

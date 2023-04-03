@@ -37,7 +37,7 @@ if isa(obj,'ImageMethods')
     nmax = opt.nmax;
 elseif isa(obj,'PhaseLABgui')
     app = obj;
-    IM = app.IM(app.jim);
+    IM = app.IMcurrent(app.jim);
     bkTh = app.bkgRingEditField.Value;
     step = app.stepEditField.Value;
     NNP = 1;

@@ -5,7 +5,7 @@ function  [mask,maskRemove,fail,xlist,ylist,roiIN,roiOUT] = magicWand_scrollbar(
 % new gui interface PhaseLABgui
 
 
-image0 = app.IM(app.jim).OPD;
+image0 = app.IMcurrent(app.jim).OPD;
 
 [Ny,Nx] = size(image0);
 

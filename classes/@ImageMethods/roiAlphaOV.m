@@ -238,7 +238,6 @@ for io = 1:Nim  % loop on the list of images
             else
                 message = [alpha2print, ' ', OV2print];
                 app.displayMessage(message)
-                app.saveData('tech','roi','alpha',alphaRealMean+1i*abs(alphaImagMean),'OV',OV(iNP,io),'writeData',app.autoSave)
             end
         end
 
