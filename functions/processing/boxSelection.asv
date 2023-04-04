@@ -163,7 +163,7 @@ else % if not twopoints
             error('the figure parameter is uniddentified')
         end
 
-        rr = rectangle('EdgeColor',[0.3 0.5 1], LineWidth=2);
+        rr = rectangle();
         set (h, 'WindowButtonMotionFcn', @(src,event)drawRect(app,rr,xc_px,yc_px,opt.shape))
         set (h, 'WindowButtonDownFcn', @(src,event)getPoint(app))
 

@@ -34,9 +34,6 @@ DI=DI.shine(IL);
 clc
 IM=ImageEM(n=4);
 IM(1)=imaging(DI,IL,MI,200);
-IM(2)=imaging(DI,IL,MI,400);
-IM(3)=imaging(DI+DI.moveBy('x',1e-6),IL,MI,400);
-IM(4)=imaging(DI.moveBy('x',-1e-6)+DI.moveBy('z',-1e-6)+DI.moveBy('x',1e-6),IL,MI,400);
 
 %%
 clc
