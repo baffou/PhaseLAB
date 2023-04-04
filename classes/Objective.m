@@ -13,12 +13,14 @@
 % affiliation: CNRS, Institut Fresnel
 % date:        Aug 1, 2020
 
-classdef Objective  <  handle
+classdef Objective  <  handle & matlab.mixin.Copyable
     
     properties(SetAccess = protected, GetAccess = public)
         Mobj (1,1) {mustBePositive} = 100     % Magnification of the objective, specified by the manufacturer.
         NA   (1,1) {mustBeNumeric, mustBePositive} = 1.3     % Numerical aperture of the microscope objective
         objBrand char ='Olympus'  % Brand of the objective (can be 'Nikon', 'Thorlabs', 'Leica', 'Olympus' or 'Zeiss', nothing else. Proper specification is MANDATORY to properly estimate the magnification).
+    end
+    properties(NonCopyable)
         mask PCmask
     end
     

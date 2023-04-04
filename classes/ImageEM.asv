@@ -547,6 +547,17 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
         end
 
+        function obj2 = duplicate(obj)
+            obj2 = obj;
+            propList = fieldnames(obj);
+            Np = numel(propList);
+            for ip = 1 : Np
+                if isobject(obj.(propList{ip}))
+                    if 
+                end
+            end
+        end
+
 
 
     end

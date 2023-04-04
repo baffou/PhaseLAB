@@ -1,4 +1,4 @@
-classdef Camera  <  handle
+classdef Camera  <  handle & matlab.mixin.Copyable
     properties(SetAccess = private)
         dxSize (1,1) {mustBeNumeric} = 6.5e-6
         Nx (1,1) {mustBeInteger,mustBePositive} = 600

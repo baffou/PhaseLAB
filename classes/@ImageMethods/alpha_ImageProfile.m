@@ -91,7 +91,7 @@ for io = 1:Nim
             set(app.UIFigure,'currentch',char(1))
             get(app.UIFigure,'CurrentCharacter')
             zoom on
-            app.displayMessage('zoom and then press enter')
+            app.displayMessage('zoom and then press ''z'' key')
             waitfor(app.UIFigure,'CurrentCharacter',char(122))  % char 'z'
             app.clearMessageArea()
             zoom reset
