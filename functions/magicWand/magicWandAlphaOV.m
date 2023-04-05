@@ -12,7 +12,7 @@
 %Guillaume Baffou - 30 Apr 2021
 
 
-function [alpha,OV,maskMeas] = magicWandAlphaOV(obj,opt)
+function [alpha,OV,maskMeas,roiIN,roiOUT] = magicWandAlphaOV(IM,opt)
 % This code is meant to replace magicWandAlphaOV2, and to be used with the
 % new gui interface PhaseLABgui
 
@@ -21,28 +21,22 @@ function [alpha,OV,maskMeas] = magicWandAlphaOV(obj,opt)
 % magicWandAlphaOV(IMlist)
 
 arguments
-    obj % ImageMethods or PhaseLABgui
+    IM % ImageMethods
     opt.bkTh = 3
     opt.step = 1
     opt.NNP = 1
     opt.nmax = 200
+    opt.roiIN = {}
+    opt.roiOUT = {}
 end
 
+roiIN = opt.roiIN;
+roiOUT = opt.roiOUT;
 
-if isa(obj,'ImageMethods')
-    app=PhaseLABgui;app.IM=obj;
-    bkTh = opt.bkTh;
-    step = opt.step;
-    NNP = opt.NNP;
-    nmax = opt.nmax;
-elseif isa(obj,'PhaseLABgui')
-    app = obj;
-    IM = app.IMcurrent(app.jim);
-    bkTh = app.bkgRingEditField.Value;
-    step = app.stepEditField.Value;
-    NNP = 1;
-    nmax = app.NmaxEditField.Value;
-end
+bkTh = opt.bkTh;
+step = opt.step;
+NNP = opt.NNP;
+nmax = opt.nmax;
 
 n2 = IM.Illumination.nS;
 Nim = numel(IM);
@@ -64,7 +58,7 @@ for io = 1:Nim  % loop on the list of images
             Tcrop = T;
             Phcrop = Ph;
             
-            [mask,maskRemove,fail,xList,yList] = magicWand_scrollbar(app);
+            [mask,maskRemove,fail,roiIN,roiOUT] = magicWand_scrollbar(OPD,roiIN,roiOUT);
 
         end %end while fail==1
         
@@ -199,34 +193,8 @@ for io = 1:Nim  % loop on the list of images
         end
         alpha(iNP,io) = mean(alpha0(pxmin:pxmax));
         maskMeas = maskList{round(mean([pxmin pxmax]))};
-        ringBMeas = ringBList{round(mean([pxmin pxmax]))};
-        alphaRealMean = real(alpha(iNP,io));
-        alphaImagMean = imag(alpha(iNP,io));
         
         OV(iNP,io) = mean(OV0(pxmin:pxmax));
-        OVmin = min(OV0(pxmin:pxmax));
-        OVmax = max(OV0(pxmin:pxmax));
-        
-        if alphaRealMean>1e-19 || alphaImagMean>1e-19
-            efactor = 1e-18;
-            if alphaImagMean<0
-                alpha2print = sprintf('(%.4g-i*%.4g) x10^-18',1e18*alphaRealMean,-1e18*alphaImagMean);
-            else
-                alpha2print = sprintf('(%.4g+i*%.4g) x10^-18',1e18*alphaRealMean,1e18*alphaImagMean);
-            end
-            OV2print = sprintf('%.4ge-18',1e18*OV(iNP,io));
-        else
-            efactor = 1e-21;
-            if alphaImagMean<0
-                alpha2print = sprintf('(%.4g-i*%.4g) x10^-21',1e21*alphaRealMean,-1e21*alphaImagMean);
-            else
-                alpha2print = sprintf('(%.4g+i*%.4g) x10^-21',1e21*alphaRealMean,1e21*alphaImagMean);
-            end
-            OV2print = sprintf('%.4ge-21',1e21*OV(iNP,io));
-        end
-        app.displayMessage([OV2print '\n' alpha2print '\n'])
-
-        app.saveData('tech','MW','alpha',alphaRealMean+1i*abs(alphaImagMean),'OV',OV(iNP,io),'writeData',app.autoSave)
 
 
     end

@@ -1,4 +1,4 @@
-classdef RelayLens
+classdef RelayLens  <  handle & matlab.mixin.Copyable
     properties
         model 
         zoom (1,1) {mustBeNumeric}

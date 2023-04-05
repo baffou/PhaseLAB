@@ -1,4 +1,4 @@
-classdef CrossGrating  <  handle
+classdef CrossGrating  <  handle & matlab.mixin.Copyable
     % class that define a cross-grating used in CGM
 
     properties (SetAccess = private)

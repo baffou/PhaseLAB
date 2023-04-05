@@ -221,19 +221,19 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
-        function set.OPDnm(obj,val)
+        function set.OPD(obj,val)
             if isnumeric(val) % input is a matrix
                 if isnumeric(obj.OPD0)
-                    obj.OPD0=val*1e-9;
+                    obj.OPD0=val;
                 elseif ischar(obj.OPD0) % overwrite the file
                     warning(['file overwriting!: ' obj.OPD0])
-                    writematrix(single(val),obj.OPD0*1e-9)
+                    writematrix(single(val),obj.OPD0)
                 end
             elseif ischar(val) % input is a file name
                 if ischar(obj.OPD0) % target already a file name
-                    obj.OPD0=val*1e-9;
+                    obj.OPD0=val;
                 elseif isnumeric(obj.OPD0) % target a matrix
-                    obj.OPD0=readmatrix(val)*1e-9;
+                    obj.OPD0=readmatrix(val);
                 end
             end
         end

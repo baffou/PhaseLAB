@@ -2,7 +2,11 @@ function obj2 = duplicate(obj)
 % duplicates and object while duplicating all its noncopyable
 % handle properties as well, which the copy method does not do.
 if ~ isempty(obj) % can happen with the Einc property of the reference Interfero
+    try
     obj2 = copy(obj);
+    catch
+        disp('toto')
+    end
     propList = fieldnamesNonDependent(obj);
     Np = numel(propList);
     for ip = 1 : Np

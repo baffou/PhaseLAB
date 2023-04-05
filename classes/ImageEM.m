@@ -26,8 +26,9 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         E2
         E
         Ph
-        Ph0 % Ph image not normalized by the phase of the reference image
+        Ph0 % Ph image, not normalized by the phase of the reference image
         OPD
+        OPDnm
         T
     end
 
@@ -184,6 +185,15 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             else
                 k0 = 2*pi/obj.lambda;
                 val = obj.Ph/k0; % Optical path difference
+            end
+        end
+
+        function val = get.OPDnm(obj)
+            if isempty(obj.Ex)
+                val = [];
+            else
+                k0 = 2*pi/obj.lambda;
+                val = obj.Ph/k0*1e9; % Optical path difference
             end
         end
 
