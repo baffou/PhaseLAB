@@ -14,7 +14,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
     end
 
     properties
-        comment   % any comment regarding the image
+        comment char = char.empty()   % any comment regarding the image
     end
 
     properties(Hidden)
