@@ -8,7 +8,7 @@
 
 classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
-    properties(NonCopyable)
+    properties%(NonCopyable)
         Microscope Microscope
         Illumination Illumination % Illumination object
     end
