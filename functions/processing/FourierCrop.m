@@ -115,9 +115,12 @@ elseif isempty(Fcrops.x) || isempty(Fcrops.y) % no center position, but R determ
     
     R = Fcrops.R;
     h = drawCrop(x1,y1,R,h);
+    h = drawCrop(size(FItf,2)/2,size(FItf,1)/2,R,h);
+    
     zoom out
     drawnow
     
+    pause(1)
     
     close(h)
     cropParamsout = FcropParameters(x1,y1,R,Nx,Ny);

@@ -72,7 +72,7 @@ for io = 1:No
         Emodely.im = Image(io).Ey;
     else
         T = Image(io).T;
-        Pha = Image(io).Ph0; % takes the non-normalized Ph image
+        Pha = Image(io).Ph; % takes the non-normalized Ph image
         Emodelx.im = sqrt(T).*exp(1i*Pha);
         Emodely.im = 0 .* Emodelx.im;
     end
@@ -84,8 +84,8 @@ for io = 1:No
         EmodelRefx.im = Image(io).Einc.Ex;
         EmodelRefy.im = Image(io).Einc.Ey;
     else
-        T = Image(io).Einc.T;
-        Pha = Image(io).Einc.Ph;
+        T = median(Image(io).T(:)).*(1+0*Image(io).T);
+        Pha = 0*Image(io).Ph;
         EmodelRefx.im = sqrt(T).*exp(1i*Pha);
         EmodelRefy.im = 0 .* Emodelx.im;
     end   

@@ -3,8 +3,8 @@ arguments
     obj (1,:) ImageMethods
     method (1,:) char {mustBeMember(method,{'Waves','Zernike','Chebyshev','Hermite','Legendre'})} = 'Waves'
     opt.nmax (1,1) {mustBeInteger(opt.nmax)} = 2
-    opt.threshold double = double.empty() % if not empty, segment the cells and create a mask
-    opt.kind  (1,1) {mustBeInteger(opt.kind)} = 1
+    opt.threshold double = 0 % if not zero, segment the cells and create a mask
+    opt.kind  (1,1) {mustBeInteger(opt.kind)} = 1 % for Chebychev
     opt.display logical = false
 end
 
@@ -22,14 +22,14 @@ else
 end
 
 
-if strcmp(method,'Zernike') && ~isempty(opt.threshold)
+if strcmp(method,'Zernike') && opt.threshold ~= 0
     warning('No threshold algorithm can be applied with Zernike flattening. The threshold value is ignored.')
 end
 
 No = numel(obj);
 for io = 1:No
 
-    if ~isempty(opt.threshold) && ~strcmp(method,'Zernike') % then create a mask
+    if opt.threshold~=0 && ~strcmp(method,'Zernike') % then create a mask
         im20=imgaussfilt(stdfilt(obj(io).D2Wnorm,true(9)),10);
         %        imP=imgaussfilt(stdfilt(obj(io).PDCM,true(9)),10);
         %        hi=histogram(2*imP);
@@ -83,7 +83,7 @@ for io = 1:No
     end
     
     
-    if ~isempty(opt.threshold) && ~strcmp(method,'Zernike')
+    if opt.threshold~=0 && ~strcmp(method,'Zernike')
         if opt.display
             subplot(2,2,2)
             imageph(temp)

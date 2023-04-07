@@ -9,7 +9,7 @@ end
 colorbar
 set(gca,'YDir','normal')
 if nargin<2
-    colorMap='parula(1024)';
+    colorMap=parula(1024);
 end
 colormap(gca,colorMap)
 

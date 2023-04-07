@@ -3,7 +3,7 @@
 
 %% HEADING 
 clear
-addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
+addpath(genpath('/Users/perseus/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
 
 format long
 %% BUILDING THE MEDIUM -- ME=Medium(n,nS);
@@ -32,7 +32,11 @@ DI=DI.shine(IL);
 
 %% COMPUTATION OF THE IMAGES
 clc
-IM=imaging(DI,IL,MI,200);
+IM=ImageEM(n=4);
+IM(1)=imaging(DI,IL,MI,200);
+IM(2)=imaging(DI,IL,MI,400);
+IM(3)=imaging(DI+DI.moveBy('x',1e-6),IL,MI,400);
+IM(4)=imaging(DI.moveBy('x',-1e-6)+DI.moveBy('z',-1e-6)+DI.moveBy('x',1e-6),IL,MI,400);
 
 %%
 clc

@@ -10,7 +10,8 @@ classdef ImageQLSI   <   ImageMethods
     %    properties(GetAccess = public, SetAccess = private)
     properties(Dependent)
         T       % Transmittance image
-        OPD     % Optical path difference image
+        OPD     % Optical path difference image [m]
+        OPDnm   % Optical path difference image [nm]
         DWx     % OPD gradient along x
         DWy     % OPD gradient along y
         Ph      % Phase image
@@ -184,6 +185,17 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
+        function val = get.OPDnm(obj)
+
+            if isnumeric(obj.OPD0) % T is a matrix
+                val=obj.OPD0*1e9;
+            elseif ischar(obj.OPD0) % T is a path/fileName
+                val=readmatrix(obj.OPD0)*1e9;
+            else
+                error('not a proper input')
+            end
+        end
+
         function val = get.DWx(obj)
             val = obj.DWx0;
         end
@@ -209,32 +221,56 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
+        function set.OPDnm(obj,val)
+            if isnumeric(val) % input is a matrix
+                if isnumeric(obj.OPD0)
+                    obj.OPD0=val*1e-9;
+                elseif ischar(obj.OPD0) % overwrite the file
+                    warning(['file overwriting!: ' obj.OPD0])
+                    writematrix(single(val),obj.OPD0*1e-9)
+                end
+            elseif ischar(val) % input is a file name
+                if ischar(obj.OPD0) % target already a file name
+                    obj.OPD0=val*1e-9;
+                elseif isnumeric(obj.OPD0) % target a matrix
+                    obj.OPD0=readmatrix(val)*1e-9;
+                end
+            end
+        end
+
         function val = get.Ph(obj)
             val = 2*pi/obj.lambda*obj.OPD;
         end
 
-        function obj2 = OPDhighPass(obj,nCrop)
+        function obj2 = highPassFilter(obj,nCrop)
+            arguments
+                obj
+                nCrop double = 10
+            end
             if nargout
                 obj2=copy(obj);
             else
                 obj2=obj;
             end
-
-            if nargin==1
-                nCrop = 3;
+            for io=1:numel(obj)
+                obj2(io).OPD = highPassFilter(obj(io).OPD,nCrop);
             end
-            %imageT_F=fftshift(fft2(obj.T));
-            imageOPD_F = fftshift(fft2(obj.OPD));
 
-            ix0 = floor(obj.Nx/2)+1;
-            iy0 = floor(obj.Ny/2)+1;
-            %imageT_F(iy0-nCrop:iy0+nCrop,ix0-nCrop:ix0+nCrop) = 0;
-            imageOPD_F(iy0-nCrop:iy0+nCrop,ix0-nCrop:ix0+nCrop) = 0;
-            %imageT2 = real(ifft2(ifftshift(imageT_F)));
-            imageOPD2 = real(ifft2(ifftshift(imageOPD_F)));
-            %obj.T = 1+imageT2;
-            obj2.OPD = imageOPD2;
+        end
 
+        function obj2 = lowPassFilter(obj,nCrop)
+            arguments
+                obj
+                nCrop double = 10
+            end
+            if nargout
+                obj2=copy(obj);
+            else
+                obj2=obj;
+            end
+            for io=1:numel(obj)
+                obj2(io).OPD = lowPassFilter(obj(io).OPD,nCrop);
+            end
 
         end
 
@@ -436,12 +472,16 @@ classdef ImageQLSI   <   ImageMethods
         end
 
         function obj2 = binning(obj,n)
+            arguments
+                obj
+                n {mustBeInteger,mustBeGreaterThan(n,1),mustBeLessThan(n,4)} = 3
+            end
             if nargout
                 obj2=copy(obj);
             else
                 obj2=obj;
             end
-            if nargin==1 || n==3 % ie n = 3 by default
+            if n==3
                 for ii = 1:numel(obj)
                     imT = binning3x3(obj(ii).T);
                     imOPD = binning3x3(obj(ii).OPD);
@@ -479,62 +519,72 @@ classdef ImageQLSI   <   ImageMethods
 
         end
 
-        function objList2 = level0(objList,option)
-            No = numel(objList);
-            if nargout
-                objList2=copy(objList);
-            else
-                objList2=objList;
+
+        
+        function [obj, params] = level0(obj0,opt)
+            arguments
+                obj0
+                opt.method (1,:) char {mustBeMember(opt.method,{'mean','average','median','boundary'})}= 'mean'
+                % parameters for boxSelection()
+                opt.xy1 = []
+                opt.xy2 = []
+                opt.Center = 'Auto' % 'Auto', 'Manual' or [x, y]
+                opt.Size = 'Manual' % 'Auto', 'Manual', d or [dx, dy]
+                opt.twoPoints logical = false
+                opt.params double = double.empty() % = [x1, x2, y1, y2]
+                opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
+                opt.figure = []; % figure uifigure object to be considered in case the image is already open
             end
-            % option = [x1 x2 y1 y2]
-            if nargin==1 % IM.phaseLevel0()
-                objList.figure
-                roi = drawrectangle;
-                x1 = round(roi.Position(1));
-                x2 = round(roi.Position(1)+roi.Position(3));
-                y1 = round(roi.Position(2));
-                y2 = round(roi.Position(2)+roi.Position(4));
-                %                    mean(mean(objList(1).OPD(y1:y2,x1:x2)))
-                for io = 1:No
-                    objList2(io).OPD = objList(io).OPD-mean(mean(objList(io).OPD(y1:y2,x1:x2)));
-                end
-            elseif nargin==2 % IM.phaseLevel0('...')
-                if isnumeric(option)
-                    if length(option)==4
-                        x1 = option(1);
-                        x2 = option(2);
-                        y1 = option(3);
-                        y2 = option(4);
-                        for io = 1:No
-                            objList2(io).OPD = objList(io).OPD-mean(mean(objList(io).OPD(y1:y2,x1:x2)));
+
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+
+            sizeIm = [0 0]; 
+            for io = 1:numel(obj)
+                if sum(sizeIm ~= size(obj(io).OPD)) % if the size of the image is not the same as the previous one
+                    if isempty(opt.params)
+                        if numel(obj)>1
+                            opt.imNumber = io;
                         end
+                        [x1, x2, y1, y2] = boxSelection(obj,opt);
+                        params=[x1, x2, y1, y2];
                     else
-                        error('The input must be a 4-vector')
+                        x1 = opt.params(1);
+                        x2 = opt.params(2);
+                        y1 = opt.params(3);
+                        y2 = opt.params(4);
+                        params=opt.params;
                     end
-                elseif strcmpi(option,'mean') || strcmpi(option,'average')
-                    for io = 1:No
-                        objList2(io).OPD = objList(io).OPD-mean(objList(io).OPD(:));
-                    end
-                elseif strcmpi(option,'median')
-                    for io = 1:No
-                        objList2(io).OPD = objList(io).OPD-median(objList(io).OPD(:));
-                    end
-                elseif strcmpi(option,'boundary')
-                    for io = 1:No
-                        top=objList2(io).OPD(end,:);
-                        bottom=objList2(io).OPD(1,:);
-                        left=objList2(io).OPD(2:end-1,1);
-                        right=objList2(io).OPD(2:end-1,end);
-                        bound=[top(:);bottom(:);left(:);right(:)];
-                        objList2(io).OPD = objList(io).OPD-median(bound);
-                    end
+                end
+
+                sizeIm = size(obj(io).OPD);
+
+                if strcmpi(opt.method,'mean') || strcmpi(opt.method,'average')
+                    offsetFunction = @(im) mean(im(:));
+                elseif strcmpi(opt.method,'median')
+                    offsetFunction = @(im) median(im(:));
+                elseif strcmpi(opt.method,'boundary')
+                    offsetFunction = @(im) boundaryMedian(im);
                 else
                     error('unkown option')
                 end
+
+                obj(io).OPD = obj(io).OPD-offsetFunction(obj(io).OPD(y1:y2,x1:x2));
             end
 
-        end
-
+            function val = boundaryMedian(im)
+                top=im(end,:);
+                bottom=im(1,:);
+                left=im(2:end-1,1);
+                right=im(2:end-1,end);
+                bound=[top(:);bottom(:);left(:);right(:)];
+                val = median(bound);
+            end
+        end        
+        
         function obj2 = gauss(obj,nn)
             if nargout
                 obj2=copy(obj);
@@ -575,7 +625,49 @@ classdef ImageQLSI   <   ImageMethods
 
         end            
     
+        function obj = mirrorH(obj0)
+            % Mirror image with an horizontal mirror
+
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+
+            if isnumeric(obj0(1).T0)
+                for io=1:numel(obj0)
+                    obj(io).T0  =obj0(io).T0(end:-1:1,:);
+                    obj(io).OPD0=obj0(io).OPD0(end:-1:1,:);
+                    obj(io).DWx0=obj0(io).DWx0(end:-1:1,:);
+                    obj(io).DWy0=obj0(io).DWy0(end:-1:1,:);
+                end
+            else
+                error('A ImageQLSI object cannot be rotated if it is remote.')
+            end
+
+        end            
     
+        function obj = mirrorV(obj0)
+            % Mirror image with an horizontal mirror
+
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+
+            if isnumeric(obj0(1).T0)
+                for io=1:numel(obj0)
+                    obj(io).T0  =obj0(io).T0(:,end:-1:1);
+                    obj(io).OPD0=obj0(io).OPD0(:,end:-1:1);
+                    obj(io).DWx0=obj0(io).DWx0(:,end:-1:1);
+                    obj(io).DWy0=obj0(io).DWy0(:,end:-1:1);
+                end
+            else
+                error('A ImageQLSI object cannot be rotated if it is remote.')
+            end
+
+        end        
 
         function val = DWnorm(obj)
             if isempty(obj.DWx)
@@ -687,6 +779,21 @@ classdef ImageQLSI   <   ImageMethods
 
         end
 
+        function write(obj,obj_in)
+            % makes obj2 = obj, but without giving a new handle
+            propList = ["T0","OPD0","DWx0","DWy0","ItfFileName",...
+                "TfileName","OPDfileName","imageNumber","folder"...
+                "Microscope","Illumination","comment","processingSoft","pxSizeCorrection"];
+
+            if numel(obj) ~= numel(obj_in) 
+                error('The input and output image lists must have the same number of elements')
+            end
+            for io = 1:numel(obj_in)
+                for propName = propList
+                    obj(io).(propName) = obj_in(io).(propName);
+                end
+            end
+        end
     end
 
     methods(Static)

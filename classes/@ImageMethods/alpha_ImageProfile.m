@@ -1,29 +1,36 @@
 function params = alpha_ImageProfile(IMlist,opt)
 arguments
     IMlist
-    opt.figure matlab.ui.Figure = matlab.ui.Figure.empty()
+    opt.figure = matlab.ui.Figure.empty()
     opt.nmax = 40
     opt.nBkg = 3
     opt.Dz = 0
     opt.NNP = 1
     opt.zoom = 1
     opt.step = 1
-    opt.keepPoint = false
+    opt.keepPoint = false  % keep the same clicking point from one image to another
     opt.display = false
 end
 
-
-%alpha_ImageProfile(IM,hfigInit)
-%alpha_ImageProfile(IM,nmax)
-%alpha_ImageProfile(IM,nmax,Dz)
-%alpha_ImageProfile(IM,nmax,Dz,nbgthick)
+% alpha_ImagePorfile(app)
+% alpha_ImageProfile(IM,hfigInit)
+% alpha_ImageProfile(IM,nmax)
+% alpha_ImageProfile(IM,nmax,Dz)
+% alpha_ImageProfile(IM,nmax,Dz,nbgthick)
 % NNP: number of nanoparticles to be measured in the image
 % nmax: size of the max cropped area around the NP
 
 if isempty(opt.figure)
-    hfigInit = IMlist.figure;
+    %    hfigInit = IMlist.figure;
+    app = PhaseLABgui();
+    app.IM = IMlist;
+    app.enableHandleVisibility()
+elseif isa(opt.figure,'PhaseLABgui')
+    app = opt.figure; % suppose here that IMlist == app.IM or app.IMcurrent !
+    app.enableHandleVisibility()
 else
-    hfigInit=opt.figure;
+    app = [];
+    hfigInit = opt.figure;
 end
 
 
@@ -69,44 +76,54 @@ for io = 1:Nim
 
         fprintf(['Nanoparticle #' num2str(iNP) '/' num2str(NNP) '\n'])
 
-        if ~exist('hfigInit','var')
+        if  isempty(app) % if using the old gui version
             hfigInit = figure;
             imagesc(imT),colormap(gray),colorbar
             set(gca,'Ydir','normal')
             %% zoom on the particle of interest
             zoom on
+            set(app.UIFigure,'currentch',char(1))
+            get(gcf,'CurrentCharacter')
             waitfor(gcf,'CurrentCharacter',char(13))
             zoom reset
+        else
+            axes(app.AxesLeft)
+            set(app.UIFigure,'currentch',char(1))
+            get(app.UIFigure,'CurrentCharacter')
+            zoom on
+            app.displayMessage('zoom and then press ''z'' key')
+            waitfor(app.UIFigure,'CurrentCharacter',char(122))  % char 'z'
+            app.clearMessageArea()
+            zoom reset
         end
-
         % press the central pixel of the particle
 
         button = 0;
 
         if nmax0==0  % sum over the whole image
-            alphaNP(iNP,io) = IM.alpha();
+            alphaNP(iNP,io) = IM.alpha(); %TODO: this method does not exist anymore
             realphamean = real(alphaNP(iNP));
             imalphamean = imag(alphaNP(iNP));
         else
             while(button~=1) % i.e. as long as pmax is not a mouse click it is not a mouse click
-                figure(hfigInit)
                 if ~opt.keepPoint || (opt.keepPoint && io==1)
-                    [x,y] = ginput(1);
-                    fprintf('x=%d, y=%d\n',round(x), round(y))
-                    xList(iNP) = x;
-                    yList(iNP) = y;
-                %% starting pixel for sum
-                %n = input('nothing');
+                    [x_px,y_px] = app.ginputUI(1,'outUnit','px');
+                    app.disableHandleVisibility()
+                    fprintf('x=%d, y=%d\n',x_px, y_px)
+                    xList(iNP) = x_px;
+                    yList(iNP) = y_px;
+                    %% starting pixel for sum
+                    %n = input('nothing');
 
-                nmax = min(round(y)-1, nmax0);
-                nmax = min(round(x)-1, nmax);
-                nmax = min(IM.Ny-round(y)-1,nmax);
-                nmax = min(IM.Nx-round(x)-1,nmax);
+                    nmax = min(round(y_px)-1, nmax0);
+                    nmax = min(round(x_px)-1, nmax);
+                    nmax = min(IM.Ny-round(y_px)-1,nmax);
+                    nmax = min(IM.Nx-round(x_px)-1,nmax);
 
                 end
 
-                imOPDcrop = imOPD(round(y)-nmax:round(y)+nmax,round(x)-nmax:round(x)+nmax); %crop OPD image
-                imTcrop = imT(round(y)-nmax:round(y)+nmax,round(x)-nmax:round(x)+nmax); %crop intensity image
+                imOPDcrop = imOPD(round(y_px)-nmax:round(y_px)+nmax,round(x_px)-nmax:round(x_px)+nmax); %crop OPD image
+                imTcrop = imT(round(y_px)-nmax:round(y_px)+nmax,round(x_px)-nmax:round(x_px)+nmax); %crop intensity image
 
 
 
@@ -151,12 +168,12 @@ for io = 1:Nim
                     %% experimental polarizability
                     imTcropnormask = imTcropnorm(circle); %take only values included in the circle
                     Phnormask = Phnorm(circle); %take only values included in the circle
-                    
+
                     %imTcropnormask=imT(:);
                     %Phnormask=2*pi/IM.lambda*imOPD(:);
                     %imTcropnormask=imTcrop(:);
                     %Phnormask=2*pi/IM.lambda*imOPDcrop(:);
-                    
+
                     sqrtT = sqrt(imTcropnormask);
                     expPh = exp(1i*Phnormask);
 
@@ -215,7 +232,7 @@ for io = 1:Nim
             %imalphaerror = std(imalpha(pxmin:pxmax));
             %argalphamean = mean(angalpha(pxmin:pxmax));
             %argalphaerror = std(angalpha(pxmin:pxmax));
-%            realphamean+1i*imalphamean;
+            %            realphamean+1i*imalphamean;
             alphaNP(iNP,io) = realphamean+1i*imalphamean;
             OVNP(iNP,io) = mean(OV(pxmin:pxmax));
             OVwNP(iNP,io) = mean(OVw(pxmin:pxmax));
@@ -233,7 +250,20 @@ for io = 1:Nim
         fprintf('\t%.4g\n',1e21*OVNP(iNP,io));
         fprintf('OVw [x10^-21]:')
         fprintf('\t%.4g\n',1e21*OVwNP(iNP,io));
-
+    
+        if isempty(app)
+            hfigInit.UserData{10} = alphaNP;
+            hfigInit.UserData{11} = [xList,yList];
+            if get(hfigInit.UserData{8}.autosave,'value')
+                if NNP>1
+                    saveData(hfigInit,hc)
+                else
+                    saveData(hfigInit)
+                end
+            end
+        else
+            app.saveData('tech','radial','alpha',realphamean+1i*imalphamean,'OV',OVNP(iNP,io),'writeData',app.autoSave)
+        end
 
     end %iNP
 
@@ -241,19 +271,10 @@ for io = 1:Nim
     if NNP>1
         hc = cplot(alphaNP(:,io));
     end
-    hfigInit.UserData{10} = alphaNP;
-    hfigInit.UserData{11} = [xList,yList];
-    if get(hfigInit.UserData{8}.autosave,'value')
-        if NNP>1
-            saveData(hfigInit,hc)
-        else
-            saveData(hfigInit)
-        end
-    end
 
-if io~=Nim
-    figure_callback(hfigInit,IMlist(1+str2double(get(hfigInit.UserData{8}.UIk,'String'))),hfigInit.UserData{2},hfigInit.UserData{3},hfigInit.UserData{4},str2double(get(hfigInit.UserData{8}.UIk,'String'))+1)
-end
+    if io~=Nim
+        figure_callback(hfigInit,IMlist(1+str2double(get(hfigInit.UserData{8}.UIk,'String'))),hfigInit.UserData{2},hfigInit.UserData{3},hfigInit.UserData{4},str2double(get(hfigInit.UserData{8}.UIk,'String'))+1)
+    end
 end
 
 
@@ -261,7 +282,7 @@ params.alpha = alphaNP.';
 params.OV    = OVNP.';
 params.OVw   = OVwNP.';
 
-if opt.display
+if opt.display % makes sense only for multiple measurments
     figure
     hold on
     plot(real(params.alpha))

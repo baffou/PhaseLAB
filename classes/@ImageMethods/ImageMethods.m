@@ -8,10 +8,13 @@
 
 classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
-    properties
+    properties(NonCopyable)
         Microscope Microscope
         Illumination Illumination % Illumination object
-        comment   % any comment regarding the image
+    end
+
+    properties
+        comment char = char.empty()   % any comment regarding the image
     end
 
     properties(Hidden)
@@ -21,6 +24,14 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
     methods
 
+        function app = figure(IM)
+            if nargout
+                app=PhaseLABgui(IM);
+            else
+                PhaseLABgui(IM);
+            end
+        end
+        
         function val=lambda(obj)
             val=obj.Illumination.lambda;
         end
@@ -85,7 +96,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
         end
 
         function crosscut(obj,hfig)
-            % plots horizontal and vertical cross cuts.
             if nargin==1
                 hfig=obj.figure('px');
             else
@@ -144,65 +154,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
         end
 
-        function profile=radialAverage(obj,opt)
-            arguments
-                obj
-                opt.figure = []
-                opt.coords =[]
-            end
-            % plots the radial average from a clicked point, usually a
-            % nanoparticle location.
-            % hfig is optional. If specified, must be the hfig of the main image panel: IM.figure.
-            if isempty(opt.figure)
-                hfig=obj.figure('px');
-            else
-                hfig=opt.figure;
-                figure(hfig)
-                linkaxes(hfig.UserData{7},'off');
-                linkaxes(hfig.UserData{7},'x');
-            end
-            linkaxes(hfig.UserData{7},'off');
-            linkaxes(hfig.UserData{7},'x');
-            if isempty(opt.coords)
-                [cx,cy]=ginput(2);
-            else
-                cx=opt.coords(:,1);
-                cy=opt.coords(:,2);
-            end
-            if nargin==2
-                if strcmp(hfig.UserData{2},'µm')
-                    factorAxis=obj.pxSize*1e6;
-                elseif strcmp(hfig.UserData{2},'px')
-                    factorAxis=1;
-                end
-            else
-                factorAxis=1;
-            end
-            D=sqrt((cx(1)-cx(2))^2+(cy(1)-cy(2))^2);
-            profile.T  =radialAverage0(obj.T,   [cx(1)/factorAxis, cy(1)/factorAxis], round(D/factorAxis));
-            profile.OPD=radialAverage0(obj.OPD, [cx(1)/factorAxis, cy(1)/factorAxis], round(D/factorAxis));
-            profile.coords=[cx,cy];
-            Np=length(profile.T);
-
-            subplot(1,2,1)
-            plot((-Np+1:Np-1)*factorAxis,[flip(profile.T);profile.T(2:end)],'LineWidth',2)
-            xlabel(hfig.UserData{2})
-            ylabel('normalized intensity')
-            hold on
-            ax=gca;
-            plot([0 0],ax.YLim,'k--','LineWidth',2);%vertical line
-            set(ax,'FontSize',14)
-            hold off
-            subplot(1,2,2)
-            plot((-Np+1:Np-1)*factorAxis,[flip(profile.OPD);profile.OPD(2:end)]*1e9,'LineWidth',2)
-            hold on
-            ax=gca;
-            plot([0 0],ax.YLim,'k--','LineWidth',2);%vertical line
-            set(ax,'FontSize',14)
-            hold off
-            xlabel(hfig.UserData{2})
-            ylabel('Optical path difference [nm]')
-        end
 
         function val=getPixel(obj,hfig)
             if nargin==1
@@ -379,6 +330,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
             Nim=numel(opt.imType);
 
+            % convert all the options into cells:
             if ~isa(opt.ampl,'cell')
                 val=opt.ampl;
                 opt.ampl=cell(1,Nim);
@@ -708,7 +660,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 totSize = 0;
 
                 for ii=1:length(props)
-                    currentProperty = getfield(IM(j), char(props(ii)));
+                    currentProperty = IM(j).(props{ii});
                     s = whos('currentProperty');
                     totSize = totSize + s.bytes;
                 end
@@ -718,14 +670,17 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             fprintf('%.3g Ko\n',val)
         end
 
-        function obj = crop(obj0,opt)
+        function [obj, params] = crop(obj0,opt)
             arguments
                 obj0
                 opt.xy1 = []
                 opt.xy2 = []
-                opt.Center = 'Auto'
-                opt.Size = 'Manual'
+                opt.Center = 'Auto' % 'Auto', 'Manual' or [x, y]
+                opt.Size = 'Manual' % 'Auto', 'Manual', d or [dx, dy]
                 opt.twoPoints logical = false
+                opt.params double = double.empty()
+                opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
+                opt.figure = []; % figure uifigure object to be considered in case the image is already open
             end
 
             if nargout
@@ -734,9 +689,24 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 obj=obj0;
             end
 
-            [x1, x2, y1, y2] = crop0(obj,opt);
-
+            sizeIm = [0 0]; 
             for io = 1:numel(obj)
+                if sum(sizeIm ~= size(obj(io).OPD)) % if the size of the image is not the same as the previous one
+                    if isempty(opt.params)
+                        [x1, x2, y1, y2] = boxSelection(obj,opt);
+                        params=[x1, x2, y1, y2];
+                    else
+                        x1 = opt.params(1);
+                        x2 = opt.params(2);
+                        y1 = opt.params(3);
+                        y2 = opt.params(4);
+                        params=opt.params;
+                    end
+                end
+
+                sizeIm = size(obj(io).OPD);
+
+
                 if isa (obj,'ImageQLSI')
                     temp=obj(io).T(y1:y2,x1:x2); % temp variable to avoid importing the matrix twice for the calculation of Nx and Ny when it is stored in a file.
                     obj(io).T   = temp;
@@ -758,6 +728,24 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
 
         end
+
+
+
+        function bool = is_empty(obj)
+            % return 1 is the object is empty, or if all the properties are empty
+            No = numel(obj);
+            val = zeros(No,1);
+            for io = 1:No
+                if isempty(obj(io))
+                    val(io) = 1;
+                else
+                    val(io) = isempty(obj(io).OPD);
+                end
+            end
+            bool = logical(val);
+        end
+
+        
 
     end
 

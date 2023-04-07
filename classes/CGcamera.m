@@ -1,8 +1,10 @@
-classdef CGcamera  <  handle
-    properties
+classdef CGcamera  <  handle & matlab.mixin.Copyable
+    properties(NonCopyable)
         Camera   Camera %Camera object
         RL       RelayLens % RelayLens object
         CG       CrossGrating %CrossGrating object
+    end
+    properties
         fileName char  = 'sC8-944'% fileName of the CGcamera, if any
         CGangle  (1,1) {mustBeNumeric} = 0 % grating angle
         CGpos    (1,1) {mustBeNumeric} % grating position

@@ -1,17 +1,18 @@
 %% To zoom on the particle on interest and keep the zoomed images for the following images
 
-function  [mask,maskRemove,fail,xlist,ylist,roiIN,roiOUT] = magicWand_scrollbar(hfig)
+function  [mask,maskRemove,fail,roiIN,roiOUT,xlist,ylist] = magicWand_scrollbar(im,roiIN,roiOUT)
+% This code is meant to replace magicWand_scrollbar2, and to be used with the
+% new gui interface PhaseLABgui
 
 
-image0 = hfig.UserData{5}.OPD;
 
-[Ny,Nx] = size(image0);
+[Ny,Nx] = size(im);
 
 
 %% Define the tolerance and deltaTolerance used to start as : (OPD90 - OPD10)
 
-[y,edge] = histcounts(image0,size(image0,2));
-Ntot = size(image0,1)*size(image0,2);
+[y,edge] = histcounts(im,size(im,2));
+Ntot = size(im,1)*size(im,2);
 m = 0;
 a = 0;
 ok = 0;
@@ -48,11 +49,11 @@ toleranceStart = OPDamplitude/20;
 %To allow to click on multiple part of the particle of interest
 
 hOPD = figure;
-hOPD.UserData.roiIN = hfig.UserData{12}.roiIN;
-hOPD.UserData.roiOUT = hfig.UserData{12}.roiOUT;
+hOPD.UserData.roiIN = roiIN;
+hOPD.UserData.roiOUT = roiOUT;
 hOPD.UserData.roiDraw = [];
 
-imageph(image0)
+imageph(im)
 fullscreen
 axis equal
 uicontrol('Style','pushbutton','FontSize',14,'BackgroundColor',[0.9 0.6 0.6],...
@@ -71,20 +72,22 @@ uicontrol('Style','pushbutton','FontSize',14,'BackgroundColor',[1 1 1],      ...
 
 drawnow
 
-if ~isempty(hfig.UserData{12}.roiIN{1})
-    Nroi = numel(hfig.UserData{12}.roiIN);
+if ~isempty(roiIN)
+    Nroi = numel(roiIN);
     for ii = 1:Nroi
-        if isvalid(hfig.UserData{12}.roiIN{ii})
-            hfig.UserData{12}.roiIN{ii}.Parent = gca;
+        if isvalid(roiIN{ii})
+            roiIN{ii}.Parent = gca;
         end
     end
 end
 
-if ~isempty(hfig.UserData{12}.roiOUT{1})
-    Nroi = numel(hfig.UserData{12}.roiOUT);
+if ~isempty(roiOUT)
+    Nroi = numel(roiOUT);
     for ii = 1:Nroi
-        if isvalid(hfig.UserData{12}.roiOUT{ii})
-            hfig.UserData{12}.roiOUT{ii}.Parent = gca;
+        if ~isempty(roiOUT{ii})
+            if isvalid(roiOUT{ii})
+                roiOUT{ii}.Parent = gca;
+            end
         end
     end
 end
@@ -94,36 +97,38 @@ while hOPD.UserData.processok==0
     pause(0.5);
 end
 
-if ~isempty(hOPD.UserData.roiIN{1})
-     hfig.UserData{12}.roiIN = cell(1,1);
-     nn = 0;
+if ~isempty(hOPD.UserData.roiIN)
+    roiIN = cell(1,1);
+    nn = 0;
     for ii = 1:numel(hOPD.UserData.roiIN)
         if isvalid(hOPD.UserData.roiIN{ii})
             nn = nn+1;
-            hfig.UserData{12}.roiIN{nn} = copy(hOPD.UserData.roiIN{ii});% copy, otherwise the handles disappear as soon as hOPD is closed
+            roiIN{nn} = copy(hOPD.UserData.roiIN{ii});% copy, otherwise the handles disappear as soon as hOPD is closed
         end
     end
 end
 
-if ~isempty(hOPD.UserData.roiOUT{1})
-     hfig.UserData{12}.roiOUT = cell(1,1);
-     nn = 0;
+if ~isempty(hOPD.UserData.roiOUT)
+    roiOUT = cell(1,1);
+    nn = 0;
     for ii = 1:numel(hOPD.UserData.roiOUT)
-        if isvalid(hOPD.UserData.roiOUT{ii})
-            nn = nn+1;
-            hfig.UserData{12}.roiOUT{nn} = copy(hOPD.UserData.roiOUT{ii});% copy, otherwise the handles disappear as soon as hOPD is closed
+        if ~isempty(hOPD.UserData.roiOUT{ii})
+            if isvalid(hOPD.UserData.roiOUT{ii})
+                nn = nn+1;
+                roiOUT{nn} = copy(hOPD.UserData.roiOUT{ii});% copy, otherwise the handles disappear as soon as hOPD is closed
+            end
         end
     end
 end
 
 
-S = size(image0);
+S = size(im);
 
 
 if isempty(hOPD.UserData.roiDraw) % no hand-made exact and final roi has be defined
     
     
-    if isempty(hOPD.UserData.roiIN{1}) % roiIN selection
+    if isempty(hOPD.UserData.roiIN) % roiIN selection
         hOPD.UserData.maskManual = true(S(1),S(2));
     else
         hOPD.UserData.maskManual = false(S(1),S(2));
@@ -131,12 +136,12 @@ if isempty(hOPD.UserData.roiDraw) % no hand-made exact and final roi has be defi
     
     
     
-    if ~isempty(hOPD.UserData.roiIN{1})
+    if ~isempty(hOPD.UserData.roiIN)
         Nroi = numel(hOPD.UserData.roiIN);
         for ii = 1:Nroi
             if isvalid(hOPD.UserData.roiIN{ii})
                 Pos = hOPD.UserData.roiIN{ii}.Position; % get the coordinate of the polygon
-                S = size(image0);
+                S = size(im);
                 X = Pos(:,1);
                 Y = Pos(:,2);
                 hOPD.UserData.maskManual = logical(hOPD.UserData.maskManual+poly2mask(X,Y,S(1),S(2))); % computes a binary ROI mask from an ROI polygon
@@ -144,15 +149,17 @@ if isempty(hOPD.UserData.roiDraw) % no hand-made exact and final roi has be defi
         end
     end
     
-    if ~isempty(hOPD.UserData.roiOUT{1})
+    if ~isempty(hOPD.UserData.roiOUT)
         Nroi = numel(hOPD.UserData.roiOUT);
         for ii = 1:Nroi
-            if isvalid(hOPD.UserData.roiOUT{ii})
-                Pos = hOPD.UserData.roiOUT{ii}.Position; % get the coordinate of the polygon
-                S = size(image0);
-                X = Pos(:,1);
-                Y = Pos(:,2);
-                hOPD.UserData.maskManual = logical(hOPD.UserData.maskManual.*~poly2mask(X,Y,S(1),S(2))); % computes a binary ROI mask from an ROI polygon
+            if ~isempty(hOPD.UserData.roiOUT{ii})
+                if isvalid(hOPD.UserData.roiOUT{ii})
+                    Pos = hOPD.UserData.roiOUT{ii}.Position; % get the coordinate of the polygon
+                    S = size(im);
+                    X = Pos(:,1);
+                    Y = Pos(:,2);
+                    hOPD.UserData.maskManual = logical(hOPD.UserData.maskManual.*~poly2mask(X,Y,S(1),S(2))); % computes a binary ROI mask from an ROI polygon
+                end
             end
         end
     end
@@ -160,7 +167,7 @@ if isempty(hOPD.UserData.roiDraw) % no hand-made exact and final roi has be defi
     ylist = hOPD.UserData.ylist;
     maskRemove = hOPD.UserData.maskManual;
     
-    bin_mask = magicWand(image0, ylist, xlist, toleranceStart);
+    bin_mask = magicWand(im, ylist, xlist, toleranceStart);
     mask = double(bin_mask.*maskRemove);
     
     
@@ -171,9 +178,9 @@ if isempty(hOPD.UserData.roiDraw) % no hand-made exact and final roi has be defi
     
     %% Red bin_mask superimposed on phase image to adjust magicWand mask
     A = zeros(Ny, Nx, 3);
-    maxval = max(imgaussfilt(image0(:),10));
-    minval = min(imgaussfilt(image0(:),10));
-    A1 = (image0-minval)/(maxval-minval);
+    maxval = max(imgaussfilt(im(:),10));
+    minval = min(imgaussfilt(im(:),10));
+    A1 = (im-minval)/(maxval-minval);
     A2 = A1;
     A3 = A1; %To obtain a grayscale image of the phase
     
@@ -194,7 +201,7 @@ if isempty(hOPD.UserData.roiDraw) % no hand-made exact and final roi has be defi
     
     %% To adapt the tolerance if the magic wand fit of the bacteria is not good
     
-    uicontrol('style','slider','Position',[20 5 400 20],'Min',log10(toleranceStart)-3,'Max',log10(toleranceStart)+3,'value',log10(toleranceStart),'callback',@(src,evt)dispWandSelection(10^get(src,'value'),image0, ylist, xlist ,hfig1,ha1, maxval,minval));
+    uicontrol('style','slider','Position',[20 5 400 20],'Min',log10(toleranceStart)-3,'Max',log10(toleranceStart)+3,'value',log10(toleranceStart),'callback',@(src,evt)dispWandSelection(10^get(src,'value'),im, ylist, xlist ,hfig1,ha1, maxval,minval));
     uicontrol('style','pushbutton','String','validate','Position',[500 5 40 20],'callback',@(src,evt)endWandSelection(hfig1));
     uicontrol('style','pushbutton','String','reclick','Position', [450 5 40 20],'callback',@(src,evt)redoWandSelection(hfig1));
     
@@ -214,12 +221,12 @@ if isempty(hOPD.UserData.roiDraw) % no hand-made exact and final roi has be defi
 else % if a direct manual segmentation has been done, without magic wand
     
     
-    if ~isempty(hOPD.UserData.roiOUT{1}) % if additionally, remove regions have been drawn
+    if ~isempty(hOPD.UserData.roiOUT) % if additionally, remove regions have been drawn
         hOPD.UserData.maskManual = true(S(1),S(2));
         Nroi = numel(hOPD.UserData.roiOUT);
         for ii = 1:Nroi
             Pos = hOPD.UserData.roiOUT{ii}.Position; % get the coordinate of the polygon
-            S = size(image0);
+            S = size(im);
             X = Pos(:,1);
             Y = Pos(:,2);
             hOPD.UserData.maskManual = logical(hOPD.UserData.maskManual.*~poly2mask(X,Y,S(1),S(2))); % computes a binary ROI mask from an ROI polygon
@@ -231,7 +238,7 @@ else % if a direct manual segmentation has been done, without magic wand
     
     Pos = hOPD.UserData.roiDraw.Position; % get the coordinate of the polygon
 
-    S = size(image0);
+    S = size(im);
     X = Pos(:,1);
     Y = Pos(:,2);
     mask = logical(maskRemove.*poly2mask(X,Y,S(1),S(2))); % computes a binary ROI mask from an ROI polygon

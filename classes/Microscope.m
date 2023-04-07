@@ -22,9 +22,11 @@
 
 classdef Microscope  <  handle & matlab.mixin.Copyable
     
-    properties
+    properties(NonCopyable)
         Objective Objective % Objective object
-        CGcam  %CGcamera % CGcamera object
+        CGcam  CGcamera % CGcamera object
+    end
+    properties
         f_TL      (1,1) {mustBeNumeric, mustBePositive} = 180 % Actual focal length of the tube lens used in the microscope not necessarily the one advised by the constructor.
         software  char % software used with the microscope. Should be within the private property list obj.softwareList
     end

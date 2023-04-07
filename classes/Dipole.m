@@ -88,7 +88,7 @@ classdef Dipole
             if strcmp(obj.mat,'user defined')
                 val = sqrt(obj.epsHidden);
             else
-                val = indexReadDDA(obj.lambda,obj.mat);   % dielectric function of the nanoparticle 
+                val = indexRead(obj.lambda,obj.mat);   % dielectric function of the nanoparticle 
             end
         end
         

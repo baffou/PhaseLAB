@@ -15,14 +15,23 @@
 function [alpha,OV,maskMeas] = magicWandAlphaOV2(hfig)
 
 %bkTh: thickness of the background ring in pixels
-IM = hfig.UserData{5};
-hand = hfig.UserData{8};
 
-bkTh = str2double(get(hand.UIalpha_bkgThick,'String'));
-step = str2double(get(hand.UIalpha_step,'String'));
-NNP = str2double(get(hand.UIalpha_NNP,'String'));
-nmax = str2double(get(hand.UIalpha_nmax,'String'));
+if isa(hfig,'PhaseLABgui')
+    IM = app.IM(app.jim);
+    bkTh = app.bkgRingEditField.Value;
+    step = app.stepEditField.Value;
+    NNP = 1;
+    nmax = app.NmaxEditField.Value;
 
+
+else
+    IM = hfig.UserData{5};
+    hand = hfig.UserData{8};
+    bkTh = str2double(get(hand.UIalpha_bkgThick,'String'));
+    step = str2double(get(hand.UIalpha_step,'String'));
+    NNP = str2double(get(hand.UIalpha_NNP,'String'));
+    nmax = str2double(get(hand.UIalpha_nmax,'String'));
+end
 
 
 n2 = IM.Illumination.nS;
@@ -30,11 +39,11 @@ Nim = numel(IM);
 alpha = zeros(NNP,Nim,1);
 OV = zeros(NNP,Nim,1);
 
-for n = 1:Nim  % loop on the list of images
+for io = 1:Nim  % loop on the list of images
     
-    OPD = IM(n).OPD;
-    Ph = IM(n).Ph;
-    T = IM(n).T;
+    OPD = IM(io).OPD;
+    Ph = IM(io).Ph;
+    T = IM(io).T;
     
     for iNP = 1:NNP  % loop on the list of particles
         
@@ -48,7 +57,7 @@ for n = 1:Nim  % loop on the list of images
             Tcrop = T;
             Phcrop = Ph;
             
-            [mask,maskRemove,fail,xList,yList] = magicWand_scrollbar(hfig);
+            [mask,maskRemove,fail,xList,yList] = magicWand_scrollbar2(hfig);
         end %end while fail==1
         
         maskRef = mask;
@@ -56,7 +65,7 @@ for n = 1:Nim  % loop on the list of images
         %% alpha calculation
         
         %when mask smaller than bacteria
-        taillePx = IM(n).pxSize;
+        taillePx = IM(io).pxSize;
         N = round(nmax/2);
         alpha0 = zeros(1,N+nmax);
         OV0 = zeros(1,N+nmax);
@@ -180,13 +189,13 @@ for n = 1:Nim  % loop on the list of images
         if pxmax<pxmin
             error('The second click must correspond to a higher x value.')
         end
-        alpha(iNP,n) = mean(alpha0(pxmin:pxmax));
+        alpha(iNP,io) = mean(alpha0(pxmin:pxmax));
         maskMeas = maskList{round(mean([pxmin pxmax]))};
         ringBMeas = ringBList{round(mean([pxmin pxmax]))};
-        alphaRealMean = real(alpha(iNP,n));
-        alphaImagMean = imag(alpha(iNP,n));
+        alphaRealMean = real(alpha(iNP,io));
+        alphaImagMean = imag(alpha(iNP,io));
         
-        OV(iNP,n) = mean(OV0(pxmin:pxmax));
+        OV(iNP,io) = mean(OV0(pxmin:pxmax));
         OVmin = min(OV0(pxmin:pxmax));
         OVmax = max(OV0(pxmin:pxmax));
         
@@ -197,7 +206,7 @@ for n = 1:Nim  % loop on the list of images
             else
                 alpha2print = sprintf('(%.4g+i*%.4g) x10^-18',1e18*alphaRealMean,1e18*alphaImagMean);
             end
-            OV2print = sprintf('%.4ge-18',1e18*OV(iNP,n));
+            OV2print = sprintf('%.4ge-18',1e18*OV(iNP,io));
         else
             efactor = 1e-21;
             if alphaImagMean<0
@@ -205,7 +214,7 @@ for n = 1:Nim  % loop on the list of images
             else
                 alpha2print = sprintf('(%.4g+i*%.4g) x10^-21',1e21*alphaRealMean,1e21*alphaImagMean);
             end
-            OV2print = sprintf('%.4ge-21',1e21*OV(iNP,n));
+            OV2print = sprintf('%.4ge-21',1e21*OV(iNP,io));
         end
         fprintf([alpha2print '\n'])
         if isa(IM,'ImageQLSI')
@@ -217,7 +226,7 @@ for n = 1:Nim  % loop on the list of images
         fprintf('\t=COMPLEX(%.4g,%.4g)\n',1e21*alphaRealMean,1e21*alphaImagMean);
         clipboard('copy',sprintf('=COMPLEX(%.4g,%.4g)',1e21*alphaRealMean,1e21*alphaImagMean))
         fprintf('OV:\n')
-        fprintf('\t%.4g\n',OV(iNP,n));
+        fprintf('\t%.4g\n',OV(iNP,io));
 
         
         prefix = get(hand.file,'String');
@@ -258,7 +267,7 @@ for n = 1:Nim  % loop on the list of images
         % defines the line to write
         posList = [XLim(1)+xList,YLim(1)+yList].';
         date = generateDatedFileName();
-        Tab = table({fileName},{date},efactor,{sprintf('=COMPLEX(%.4g,%.4g)',alphaRealMean/efactor,alphaImagMean/efactor)},{sprintf('%.4g',OV(iNP,n)/efactor)},{sprintf('%.4g',OVmin/efactor)},{sprintf('%.4g',OVmax/efactor)},{num2str(posList(:).')});
+        Tab = table({fileName},{date},efactor,{sprintf('=COMPLEX(%.4g,%.4g)',alphaRealMean/efactor,alphaImagMean/efactor)},{sprintf('%.4g',OV(iNP,io)/efactor)},{sprintf('%.4g',OVmin/efactor)},{sprintf('%.4g',OVmax/efactor)},{num2str(posList(:).')});
         % writes this line in a temporary csv file
         fileNamecsv = [folder '/data_' date '.csv'];
         writetable(Tab,fileNamecsv,'WriteVariableNames',0);
@@ -276,7 +285,7 @@ for n = 1:Nim  % loop on the list of images
         %end
     end
 end
-hfig.UserData{10} = alpha(iNP,n);
+hfig.UserData{10} = alpha(iNP,io);
 figure(hfig)
 
 end

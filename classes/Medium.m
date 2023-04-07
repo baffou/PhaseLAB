@@ -52,7 +52,7 @@ classdef Medium <  handle & matlab.mixin.Copyable
                 elseif strcmp(obj.n0,'air')
                     val = 1.;
                 elseif ~isempty(obj.Illumination)
-                    val = real(indexReadDDA(obj.Illumination.lambda,obj.n0));
+                    val = real(indexRead(obj.Illumination.lambda,obj.n0));
                 else
                     error('There is a problem with the definition of the material')
                 end
@@ -70,7 +70,7 @@ classdef Medium <  handle & matlab.mixin.Copyable
                 elseif strcmp(obj.nS0,'air')
                     val = 1.;
                 elseif ~isempty(obj.Illumination)
-                    val = real(indexReadDDA(obj.Illumination.lambda,obj.n0));
+                    val = real(indexRead(obj.Illumination.lambda,obj.n0));
                 else
                     error('There is a problem with the definition of the material')
                 end

@@ -11,10 +11,10 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         Ex
         Ey
         Ez
-        Einc ImageEM
     end
 
-    properties(Access = public)
+    properties(Access = public,NonCopyable)
+        Einc ImageEM % to be put back in private
         %Microscope, inherited from ImageMethods
         %Illumination, inherited from ImageMethods
         %comment, inherited from ImageMethods
@@ -26,20 +26,21 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         E2
         E
         Ph
-        Ph0 % Ph image not normalized by the phase of the reference image
+        Ph0 % Ph image, not normalized by the phase of the reference image
         OPD
+        OPDnm
         T
     end
 
     methods
         function obj = ImageEM(Ex,Ey,Ez,Eincx,Eincy,Eincz,opt)
             arguments
-                Ex {mustBeNumeric} =[]
-                Ey {mustBeNumeric} =[]
-                Ez {mustBeNumeric} =[]
-                Eincx {mustBeNumeric} =[]
-                Eincy {mustBeNumeric} =[]
-                Eincz {mustBeNumeric} =[]
+                Ex {mustBeNumeric} = []
+                Ey {mustBeNumeric} = []
+                Ez {mustBeNumeric} = []
+                Eincx {mustBeNumeric} = []
+                Eincy {mustBeNumeric} = []
+                Eincz {mustBeNumeric} = []
                 opt.n {mustBeNumeric} = []
                 opt.Microscope Microscope = Microscope.empty()
                 opt.Illumination Illumination = Illumination.empty()
@@ -179,20 +180,37 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
         function val = get.OPD(obj)
-            k0 = 2*pi/obj.lambda;
-            val = obj.Ph/k0; % Optical path difference
+            if isempty(obj.Ex)
+                val = [];
+            else
+                k0 = 2*pi/obj.lambda;
+                val = obj.Ph/k0; % Optical path difference
+            end
+        end
+
+        function val = get.OPDnm(obj)
+            if isempty(obj.Ex)
+                val = [];
+            else
+                k0 = 2*pi/obj.lambda;
+                val = obj.Ph/k0*1e9; % Optical path difference
+            end
         end
 
         function val = get.T(obj)
-            if norm(obj.EE0)==0 % happens when using crossed polarizers that kill E0 on the image plane.
-                nor = 1;
+            if isempty(obj.Ex)
+                val = [];
             else
-                nor = obj.EE0n();
+                if norm(obj.EE0)==0 % happens when using crossed polarizers that kill E0 on the image plane.
+                    nor = 1;
+                else
+                    nor = obj.EE0n();
+                end
+                norExtot = obj.Ex/nor;
+                norEytot = obj.Ey/nor;
+                norEztot = obj.Ez/nor;
+                val = abs(norExtot).^2+abs(norEytot).^2+abs(norEztot).^2; % Transmittance
             end
-            norExtot = obj.Ex/nor;
-            norEytot = obj.Ey/nor;
-            norEztot = obj.Ez/nor;
-            val = abs(norExtot).^2+abs(norEytot).^2+abs(norEztot).^2; % Transmittance
         end
 
         function val = zoom(obj)
@@ -427,7 +445,46 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
         end   
 
+        function obj = mirrorH(obj0)
+            % Mirror image with an horizontal mirror
 
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+
+            for io=1:numel(obj0)
+                obj(io).Ex=obj0(io).Ex(end:-1:1,:);
+                obj(io).Ey=obj0(io).Ey(end:-1:1,:);
+                obj(io).Ez=obj0(io).Ez(end:-1:1,:);
+                obj(io).Einc.Ex=obj0(io).Einc.Ex(end:-1:1,:);
+                obj(io).Einc.Ey=obj0(io).Einc.Ey(end:-1:1,:);
+                obj(io).Einc.Ez=obj0(io).Einc.Ez(end:-1:1,:);
+            end
+
+        end            
+    
+        function obj = mirrorV(obj0)
+            % Mirror image with an horizontal mirror
+
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+
+            for io=1:numel(obj0)
+                obj(io).Ex=obj0(io).Ex(:,end:-1:1);
+                obj(io).Ey=obj0(io).Ey(:,end:-1:1);
+                obj(io).Ez=obj0(io).Ez(:,end:-1:1);
+                obj(io).Einc.Ex=obj0(io).Einc.Ex(:,end:-1:1);
+                obj(io).Einc.Ey=obj0(io).Einc.Ey(:,end:-1:1);
+                obj(io).Einc.Ez=obj0(io).Einc.Ez(:,end:-1:1);
+            end
+
+        end            
+    
         function objList = applyPhaseShift(objList0,phi)
             % applies of phase shift to all the components of a field, but
             % not to its Einc. Useful to articially simulate SLIM imaging.
@@ -485,7 +542,20 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
         end
 
-
+        function write(obj,obj_in)
+            % makes obj2 = obj, but without giving a new handle
+            propList = ["Ex","Ey","Ez","Einc",...
+                "Microscope","Illumination","comment","processingSoft","pxSizeCorrection"];
+ 
+            if numel(obj) ~= numel(obj_in) 
+                error('The input and output image lists must have the same number of elements')
+            end
+            for io = 1:numel(obj_in)
+                for propName = propList
+                    obj(io).(propName) = obj_in(io).(propName);
+                end
+            end
+        end
 
 
 
