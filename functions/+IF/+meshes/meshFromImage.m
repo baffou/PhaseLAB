@@ -44,7 +44,7 @@ close all
 
 positionList=zeros(Nx*Ny*Nz,3);
 ii=0;
-for z=1:Nz
+for z=Nz:-1:1
     for y=1:Ny
         for x=1:Nx
             ii=ii+1;
@@ -74,7 +74,7 @@ len=length(aa);
 tab=zeros(Nx*Ny*Nz,len);
 ii=0;
 reconstructedHeight=zeros(Ny,Nx);
-for z=1:Nz
+for z=Nz:-1:1
     for y=1:Ny
         for x=1:Nx
             ii=ii+1;
