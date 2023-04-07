@@ -248,35 +248,45 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             axis equal
         end
 
-        function hfig=overview(IMlist,numbers)
+        function hfig=overview(IMlist,opt)
+                arguments
+                    IMlist
+                    opt.numbers double = numel(IMlist)
+                    opt.types cell = {'OPD','T'}
+                end
             Nim=numel(IMlist);
-            if nargin==1
+            Nt = numel(opt.types);
+            if opt.numbers
                 numbers=1:Nim;
             end
-            Nimx=2+floor(sqrt(2*Nim)); % +1 to elongate a bit horizontally, because of screen shape.
+            Nimx=2+floor(sqrt(Nt*Nim)); % +1 to elongate a bit horizontally, because of screen shape.
             if mod(Nimx,2) % the number of images horizontally is not even
                 Nimx=ceil(sqrt(2*Nim));
             end
             if mod(Nimx,2) % If taking the ceil did not solve the problem. Occurs if Nimx is a perfect square.
                 Nimx=Nimx+1;
             end
-            Nimy=ceil(2*Nim/Nimx); % number of lines
+            Nimy=ceil(Nt*Nim/Nimx); % number of lines
 
-            hfig=figure();
+            if nargout
+                hfig=figure();
+            else
+                figure()
+            end
             screenSz = get(groot,'ScreenSize');
-            set(hfig,'position',[0 0 ceil(screenSz(3)) ceil(screenSz(4))]);
+            set(gcf,'position',[0 0 ceil(screenSz(3)) ceil(screenSz(4))]);
 
             iim=1;
             for iy=1:Nimy
                 for ix=1:Nimx
                     if iim <= Nim
                         subplot(Nimy,Nimx,ix+Nimx*(iy-1))
-                        if mod(ix,2)
-                            imagesc(IMlist(iim).T)
+                        if mod(ix,Nt)
+                            imagesc(IMlist(iim).(opt.types{2}))
                             colormap(gca,'gray(1024)')
                             title(['T #' num2str(numbers(iim))])
                         else
-                            imagesc(IMlist(iim).OPD)
+                            imagesc(IMlist(iim).(opt.types{1}))
                             colormap(gca,'phase1024')
                             title(['OPD #' num2str(numbers(iim))])
                             iim=iim+1;
