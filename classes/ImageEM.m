@@ -13,7 +13,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         Ez
     end
 
-    properties(Access = public,NonCopyable)
+    properties%(Access = public,NonCopyable)
         Einc ImageEM % to be put back in private
         %Microscope, inherited from ImageMethods
         %Illumination, inherited from ImageMethods

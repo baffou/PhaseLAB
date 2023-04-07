@@ -1,5 +1,5 @@
 classdef CGcamera  <  handle & matlab.mixin.Copyable
-    properties(NonCopyable)
+    properties%(NonCopyable)
         Camera   Camera %Camera object
         RL       RelayLens % RelayLens object
         CG       CrossGrating %CrossGrating object

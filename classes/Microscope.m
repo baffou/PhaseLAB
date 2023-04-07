@@ -22,7 +22,7 @@
 
 classdef Microscope  <  handle & matlab.mixin.Copyable
     
-    properties(NonCopyable)
+    properties%(NonCopyable)
         Objective Objective % Objective object
         CGcam  CGcamera % CGcamera object
     end

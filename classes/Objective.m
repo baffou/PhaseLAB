@@ -20,7 +20,7 @@ classdef Objective  <  handle & matlab.mixin.Copyable
         NA   (1,1) {mustBeNumeric, mustBePositive} = 1.3     % Numerical aperture of the microscope objective
         objBrand char ='Olympus'  % Brand of the objective (can be 'Nikon', 'Thorlabs', 'Leica', 'Olympus' or 'Zeiss', nothing else. Proper specification is MANDATORY to properly estimate the magnification).
     end
-    properties(NonCopyable)
+    properties%(NonCopyable)
         mask PCmask
     end
     
