@@ -249,11 +249,11 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
         end
 
         function hfig=overview(IMlist,opt)
-                arguments
-                    IMlist
-                    opt.numbers double = numel(IMlist)
-                    opt.types cell = {'OPD','T'}
-                end
+            arguments
+                IMlist
+                opt.numbers double = numel(IMlist)
+                opt.types cell = {'OPD','T'}
+            end
             Nim=numel(IMlist);
             Nt = numel(opt.types);
             if opt.numbers
@@ -284,11 +284,11 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                         if mod(ix,Nt)
                             imagesc(IMlist(iim).(opt.types{2}))
                             colormap(gca,'gray(1024)')
-                            title(['T #' num2str(numbers(iim))])
+                            title(sprintf(['T #' num2str(numbers(iim)) '\n' IMlist(iim).comment]))
                         else
                             imagesc(IMlist(iim).(opt.types{1}))
                             colormap(gca,'phase1024')
-                            title(['OPD #' num2str(numbers(iim))])
+                            title(sprintf(['OPD #' num2str(numbers(iim)) '\n' IMlist(iim).comment]))
                             iim=iim+1;
                         end
                         axis equal
