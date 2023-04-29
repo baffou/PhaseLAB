@@ -794,6 +794,13 @@ classdef ImageQLSI   <   ImageMethods
                 end
             end
         end
+
+        function IMout = propagation(IM, z)
+            % numerical propagation over the distance z
+            image=sqrt(IM.T).*exp(1i*1e-9*IM.OPD*2*pi/IM.Illumination.lambda);
+            image2=imProp2(image,IM.Microscope.pxSize,IM.Illumination.lambda,z);
+            IMout = ImageQLSI(abs(image2), angle(image2)*IM.Illumination.lambda/(2*pi), IM.Microscope, IM.Illumination);
+        end
     end
 
     methods(Static)

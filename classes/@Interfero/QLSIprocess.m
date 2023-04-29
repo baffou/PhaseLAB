@@ -9,7 +9,7 @@ arguments
     opt.method char {mustBeMember(opt.method,{'Tikhonov','Errico','CPM'})} = 'Tikhonov'
     opt.resolution char {mustBeMember(opt.resolution,{'high','low'})} = 'high'
     opt.Fcropshape char {mustBeMember(opt.Fcropshape,{'disc','square'})} = 'disc'
-    opt.Smatrix {mustBeNumeric} = []
+    opt.Smatrix = []
     opt.apodization = []        % true, 1, or the width of the apodization in px
     opt.saveGradients = false
     opt.remotePath = []
