@@ -4,8 +4,7 @@
 clear
 close all
 
-addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
-format long
+addpath(genpath('/Users/perseus/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
 
 %% Construction of the setup
 lambda=550e-9;     % reference wavelength to etch glass
@@ -30,7 +29,7 @@ system='NP';
 
 %% assignments
 OB=Objective(Mobj,NAobj,'Olympus');
-CG=CrossGrating(Gamma=Gamma,lambda0=lambda0);
+CG=CrossGrating(Gamma=Gamma,lambda0=lambda);
 Cam=Camera(camPxSize,Npx,Npx);
 CGcam=CGcamera(Cam,CG,zoom0);
 MI=Microscope(OB,180,CGcam);
@@ -51,7 +50,7 @@ switch system
         DI = DI.shine(IL);
         
         IM0=imaging(DI,IL,MI,Npx);
-        IM0=IM0.crop(600);
+        IM0=IM0.crop(Size=600);
         OPD=IM0.OPD;
     case 'noise'
         IM0=ImageQLSI(ones(Npx),zeros(Npx),MI,IL);

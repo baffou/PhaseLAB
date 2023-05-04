@@ -109,7 +109,7 @@ classdef CGmatrix
                 dx = 0;
                 dy = 0;
             end
-            M.im = improp(M.im,M.imSize,lambda,L,dx,dy);
+            M.im = imProp(M.im,M.pxSize,lambda,L,dx=dx,dy=dy);
         end
         
         function M = BackForPropagation(M,Grating,MI,IL)
@@ -119,9 +119,9 @@ classdef CGmatrix
             if IL.NA==0
                 Fdb2 = M;
                 Fdb2.im = M.im*0;
-                imp = improp(M.im,M.imSize,lambda,-L,0,0);
+                imp = imProp(M.im,M.pxSize,lambda,-L);
                 imp2 = Grating.im.*imp;
-                imp3 = improp(imp2,M.imSize,lambda,L,0,0);
+                imp3 = imProp(imp2,M.pxSize,lambda,L);
                 
                 % rajouter ici la pastille
                 if ~isempty(MI.CGcam.RL) & MI.CGcam.RL.mask==1
@@ -168,9 +168,9 @@ classdef CGmatrix
                             nc = nc+1;
                             % propagation(lambda,z0,dnx,dny)
 %                            Fd = Fdb.propagation(lambda,z0,ix,iy);% Propagate the light after the unit cell
-                            imp = improp(M.im,M.imSize,lambda,-L,-ix,-iy);
+                            imp = imProp(M.im,M.pxSize,lambda,-L,dx=-ix,dy=-iy);
                             imp2 = Grating.im.*imp;
-                            imp3 = improp(imp2,M.imSize,lambda,L,ix,iy);
+                            imp3 = imProp(imp2,M.pxSize,lambda,L,dx=ix,dy=iy);
                             impsq = abs(imp3).^2;
                             Fdb2.im = Fdb2.im+impsq;
                         end
