@@ -1,4 +1,4 @@
-function [image2, Ph]=imProp(image,pxSize,lambda,z,opt)
+function [image2, Ph, T]=imProp(image,pxSize,lambda,z,opt)
 arguments
     image
     pxSize    % pixel size [m]
@@ -38,7 +38,8 @@ for iz=1:Nz
     Prop=exp(1i*kz*z(iz)) .* exp(1i*opt.dx*pxSize*kx) .* exp(1i*opt.dy*pxSize*ky);
     Fimagez=Fimage.*Prop;
     image2(:,:,iz)=ifft2(ifftshift(Fimagez));
-    if nargout == 2
+    T = abs(image2(:,:,iz)).^2;
+    if nargout >= 2
         Ph(:,:,iz) = Unwrap_TIE_DCT_Iter(angle(image2(:,:,iz)));
     end
 end

@@ -795,11 +795,36 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
-        function IMout = propagation(IM, z)
+        function IMout = propagation(IM, z, opt)
             % numerical propagation over the distance z
-            image=sqrt(IM.T).*exp(1i*1e-9*IM.OPD*2*pi/IM.Illumination.lambda);
-            image2=imProp2(image,IM.Microscope.pxSize,IM.Illumination.lambda,z);
-            IMout = ImageQLSI(abs(image2), angle(image2)*IM.Illumination.lambda/(2*pi), IM.Microscope, IM.Illumination);
+            arguments
+                IM
+                z      {mustBeNumeric}
+                opt.n  {mustBeNumeric} = [] % refractive index of the propagation medium
+            
+                opt.dx {mustBeNumeric} = 0 % dx and dy shift the phase of the image by dx and dy pixels
+                opt.dy {mustBeNumeric} = 0 %  (not necessarily integers)
+            end
+
+            if nargout
+                IMout=copy(IM);
+            else
+                IMout=IM;
+            end
+
+            No = numel(IM);
+            for io = 1:No
+                if isempty(opt.n)
+                    n = IM(io).Illumination.Medium.nS;
+                else
+                    n = opt.n;
+                end
+                image=sqrt(IM(io).T).*exp(1i*IM(io).Ph);
+                [~, Pha, Int]=imProp(image,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
+    
+                IMout(io).T0 = Int;
+                IMout(io).OPD0 = Pha*IM(io).Illumination.lambda/(2*pi);
+            end
         end
     end
 
