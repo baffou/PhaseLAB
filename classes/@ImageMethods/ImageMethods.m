@@ -690,7 +690,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.twoPoints logical = false
                 opt.params double = double.empty()
                 opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
-                opt.figure = []; % figure uifigure object to be considered in case the image is already open
+                opt.app = []; % figure uifigure object to be considered in case the image is already open
             end
 
             if nargout
@@ -703,7 +703,19 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             for io = 1:numel(obj)
                 if sum(sizeIm ~= size(obj(io).OPD)) % if the size of the image is not the same as the previous one
                     if isempty(opt.params)
-                        [x1, x2, y1, y2] = boxSelection(obj,opt);
+                        if ~isempty(opt.app)
+                            boxObj = opt.app;
+                        else
+                            boxObj = obj;
+                        end
+
+                        [x1, x2, y1, y2] = boxSelection(boxObj,'xy1',opt.xy1, ...
+                                                            'xy2',opt.xy2, ...
+                                                            'Center',opt.Center, ...
+                                                            'Size',opt.Size, ...
+                                                            'twoPoints',opt.twoPoints, ...
+                                                            'params',opt.params, ...
+                                                            'shape',opt.shape);
                         params=[x1, x2, y1, y2];
                     else
                         x1 = opt.params(1);

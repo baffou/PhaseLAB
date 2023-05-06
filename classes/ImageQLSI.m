@@ -533,7 +533,7 @@ classdef ImageQLSI   <   ImageMethods
                 opt.twoPoints logical = false
                 opt.params double = double.empty() % = [x1, x2, y1, y2]
                 opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
-                opt.figure = []; % figure uifigure object to be considered in case the image is already open
+                opt.app PhaseLABgui = PhaseLABgui.empty()
             end
 
             if nargout
@@ -549,7 +549,19 @@ classdef ImageQLSI   <   ImageMethods
                         if numel(obj)>1
                             opt.imNumber = io;
                         end
-                        [x1, x2, y1, y2] = boxSelection(obj,opt);
+                        if ~isempty(opt.app)
+                            boxObj = opt.app;
+                        else
+                            boxObj = obj;
+                        end
+
+                        [x1, x2, y1, y2] = boxSelection(boxObj,'xy1',opt.xy1, ...
+                                                            'xy2',opt.xy2, ...
+                                                            'Center',opt.Center, ...
+                                                            'Size',opt.Size, ...
+                                                            'twoPoints',opt.twoPoints, ...
+                                                            'params',opt.params, ...
+                                                            'shape',opt.shape);
                         params=[x1, x2, y1, y2];
                     else
                         x1 = opt.params(1);
@@ -573,6 +585,10 @@ classdef ImageQLSI   <   ImageMethods
                 end
 
                 obj(io).OPD = obj(io).OPD-offsetFunction(obj(io).OPD(y1:y2,x1:x2));
+                if ~isempty(opt.app)
+                    opt.app.updateImages()
+                end
+
             end
 
             function val = boundaryMedian(im)
