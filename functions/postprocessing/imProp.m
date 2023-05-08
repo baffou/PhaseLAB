@@ -1,4 +1,5 @@
 function [image2, Ph, T]=imProp(image,pxSize,lambda,z,opt)
+% function that propagates a scalar E field over a distance z
 arguments
     image
     pxSize    % pixel size [m]
@@ -14,7 +15,7 @@ end
 Nz=length(z);
 [Ny,Nx]=size(image);
 image2=zeros(Ny,Nx,Nz);
-if nargout == 2
+if nargout >= 2
     Ph=zeros(Ny,Nx,Nz);
 end
 Fimage=fftshift(fft2(image));

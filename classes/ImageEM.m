@@ -507,6 +507,42 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             I = abs(FEx).^2 + abs(FEy).^2;
         end
 
+        function IMout = propagation(IM, z, opt)
+            % numerical propagation over the distance z
+            arguments
+                IM
+                z      {mustBeNumeric}
+                opt.n  {mustBeNumeric} = [] % refractive index of the propagation medium
+            
+                opt.dx {mustBeNumeric} = 0 % dx and dy shift the phase of the image by dx and dy pixels
+                opt.dy {mustBeNumeric} = 0 %  (not necessarily integers)
+            end
+
+            if nargout
+                IMout=duplicate(IM); % not copy(), to also duplicate the Einc
+            else
+                IMout=IM;
+            end
+
+            No = numel(IM);
+            for io = 1:No
+                if isempty(opt.n)
+                    n = IM(io).Illumination.Medium.nS;
+                else
+                    n = opt.n;
+                end
+                %image=sqrt(IM(io).T).*exp(1i*IM(io).Ph);
+                ex = IM(io).Ex;
+                ey = IM(io).Ey;
+                ex0 = IM(io).Einc.Ex;
+                ey0 = IM(io).Einc.Ey;
+                IMout(io).Ex=imProp(ex,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
+                IMout(io).Ey=imProp(ey,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
+                IMout(io).Einc.Ex=imProp(ex0,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
+                IMout(io).Einc.Ey=imProp(ey0,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
+            end
+        end
+
         function save(objList,folder,varargin)
             % save T and/or OPD images as jpg and txt images
             % IM.save('_postprocess')  save only the OPD image

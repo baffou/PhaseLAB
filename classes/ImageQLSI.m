@@ -529,7 +529,7 @@ classdef ImageQLSI   <   ImageMethods
                 opt.xy1 = []
                 opt.xy2 = []
                 opt.Center = 'Auto' % 'Auto', 'Manual' or [x, y]
-                opt.Size = 'Manual' % 'Auto', 'Manual', d or [dx, dy]
+                opt.Size = 'Auto' % 'Auto', 'Manual', d or [dx, dy]
                 opt.twoPoints logical = false
                 opt.params double = double.empty() % = [x1, x2, y1, y2]
                 opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
@@ -837,9 +837,10 @@ classdef ImageQLSI   <   ImageMethods
                 end
                 image=sqrt(IM(io).T).*exp(1i*IM(io).Ph);
                 [~, Pha, Int]=imProp(image,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
+                [~, Pha0]=imProp(image*0+1,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
     
                 IMout(io).T0 = Int;
-                IMout(io).OPD0 = Pha*IM(io).Illumination.lambda/(2*pi);
+                IMout(io).OPD0 = (Pha-Pha0)*IM(io).Illumination.lambda/(2*pi);
             end
         end
     end

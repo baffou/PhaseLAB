@@ -165,7 +165,8 @@ else % if not twopoints
             Size_units = [Size_units, Size_units];
         end
     else % opt.Size == 'Auto'
-            Size_px = [Ny, Nx];
+
+
     end
     for ii=1:2 % makes sure all the dimenions of the image size are even
         if mod(Size_px(ii),2)==1

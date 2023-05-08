@@ -323,7 +323,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.theta = 45
                 opt.ampl = 10
                 opt.zrange = []
-                opt.colorMap =  parulaNeuron
+                opt.colorMap =  []
                 opt.title = []
                 opt.factor = 1 % correction factor, for instance 5.55e-3 to convert the OPD color scale into dry mass
                 opt.label = 'Optical path difference (nm)'
@@ -411,9 +411,26 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                         nCol=ceil(Nim/2);
                     end
                     subplot(nRow,nCol,ii)
+                    if opt.persp == 1
                     surf(X,Y,img*fac,coloringMap,'FaceColor','interp',...
                         'EdgeColor','none',...
                         'FaceLighting','phong')
+                    else
+                        imagesc(X(1,:),Y(:,1),img)
+                        set(gca,'DataAspectRatio',[1, 1, 1])
+                    end
+
+                    if ~isempty(opt.colorMap{ii})
+                        colormap(opt.colorMap{ii})
+                    else
+                        if strcmp(opt.imType{ii},'OPD')
+                            opt.colorMap{ii}=phase1024;
+                        else
+                            opt.colorMap{ii}=gray;
+                        end            
+                    
+                    end
+
                     if ~isempty(opt.title{ii})
                         figTitle=opt.title{ii};
                     elseif isprop(obj,'OPDfileName') % ie if ImageQLSI object
@@ -622,7 +639,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.theta = 45
                 opt.ampl = 3
                 opt.zrange = []
-                opt.colorMap =  parulaNeuron
+                opt.colorMap =  []
                 opt.title = []
                 opt.factor = 1 % correction factor, for instance 5.55e-3 to convert the OPD color scale into dry mass
                 opt.label = 'Optical path difference (nm)'
