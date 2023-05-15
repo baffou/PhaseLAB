@@ -261,11 +261,13 @@ for ii = 1:Nf
     end
     
     if isempty(opt.remotePath)
-        IM(ii) = ImageQLSI(Int,W*corr,MI,IL(ii),imageNumber=Itfi.imageNumber);
+        IM(ii) = ImageQLSI(Int,W*corr,MI,duplicate(IL(ii)),imageNumber=Itfi.imageNumber);
     else
-        IM(ii) = ImageQLSI(Int,W*corr,MI,IL(ii),"remotePath",opt.remotePath,"fileName",removeExtension(Itfi.fileName),imageNumber=Itfi.imageNumber);
+        IM(ii) = ImageQLSI(Int,W*corr,MI,duplicate(IL(ii)),"remotePath",opt.remotePath,"fileName",removeExtension(Itfi.fileName),imageNumber=Itfi.imageNumber);
     end
-    IM(ii).Microscope = MI;
+
+    IM(ii).Microscope = duplicate(MI); % copy of MI because, as an handle object, MI may change for some reason after the computation of the image.
+
     if strcmpi(opt.resolution,'low')
         IM(ii).pxSizeCorrection=corr;
     end
