@@ -173,7 +173,7 @@ for ii = 1:Nf
         pause(1)
     end
 
-    [FImc,FRfc,cropParam0] = FourierCrop(FIm,FRf,zeta,Fcrops=cropParam0,resolution=opt.resolution,FcropShape=opt.Fcropshape,auto=opt.auto);
+    [FImc,FRfc,cropParam0] = FourierCrop(FIm,FRf,zeta,Fcrops=cropParam0,resolution=opt.resolution,FcropShape=opt.Fcropshape);
 
     Im_int = ifft2(ifftshift(FImc));
     Rf_int = ifft2(ifftshift(FRfc));
@@ -181,7 +181,7 @@ for ii = 1:Nf
     %    fprintf('FIRST ORDER ALONG XD\n')
     cropParam1.R = cropParam0.R;
     cropParam2.R = cropParam0.R;
-    [FImc,FRfc,cropParam1] = FourierCrop(FIm,FRf,Fcrops=cropParam1,resolution=opt.resolution,FcropShape=opt.Fcropshape,auto=opt.auto);
+    [FImc,FRfc,cropParam1] = FourierCrop(FIm,FRf,Fcrops=cropParam1,resolution=opt.resolution,FcropShape=opt.Fcropshape);
     
 
     %figure('Name','QLSIprocess.m/ TF Fourier crop 1st order'),imagetf(FImc)
