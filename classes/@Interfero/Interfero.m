@@ -197,10 +197,12 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 obj0
                 opt.xy1 = []
                 opt.xy2 = []
-                opt.Center = 'Auto'
-                opt.Size = 'Manual'
+                opt.Center = 'Auto' % 'Auto', 'Manual' or [x, y]
+                opt.Size = 'Manual' % 'Auto', 'Manual', d or [dx, dy]
                 opt.twoPoints logical = false
                 opt.params double = double.empty()
+                opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
+                opt.app = []; % figure uifigure object to be considered in case the image is already open
            end
             if nargout==1
                 fprintf('copying the object')
@@ -210,7 +212,13 @@ classdef Interfero < handle & matlab.mixin.Copyable
             end
             
             if isempty(opt.params)
-                [x1, x2, y1, y2] = boxSelection(obj,opt);
+                [x1, x2, y1, y2] = boxSelection(obj,'xy1',opt.xy1, ...
+                                                    'xy2',opt.xy2, ...
+                                                    'Center',opt.Center, ...
+                                                    'Size',opt.Size, ...
+                                                    'twoPoints',opt.twoPoints, ...
+                                                    'params',opt.params, ...
+                                                    'shape',opt.shape);
                 params=[x1, x2, y1, y2];
             else
                 x1 = opt.params(1);

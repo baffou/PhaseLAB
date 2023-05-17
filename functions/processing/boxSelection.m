@@ -29,6 +29,11 @@ elseif isa(im,'ImageMethods')
     Nx = im(1).Nx;
     Ny = im(1).Ny;
     h.UserData.Axes = gca;
+elseif isa(im,'Interfero')
+    h=figure;imagegb(im(1).Itf)
+    Nx = im(1).Nx;
+    Ny = im(1).Ny;
+    h.UserData.Axes = gca;
 elseif isa(im,'PhaseLABgui')
     isapp = 1;
     app = im;

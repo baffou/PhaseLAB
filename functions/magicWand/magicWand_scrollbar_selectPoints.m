@@ -7,7 +7,8 @@ yg = zeros(128,1);
 p = zeros(128,1);
 
 % click on the points for the magc wand process
-while(button~=32) % 32 correspond to space bar
+button = 1;
+while(button==1) % as long as the user clicks and does not press any other key
     ni = ni+1;
     [x1,y1,button]  =  ginput(1);
     xg(ni) = x1;

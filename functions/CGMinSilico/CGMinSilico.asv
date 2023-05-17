@@ -52,7 +52,7 @@ for io = 1:No
     elseif strcmpi(opt.Grating,'QLSI0')
         grexel = QLSIunitCell0(nCell,pi*wl/eD,Gamma);
     elseif strcmpi(opt.Grating,'QLSI2')
-        grexel = QLSIunitCell2(nCell,pi*wl/eD,Gamma);
+        grexel = QLSIunitCell0(nCell,pi*wl/eD,Gamma);
     end
     % (Fig 2b) 5x5-tile and rotate by acos(4/5) the unit cell to form the superunit cell
     % image, enabling periodicity when further tiling :
