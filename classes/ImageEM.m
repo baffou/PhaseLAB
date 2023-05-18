@@ -184,7 +184,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 val = [];
             else
                 k0 = 2*pi/obj.lambda;
-                val = obj.Ph/k0; % Optical path difference
+                val = Unwrap_TIE_DCT_Iter(obj.Ph)/k0; % Optical path difference
             end
         end
 
@@ -193,7 +193,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 val = [];
             else
                 k0 = 2*pi/obj.lambda;
-                val = obj.Ph/k0*1e9; % Optical path difference
+                val = Unwrap_TIE_DCT_Iter(obj.Ph)/k0*1e9; % Optical path difference
             end
         end
 

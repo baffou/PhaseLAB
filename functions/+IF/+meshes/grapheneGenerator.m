@@ -129,10 +129,16 @@ switch opt.shape
         fprintf('OV=%d\n',nCell*pxSize^3*(sqrt(eps)-sqrt(eps0)))
         fclose(hf);
 
-    otherwise
+    case 'square'
 
-        nx=ceil(opt.C/(2*pxSize));
-        ny=ceil(opt.C/(2*pxSize));
+        if ~isempty(opt.D)
+            R=opt.D/2;
+        else
+            R=opt.R;
+        end
+
+        nx=ceil(R/pxSize);
+        ny=ceil(R/pxSize);
 
         if exist('fileName','file')
             delete fileName
@@ -153,17 +159,25 @@ switch opt.shape
             end
         end
 
-
         nCell=0;
         for z=0:nz-1
             for y=-ny:ny
                 for x=-nx:nx
-                    nCell=nCell+1;
-                    fprintf(hf,'(%f, 0) \n',eps);
+                    if abs(y) < R/pxSize && abs(x) < R/pxSize
+                        nCell=nCell+1;
+                        fprintf(hf,'(%f, 0) \n',eps);
+                    else
+                        fprintf(hf,'(%f, 0) \n',eps0);
+                    end
                 end
             end
         end
+
+        fprintf('Ncell=%d\n',nCell)
+        fprintf('OV=%d\n',nCell*pxSize^3*(sqrt(eps)-sqrt(eps0)))
         fclose(hf);
+
+
 end
 
 fprintf([fileName '\n'])
