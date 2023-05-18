@@ -114,7 +114,7 @@ elseif isempty(Fcrops.x) || isempty(Fcrops.y) % no center position, but R determ
         XX=ceil(XX-mean(XX(:)));
         YY=ceil(YY-mean(YY(:)));
         RR=sqrt(XX.*XX+YY.*YY);
-        [x1,y1]=maxPix(FItf.*double((RR>Fcrops.R(1))));
+        [x1,y1]=maxPix(abs(FItf).*double((RR>Fcrops.R(1))));
     else
         
         title('Zoom in on the order of interest, and click enter')

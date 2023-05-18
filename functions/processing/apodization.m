@@ -26,6 +26,6 @@ mask(:,1+Nx-npx:Nx)=mask(:,1+Nx-npx:Nx).*sin(vBand(:,npx:-1:1)*pi/2);
 im=(im0-m0).*mask+m0;
 
 
-figure
-imagegb(im)
+%figure
+%imagegb(im)
 

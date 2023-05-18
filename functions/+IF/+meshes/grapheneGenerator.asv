@@ -5,7 +5,7 @@ arguments
     opt.R double = 2e-6 % radius of the disc
     opt.D double = [] % diameter of the disc
     opt.nz double = 3 % thickness of the layer in cells
-    opt.shape {mustBeMember(opt.shape,{'disc','square','hexagon'})} = 'disc'
+    opt.shape {mustBeMember(opt.shape,{'disc','square'})} = 'disc'
     opt.n = 1.38
     opt.eps = []
     opt.n0 double =1.33
@@ -115,7 +115,7 @@ switch opt.shape
         for z=0:nz-1
             for y=-ny:ny
                 for x=-nx:nx
-                    if abs(y) < R*sqrt(3)/2/pxSize && abs(y+sqrt(3)*x) < sqrt(3)*R/pxSize && abs(y-sqrt(3)*x) < sqrt(3)*R/pxSize
+                    if abs(y) < R*sqrt(3)/2 && 
                         nCell=nCell+1;
                         fprintf(hf,'(%f, 0) \n',eps);
                     else
