@@ -16,6 +16,7 @@ arguments
     opt.Tnormalisation = true
     opt.RemoveCameraOffset = false
     opt.auto = false % Find automatically the spot of highest intensity
+    opt.noRef = false % Do not consider the Ref interferogram to compute the DW and OPD images
 end
 Nf = numel(Itf);
 %% Shaping of the Illumination object(s)
@@ -207,9 +208,13 @@ for ii = 1:Nf
 
 %    DW1 = sign(MI.CGcam.zoom)*angle(Im_DW1.*conj(Rf_DW1))* MI.CGcam.alpha(IL(ii).lambda);
 %    DW2 = sign(MI.CGcam.zoom)*angle(Im_DW2.*conj(Rf_DW2))* MI.CGcam.alpha(IL(ii).lambda);
-    DW1 = -angle(Im_DW1.*conj(Rf_DW1))* MI.CGcam.alpha(IL(ii).lambda);
-    DW2 = -angle(Im_DW2.*conj(Rf_DW2))* MI.CGcam.alpha(IL(ii).lambda);
-
+    if opt.noRef
+        DW1 = -angle(Im_DW1)* MI.CGcam.alpha(IL(ii).lambda);
+        DW2 = -angle(Im_DW2)* MI.CGcam.alpha(IL(ii).lambda);
+    else
+        DW1 = -angle(Im_DW1.*conj(Rf_DW1))* MI.CGcam.alpha(IL(ii).lambda);
+        DW2 = -angle(Im_DW2.*conj(Rf_DW2))* MI.CGcam.alpha(IL(ii).lambda);
+    end
     DWx = cropParam1.angle.cos*DW1-cropParam1.angle.sin*DW2;
     DWy = cropParam1.angle.sin*DW1+cropParam1.angle.cos*DW2;
 
