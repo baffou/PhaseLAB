@@ -20,6 +20,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
     properties(Hidden)
         processingSoft
         pxSizeCorrection = 1
+        binningFactor = 1 % tells how much the image was binned compared with the original image size. Used to compute the pxSize of the image, and not simply consider the Microscope pixel size.
     end
 
     methods
@@ -178,7 +179,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
         end
 
         function val=pxSize(obj)
-            val=obj.pxSizeCorrection*obj.Microscope.pxSize;
+            val=obj.pxSizeCorrection*obj.Microscope.pxSize*obj.binningFactor;
         end
 
         function val=getAreaMean(obj,Narea,hfig)
