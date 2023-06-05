@@ -322,6 +322,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
         function add(IMlist0,IM,pos)
             % Add an object IM to the list IMlist0, at position n
+            % unsolved function. Does not seem to be possible to do that...
             arguments
                 IMlist0 ImageMethods
                 IM ImageMethods
@@ -338,7 +339,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 nim=numel(IM);
                 % 1 2 3 X X X 4 5      nim = 3    pos = 4    end = 5
                 if nargout
-                    IMlist = diplicate(IMlist0(1:pos) + IM + IMlist0(pos+1:end));
+                    IMlist = duplicate(IMlist0(1:pos) + IM + IMlist0(pos+1:end));
                 else
                     IMlist=IMlist0;
                     IMlist(end+nim-(pos-nim):end+nim)=IMlist(end-(pos-nim):end)
