@@ -20,6 +20,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
     properties(Hidden)
         processingSoft
         pxSizeCorrection = 1
+        binningFactor = 1 % tells how much the image was binned compared with the original image size. Used to compute the pxSize of the image, and not simply consider the Microscope pixel size.
     end
 
     methods
@@ -178,7 +179,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
         end
 
         function val=pxSize(obj)
-            val=obj.pxSizeCorrection*obj.Microscope.pxSize;
+            val=obj.pxSizeCorrection*obj.Microscope.pxSize*obj.binningFactor;
         end
 
         function val=getAreaMean(obj,Narea,hfig)
@@ -321,6 +322,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
         function add(IMlist0,IM,pos)
             % Add an object IM to the list IMlist0, at position n
+            % unsolved function. Does not seem to be possible to do that...
             arguments
                 IMlist0 ImageMethods
                 IM ImageMethods
@@ -337,7 +339,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 nim=numel(IM);
                 % 1 2 3 X X X 4 5      nim = 3    pos = 4    end = 5
                 if nargout
-                    IMlist = diplicate(IMlist0(1:pos) + IM + IMlist0(pos+1:end));
+                    IMlist = duplicate(IMlist0(1:pos) + IM + IMlist0(pos+1:end));
                 else
                     IMlist=IMlist0;
                     IMlist(end+nim-(pos-nim):end+nim)=IMlist(end-(pos-nim):end)
@@ -453,6 +455,12 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     end
 
                     if ~isempty(opt.colorMap{ii})
+                        try
+                            cc = colormap(app.AxesLeft,opt.colorMap{ii});
+                        catch % if the colormal is defined as a function, like Pradeep(Nval)
+                            funColorMap = str2func(opt.colorMap{ii});
+                            cc = colormap(app.AxesLeft,funColorMap(1024));
+                        end
                         colormap(opt.colorMap{ii})
                     else
                         if strcmp(opt.imType{ii},'OPD')

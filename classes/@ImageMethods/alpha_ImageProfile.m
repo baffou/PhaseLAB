@@ -22,8 +22,7 @@ end
 
 if isempty(opt.figure)
     %    hfigInit = IMlist.figure;
-    app = PhaseLABgui();
-    app.IM = IMlist;
+    app = PhaseLABgui(IMlist);
     app.enableHandleVisibility()
 elseif isa(opt.figure,'PhaseLABgui')
     app = opt.figure; % suppose here that IMlist == app.IM or app.IMcurrent !

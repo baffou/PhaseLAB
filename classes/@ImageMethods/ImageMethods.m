@@ -454,16 +454,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                         set(gca,'DataAspectRatio',[1, 1, 1])
                     end
 
-                    if ~isempty(opt.colorMap{ii})
-                        colormap(opt.colorMap{ii})
-                    else
-                        if strcmp(opt.imType{ii},'OPD')
-                            opt.colorMap{ii}=phase1024;
-                        else
-                            opt.colorMap{ii}=gray;
-                        end            
-                    
-                    end
 
                     if ~isempty(opt.title{ii})
                         figTitle=opt.title{ii};
@@ -477,10 +467,25 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     daspect([factor factor DZ/10])
                     set(gcf,'color','w');
                     set(gcf,'Position',[posS(1) posS(2) 2*posS(3)/3 posS(4)])% To change size
-                    colormap(gca,opt.colorMap{ii})
                     set(gca,'ztick',[])
                     set(gca,'XLim',[0 obj.Nx*factor])
                     set(gca,'YLim',[0 obj.Ny*factor])
+                    if ~isempty(opt.colorMap{ii})
+                        try
+                            colormap(gca,opt.colorMap{ii});
+                        catch % if the colormal is defined as a function, like Pradeep(Nval)
+                            funColorMap = str2func(opt.colorMap{ii});
+                            colormap(gca,funColorMap(1024));
+                        end
+                    else
+                        if strcmp(opt.imType{ii},'OPD')
+                            opt.colorMap{ii}=phase1024;
+                        else
+                            opt.colorMap{ii}=gray;
+                        end            
+                        colormap(gca,opt.colorMap{ii});
+                    
+                    end
                     %axis tight
                     %view(0,90)
                     %camlight left

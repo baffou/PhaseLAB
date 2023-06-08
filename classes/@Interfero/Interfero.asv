@@ -270,7 +270,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             if isnumeric(val)
                 No = numel(obj);
                 for io = 1:No                  
-                    obj(io).Ref = Interfero(val,obj(io).Microscope);
+                    obj(io).Ref.Itf0 = val;
                 end
             elseif numel(val)==numel(obj)
                 No = numel(obj);
