@@ -304,35 +304,61 @@ classdef ImageQLSI   <   ImageMethods
 
         end
 
-        function [objList2,coords] = untilt(objList,coords0)
+        function [objList2,params] = untilt(objList,opt)
+            arguments
+                objList
+                % parameters for boxSelection()
+                opt.xy1 = []
+                opt.xy2 = []
+                opt.Center = 'Auto' % 'Auto', 'Manual' or [x, y]
+                opt.Size = 'Auto' % 'Auto', 'Manual', d or [dx, dy]
+                opt.twoPoints logical = false
+                opt.params double = double.empty() % = [x1, x2, y1, y2]
+                opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
+                opt.app PhaseLABgui = PhaseLABgui.empty()
+            end
+
             if nargout
                 objList2=copy(objList);
             else
                 objList2=objList;
             end
 
-            No = numel(objList);
-            for io = 1:No
-                obj = objList(io);
-                if nargin==2
-                    coords = coords0;
-                else
-                    obj.figure
-                    h = gcf;
-                    roi = drawrectangle;
-                    button = 0;
-                    while ~isempty(button)
-                        [~,~,button] = ginput(1);
+            sizeIm = [0 0]; 
+            for io = 1:numel(objList2)
+                if sum(sizeIm ~= size(objList2(io).OPD)) % if the size of the image is not the same as the previous one
+                    if isempty(opt.params)
+                        if numel(objList2)>1
+                            opt.imNumber = io;
+                        end
+                        if ~isempty(opt.app)
+                            boxObj = opt.app;
+                        else
+                            boxObj = objList2;
+                        end
+
+                        [x1, x2, y1, y2] = boxSelection(boxObj,'xy1',opt.xy1, ...
+                                                            'xy2',opt.xy2, ...
+                                                            'Center',opt.Center, ...
+                                                            'Size',opt.Size, ...
+                                                            'twoPoints',opt.twoPoints, ...
+                                                            'params',opt.params, ...
+                                                            'shape',opt.shape);
+                        params=[x1, x2, y1, y2];
+                    else
+                        x1 = opt.params(1);
+                        x2 = opt.params(2);
+                        y1 = opt.params(3);
+                        y2 = opt.params(4);
+                        params=opt.params;
                     end
-                    coords = roi.Position;
-                    %coords0 = coords;
-                    close(h)
                 end
-                xmin = round(coords(1));
-                ymin = round(coords(2));
-                xmax = round(xmin+coords(3));
-                ymax = round(ymin+coords(4));
-                OPDc = obj.OPD(ymin:ymax,xmin:xmax);
+
+                %sizeIm = size(obj(io).OPD);
+
+                %obj(io).OPD = obj(io).OPD-offsetFunction(obj(io).OPD(y1:y2,x1:x2));
+
+                OPDc = objList.OPD(y1:y2,x1:x2);
                 mc = mean(OPDc(:));
                 [Nyc,Nxc] = size(OPDc);
                 [X,Y] = meshgrid(1:Nxc,1:Nyc);
@@ -345,7 +371,7 @@ classdef ImageQLSI   <   ImageMethods
 
                 Xm = max(X(:));
                 Ym = max(Y(:));
-                [Ny0,Nx0] = size(obj.OPD);
+                [Ny0,Nx0] = size(objList(io).OPD);
                 [X0, Y0] = meshgrid(1:Nx0,1:Ny0);
                 X0 = X0-mean(X0(:));
                 Y0 = Y0-mean(Y0(:));
@@ -356,6 +382,15 @@ classdef ImageQLSI   <   ImageMethods
                 objList2(io).OPD = objList(io).OPD-mx*X0-my*Y0-mc;
 
             end
+
+
+            
+            if ~isempty(opt.app)
+                opt.app.updateImages()
+            end
+        
+
+
         end
 
         function IMout = mean(IM)
@@ -481,22 +516,25 @@ classdef ImageQLSI   <   ImageMethods
             else
                 obj2=obj;
             end
-            if n==3
-                for ii = 1:numel(obj)
-                    imT = binning3x3(obj(ii).T);
-                    imOPD = binning3x3(obj(ii).OPD);
-                    obj2(ii).T = imT;
-                    obj2(ii).OPD = imOPD;
-                end
-            elseif n==2
-                for ii = 1:numel(obj)
-                    imT = binning2x2(obj(ii).T);
-                    imOPD = binning2x2(obj(ii).OPD);
-                    obj2(ii).T = imT;
-                    obj2(ii).OPD = imOPD;
-                end
+            if n == 3
+                binningFunc = @binning3x3;
+            elseif n == 2
+                binningFunc = @binning2x2;
             else
                 error('not a proper binning dimension. Should be 2 or 3.')
+            end
+            for ii = 1:numel(obj)
+                imT = binningFunc(obj(ii).T);
+                imOPD = binningFunc(obj(ii).OPD);
+                obj2(ii).T = imT;
+                obj2(ii).OPD = imOPD;
+                if ~isempty(obj(ii).DWx)
+                    imDWx = binningFunc(obj(ii).DWx);
+                    imDWy = binningFunc(obj(ii).DWy);
+                    obj2(ii).DWx0 = imDWx;
+                    obj2(ii).DWy0 = imDWy;
+                end
+                obj2(ii).binningFactor = obj2(ii).binningFactor * n;
             end
 
 
