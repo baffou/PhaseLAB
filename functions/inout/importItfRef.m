@@ -183,7 +183,7 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
             fprintf([ItfFileNames{ii} '\n'])
             TIFF = Tiff([folder ItfFileNames{ii}]);
             fprintf([folder ItfFileNames{ii} '\n'])
-            currentRefFileName  =  [getTag(TIFF,270)];
+            currentRefFileName  =  [getTag(TIFF,270)]
             RefIndice  =  strcmp(RefFileNames,currentRefFileName);
             INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote,'imageNumber',opt.selection(ii));
             INT(ii).Microscope = MI;

@@ -453,7 +453,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                         imagesc(X(1,:),Y(:,1),img)
                         set(gca,'DataAspectRatio',[1, 1, 1])
                     end
-
+ 
 
                     if ~isempty(opt.title{ii})
                         figTitle=opt.title{ii};
