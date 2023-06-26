@@ -7,7 +7,7 @@ function [Itf, Grating] = CGMinSilico(Image,opt)
 arguments
     Image ImageMethods
     opt.Nimages (1,1) {mustBeInteger,mustBePositive} = 1
-    opt.NimagesRef (1,1) {mustBeInteger}  % = 0 to avoid noise on the ref interfero
+    opt.NimagesRef (1,1) {mustBeNumeric}  % = 0 or Inf to avoid noise on the ref interfero
     opt.ShotNoise (1,:) logical = true
     opt.Grating char ='QLSI'
     opt.NAill double = 0
@@ -21,7 +21,7 @@ end
 
 if opt.ShotNoise
     noiseFunction = @poissrnd;
-    if opt.NimagesRef == 0
+    if opt.NimagesRef == 0 || isinf(opt.NimagesRef)
         noiseFunctionRef = @identity;
     else
         noiseFunctionRef = @poissrnd;
