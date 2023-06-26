@@ -21,14 +21,9 @@ end
 
 if opt.ShotNoise
     noiseFunction = @poissrnd;
-    if opt.NimagesRef == 0
-        noiseFunctionRef = @identity;
-    else
-        noiseFunctionRef = @poissrnd;
-    end
+    if opt.NimagesRef ==
 else
     noiseFunction = @identity;
-    noiseFunctionRef = @identity;
 end
 
 No = numel(Image);
@@ -139,7 +134,7 @@ for io = 1:No
     
     % Add the shoit noise on the interferograms:  
     Itf(io)    = Interfero(noiseFunction(   E2.im(1+cut:end-cut,1+cut:end-cut)),MI);
-    ItfRef(io) = Interfero(noiseFunctionRef(E2Ref.im(1+cut:end-cut,1+cut:end-cut)),MI);
+    ItfRef(io) = Interfero(noiseFunction(E2Ref.im(1+cut:end-cut,1+cut:end-cut)),MI);
     Itf(io).Reference(ItfRef(io));
     
     

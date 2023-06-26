@@ -47,8 +47,9 @@ fprintf(hf,'%f\n',opt.pp);
 fprintf(hf,'%f\n',opt.ss);
 fprintf(hf,'%s\n',Obj.name); %='arbitrary' %Arbitrary object
 fprintf(hf,'%s\n',Obj.fileName);  % ='graphene_Disc4.dat'
-fprintf(hf,'%f\n',Obj.n);  % refractive index of the material
-fprintf(hf,'%f\n',Obj.pxSize*1e9);  % =65e-9
+fprintf(hf,'%f\n',real(Obj.eps));  % real part of the permittivity of the material
+fprintf(hf,'%f\n',imag(Obj.eps));  % imag part of the permittivity of the material
+fprintf(hf,'%f\n',Obj.pxSize*1e9);  % = 65e-9
 fprintf(hf,'%f\n',ME.n);  %=1.33d0
 fprintf(hf,'%f\n',ME.nS);  %=1.5d0
 fprintf(hf,'%u\n',MI.zo*1e9);  %=0 (focus)

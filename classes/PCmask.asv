@@ -3,7 +3,7 @@ classdef PCmask < handle & matlab.mixin.Copyable
     % for Zernike phase contrast or SLIM or dark field imaging
     % the disc mask can be off-centered
     properties
-        A       % transmittance of the mask in intensity (not in E, which is sqrt(A))
+        A       % transmittance of the mask
         phi     % phase shift of the mask
         NA0     % radius of the ring, or shift from the center of the disc
         dNA     % thickness of the ring, or diameter of the disc
@@ -50,13 +50,12 @@ classdef PCmask < handle & matlab.mixin.Copyable
                 M = abs(var.Microscope.M);
                 dxSize = var.dxSize;
                 
-                %figure
-                %imagegb(log(abs(imgaussfilt(var(1).FT,2))))
-                %zoom(6)
-                %fullscreen
-                %pause(0.7)
-                %[x,y]=ginput(1);
-                [y,x]=find(abs(var(1).FT)==max(max(abs(var(1).FT))));
+                figure
+                imagegb(log(abs(imgaussfilt(var(1).FT,2))))
+                zoom(6)
+                fullscreen
+                pause(0.7)
+                [x,y]=ginput(1);
                 dx=x-(var(1).Nx/2+1);
                 dy=y-(var(1).Ny/2+1);
                 if strcmp(obj.type,'disc')
@@ -133,7 +132,7 @@ classdef PCmask < handle & matlab.mixin.Copyable
                 R=sqrt(X.*X+Y.*Y);
                 pattern = (R>=(Rpx-dRpx/2)).*(R<=(Rpx+dRpx/2));
             end
-            val = (1-pattern + sqrt(obj.A)*pattern) .* exp(1i*obj.phi*pattern);
+            val = (1-pattern + obj.A*pattern) .* exp(1i*obj.phi*pattern);
             if obj.inverted
                 val=1-val;
             end

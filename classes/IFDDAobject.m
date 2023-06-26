@@ -84,11 +84,12 @@ classdef IFDDAobject < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispl
                     if numel(opt.size)~=1
                         error('The size argument must be a scalar')
                     end
-                    obj.dim0=opt.size;
+                    obj.dim0 = opt.size;
                 else
                     warning('Diameter of the sphere arbitrarily set to 100 nm.')
                     obj.dim0=100e-9;
                 end
+                obj.z0 = -obj.dim0/2;
             elseif strcmp(name,'cube')
                 if ~isempty(opt.size)
                     if numel(opt.size)>1
@@ -297,7 +298,7 @@ classdef IFDDAobject < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispl
             obj.n0=sqrt(val);
         end
         function val = get.eps(obj)
-            val = obj.n0*2;
+            val = obj.n0^2;
         end
 
         function obj = moveTo(obj,opt)
