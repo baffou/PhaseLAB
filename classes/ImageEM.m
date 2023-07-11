@@ -223,7 +223,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 n = 3
             end
             if nargout
-                obj2=copy(obj);
+                obj2=duplicate(obj);
                 obj2.Einc=copy(obj.Einc);
             else
                 obj2=obj;
@@ -254,6 +254,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 obj2(ii).Einc.Ex = imEx;
                 obj2(ii).Einc.Ey = imEy;
                 obj2(ii).Einc.Ez = imEz;
+                obj2(ii).Microscope.CGcam.Camera.dxSize=obj2(ii).Microscope.CGcam.Camera.dxSize*n;
             end
 
         end
@@ -519,9 +520,9 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
 
             if nargout
-                IMout=duplicate(IM); % not copy(), to also duplicate the Einc
+                IMout = duplicate(IM); % not copy(), to also duplicate the Einc
             else
-                IMout=IM;
+                IMout = IM;
             end
 
             No = numel(IM);

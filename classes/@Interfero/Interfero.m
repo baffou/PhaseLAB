@@ -321,42 +321,45 @@ classdef Interfero < handle & matlab.mixin.Copyable
         end
 
         function obj = mean(objList)
-            obj = Interfero();
-            %obj.Ref = Interfero();
             No = numel(objList);
-            if No==1
-                warning('Only one object to average. Not consistent.')
-            end
-            
-            sumObj = objList(1).Itf;
-            for io = 2:No
-                if objList(1).Microscope~=objList(io).Microscope
-                    warning('Mean of Interfero objects that were not built using the same Microscope.')
+            if No == 1
+                obj = objList;
+            else
+                obj = Interfero();
+                %obj.Ref = Interfero();
+                if No==1
+                    warning('Only one object to average. Not consistent.')
                 end
-                sumObj = sumObj+objList(io).Itf;
-            end
-            obj.Itf0 = sumObj/No;
-
-            if ~isempty(objList(1).Ref)
-                if [objList.Ref]==objList(1).Ref % If all the references are pointing to the same object.
-                    obj.Ref = objList(1).Ref;
-                else
-                    sumObj = objList(1).Ref.Itf;
-                    for io = 2:No
-                        if isempty(objList(io).Ref.Itf)
-                            error(['Ref #' num2str(io) ' is empty, while the first one is not'])
-                        end
-                        if objList(1).Microscope~=objList(io).Microscope
-                            warning('Mean of Interfero objects that were not built using the same Microscope.')
-                        end
-                        sumObj = sumObj+objList(io).Ref.Itf;
+                
+                sumObj = objList(1).Itf;
+                for io = 2:No
+                    if objList(1).Microscope~=objList(io).Microscope
+                        warning('Mean of Interfero objects that were not built using the same Microscope.')
                     end
-                    obj.Ref.Itf0 = sumObj/No;
-                    obj.Ref.fileName = ['Mean ' objList(1).Ref.fileName ' to '  objList(end).Ref.fileName];
+                    sumObj = sumObj+objList(io).Itf;
                 end
+                obj.Itf0 = sumObj/No;
+    
+                if ~isempty(objList(1).Ref)
+                    obj.Ref = objList(1).Ref;
+                    if ~([objList.Ref]==objList(1).Ref) % If all the references are pointing to the same object.
+                        sumObj = objList(1).Ref.Itf;
+                        for io = 2:No
+                            if isempty(objList(io).Ref.Itf)
+                                error(['Ref #' num2str(io) ' is empty, while the first one is not'])
+                            end
+                            if objList(1).Microscope~=objList(io).Microscope
+                                warning('Mean of Interfero objects that were not built using the same Microscope.')
+                            end
+                            sumObj = sumObj+objList(io).Ref.Itf;
+                        end
+                        obj.Ref.Itf0 = sumObj/No;
+                        obj.Ref.fileName = ['Mean ' objList(1).Ref.fileName ' to '  objList(end).Ref.fileName];
+                    end
+                end
+                obj.fileName = ['Mean ' objList(1).fileName ' to '  objList(end).fileName];
+                obj.Microscope = objList(1).Microscope;
             end
-            obj.fileName = ['Mean ' objList(1).fileName ' to '  objList(end).fileName];
-            obj.Microscope = objList(1).Microscope;
         end
         
         function fig = figure2(obj)

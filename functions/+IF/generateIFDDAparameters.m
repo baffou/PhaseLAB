@@ -11,7 +11,8 @@ arguments
         'pwavecircular','gwavelinear','gwavecircular','pwavelinear',...
         'pwavecircular','wavelinearmulti','gwaveiso','speckle','arbitrary'})}  ='pwavecircular'
     opt.theta (1,1) double = 0
-    opt.nmaxloop (1,1) double = 1
+    opt.phi0 (1,1) double = 0   % initial phi value.
+    opt.nmaxloop (1,1) double = 1  % number of phi values
     opt.pp (1,1) double = 0
     opt.ss (1,1) double = 1
     opt.object (1,:) char {mustBeMember(opt.object,{...
@@ -43,6 +44,7 @@ fprintf(hf,'%u\n',opt.ntheta);  %=632.8d0       %wavelength
 fprintf(hf,'%f\n',lambda*1e9);  %=632.8d0       %wavelength
 fprintf(hf,'%s\n',opt.beam);   %='pwavecircular'    %Circular plane wave
 fprintf(hf,'%f\n',opt.theta);
+fprintf(hf,'%f\n',opt.phi0);
 fprintf(hf,'%f\n',opt.pp);
 fprintf(hf,'%f\n',opt.ss);
 fprintf(hf,'%s\n',Obj.name); %='arbitrary' %Arbitrary object

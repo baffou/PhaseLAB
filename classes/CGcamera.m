@@ -265,13 +265,17 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
         end
 
         function obj = setDistance(obj,val)
+            arguments
+                obj
+                val {mustBeNumeric}
+            end
             % to manually set distance, in case the CGcamera object is built
             % from a camera and a CrossGrating object, and not from a
             % CGcamera file.
-            if isnumeric(val)
+            if ~isempty(obj.CG)
                 obj.CGpos = val;
             else
-                error('The input must be an number')
+                error('No cross-grating defined')
             end
         end
 

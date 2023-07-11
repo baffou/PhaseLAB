@@ -1,6 +1,8 @@
 classdef Camera  <  handle & matlab.mixin.Copyable
-    properties(SetAccess = private)
+    properties(SetAccess = {?ImageEM,?ImageEM}) % to enable modif of the dxSize due to binning
         dxSize (1,1) {mustBeNumeric} = 6.5e-6
+    end
+    properties(SetAccess = private)        
         Nx (1,1) {mustBeInteger,mustBePositive} = 600
         Ny (1,1) {mustBeInteger,mustBePositive} = 600
         fullWellCapacity (1,1) {mustBeInteger} = 25000
@@ -55,7 +57,7 @@ classdef Camera  <  handle & matlab.mixin.Copyable
                 end
             end        
         end
-        
+
         function set.dxSize(cam,val)
             if isnumeric(val)
                 if val>0
@@ -69,7 +71,6 @@ classdef Camera  <  handle & matlab.mixin.Copyable
                         warning('this length does not look like a pixel size')
                     end
                 else
-                    val
                     error('A pixel size must be a positive number')
                 end
             else
