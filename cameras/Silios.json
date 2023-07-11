@@ -4,5 +4,8 @@
 "Nx": 2048,
 "Ny": 2048,
 "fullWellCapacity": 10000,
-"offset":0
+"offset":0,
+"colorChannels":2,
+"crosstalk12":0.38,
+"crosstalk21":0.14
 }

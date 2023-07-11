@@ -4,5 +4,6 @@
 "Nx": 5328,
 "Ny": 4608,
 "fullWellCapacity": 9530,
-"offset":0
+"offset":0,
+"colorChannels":1
 }

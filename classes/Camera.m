@@ -8,6 +8,10 @@ classdef Camera  <  handle & matlab.mixin.Copyable
         fullWellCapacity (1,1) {mustBeInteger} = 25000
         offset (1,1) double = 100
         model char
+        colorChannels double {mustBeInteger, mustBeGreaterThan(colorChannels,0),...
+                              mustBeLessThan(colorChannels,3)} = 1 % number of colors of the camera sensor
+                                         % For the moment, working only for
+                                         % = 2 and 3
     end
     
     methods

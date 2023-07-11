@@ -6,13 +6,13 @@ arguments
     opt.nickname = []
     opt.selection = []
     opt.remote = 0
-    opt.color (1,:) char {mustBeMember(opt.color,{'R','G','none'})} = 'none'
+    opt.color (1,:) char {mustBeMember(opt.color,'R','G','RG','GR')} = 'none'
 end
 
 manual = 0;
 
 IL = []; %If metadatas == false, IL will stay blank !
-
+qsdf
 if isa(MI,'Microscope') %Microscope already built
     acquisitionSoftware = MI.software;
 elseif isa(MI,'char')
@@ -83,7 +83,7 @@ else
             ItfFileNames = ItfFileNames0;
         end
     elseif strcmpi(acquisitionSoftware,'phaselive')
-        ItfFileList = dir([folder opt.nickname '*.tif*']);
+        ItfFileList = dir([folder opt.nickname '*.tif']);
         ItfFileNamesTemp = {ItfFileList.name};
         ItfFileNamesTempBool = ~contains(ItfFileNamesTemp,'REF_');
         ItfFileNames0 = ItfFileNamesTemp(ItfFileNamesTempBool);
@@ -128,14 +128,11 @@ if Nrf==0
 end
 
 if Nrf==0
-    ok = 1;
-    warning('No reference interfero has been found')
-else
-    ok = 0;
-    REF = repmat(Interfero(),Nrf,1);
+    error('No reference interfero has been found')
 end
 
 
+REF = repmat(Interfero(),Nrf,1);
 INT = repmat(Interfero(),Nif,1);
 
 if strcmpi(acquisitionSoftware,'phast') || strcmpi(acquisitionSoftware,'Sid4Bio')
@@ -162,13 +159,14 @@ if strcmpi(acquisitionSoftware,'phast') || strcmpi(acquisitionSoftware,'Sid4Bio'
         end
         RefFile = tline(quotes(1)+1:quotes(2)-1);
         
+        ok = 0;
         for rr = 1:Nrf
             if strcmp(RefFile,REF(rr).fileName)
                 INT(ii).Reference(REF(rr));
                 ok = 1;
             end
         end
-        if ok == 0
+        if ok==0
             error(['The reference ' RefFile ' file for image ' ItfFileNames{ii} ' was not found'])
         end
         
@@ -190,24 +188,20 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
             RefIndice  =  strcmp(RefFileNames,currentRefFileName);
             INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote,'imageNumber',opt.selection(ii),'color',opt.color);
             INT(ii).Microscope = MI;
-            if Nrf ~= 0
-                INT(ii).Reference(REF(RefIndice));
-            end
+            INT(ii).Reference(REF(RefIndice));
         end
     else % if MI = 'metadatas'
         IL = repmat(Illumination(),Nif,1);
         for rr = 1:Nrf
             S_Ref = readTiffTag([folder RefFileNames{rr}], "PhaseLAB");
-            REF(rr) = Interfero([folder RefFileNames{rr}],S_Ref.Microscope,'remote',opt.remote,'color',opt.color);
+            REF(rr) = Interfero([folder RefFileNames{rr}],S_Ref.Microscope,'remote',opt.remote);
         end
         for ii = 1:Nif
             fprintf([ItfFileNames{ii} '\n'])
             S_Itf = readTiffTag([folder ItfFileNames{ii}], "PhaseLAB");
-            INT(ii) = Interfero([folder ItfFileNames{ii}],S_Itf.Microscope,'remote',opt.remote,'color',opt.color);
+            INT(ii) = Interfero([folder ItfFileNames{ii}],S_Itf.Microscope,'remote',opt.remote);
             RefIndice = strcmp(RefFileNames,S_Itf.Reference);
-            if Nrf ~= 0 
-                INT(ii).Reference(REF(RefIndice));
-            end
+            INT(ii).Reference(REF(RefIndice));
             IL(ii) = S_Itf.Illumination;
         end
         

@@ -1,5 +1,5 @@
 function ImInt=colorInterpolation(Im,color)
-% Function that interpolates the image of a two-color camera.
+% Function that interpolates the image of a two-color interferogram into either the green or the red image.
 arguments
     Im double % image to interpolate
     color char {mustBeMember(color,{'g','r','green','red','Green','Red'})} % color of the image, green or red

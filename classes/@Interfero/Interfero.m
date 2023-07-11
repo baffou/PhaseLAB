@@ -12,6 +12,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         Ref      Interfero % interfero object corresponding to the reference image
         TF       % Fourier transform of the interfero
         TFapo    = []% tells wether the TF has been calculated with an apodization (equals the width of the apodization)
+        color (1,:) char {mustBeMember(color,{'R','G','none'})} = 'none'
     end
     
     properties
@@ -49,9 +50,10 @@ classdef Interfero < handle & matlab.mixin.Copyable
             arguments
                 fileName =[]  % fileName or matrix
                 MI = Microscope.empty()
-                opt.remote (1,1) {mustBeInteger,mustBeGreaterThanOrEqual(opt.remote,0),mustBeLessThanOrEqual(opt.remote,1)} = 0
                 opt.N (1,1) {mustBeInteger} = 0
                 opt.imageNumber =[]
+                opt.remote (1,1) {mustBeInteger,mustBeGreaterThanOrEqual(opt.remote,0),mustBeLessThanOrEqual(opt.remote,1)} = 0
+                opt.color (1,:) char {mustBeMember(opt.color,'R','G','RG','GR')}
             end
 
             obj.remote = opt.remote;
@@ -64,10 +66,10 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
 
             
-            %% Interfero(fileName,MI). fileName: char that is the txt of tif file name of the interferogram to be read and imported. MI:       Microscope object. Represents the microscope used to acquire the image
-            if nargin==1
+            %% Interfero(3)  Interfero(fileName,MI).
+            if nargin==1 % Interfero(3)
                 if isnumeric(fileName)
-                    if numel(fileName)==1 % Interfero(3)
+                    if numel(fileName)==1
                         obj=Interfero(N=fileName);
                         return
                     else
@@ -78,6 +80,10 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 end
             end
             if nargin>=2
+                % Interfero(fileName,MI)
+                % fileName: char that is the txt of tif file name of the interferogram to be read and imported.
+                % MI:       Microscope object. Represents the microscope used to acquire the image
+                
                 obj.Microscope = MI;
                 if isnumeric(fileName)  % directly enter a matrix
                     if obj.remote==1
@@ -119,13 +125,24 @@ classdef Interfero < handle & matlab.mixin.Copyable
                         end
                         [obj.Ny,obj.Nx] = size(Itf0);
                         if strcmp(MI.software,'PHAST') || strcmp(MI.software,'Sid4Bio')
-                            obj.Itf0 = Itf0-2^15-100;% Removes the offset of Phasics, and removes the offset of the camera
-
+                            Itf0 = Itf0-2^15-100;% Removes the offset of Phasics, and removes the offset of the camera
+                        end
+                        if isfield(opt,'color')
+                            obj.color = opt.color;
+                            switch opt.color
+                                case {'G','R'}
+                                    obj.Itf0=colorInterpolation(Itf0,opt.color);
+                                case 'GR'
+                                    obj.Itf0 = Itf0;
+                            end
                         else
                             obj.Itf0 = Itf0;
                         end
                     elseif obj.remote==1
                         obj.Itf0 = 'remote';
+                        if isfield(opt,'color')
+                            obj.color = opt.color;
+                        end
                     end
                 end
             end
@@ -158,7 +175,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         end
               
         function val = get.Itf(obj)
-            if ischar(obj.Itf0)
+            if ischar(obj.Itf0) % remote mode
                 if strcmp(obj.fileName(end-2:end),'txt')
                     val = dlmread([obj.path obj.fileName]);
                     [obj.Ny,obj.Nx] = size(val);
@@ -173,6 +190,15 @@ classdef Interfero < handle & matlab.mixin.Copyable
             elseif isnumeric(obj.Itf0)
                 val = obj.Itf0;
             end
+
+            if isfield(obj,'color')
+                switch obj.color
+                    case {'R','G'}
+                        val = colorInterpolation(val,obj.color);
+                end
+            end
+
+
         end
  
         function val = get.software(obj)
