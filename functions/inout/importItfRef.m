@@ -186,11 +186,11 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
             fprintf([ItfFileNames{ii} '\n'])
             TIFF = Tiff([folder ItfFileNames{ii}]);
             fprintf([folder ItfFileNames{ii} '\n'])
-            currentRefFileName  =  [getTag(TIFF,270)]
-            RefIndice  =  strcmp(RefFileNames,currentRefFileName);
             INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote,'imageNumber',opt.selection(ii),'color',opt.color);
             INT(ii).Microscope = MI;
             if Nrf ~= 0
+                currentRefFileName  =  [getTag(TIFF,270)]
+                RefIndice  =  strcmp(RefFileNames,currentRefFileName);
                 INT(ii).Reference(REF(RefIndice));
             end
         end

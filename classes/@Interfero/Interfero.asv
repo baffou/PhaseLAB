@@ -65,7 +65,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             end
 
             if ~strcmpi(opt.color,'none') && MI.CGcam.Camera.colorChannels == 1
-                warning('You are trying to extract a color channel while the microscope does not include a color camera.')
+                warning('You tray ')
             end
 
 
