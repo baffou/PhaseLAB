@@ -12,6 +12,8 @@ classdef Camera  <  handle & matlab.mixin.Copyable
                               mustBeLessThan(colorChannels,3)} = 1 % number of colors of the camera sensor
                                          % For the moment, working only for
                                          % = 2 and 3
+        crosstalk12 = 0
+        crosstalk21 = 0
     end
     
     methods
@@ -57,7 +59,10 @@ classdef Camera  <  handle & matlab.mixin.Copyable
 
                 for ip = 1:Np
                     %eval(['obj.' objProps{ip} '=data.' objProps{ip} ';'])
-                    obj.(objProps{ip}) =data.(objProps{ip});
+                    try
+                        obj.(objProps{ip}) =data.(objProps{ip}); % fails in the case of BW cameras for the crosstalks properties
+                    end
+                   
                 end
             end        
         end

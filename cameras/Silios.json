@@ -6,6 +6,6 @@
 "fullWellCapacity": 10000,
 "offset":0,
 "colorChannels":2,
-"crosstalk12":0.38,
-"crosstalk21":0.14
+"crosstalk12":0.204,
+"crosstalk21":0.457
 }

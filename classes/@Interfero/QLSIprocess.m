@@ -13,9 +13,9 @@ arguments
     opt.apodization = []        % true, 1, or the width of the apodization in px
     opt.saveGradients = false
     opt.remotePath = []
-    opt.Tnormalisation = true
+    opt.Tnormalisation = true % or false or 'subtraction'
     opt.RemoveCameraOffset = false
-    opt.auto = false % Find automatically the spot of highest intensity
+    opt.auto = true % Find automatically the spot of highest intensity
     opt.noRef = false % Do not consider the Ref interferogram to compute the DW and OPD images
 end
 Nf = numel(Itf);
@@ -198,7 +198,9 @@ for ii = 1:Nf
     Rf_DW2 = ifft2(ifftshift(FRfc));
    
     % intensity image
-    if opt.Tnormalisation
+    if strcmpi(opt.Tnormalisation,'subtraction')
+        Int = abs(Im_int-offset) - abs(Rf_int-offset);
+    elseif opt.Tnormalisation
         Int = abs(Im_int-offset)./abs(Rf_int-offset);
     else
         Int = abs(Im_int-offset);
