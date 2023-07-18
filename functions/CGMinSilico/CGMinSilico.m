@@ -8,7 +8,7 @@ arguments
     Image ImageMethods
     opt.Nimages (1,1) {mustBeInteger,mustBePositive} = 1
     opt.NimagesRef (1,1) {mustBeNumeric} = -1  % = 0 or Inf to avoid noise on the ref interfero
-    opt.ShotNoise (1,:) logical = true
+    opt.ShotNoise (1,1) {mustBeNumericOrLogical} = true
     opt.Grating char ='QLSI'
     opt.NAill double = 0
     opt.setI0 (1,:) char {mustBeMember(opt.setI0,{'max','mean'})} = 'max'

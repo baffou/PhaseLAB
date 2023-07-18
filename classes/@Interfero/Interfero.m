@@ -627,7 +627,9 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 ImR(io).color = 'R';
                 if ~isempty(ImG(io).Ref)
                     ImG(io).Ref.Itf0=colorInterpolation(Im(io).Ref.Itf,'g');
+                    ImG(io).Ref.color = 'G';
                     ImR(io).Ref.Itf0=colorInterpolation(Im(io).Ref.Itf,'r');
+                    ImG(io).Ref.color = 'R';
                 end
             end
         end

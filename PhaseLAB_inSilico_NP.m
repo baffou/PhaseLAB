@@ -4,7 +4,7 @@
 clear
 close all
 
-addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
+addpath(genpath('/Users/perseus/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
 
 %% Construction of the setup
 ME=Medium(1.5,1.5);
@@ -13,15 +13,15 @@ lambda=600e-9;
 OB=Objective(100,1.3,'Olympus');
 CGcam=CGcamera('Zyla','F2');
 CGcam.setDistance(0.8e-3);
-MI=Microscope(OB,180,CGcam);
+MI=Microscope(OB,200,CGcam);
 
-Nim=1;
-MI.zo=0e-6;
-Npx=300; % should be multiple of 3
+Nim=30;
+MI.zo=0.5e-6;
+Npx=900; % should be multiple of 3
 system='NP';
 %system='noise';
 %system='Gaussian';
-shotNoise='on';
+shotNoise=false;
 
 IL=Illumination(lambda,ME);
 
@@ -68,12 +68,13 @@ crop(3) = FcropParameters(Npx/2+1-2*Rcrop*sin(beta),Npx/2+1+2*Rcrop*cos(beta),Rc
 IM = QLSIprocess(Itf,IL);
 %IM = QLSIprocess(Itf,IL,'Fcrops',crop);
 % IM = QLSIprocess(Itf,IL,'Fcrops',IM.crops);
-IM=IM.phaseLevel0([1 1 10 10]);
+IM=IM.level0("params",[1 1 10 10]);
 IM.figure
 
 %% comparison
 figure
 hold on
+plot(IM0.OPD(end/2,:),'--')
 plot(IM.OPD(end/2,:),'--')
 legend({'theo','insilico'})
 
