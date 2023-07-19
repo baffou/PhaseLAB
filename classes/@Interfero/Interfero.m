@@ -614,24 +614,32 @@ classdef Interfero < handle & matlab.mixin.Copyable
             arguments
                 Im Interfero
             end
-            No=numel(Im);
-            ImG=Interfero(No);
-            ImR=Interfero(No);
-            for io=1:No
-                ImG(io)=copy(Im(io));
+            Ni = numel(Im);
+
+            ImG=Interfero(Ni);
+            ImR=Interfero(Ni);
+            for io=1:Ni
+                ImG(io)=copy(Im(io)); % not duplicate to keep the MI.
                 ImR(io)=copy(Im(io));
 
                 ImG(io).Itf0=colorInterpolation(Im(io).Itf,'g');
                 ImG(io).color = 'G';
                 ImR(io).Itf0=colorInterpolation(Im(io).Itf,'r');
                 ImR(io).color = 'R';
-                if ~isempty(ImG(io).Ref)
-                    ImG(io).Ref.Itf0=colorInterpolation(Im(io).Ref.Itf,'g');
-                    ImG(io).Ref.color = 'G';
-                    ImR(io).Ref.Itf0=colorInterpolation(Im(io).Ref.Itf,'r');
-                    ImG(io).Ref.color = 'R';
-                end
             end
+           
+            % List independent references
+            if numel([Im.Ref]) ~= 0
+                [RefIndep, refPosList] = independentObjects([Im.Ref]);
+    
+                % split the colors of these list of independent references
+                [RefG,RefR]=splitColors(RefIndep);
+    
+                % Re-assign the proper Ref to all the interferograms
+                ImG.Reference(RefG(refPosList));
+                ImR.Reference(RefR(refPosList));
+            end
+
         end
 
         function [objG2, objR2] = crosstalkCorrection(obj1List, obj2List)

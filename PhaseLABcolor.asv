@@ -44,12 +44,17 @@ ItfG = importItfRef(folder,MI,"nickname",'geobSyto9',"nickname",'geobSyto9',"rem
 Itf = importItfRef(folder,MI);
 [ItfG0, ItfR0] = Itf.splitColors();
 
-RefR = ItfR0(nList{1});
-RefG = ItfG0(nList{1});
-BkgR = ItfR0(nList{2});
-BkgG = ItfG0(nList{2});
-ItfR = ItfR0(nList{3}(1):nList{end}(end));
-ItfG = ItfG0(nList{3}(1):nList{end}(end));
+RefR2 = ItfR0(nList{1});
+RefG2 = ItfG0(nList{1});
+BkgR2 = ItfR0(nList{2});
+BkgG2 = ItfG0(nList{2});
+ItfR2 = ItfR0(nList{3}(1):nList{end}(end));
+ItfG2 = ItfG0(nList{3}(1):nList{end}(end));
+
+%% correcting for the crosstalk
+
+[ItfGc, ItfRc] = crosstalkCorrection(ItfG, ItfR);
+[ItfG2c, ItfR2c] = crosstalkCorrection(ItfG2, ItfR2);
 
 %% assignment of the proper references
 
@@ -61,10 +66,6 @@ ItfG.Reference(RefGm);
 
 ItfR.backgroundCorrection(BkgR.mean());
 ItfG.backgroundCorrection(BkgG.mean());
-
-%% correcting for the crosstalk
-
-[ItfGc, ItfRc] = crosstalkCorrection(ItfG, ItfR);
 
 
 %% crops

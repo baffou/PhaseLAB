@@ -36,6 +36,7 @@ ImGreen.Reference(ImGreenRef);
 ImRed.Reference(ImRedRef);
 
 %% Extrapolation
+
 [ImG,~]=splitColors(ImGreen);
 [~,ImR]=splitColors(ImRed);
 

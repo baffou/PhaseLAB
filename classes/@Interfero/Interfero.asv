@@ -385,6 +385,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 end
                 obj.fileName = ['Mean ' objList(1).fileName ' to '  objList(end).fileName];
                 obj.Microscope = objList(1).Microscope;
+                obj.color = objList(1).color;
             end
         end
 
@@ -613,22 +614,27 @@ classdef Interfero < handle & matlab.mixin.Copyable
             arguments
                 Im Interfero
             end
-            No=numel(Im);
-            ImG=Interfero(No);
-            ImR=Interfero(No);
-            for io=1:No
-                ImG(io)=copy(Im(io));
+            Ni = numel(Im);
+
+            ImG=Interfero(Ni);
+            ImR=Interfero(Ni);
+            for io=1:Ni
+                ImG(io)=copy(Im(io)); % not duplicate to keep the MI.
                 ImR(io)=copy(Im(io));
 
                 ImG(io).Itf0=colorInterpolation(Im(io).Itf,'g');
                 ImG(io).color = 'G';
                 ImR(io).Itf0=colorInterpolation(Im(io).Itf,'r');
                 ImR(io).color = 'R';
-                if ~isempty(ImG(io).Ref)
-                    ImG(io).Ref.Itf0=colorInterpolation(Im(io).Ref.Itf,'g');
-                    ImR(io).Ref.Itf0=colorInterpolation(Im(io).Ref.Itf,'r');
-                end
             end
+           
+            Nr = numel([Im.Ref]);
+            [RefIndep, refPosList] = independentObjects([Im.Ref]);
+            Nr0 = numel([RefIndep.Ref]);
+
+            [RefG,RefR]=splitColors(RefIndep);
+
+
         end
 
         function [objG2, objR2] = crosstalkCorrection(obj1List, obj2List)
@@ -690,11 +696,17 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 objR2(im).Itf0 = correctedRimage;
                 objG2(im).Itf0 = correctedGimage;
 
-                correctedRimage = (1+betar)*objR2(im).Ref.Itf -     betag*objG2(im).Ref.Itf;
-                correctedGimage =   - betar*objR2(im).Ref.Itf + (1+betag)*objG2(im).Ref.Itf;
-                objR2(im).Ref.Itf0 = correctedRimage;
-                objG2(im).Ref.Itf0 = correctedGimage;
             end
+
+            if ~isempty(objR(1).Ref)
+                [RefListR, nListR] = independentObjects([objR.Ref]);
+                [RefListG, nListG] = independentObjects([objG.Ref]);
+                if nListR ~= nListG
+                    error('There is an inconsistency between the Refs or G and R images')
+                end
+                crosstalkCorrection(RefListG,RefListR);
+            end
+
         end
 
         function obj2 = backgroundCorrection(obj,val)
@@ -718,19 +730,11 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     obj2(io).Itf0 = obj(io).Itf0 - val;
                 end
             end
-            % gathering all the different Ref interferos
-            n=1;
-            RefList = Interfero(No);
-            RefList(1) = obj(1).Ref;
-            for io = 2:No
-                if ~any(obj(io).Ref == [obj(1:io-1).Ref]) % the new Ref is not alreay in the list
-                    n = n+1;
-                    
-                end
+
+            if ~isempty(obj(1).Ref)
+                RefList = independentObjects([obj.Ref]);
+                RefList.backgroundCorrection(val)
             end
-
-
-
         end
 
         function obj = plus(obj1,obj2)
