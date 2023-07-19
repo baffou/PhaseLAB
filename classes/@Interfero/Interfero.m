@@ -156,6 +156,12 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         end
 
+        function set.Itf0(obj, val)
+            if isempty(obj.Microscope)
+                error('The interfero cannot be set without a microscope')
+            end
+            obj.Itf0 = val;
+        end
         function val = get.Nx(obj)
             if isnumeric(obj.Itf0)
                 val = size(obj.Itf0,2);
@@ -355,8 +361,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             if No == 1
                 obj = objList;
             else
-                obj = Interfero();
-
+                
                 sumObj = objList(1).Itf;
                 for io = 2:No
                     if objList(1).Microscope~=objList(io).Microscope
@@ -364,27 +369,15 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     end
                     sumObj = sumObj+objList(io).Itf;
                 end
-                obj.Itf0 = sumObj/No;
+                obj = Interfero(sumObj/No,objList(1).Microscope);
 
                 if ~isempty(objList(1).Ref)
-                    obj.Ref = objList(1).Ref;
-                    if ~([objList.Ref]==objList(1).Ref) % If all the references are pointing to the same object.
-                        sumObj = objList(1).Ref.Itf;
-                        for io = 2:No
-                            if isempty(objList(io).Ref.Itf)
-                                error(['Ref #' num2str(io) ' is empty, while the first one is not'])
-                            end
-                            if objList(1).Microscope~=objList(io).Microscope
-                                warning('Mean of Interfero objects that were not built using the same Microscope.')
-                            end
-                            sumObj = sumObj+objList(io).Ref.Itf;
-                        end
-                        obj.Ref.Itf0 = sumObj/No;
-                        obj.Ref.fileName = ['Mean ' objList(1).Ref.fileName ' to '  objList(end).Ref.fileName];
-                    end
+                    refList = [objList.Ref];
+                    refMean = refList.mean();
+                    obj.Reference(refMean)
                 end
+
                 obj.fileName = ['Mean ' objList(1).fileName ' to '  objList(end).fileName];
-                obj.Microscope = objList(1).Microscope;
                 obj.color = objList(1).color;
             end
         end
