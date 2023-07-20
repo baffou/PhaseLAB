@@ -161,6 +161,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 error('The interfero cannot be set without a microscope')
             end
             obj.Itf0 = val;
+            obj.TF = [];
         end
         function val = get.Nx(obj)
             if isnumeric(obj.Itf0)
@@ -612,12 +613,12 @@ classdef Interfero < handle & matlab.mixin.Copyable
             ImG=Interfero(Ni);
             ImR=Interfero(Ni);
             for io=1:Ni
-                ImG(io)=copy(Im(io)); % not duplicate to keep the MI.
-                ImR(io)=copy(Im(io));
+                ImG(io) = copy(Im(io)); % not duplicate to keep the MI.
+                ImR(io) = copy(Im(io));
 
-                ImG(io).Itf0=colorInterpolation(Im(io).Itf,'g');
+                ImG(io).Itf0 = colorInterpolation(Im(io).Itf,'g');
                 ImG(io).color = 'G';
-                ImR(io).Itf0=colorInterpolation(Im(io).Itf,'r');
+                ImR(io).Itf0 = colorInterpolation(Im(io).Itf,'r');
                 ImR(io).color = 'R';
             end
            
