@@ -1,7 +1,7 @@
 function [INT,REF,IL] = importItfRef(folder,MI,opt)
 
 arguments
-    folder
+    folder char
     MI Microscope
     opt.nickname = []
     opt.selection = []
