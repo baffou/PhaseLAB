@@ -63,9 +63,7 @@ ItfR.backgroundCorrection(BkgR.mean());
 ItfG.backgroundCorrection(BkgG.mean());
 
 %% correcting for the crosstalk
-
 [ItfGc, ItfRc] = crosstalkCorrection(ItfG, ItfR);
-
 
 %% crops
 [~,params] = ItfGc(1).crop("twoPoints",1);
@@ -77,6 +75,5 @@ ItfRcc = ItfRc.crop("params",params);
 IMR=QLSIprocess(ItfRcc,IL);
 IMG=QLSIprocess(ItfGcc,IL,"Tnormalisation",false);
 IMG2=QLSIprocess(ItfGcc,IL,"Tnormalisation",'subtraction');
-
 
 figure, imagegb(IMG(1).T), colormap(invertedGreen())
