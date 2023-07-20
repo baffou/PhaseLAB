@@ -59,13 +59,14 @@ classdef ImageQLSI   <   ImageMethods
                 opt.imageNumber =[]
             end
 
-            obj.imageNumber=opt.imageNumber;
             if isa(INT,'ImageEM')
+                Nim = numel(INT);
+                obj = ImageQLSI(Nim);
                 objEM=INT;
-                obj.T0 = objEM.T;
-                obj.OPD0 = objEM.OPD;
-                obj.Microscope=objEM.Microscope;
-                obj.Illumination=objEM.Illumination;
+                for ii = 1:Nim
+                    obj(ii) = ImageQLSI(objEM(ii).T,objEM(ii).OPD,objEM(ii).Microscope,objEM(ii).Illumination);
+                    obj(ii).imageNumber = opt.imageNumber;
+                end
                 
 
             elseif nargin==1 %ImageQLSI(n)
