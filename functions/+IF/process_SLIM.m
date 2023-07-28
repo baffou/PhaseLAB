@@ -101,7 +101,7 @@ I{4}=noiseFunction(Is{4}*corr);
 
 %%
 DeltaPhi = atan2(I{2}-I{4},I{1}-I{3});
-beta = sqrt(opt.A)*1/(4*fwc/1.7)*(I{1}-I{3}+I{2}-I{4})./(sin(DeltaPhi)+cos(DeltaPhi));
+beta = sqrt(opt.A)*1/(4*fwc/2)*(I{1}-I{3}+I{2}-I{4})./(sin(DeltaPhi)+cos(DeltaPhi));
 PHIsimu = atan2(beta.*sin(DeltaPhi),(1+beta.*cos(DeltaPhi)));
 lambda=IMr(1).Illumination.lambda;
 OPDsimu=Unwrap_TIE_DCT_Iter(PHIsimu)*lambda/(2*pi);

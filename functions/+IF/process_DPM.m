@@ -161,8 +161,12 @@ PHIdpm=IMdpm0u-Xn*mx-Yn*my;
 
 OPDdpm=PHIdpm*IM(1).Illumination.lambda/(2*pi);
 OPDdpm=OPDdpm-median(OPDdpm(:));
-OPDsimu=OPDdpm;
-IMout = IM(1).crop(Size=IM(1).Nx-2*nc);
+
+OPDsimu = zeros(IM.Ny, IM.Nx);
+OPDsimu(nc+1:IM.Ny-nc,nc+1:IM.Nx-nc)=OPDdpm;
+
+%IMout = ImageQLSI(IM(1).crop(Size=IM(1).Nx-2*nc));
+IMout = ImageQLSI(IM(1));
 
 %% Computation of the intensity image :
 % crop of the central part of the Fourier space
@@ -194,6 +198,6 @@ Tdhm = (Tdhm0 - Itf0ref0)./(Trefdhm0 - Itf0ref0);  % (Tdhm-Iref)/
 % imagegb(Tdhm)
 % linkAxes
 
-Tsimu=Tdhm(nc+1:IM(1).Ny-nc,nc+1:IM(1).Nx-nc);
+Tsimu=Tdhm;%(nc+1:IM(1).Ny-nc,nc+1:IM(1).Nx-nc);
 
 

@@ -51,7 +51,7 @@ classdef PCmask < handle & matlab.mixin.Copyable
                 dxSize = var.dxSize;
                 
                 %figure
-                %imagegb(log(abs(imgaussfilt(var(1).FT,2))))
+               % imagegb(log(abs(imgaussfilt(var(1).FT,2))))
                 %zoom(6)
                 %fullscreen
                 %pause(0.7)

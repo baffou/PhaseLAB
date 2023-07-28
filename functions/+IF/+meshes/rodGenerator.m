@@ -38,8 +38,8 @@ end
 Lrod=(Hrod -2*Rrod)/2; % half length of the cylinder
 
 
-nx=ceil(Hrod/(2*pxSize));
-ny=ceil(Rrod/pxSize);
+nx=ceil(Rrod/pxSize);
+ny=ceil(Hrod/(2*pxSize));
 nz=floor(Rrod/pxSize);
 
 nz=6;
@@ -69,10 +69,10 @@ reconstructedHeight=zeros(2*ny+1,2*nx+1);
 for z=-nz:nz
     for y=-ny:ny
         for x=-nx:nx
-            if y*y + z*z <= Rrod*Rrod/(pxSize*pxSize)
-                if abs(x) <= Lrod/pxSize ...
-                        || (x-Lrod/pxSize)*(x-Lrod/pxSize) + y*y + z*z <= Rrod*Rrod/(pxSize*pxSize) ...
-                        || (x+Lrod/pxSize)*(x+Lrod/pxSize) + y*y + z*z <= Rrod*Rrod/(pxSize*pxSize) 
+            if x*x + z*z <= Rrod*Rrod/(pxSize*pxSize)
+                if abs(y) <= Lrod/pxSize ...
+                        || (y-Lrod/pxSize)*(y-Lrod/pxSize) + x*x + z*z <= Rrod*Rrod/(pxSize*pxSize) ...
+                        || (y+Lrod/pxSize)*(y+Lrod/pxSize) + x*x + z*z <= Rrod*Rrod/(pxSize*pxSize) 
                     fprintf(hf,'(%f, %f) \n',real(eps),imag(eps));
                     nCell=nCell+1;
                     reconstructedHeight(ny+y+1,nx+x+1)=reconstructedHeight(ny+y+1,nx+x+1)+1;

@@ -41,7 +41,7 @@ T = (I{1}+I{2}+I{3}+I{4})/2; % Intensity image of ref+signal images. Why a facto
 Tsimu = (T-fwc/2)/(fwc/2); % Removal of the intensity of the ref, and normalisation by the intensity of a signal illumination
 
 OPDsimu = Phi*IM.Illumination.lambda/2/pi;
-IMout = copy(IM);
+IMout = ImageQLSI(IM);
 
 %% processing of the intensity image
 

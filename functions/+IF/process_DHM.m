@@ -72,13 +72,14 @@ PHIdhm=IMdhm0u-Xn*mx-Yn*my;
 OPDdhm=PHIdhm*IM.Illumination.lambda/(2*pi);
 OPDdhm=OPDdhm-median(OPDdhm(:));
 
-
-OPDsimu=OPDdhm;
+OPDsimu = zeros(IM.Ny, IM.Nx);
+OPDsimu(nc+1:IM.Ny-nc,nc+1:IM.Nx-nc)=OPDdhm;
 
 % Computation of the intensity image :
 Tdhm0 = real(ifft2(ifftshift(Fitf.*mask0)));
 Tdhm = (Tdhm0 - fwc/4)/(fwc/4);  % (Tdhm-Iref)/Iref
 
-Tsimu=Tdhm(nc+1:IM.Ny-nc,nc+1:IM.Nx-nc);
+Tsimu=Tdhm;%(nc+1:IM.Ny-nc,nc+1:IM.Nx-nc);
 
-IMout = IM.crop("Size",IM.Nx-2*nc);
+%IMout = ImageQLSI(IM.crop("Size",IM.Nx-2*nc));
+IMout = ImageQLSI(IM);

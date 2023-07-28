@@ -6,8 +6,9 @@ arguments
 end
 
 P=repmat(PCmask(),4,1);
+A = 1;
 for ii=1:4
-    P(ii)=PCmask(0,0.06,phi=(ii-1)*pi/2,A=1,type='disc');
+    P(ii)=PCmask(0,0.06,phi=(ii-1)*pi/2,A=A,type='disc');
 end
 
 IM_FPM=cell(4,1);
@@ -48,11 +49,12 @@ I{4}=noiseFunction(IM_FPM{4}.E2*corr);
 %beta=sqrt(I_DF./I_BF);
 
 
+%beta = sqrt(opt.A)*1/(4*fwc/1.7)*(I{1}-I{3}+I{2}-I{4})./(sin(DeltaPhi)+cos(DeltaPhi));
 
 DeltaPhi = atan2(I{2}-I{4},I{1}-I{3}); % order inversion because the phase is applied on Einc
 
 % calculation of beta according to ref 2004_Popescu_OL.pdf
-beta = 1/(4*fwc)*(I{1}-I{3}+I{2}-I{4})./(sin(DeltaPhi)+cos(DeltaPhi));
+beta = sqrt(A)*1/(4*fwc/2)*(I{1}-I{3}+I{2}-I{4})./(sin(DeltaPhi)+cos(DeltaPhi));
 
 PHIsimu = atan2(beta.*sin(DeltaPhi),(1+beta.*cos(DeltaPhi)));
 
@@ -64,7 +66,7 @@ OPDsimu=Unwrap_TIE_DCT_Iter(PHIsimu)*lambda/(2*pi);
 % calculation of Tsimu
 Tsimu = abs(1+beta.*exp(-1i*DeltaPhi)).^2;
 
-IMout = copy(IM);
+IMout = ImageQLSI(IM);
 
 % OPDtheo=angle(IM.Ey)*lambda/(2*pi);
 % figure

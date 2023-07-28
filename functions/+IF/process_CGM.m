@@ -19,13 +19,14 @@ IL = IM(1).Illumination.lambda;
 Itf = Interfero(Nim);
 for io = 1:Nim
     IM(io).Microscope.CGcam.setDistance(opt.CGdistance);
-    Itf(io)=CGMinSilico(IM(io),shotNoise=opt.shotNoise,Nimages=opt.Nim,NimagesRef=opt.NimRef,NAill=0,cut=0);
+    Itf(io) = CGMinSilico(IM(io),shotNoise=opt.shotNoise,Nimages=opt.Nim,NimagesRef=opt.NimRef,NAill=0,cut=0);
 end
 
 Itf_CGM = Itf.mean();
 
 IMis=QLSIprocess(Itf_CGM,IL,"resolution",opt.resolution,'auto',opt.auto);
 %        IMis=QLSIprocess(Itf_CGM,Illumination(lambda),"resolution","low");
+IMis.level0("method","boundary")
 OPDsimu=IMis.OPD;
 Tsimu = IMis.T;
 IMout = ImageQLSI(IM);
