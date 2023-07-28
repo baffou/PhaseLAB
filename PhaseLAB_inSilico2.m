@@ -7,22 +7,22 @@ close all
 addpath(genpath('/Users/perseus/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
 
 %% Construction of the setup
-lambda=550e-9;     % reference wavelength to etch glass
+lambda=550e-9;      % reference wavelength to etch glass
 eD=550e-9;
 %z0=0.5e-3;         % distance between the grating and the camera sensor
 camPxSize=6.5e-6;   % camera chip pixel size
 Nim=50;             % Number of summed images
 w=40000;            % full well capacity of the camera
-Npx=1200;            % Desired final image size [px], must be multiple of 30
+Npx=1200;           % Desired final image size [px], must be multiple of 30
 zoom0=1;            % Relay lens zoom
 theta=acos(3/5);    % possible values to maintain periodicity: 0, acos(3/5)
-ME=Medium(1.5,1.5);  % ME.n is here the r.i. of the medium of the condensor, i.e. 1, a priori!
+ME=Medium(1.5,1.5); % ME.n is here the r.i. of the medium of the condensor, i.e. 1, a priori!
 Mobj=100;
 d=0.5e-3;
 NAobj=1.;
 NAill=0;
 Gamma=39e-6;
-shotNoise='off';
+shotNoise=true;
 system='NP';
 %system='noise';
 %system='Gaussian';

@@ -17,12 +17,10 @@ QLSIclass = isa(obj,'ImageMethods') || isa(obj,'Interfero');
 appClass = isa(obj,'PhaseLABgui');
 
 if QLSIclass
-    app=[];
     pxSize=obj.pxSize*1e6;
     if isempty(opt.figure) % radialAverage(IM)  % if no figure defined, open an app
         hfig=[];
-        app=PhaseLABgui;
-        app.IM=obj;
+        app=PhaseLABgui(obj);
     else  % radialAverage(IM,hfig) % where hfig is not a PhaseLABgui app (to be depreciated at some point)
         app = [];
         hfig = opt.figure;
