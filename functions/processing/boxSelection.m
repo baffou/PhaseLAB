@@ -15,7 +15,8 @@ arguments
     opt.twoPoints logical = true
     opt.params double = double.empty() % = [x1, x2, y1, y2]
     opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
-%    opt.figure = []; % figure uifigure object to be considered in case the image is already open
+    opt.displayT logical = false
+    %    opt.figure = []; % figure uifigure object to be considered in case the image is already open
 end
 
 
@@ -25,7 +26,11 @@ if isnumeric(im)
     [Ny, Nx]= osze(im);
     h.UserData.Axes = gca;
 elseif isa(im,'ImageMethods')
-    h=figure;imagegb(im(1).OPD)
+    if opt.displayT
+        h=figure;imagegb(im(1).T)
+    else
+        h=figure;imagegb(im(1).OPD)
+    end
     Nx = im(1).Nx;
     Ny = im(1).Ny;
     h.UserData.Axes = gca;
@@ -50,17 +55,8 @@ elseif isa(im,'PhaseLABgui')
     set(0, 'CurrentFigure', app.UIFigure)       % Make fig current
     h.UserData.Axes = [app.AxesLeft, app.AxesRight];
     axes(app.AxesLeft)
-    
+
 end
-
-
-
-
-
-
-
-
-
 
 
 
@@ -76,7 +72,7 @@ if opt.twoPoints
     x2 = round(roi.Position(1)+roi.Position(3));
     y1 = round(roi.Position(2));
     y2 = round(roi.Position(2)+roi.Position(4));
-    
+
     if isapp
         app.clearMessageArea()
         if strcmp(app.scaleButton.SelectedObject.Text,'µm')
@@ -127,7 +123,7 @@ else % if not twopoints
 
         rr = rectangle(h.UserData.Axes(1),'EdgeColor',[0.3 0.5 1], LineWidth=2);
         if isapp
-        set (h, 'WindowButtonMotionFcn', @(src,event)drawRect(app,rr,xc_px,yc_px,opt.shape))
+            set (h, 'WindowButtonMotionFcn', @(src,event)drawRect(app,rr,xc_px,yc_px,opt.shape))
         else
             set (h, 'WindowButtonMotionFcn', @(src,event)drawRect(h,rr,xc_px,yc_px,opt.shape))
         end
@@ -170,7 +166,7 @@ else % if not twopoints
             Size_units = [Size_units, Size_units];
         end
     else % opt.Size == 'Auto'
-            Size_px = [Ny, Nx];
+        Size_px = [Ny, Nx];
     end
     for ii=1:2 % makes sure all the dimenions of the image size are even
         if mod(Size_px(ii),2)==1
@@ -205,49 +201,54 @@ else % if not twopoints
 end
 
 
-    function drawRect(h,rr,xc_px,yc_px,shape)
-        disp(rand(1))
-        if nargin == 4
-            shape = 'square';
-        end
-        if isa(h,'PhaseLABgui')
-            Pos_units = get (h.UIFigure.UserData.Axes(1), 'CurrentPoint');
-            if strcmpi(h.scaleButton.SelectedObject.Text,'µm') % if µm scale is selected
-                Pos_px = h.um2px(Pos_units);
-                xc_unit = h.px2um(xc_px);
-                yc_unit = h.px2um(yc_px);
-            else
-                Pos_px = Pos_units;
-                xc_unit = xc_px;
-                yc_unit = yc_px;
-            end
-        else
-            Pos_units = get (h.UserData.Axes(1), 'CurrentPoint');
-            Pos_px= Pos_units;
-            xc_unit = xc_px;
-            yc_unit = yc_px;
-        end
-        if strcmpi(shape,'square')
-            side_units = floor(max(abs([2*(Pos_units(1)-xc_unit), 2*(Pos_units(3)-yc_unit)])));
-            side_px    = floor(max(abs([2*(Pos_px(1)   -xc_px),   2*(Pos_px(3)-   yc_px  )])));
-            set(rr,'Position',[xc_unit-side_units/2 yc_unit-side_units/2 side_units side_units])
-        elseif strcmpi(shape,'rectangle')
-            side_units = floor([abs([2*(Pos_units(1)-xc_unit), 2*(Pos_units(3)-yc_unit)])]);
-            side_px = floor([abs([2*(Pos_px(1)-xc_px), 2*(Pos_px(3)-yc_px)])]);
-            set(rr,'Position',[xc_unit-side_units(1)/2 yc_unit-side_units(2)/2 side_units(1) side_units(2)])
-        end
-        if isa(h,'PhaseLABgui')
-            h.UIFigure.UserData.side_units = side_units;
-            h.UIFigure.UserData.side_px = side_px;
-        else
-            h.UserData.side_units = side_units;
-            h.UserData.side_px = side_px;
-        end
-    end
-
-    function getPoint(h)
-        h.UserData.getPoint = 1;
-    end
-
 
 end
+
+function drawRect(h,rr,xc_px,yc_px,shape)
+arguments
+    h
+    rr
+    xc_px
+    yc_px
+    shape = 'square';
+end
+if isa(h,'PhaseLABgui')
+    Pos_units = get (h.UIFigure.UserData.Axes(1), 'CurrentPoint');
+    if strcmpi(h.scaleButton.SelectedObject.Text,'µm') % if µm scale is selected
+        Pos_px = h.um2px(Pos_units);
+        xc_unit = h.px2um(xc_px);
+        yc_unit = h.px2um(yc_px);
+    else
+        Pos_px = Pos_units;
+        xc_unit = xc_px;
+        yc_unit = yc_px;
+    end
+else
+    Pos_units = get (h.UserData.Axes(1), 'CurrentPoint');
+    Pos_px= Pos_units;
+    xc_unit = xc_px;
+    yc_unit = yc_px;
+end
+if strcmpi(shape,'square')
+    side_units = floor(max(abs([2*(Pos_units(1)-xc_unit), 2*(Pos_units(3)-yc_unit)])));
+    side_px    = floor(max(abs([2*(Pos_px(1)   -xc_px),   2*(Pos_px(3)-   yc_px  )])));
+    set(rr,'Position',[xc_unit-side_units/2 yc_unit-side_units/2 side_units side_units])
+elseif strcmpi(shape,'rectangle')
+    side_units = floor([abs([2*(Pos_units(1)-xc_unit), 2*(Pos_units(3)-yc_unit)])]);
+    side_px = floor([abs([2*(Pos_px(1)-xc_px), 2*(Pos_px(3)-yc_px)])]);
+    set(rr,'Position',[xc_unit-side_units(1)/2 yc_unit-side_units(2)/2 side_units(1) side_units(2)])
+end
+if isa(h,'PhaseLABgui')
+    h.UIFigure.UserData.side_units = side_units;
+    h.UIFigure.UserData.side_px = side_px;
+else
+    h.UserData.side_units = side_units;
+    h.UserData.side_px = side_px;
+end
+title(sprintf('Size: %d µm, %d px\n',side_units,side_px))
+end
+
+function getPoint(h)
+h.UserData.getPoint = 1;
+end
+

@@ -397,7 +397,7 @@ classdef ImageQLSI   <   ImageMethods
         function IMout = mean(IM,opt)
             arguments
                 IM
-                opt.Tsum logical = false
+                opt.Tsum = 
             end
             % computes the average image of a list of ImageQLSI objects.
             Nim = numel(IM);
@@ -411,11 +411,7 @@ classdef ImageQLSI   <   ImageMethods
                 DWxsum = DWysum+IM(ii).DWx;
                 DWysum = DWxsum+IM(ii).DWy;
             end
-            if opt.Tsum % sum the intensities in case QLSIprocess was used with the option Tnormalisation='subtraction'
-                INT = intsum;
-            else
-                INT = intsum/Nim;
-            end
+            INT = intsum/Nim;
             OPD = OPDsum/Nim;
             DWx = DWxsum/Nim;
             DWy = DWysum/Nim;

@@ -747,6 +747,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.params double = double.empty()
                 opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
                 opt.app = []; % figure uifigure object to be considered in case the image is already open
+                opt.displayT logical = false
             end
 
             if nargout
@@ -771,7 +772,8 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                                                             'Size',opt.Size, ...
                                                             'twoPoints',opt.twoPoints, ...
                                                             'params',opt.params, ...
-                                                            'shape',opt.shape);
+                                                            'shape',opt.shape, ...
+                                                            'displayT',opt.displayT);
                         params=[x1, x2, y1, y2];
                     else
                         x1 = opt.params(1);

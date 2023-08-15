@@ -1,5 +1,8 @@
 function linkAxes
 childList=get(gcf,'Children');
+if isa(childList(1),'matlab.graphics.layout.TiledChartLayout')
+    childList=childList.Children;
+end
 Nc=numel(childList);
 
 n=0;
