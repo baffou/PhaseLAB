@@ -1,9 +1,9 @@
-function map = invertedGreen(n,limV)
+function map = invertedGreen(n,opt)
 arguments
     n double {mustBeInteger,mustBePositive} = 1024
-    limV double {mustBeInRange(limV,0,1)} = 0.45;
+    opt.limV double {mustBeInRange(opt.limV,0,1)} = 0.45;
 end
-    limV = round(limV*n);
+    limV = round(opt.limV*n);
     
     map = (zeros(n,3));
     

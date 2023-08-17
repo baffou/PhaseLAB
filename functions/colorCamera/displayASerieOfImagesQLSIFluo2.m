@@ -1,22 +1,22 @@
-function displayASerieOfImagesQLSIFluo2(QLSIImages,QLSIFluo,opt)
+function [aT0, aOPD0, aFLUO0, aMIX0] = displayASerieOfImagesQLSIFluo2(QLSIImages,QLSIFluo,opt)
 % G. Baffou version 14 Aug 2023
 % Display a stack of image controllable with key
 %
-% Press the  left or right arrow keyboard key to go trough the serie of images given as input. 
+% Press the  left or right arrow keyboard key to go trough the serie of images given as input.
 % Special customization options can be given as arguments
 %
 % ARGUMENTS :
 %           serieOfImage - the serie of image to be displayed, given as a 3D matrice.
 %                           2 first dimension a plotted, third is used as index
-% OPTIONS : 
+% OPTIONS :
 %           'Colormap'  - The colormap
 %           'cAxis'     - [min max] Colorbar limits (fixed for the whole serie)
 %           'Title'     - {'Title1', ..., 'TitleN'} Title corresponding to each image
 %           'Step'      - i Step size of the index, to skip images
-%           'YZoom'     - [Ymin Ymax] Change the Y limits of the plot 
-%           'XZoom'     - [Xmin Xmax] Change the X limits of the plot 
+%           'YZoom'     - [Ymin Ymax] Change the Y limits of the plot
+%           'XZoom'     - [Xmin Xmax] Change the X limits of the plot
 %
-% EXEMPLE : 
+% EXEMPLE :
 %           myImages = zeros(420,420,20); %A stack of 20 images, 420x420 pixels
 %           myTitles = cell(20,1); %A cell of title
 %           for k=1:20
@@ -34,22 +34,22 @@ function displayASerieOfImagesQLSIFluo2(QLSIImages,QLSIFluo,opt)
 %
 %
 
-    arguments
-        QLSIImages ImageQLSI
-        QLSIFluo ImageQLSI
-    end
+arguments
+    QLSIImages ImageQLSI
+    QLSIFluo ImageQLSI
+end
 
-    arguments
-        opt.Colormap = phase1024
-        opt.cAxis
-        opt.Title string = string.empty()
-        opt.Step
-        opt.YZoom
-        opt.XZoom
-        opt.PDCM
-        opt.ScaleUm
-        opt.fluoBlur
-    end
+arguments
+    opt.Colormap = phase1024
+    opt.cAxis
+    opt.Title string = string.empty()
+    opt.Step
+    opt.YZoom
+    opt.XZoom
+    opt.PDCM
+    opt.ScaleUm
+    opt.fluoBlur
+end
 
 Nim = length(QLSIImages);
 
@@ -73,7 +73,7 @@ jetAlphaCoeff = 1;
 
 figHandle=figure();
 TL = tiledlayout('flow');
-% 
+%
 % scaleX = 1:QLSIImages.Nx;
 % scaleY = 1:QLSIImages.Ny;
 
@@ -91,24 +91,27 @@ colormap(aOPD,opt.Colormap);
 title(aOPD,'OPD');
 colorbar
 
-a_FLUO=nexttile;
-imagesc(a_FLUO,blurFunc(QLSIFluo(1).T));
-colormap(a_FLUO,jet);
-a_FLUO.DataAspectRatio = [1,1,1];
-title(a_FLUO,'FLUO')
-a_FLUO.NextPlot = 'replacechildren';
+aFLUO=nexttile;
+imagesc(aFLUO,blurFunc(QLSIFluo(1).T));
+colormap(aFLUO,invertedGreen("limV",0.55));
+aFLUO.DataAspectRatio = [1,1,1];
+title(aFLUO,'FLUO')
+aFLUO.NextPlot = 'replacechildren';
 colorbar
+clim([0 max(blurFunc(QLSIFluo(1).T(:)))])
 
 scaledOPD=mat2gray(QLSIImages(1).OPD);
-scaledFLUO=mat2gray(blurFunc(QLSIFluo(1).T));
+scaledFLUO0=mat2gray(blurFunc(QLSIFluo(1).T));
 
-a_MIX=nexttile();
-imagesc(a_MIX,scaledOPD)
-a_MIX.NextPlot = 'add';
-imagesc(a_MIX,ind2rgb(gray2ind(scaledFLUO,256),jet(256)),'AlphaData',jetAlphaCoeff*scaledFLUO)
-colormap(a_MIX,opt.Colormap)
-a_MIX.DataAspectRatio = [1 1 1];
-a_MIX.NextPlot = 'replacechildren';
+scaledFLUO = scaledFLUO0.*(scaledFLUO0>(max(scaledFLUO0(:))*0.5));
+
+aMIX=nexttile();
+imagesc(aMIX,scaledOPD)
+aMIX.NextPlot = 'add';
+imagesc(aMIX,ind2rgb(gray2ind(scaledFLUO,256),jet(256)),'AlphaData',jetAlphaCoeff*scaledFLUO)
+colormap(aMIX,flipud(gray))
+aMIX.DataAspectRatio = [1 1 1];
+aMIX.NextPlot = 'replacechildren';
 
 if isfield(opt,'cAxis')
     clim(aOPD,opt.cAxis)
@@ -124,8 +127,8 @@ if isfield(opt,'Step')
 end
 
 if isfield(opt,'XZoom')
-                aOPD.XLim = opt.XZoom;
-                aT.XLim = opt.XZoom;
+    aOPD.XLim = opt.XZoom;
+    aT.XLim = opt.XZoom;
 end
 if isfield(opt,'YZoom')
     aOPD.YLim = opt.YZoom;
@@ -155,38 +158,55 @@ aT.DataAspectRatio = [1 1 1];
 TL.Title.String = serieOfTitle(k);
 
 figHandle.UserData = 1;
-figHandle.KeyPressFcn = @(~,event)updateImage(event,figHandle,aT,TL,aOPD,a_FLUO,a_MIX,QLSIImages,QLSIFluo,serieOfTitle,stepLength,jetAlphaCoeff,blurFunc);
+figHandle.KeyPressFcn = @(~,event)updateImage(event,figHandle,aT,TL,aOPD,aFLUO,aMIX,QLSIImages,QLSIFluo,serieOfTitle,stepLength,jetAlphaCoeff,blurFunc);
+linkAxes
+
+if nargout
+    aT0=aT;
+    aOPD0=aOPD;
+    aFLUO0=aFLUO;
+    aMIX0=aMIX;
+end
+
+
+
 end
 
 function updateImage(event,figHandle,aT,TL,aOPD,a_FLUO,a_MIX,QLSIImages,QLSIFluo,serieOfTitle,stepLength,jetAlphaCoeff,blurFunc)
-    currentK = figHandle.UserData;
-    switch event.Key
-        case 'leftarrow'
-            k = currentK - stepLength;
-        case 'rightarrow'
-            k = currentK + stepLength;
-        otherwise
-            return
-    end
-
-    if k > length(QLSIImages)
-        k = length(QLSIImages);
-    elseif k < 1
-        k = 1;
-    end
-    figHandle.UserData = k;
-
-    imagesc(aT,QLSIImages(figHandle.UserData).T);
-    imagesc(aOPD,QLSIImages(figHandle.UserData).OPD);
-    imagesc(a_FLUO,blurFunc(QLSIFluo(figHandle.UserData).T));
-
-    scaledOPD=mat2gray(QLSIImages(figHandle.UserData).OPD);
-    scaledFLUO=mat2gray(QLSIFluo(figHandle.UserData).T);
-
-    imagesc(a_MIX,scaledOPD)
-    a_MIX.NextPlot = 'add';
-    imagesc(a_MIX,ind2rgb(gray2ind(scaledFLUO,256),jet(256)),'AlphaData',jetAlphaCoeff*scaledFLUO)
-    a_MIX.NextPlot = 'replacechildren';
-
-    TL.Title.String = serieOfTitle(figHandle.UserData);
+currentK = figHandle.UserData;
+switch event.Key
+    case 'leftarrow'
+        k = currentK - stepLength;
+    case 'rightarrow'
+        k = currentK + stepLength;
+    otherwise
+        return
 end
+
+if k > length(QLSIImages)
+    k = length(QLSIImages);
+elseif k < 1
+    k = 1;
+end
+figHandle.UserData = k;
+
+imagesc(aT,QLSIImages(figHandle.UserData).T);
+imagesc(aOPD,QLSIImages(figHandle.UserData).OPD);
+imagesc(a_FLUO,blurFunc(QLSIFluo(figHandle.UserData).T));
+
+scaledOPD=mat2gray(QLSIImages(figHandle.UserData).OPD);
+scaledFLUO=mat2gray(QLSIFluo(figHandle.UserData).T);
+
+imagesc(a_MIX,scaledOPD)
+a_MIX.NextPlot = 'add';
+imagesc(a_MIX,ind2rgb(gray2ind(scaledFLUO,256),jet(256)),'AlphaData',jetAlphaCoeff*scaledFLUO)
+a_MIX.NextPlot = 'replacechildren';
+
+TL.Title.String = serieOfTitle(figHandle.UserData);
+invertedGreen
+end
+
+
+
+
+

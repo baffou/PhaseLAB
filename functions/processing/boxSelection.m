@@ -245,7 +245,11 @@ else
     h.UserData.side_units = side_units;
     h.UserData.side_px = side_px;
 end
-title(sprintf('Size: %d µm, %d px\n',side_units,side_px))
+if isa(h,'PhaseLABgui')
+    title(sprintf('Size: %d µm, %d px\n',side_units,side_px))
+else
+    title(sprintf('Size: %d px\n',side_px))
+end
 end
 
 function getPoint(h)
