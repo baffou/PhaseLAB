@@ -1,7 +1,7 @@
 function imagetf(itf,funct)
 
 if nargin==1
-    funct='sqrt';
+    funct='sqrtsqrt';
 end
 
 if isreal(itf)

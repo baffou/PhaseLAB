@@ -240,6 +240,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 opt.params double = double.empty()
                 opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
                 opt.app = []; % figure uifigure object to be considered in case the image is already open
+                opt.color = false % true if 2-color interfero
             end
             if nargout>=1
                 fprintf('copying the object')
@@ -255,7 +256,8 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     'Size',opt.Size, ...
                     'twoPoints',opt.twoPoints, ...
                     'params',opt.params, ...
-                    'shape',opt.shape);
+                    'shape',opt.shape, ...
+                    'colorImage',opt.color);
                 params=[x1, x2, y1, y2];
             else
                 x1 = opt.params(1);

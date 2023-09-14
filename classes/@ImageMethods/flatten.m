@@ -1,11 +1,12 @@
 function [obj2, mask] = flatten(obj,method,opt)
 arguments
     obj (1,:) ImageMethods
-    method (1,:) char {mustBeMember(method,{'Waves','Zernike','Chebyshev','Hermite','Legendre'})} = 'Waves'
+    method (1,:) char {mustBeMember(method,{'Waves','Zernike','Chebyshev','Hermite','Legendre','Gaussian'})} = 'Gaussian'
     opt.nmax (1,1) {mustBeInteger(opt.nmax)} = 2
     opt.threshold double = 0 % if not zero, segment the cells and create a mask
     opt.kind  (1,1) {mustBeInteger(opt.kind)} = 1 % for Chebychev
     opt.display logical = false
+    opt.nGauss = 100
 end
 
 % method:
@@ -68,6 +69,8 @@ for io = 1:No
             temp = SineRemoval(temp,n,mask);
         end
         obj2(io).OPD=temp;
+    elseif  strcmp(method,'Gaussian')
+        obj2(io).OPD=obj2(io).OPD-imgaussfilt(obj(io).OPD,opt.nGauss);
     else  
 
         temp=obj(io).OPD;

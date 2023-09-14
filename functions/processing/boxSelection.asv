@@ -189,83 +189,81 @@ else % if not twopoints
     y1 = floor(yc_px-Size_px(2)/2+1);
     y2 = floor(yc_px-Size_px(2)/2+Size_px(2));
 
-    if opt.colorImage % shift the image by one pixel right, to make sure the bottom-left pixel keeps the same color as in the original image
+    if opt.colorImage
         if ~isSameParity(x1,y1)
             x1=x1+1;
-            x2=x2+1;
+        end
+
+
+        if exist('rr','var')
+            delete(rr)
+        end
+        if ~isapp
+            pause(0.5)
+            close(h)
+        else
+            app.UIFigure.HandleVisibility = fhv;    % return original state
+
         end
     end
 
 
-    if exist('rr','var')
-        delete(rr)
+
+end
+
+    function drawRect(h,rr,xc_px,yc_px,shape)
+        arguments
+            h
+            rr
+            xc_px
+            yc_px
+            shape = 'square';
+        end
+        if isa(h,'PhaseLABgui')
+            Pos_units = get (h.UIFigure.UserData.Axes(1), 'CurrentPoint');
+            if strcmpi(h.scaleButton.SelectedObject.Text,'µm') % if µm scale is selected
+                Pos_px = h.um2px(Pos_units);
+                xc_unit = h.px2um(xc_px);
+                yc_unit = h.px2um(yc_px);
+            else
+                Pos_px = Pos_units;
+                xc_unit = xc_px;
+                yc_unit = yc_px;
+            end
+        else
+            Pos_units = get (h.UserData.Axes(1), 'CurrentPoint');
+            Pos_px= Pos_units;
+            xc_unit = xc_px;
+            yc_unit = yc_px;
+        end
+        if strcmpi(shape,'square')
+            side_units = floor(max(abs([2*(Pos_units(1)-xc_unit), 2*(Pos_units(3)-yc_unit)])));
+            side_px    = floor(max(abs([2*(Pos_px(1)   -xc_px),   2*(Pos_px(3)-   yc_px  )])));
+            set(rr,'Position',[xc_unit-side_units/2 yc_unit-side_units/2 side_units side_units])
+        elseif strcmpi(shape,'rectangle')
+            side_units = floor([abs([2*(Pos_units(1)-xc_unit), 2*(Pos_units(3)-yc_unit)])]);
+            side_px = floor([abs([2*(Pos_px(1)-xc_px), 2*(Pos_px(3)-yc_px)])]);
+            set(rr,'Position',[xc_unit-side_units(1)/2 yc_unit-side_units(2)/2 side_units(1) side_units(2)])
+        end
+        if isa(h,'PhaseLABgui')
+            h.UIFigure.UserData.side_units = side_units;
+            h.UIFigure.UserData.side_px = side_px;
+        else
+            h.UserData.side_units = side_units;
+            h.UserData.side_px = side_px;
+        end
+        if isa(h,'PhaseLABgui')
+            title(sprintf('Size: %d µm, %d px\n',side_units,side_px))
+        else
+            title(sprintf('Size: %d px\n',side_px))
+        end
     end
-    if ~isapp
-        pause(0.5)
-        close(h)
-    else
-        app.UIFigure.HandleVisibility = fhv;    % return original state
 
+    function getPoint(h)
+        h.UserData.getPoint = 1;
     end
-end
 
+    function bool = isSameParity(val1,val2)
+        bool = mod(val1-val2,2)==0;
 
-
-end
-
-function drawRect(h,rr,xc_px,yc_px,shape)
-arguments
-    h
-    rr
-    xc_px
-    yc_px
-    shape = 'square';
-end
-if isa(h,'PhaseLABgui')
-    Pos_units = get (h.UIFigure.UserData.Axes(1), 'CurrentPoint');
-    if strcmpi(h.scaleButton.SelectedObject.Text,'µm') % if µm scale is selected
-        Pos_px = h.um2px(Pos_units);
-        xc_unit = h.px2um(xc_px);
-        yc_unit = h.px2um(yc_px);
-    else
-        Pos_px = Pos_units;
-        xc_unit = xc_px;
-        yc_unit = yc_px;
-    end
-else
-    Pos_units = get (h.UserData.Axes(1), 'CurrentPoint');
-    Pos_px= Pos_units;
-    xc_unit = xc_px;
-    yc_unit = yc_px;
-end
-if strcmpi(shape,'square')
-    side_units = floor(max(abs([2*(Pos_units(1)-xc_unit), 2*(Pos_units(3)-yc_unit)])));
-    side_px    = floor(max(abs([2*(Pos_px(1)   -xc_px),   2*(Pos_px(3)-   yc_px  )])));
-    set(rr,'Position',[xc_unit-side_units/2 yc_unit-side_units/2 side_units side_units])
-elseif strcmpi(shape,'rectangle')
-    side_units = floor([abs([2*(Pos_units(1)-xc_unit), 2*(Pos_units(3)-yc_unit)])]);
-    side_px = floor([abs([2*(Pos_px(1)-xc_px), 2*(Pos_px(3)-yc_px)])]);
-    set(rr,'Position',[xc_unit-side_units(1)/2 yc_unit-side_units(2)/2 side_units(1) side_units(2)])
-end
-if isa(h,'PhaseLABgui')
-    h.UIFigure.UserData.side_units = side_units;
-    h.UIFigure.UserData.side_px = side_px;
-else
-    h.UserData.side_units = side_units;
-    h.UserData.side_px = side_px;
-end
-if isa(h,'PhaseLABgui')
-    title(sprintf('Size: %d µm, %d px\n',side_units,side_px))
-else
-    title(sprintf('Size: %d px\n',side_px))
-end
-end
-
-function getPoint(h)
-h.UserData.getPoint = 1;
-end
-
-function bool = isSameParity(val1,val2)
-bool = mod(val1-val2,2)==0;
-end
 

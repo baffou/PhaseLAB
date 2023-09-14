@@ -17,6 +17,7 @@ arguments
     opt.RemoveCameraOffset = false
     opt.auto = true % Find automatically the spot of highest intensity
     opt.noRef = false % Do not consider the Ref interferogram to compute the DW and OPD images
+    opt.CGdistanceList = []  % the grating distance was varied during the acquisition of the images list
 end
 Nf = numel(Itf);
 %% Shaping of the Illumination object(s)
@@ -74,6 +75,7 @@ Nx0 = 0;
 Ny0 = 0;
 
 for ii = 1:Nf
+
     fprintf('Interfero %d / %d, ',ii,Nf)
 
     % cancels the offset of the camera
@@ -128,7 +130,23 @@ for ii = 1:Nf
     end
     
     MI = Itfi.Microscope;
-    
+
+    if ~isempty(opt.CGdistanceList)
+        if numel(opt.CGdistanceList) == Nf
+            MI.CGcam.setDistance(opt.CGdistanceList(ii));
+        elseif numel(opt.CGdistanceList) == 1
+            MI.CGcam.setDistance(opt.CGdistanceList);
+        else
+            error('not the proper number of elements of CGdistanceList')
+        end
+    end
+
+
+
+
+
+
+
     Nx = Itfi.Nx;
     Ny = Itfi.Ny;
     if Nx~=cropParam0.Nx || Ny~=cropParam0.Ny % check if the image size changed compared with the previous one, and reinitialize the parameters in case it did.

@@ -36,7 +36,7 @@ function [aT0, aOPD0, aFLUO0, aMIX0] = displayASerieOfImagesQLSIFluo2(QLSIImages
 
 arguments
     QLSIImages ImageQLSI
-    QLSIFluo ImageQLSI
+    QLSIFluo   ImageQLSI
 end
 
 arguments
@@ -54,11 +54,14 @@ end
 Nim = length(QLSIImages);
 
 if ~isempty(opt.Title)
-    serieOfTitle = opt.Title;
+    seriesOfTitle = string(opt.Title);
 else
-    serieOfTitle = cell(Nim,1);
     for k = 1:Nim
-        serieOfTitle{k} = QLSIImages(k).OPDfileName;
+        try
+            seriesOfTitle(k) = string(QLSIImages(k).ItfFileName);
+        catch
+            seriesOfTitle(k) = "none";
+        end
     end
 end
 
@@ -98,7 +101,12 @@ aFLUO.DataAspectRatio = [1,1,1];
 title(aFLUO,'FLUO')
 aFLUO.NextPlot = 'replacechildren';
 colorbar
-clim([0 max(blurFunc(QLSIFluo(1).T(:)))])
+
+% try
+%     clim([0 max(blurFunc(QLSIFluo(1).T(:)))])
+% catch % if all the values of QLSIFluo are negative, don't start from O
+%     clim([min(blurFunc(QLSIFluo(1).T(:))) max(blurFunc(QLSIFluo(1).T(:)))])
+% end
 
 scaledOPD=mat2gray(QLSIImages(1).OPD);
 scaledFLUO0=mat2gray(blurFunc(QLSIFluo(1).T));
@@ -155,10 +163,9 @@ end
 
 aOPD.DataAspectRatio = [1 1 1];
 aT.DataAspectRatio = [1 1 1];
-TL.Title.String = serieOfTitle(k);
 
 figHandle.UserData = 1;
-figHandle.KeyPressFcn = @(~,event)updateImage(event,figHandle,aT,TL,aOPD,aFLUO,aMIX,QLSIImages,QLSIFluo,serieOfTitle,stepLength,jetAlphaCoeff,blurFunc);
+figHandle.KeyPressFcn = @(~,event)updateImage(event,figHandle,aT,TL,aOPD,aFLUO,aMIX,QLSIImages,QLSIFluo,seriesOfTitle,stepLength,jetAlphaCoeff,blurFunc);
 linkAxes
 
 if nargout
@@ -202,8 +209,10 @@ a_MIX.NextPlot = 'add';
 imagesc(a_MIX,ind2rgb(gray2ind(scaledFLUO,256),jet(256)),'AlphaData',jetAlphaCoeff*scaledFLUO)
 a_MIX.NextPlot = 'replacechildren';
 
-TL.Title.String = serieOfTitle(figHandle.UserData);
-invertedGreen
+TL.Parent.Name = "Image "+num2str(k)+" "+serieOfTitle(k);
+
+
+
 end
 
 
