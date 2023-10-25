@@ -1,5 +1,5 @@
-camera pixel size:	6.5e-6
-Gamma:	39e-6
+camera pixel size:6.5e-6
+Gamma:39e-6
 Nx:2560
 Ny:2160
 MHM angle
