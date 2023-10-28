@@ -111,6 +111,8 @@ else
             ItfFileNames = ItfFileNames0;
             opt.selection=1:Nif;
         end
+    else
+        error('Please specify a sofware if using importItfRef')
     end
     
 end
@@ -185,11 +187,11 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
         for ii = 1:Nif
             fprintf([ItfFileNames{ii} '\n'])
             TIFF = Tiff([folder ItfFileNames{ii}]);
-            fprintf([folder ItfFileNames{ii} '\n'])
+%            fprintf([folder ItfFileNames{ii} '\n'])
             INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote,'imageNumber',opt.selection(ii),'color',opt.color);
             INT(ii).Microscope = MI;
             if Nrf ~= 0
-                currentRefFileName  =  [getTag(TIFF,270)]
+                currentRefFileName  =  [getTag(TIFF,270)];
                 RefIndice  =  strcmp(RefFileNames,currentRefFileName);
                 INT(ii).Reference(REF(RefIndice));
             end

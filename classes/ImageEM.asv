@@ -325,19 +325,21 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
         function IMs = Jones0(IM,mat)
+            IMs = IM;
             Nim = numel(IM);
-            IMs = ImageEM(Nim);
             for iim = 1:Nim
                 E_x = IM(iim).Ex*mat(1,1)+IM(iim).Ey*mat(1,2);
                 E_y = IM(iim).Ex*mat(2,1)+IM(iim).Ey*mat(2,2);
-                Einc_x = IM(iim).Einc.Ex*mat(1,1)+IM(iim).Einc.Ey*mat(1,2);
-                Einc_y = IM(iim).Einc.Ex*mat(2,1)+IM(iim).Einc.Ey*mat(2,2);
+                E0 = IM(iim).EE0;
+                E0(1) = IM(iim).EE0(1)*mat(1,1)+IM(iim).EE0(2)*mat(1,2);
+                E0(2) = IM(iim).EE0(1)*mat(2,1)+IM(iim).EE0(2)*mat(2,2);
 
-                IMs(iim) = ImageEM(E_x,E_y,IM.Ez*0,Einc_x,Einc_y,IM.Ez*0);
-                IMs(iim).Microscope = IM.Microscope;
-                IMs(iim).Illumination = IM.Illumination;
-                IMs(iim).comment = IM.comment;
-
+                IMs(iim) = IM(iim);
+                IMs(iim) = ImageEM()
+                IMs(iim).EE0 = E0;
+                IMs(iim).Ex = E_x;
+                IMs(iim).Ey = E_y;
+                IMs(iim).Ez = IM.Ez*0;  % any wave plate is assumed to kill the polarization along z. It is not important anymway in any case.
             end
         end
 

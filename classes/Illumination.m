@@ -67,7 +67,13 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
                     end
                 end
                 if nargin==4
-                    obj.polar = polar;
+                    if numel(polar) == 2
+                        obj.polar = [polar(:)' 0];
+                    elseif numel(polar) ==  3
+                        obj.polar = polar(:)';
+                    else
+                        error('not a good expression for a polarization')
+                    end
                 end
             end
             obj.identity = rand(1,1);
