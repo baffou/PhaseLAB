@@ -101,7 +101,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             elseif obj1.Nx~=obj2.Nx || obj1.Ny~=obj2.Ny
                 error('You are trying to sum two images with different pixel numbers.')
             end
-            objs = copy(obj1);
+            objs = duplicate(obj1);
             objs.Ex = obj1.Ex + obj2.Ex;
             objs.Ey = obj1.Ey + obj2.Ey;
             objs.Ez = obj1.Ez + obj2.Ez;
@@ -111,7 +111,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
         function objs = sum(objList) % coherent sum of the fields
-            objs = copy(objList(1));
+            objs = duplicate(objList(1));
             No = numel(objList);
             for io = 2:No
                 objs = objs+objList(io);
@@ -224,7 +224,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
             if nargout
                 obj2=duplicate(obj);
-                obj2.Einc=copy(obj.Einc);
+                obj2.Einc=duplicate(obj.Einc);
             else
                 obj2=obj;
             end
@@ -289,10 +289,8 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
         function [IMs,mat] = Jones(IM,varargin)
+            %angles in degrees
             Nvar = numel(varargin);
-            if mod(Nvar,2)
-                error('Must have an even number of inputs')
-            end
 
             % Quarter waveplate
             QWP = [1 0;0 1i];
@@ -306,18 +304,27 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
             mat = eye(2,2);
             for ii = 1:2:Nvar
-                if ~ischar(varargin{ii})
-                    error('this input must be text: ''P'', ''QWP'' or ''HWP''')
-                elseif ~isnumeric(varargin{ii+1})
-                    error('this inpust must be a number')
-                end
-                switch varargin{ii}
-                    case 'P'
-                        mat = R(varargin{ii+1})*P*R(-varargin{ii+1})*mat;
-                    case 'QWP'
-                        mat = R(varargin{ii+1})*QWP*R(-varargin{ii+1})*mat;
-                    case 'HWP'
-                        mat = R(varargin{ii+1})*HWP*R(-varargin{ii+1})*mat;
+                if isnumeric(varargin{ii}) % [a b; c d]
+                    if all(size(varargin{ii})==[2 2])
+                        mat = varargin{ii};
+                    end
+                else
+                    if mod(Nvar,2)
+                        error('Must have an even number of inputs')
+                    end
+                    if ~ischar(varargin{ii})
+                        error('this input must be text: ''P'', ''QWP'' or ''HWP''')
+                    elseif ~isnumeric(varargin{ii+1})
+                        error('this input must be a number')
+                    end
+                    switch varargin{ii}
+                        case 'P'
+                            mat = R(varargin{ii+1})*P*R(-varargin{ii+1})*mat;
+                        case 'QWP'
+                            mat = R(varargin{ii+1})*QWP*R(-varargin{ii+1})*mat;
+                        case 'HWP'
+                            mat = R(varargin{ii+1})*HWP*R(-varargin{ii+1})*mat;
+                    end
                 end
             end
             IMs = Jones0(IM,mat);
@@ -343,7 +350,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
         function objList = Escat(objList0)
             if nargout
-                objList=copy(objList0);
+                objList=duplicate(objList0);
             else
                 objList=objList0;
             end
@@ -435,7 +442,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
 
             if nargout
-                obj=copy(obj0);
+                obj=duplicate(obj0);
             else
                 obj=obj0;
             end
@@ -454,7 +461,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             % Mirror image with an horizontal mirror
 
             if nargout
-                obj=copy(obj0);
+                obj=duplicate(obj0);
             else
                 obj=obj0;
             end
@@ -474,7 +481,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             % Mirror image with an horizontal mirror
 
             if nargout
-                obj=copy(obj0);
+                obj=duplicate(obj0);
             else
                 obj=obj0;
             end
@@ -494,7 +501,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             % applies of phase shift to all the components of a field, but
             % not to its Einc. Useful to articially simulate SLIM imaging.
             if nargout
-                objList=copy(objList0);
+                objList=duplicate(objList0);
             else
                 objList=objList0;
             end
