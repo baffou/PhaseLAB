@@ -3,5 +3,6 @@
 "name": "F04",
 "depth": 800e-9,
 "RI": 1.46,
-"lambda0": 736e-9
+"lambda0": 736e-9,
+"angle": 0
 }

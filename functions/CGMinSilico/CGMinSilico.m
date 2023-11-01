@@ -13,6 +13,7 @@ arguments
     opt.NAill double = 0
     opt.setI0 (1,:) char {mustBeMember(opt.setI0,{'max','mean'})} = 'max'
     opt.cut (1,1) double = 0
+    opt.method {mustBeMember(opt.method,{'tiling','rotation'})} = 'tiling'
 end
 
 if opt.NimagesRef == -1 % not defined by the user
@@ -57,6 +58,8 @@ for io = 1:No
 
     %% construction of the interferograms (Itf & Ref) according to Fig 2.
 
+    switch opt.method
+        case "tiling"
     % (Fig 2a) Build the unit cell :
     if strcmpi(opt.Grating,'QLSI')
         grexel = QLSIunitCell(nCell,pi*wl/eD,Gamma);
@@ -74,6 +77,10 @@ for io = 1:No
     % (Fig2d) generation of the final E field by tiling until reaching the desired Npx
     % px number of the image :
     Grating = superUnitPixelized.tile(Nx,Ny);
+
+        case "rotation"
+            Grating = CGgeneration(MI,IL);
+    end
 
     Emodelx = Grating;  % initialisation to have to good size
     Emodely = Grating;  % initialisation to have to good size

@@ -6,4 +6,4 @@ MHM angle
 phase factor:	-2.244e-08
 distance:	8.989701e-04
 CGdepth: 550e-9
-CGangle: 0
+CGangle: 59.1438

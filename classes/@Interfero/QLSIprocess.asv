@@ -18,7 +18,6 @@ arguments
     opt.auto = true % Find automatically the spot of highest intensity
     opt.noRef = false % Do not consider the Ref interferogram to compute the DW and OPD images
     opt.CGdistanceList = []  % the grating distance was varied during the acquisition of the images list
-    opt.resetCrops logical = false % reset crops between each image calculation, to make sure the algorithm enable the user to click for each image, or force the detection of the spot for each image in the auto mode.
 end
 Nf = numel(Itf);
 %% Shaping of the Illumination object(s)
@@ -157,10 +156,11 @@ for ii = 1:Nf
         opt.Smatrix=[];
     end
 
-    if opt.resetCrops % force to reset the crops between each simulations, for instance when the angle of the grating changes, which cannot be detected by looking only at MI.
+    if MI.CGcam.CG.angle - cropParam1.angle
         cropParam0 = FcropParameters(Nx/2+1,Ny/2+1,[],Nx,Ny);
         cropParam1 = FcropParameters([],[],[],Nx,Ny);
         cropParam2 = FcropParameters([],[],[],Nx,Ny);
+        opt.Smatrix=[];
     end
     
 
@@ -273,7 +273,7 @@ for ii = 1:Nf
             Tikh = 1e-5;
         end
 
-        if (size(DWx,1)~=Nx0 || size(DWy,2)~=Ny0) && isempty(opt.Smatrix)  % if first time S calculation (Nx0 and Ny0 not yet defined), but not if S already exists because specified by the user
+        if (size(DWx,1)~=Nx0 || size(DWy,2)~=Ny0) && isempty(opt.Smatrix)  % if first time S calculation (Nx0 and Ny0 not yet defined), but not if S already exists
             x = (1:size(DWx,2))';
             y = (1:size(DWy,1))';
             opt.Smatrix = g2sTikhonovRTalpha(x,y,N);

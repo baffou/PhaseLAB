@@ -66,7 +66,7 @@ colorbar
 aOPD = nexttile(TL);
 imagesc(aOPD,QLSIImages(1).OPD);
 aOPD.NextPlot = 'replacechildren';
-colormap(aOPD,phaseMap);
+colormap(aOPD,phase1024);
 title(aOPD,'OPD');
 colorbar
 
