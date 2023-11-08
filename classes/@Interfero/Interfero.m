@@ -13,6 +13,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         TF       % Fourier transform of the interfero
         TFapo    = []% tells wether the TF has been calculated with an apodization (equals the width of the apodization)
         color (1,:) char {mustBeMember(color,{'R','G','none'})} = 'none'
+        polar (1,:) char {mustBeMember(polar,{'0','45','90','135','none'})} = 'none'
     end
 
     properties
@@ -605,8 +606,8 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         function [ImG,ImR]=splitColors(Im)
             % Im comes from a 2-color camera
-            % These function creates to Interfero objects, for each colors
-            % Use interpolation to keep the same number of pixels
+            % This function creates 2 Interfero objects, for each colors
+            % Uses interpolation to keep the same number of pixels
             arguments
                 Im Interfero
             end
@@ -637,6 +638,62 @@ classdef Interfero < handle & matlab.mixin.Copyable
             end
 
         end
+
+
+        function [Im00,Im45,Im90,Im135]=splitPolars(Im)
+            % Im comes from a 4-polar camera
+            % This function creates 4 Interfero objects, for each polars
+            % Uses interpolation to keep the same number of pixels
+            arguments
+                Im Interfero
+            end
+            Ni = numel(Im);
+
+            Im00 = Interfero(Ni);
+            Im45 = Interfero(Ni);
+            Im90 = Interfero(Ni);
+            Im135= Interfero(Ni);
+            for io = 1:Ni
+                Im00(io) = copy(Im(io)); % not duplicate to keep the MI.
+                Im45(io) = copy(Im(io));
+                Im90(io) = copy(Im(io)); % not duplicate to keep the MI.
+                Im135(io) = copy(Im(io));
+
+                Im00(io).Itf0 = polarInterpolation(Im(io).Itf,0);
+                Im00(io).polar = '0';
+
+                Im45(io).Itf0 = polarInterpolation(Im(io).Itf,45);
+                Im45(io).polar = '45';
+
+                Im90(io).Itf0 = polarInterpolation(Im(io).Itf,90);
+                Im90(io).polar = '90';
+
+                Im135(io).Itf0 = polarInterpolation(Im(io).Itf,135);
+                Im135(io).polar = '135';
+            end
+           
+            % List independent references
+            if numel([Im.Ref]) ~= 0
+                [RefIndep, refPosList] = independentObjects([Im.Ref]);
+    
+                % split the polars of these list of independent references
+                [Ref0,Ref45,Ref90,Ref135]=splitPolars(RefIndep);
+    
+                % Re-assign the proper Ref to all the interferograms
+                Im00.Reference(Ref0(refPosList));
+                Im45.Reference(Ref45(refPosList));
+                Im90.Reference(Ref90(refPosList));
+                Im135.Reference(Ref135(refPosList));
+            end
+
+        end
+
+
+
+
+
+
+
 
         function [objG2, objR2] = crosstalkCorrection(obj1List, obj2List)
             arguments

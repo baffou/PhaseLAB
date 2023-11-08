@@ -175,108 +175,114 @@ classdef Dipole
         end
 
         function obj = moveTo(obj,varargin)
-            if nargin==2
-                if ~isnumeric(varargin{1})
-                    error('the position must be a number')
-                end
-                if length(varargin{1})~=3
-                    error('when specifying a single input of the moveTo function, it must be a 3-vector')
-                end
-                targetPos = varargin{1};
-                obj.x = targetPos(1);
-                obj.y = targetPos(2);
-                obj.z = targetPos(3);
-            elseif nargin==4
-                if isnumeric(varargin{1}) && isnumeric(varargin{2}) && isnumeric(varargin{3})
-                    obj.x = varargin{1};
-                    obj.y = varargin{2};
-                    obj.z = varargin{3};
-                else
-                    error('error in the method ''moveTo'' of Dipole. Not a number.')
-                end
-            elseif nargin==3 || nargin==5 || nargin==7 
-                for iv = 1:(nargin-1)/2
-                    if ischar(varargin{2*iv-1})
-                        if strcmp(varargin{2*iv-1},'x')
-                            if isnumeric(varargin{2*iv})
-                                obj.x = varargin{2*iv};
-                            else
-                                error('error in the method ''moveTo'' of Dipole. Not a number.')
-                            end
-                        elseif strcmp(varargin{2*iv-1},'y')
-                            if isnumeric(varargin{2*iv})
-                                obj.y = varargin{2*iv};
-                            else
-                                error('error in the method ''moveTo'' of Dipole. Not a number.')
-                            end
-                        elseif strcmp(varargin{2*iv-1},'z')
-                            if isnumeric(varargin{2*iv})
-                                obj.z = varargin{2*iv};
-                            else
-                                error('error in the method ''moveTo'' of Dipole. Not a number.')
-                            end
-                        end
+            No = numel(obj);
+            for io = 1:No;
+                if nargin==2
+                    if ~isnumeric(varargin{1})
+                        error('the position must be a number')
+                    end
+                    if length(varargin{1})~=3
+                        error('when specifying a single input of the moveTo function, it must be a 3-vector')
+                    end
+                    targetPos = varargin{1};
+                    obj(io).x = targetPos(1);
+                    obj(io).y = targetPos(2);
+                    obj(io).z = targetPos(3);
+                elseif nargin==4
+                    if isnumeric(varargin{1}) && isnumeric(varargin{2}) && isnumeric(varargin{3})
+                        obj(io).x = varargin{1};
+                        obj(io).y = varargin{2};
+                        obj(io).z = varargin{3};
                     else
-                        error('error in the method ''moveTo'' of Dipole. Not a string.')
+                        error('error in the method ''moveTo'' of Dipole. Not a number.')
+                    end
+                elseif nargin==3 || nargin==5 || nargin==7 
+                    for iv = 1:(nargin-1)/2
+                        if ischar(varargin{2*iv-1})
+                            if strcmp(varargin{2*iv-1},'x')
+                                if isnumeric(varargin{2*iv})
+                                    obj(io).x = varargin{2*iv};
+                                else
+                                    error('error in the method ''moveTo'' of Dipole. Not a number.')
+                                end
+                            elseif strcmp(varargin{2*iv-1},'y')
+                                if isnumeric(varargin{2*iv})
+                                    obj(io).y = varargin{2*iv};
+                                else
+                                    error('error in the method ''moveTo'' of Dipole. Not a number.')
+                                end
+                            elseif strcmp(varargin{2*iv-1},'z')
+                                if isnumeric(varargin{2*iv})
+                                    obj(io).z = varargin{2*iv};
+                                else
+                                    error('error in the method ''moveTo'' of Dipole. Not a number.')
+                                end
+                            end
+                        else
+                            error('error in the method ''moveTo'' of Dipole. Not a char.')
+                        end
                     end
                 end
-            end
-            if ~all([obj.x obj.y obj.z]<0.01)
-                warning('Are you sure the positions are in [m]?')
+                if ~all([obj(io).x obj(io).y obj(io).z]<0.01)
+                    warning('Are you sure the positions are in [nm]?')
+                end
             end
   
         end
 
         function obj = moveBy(obj,varargin)
-            if nargin==2
-                if ~isnumeric(varargin{1})
-                    error('the position must be a number')
-                end
-                if length(varargin{1})~=3
-                    error('when specifying a single input of the moveTo function, it must be a 3-vector')
-                end
-                targetPos = varargin{1};
-                obj.x = obj.x+targetPos(1);
-                obj.y = obj.y+targetPos(2);
-                obj.z = obj.z+targetPos(3);
-            elseif nargin==4
-                if isnumeric(varargin{1}) && isnumeric(varargin{2}) && isnumeric(varargin{3})
-                    obj.x = obj.x+varargin{1};
-                    obj.y = obj.y+varargin{2};
-                    obj.z = obj.z+varargin{3};
-                else
-                    error('error in the method ''moveTo'' of Dipole. Not a number.')
-                end
-            elseif nargin==3 || nargin==5 || nargin==7 
-                for iv = 1:(nargin-1)/2
-                    if ischar(varargin{2*iv-1})
-                        if strcmp(varargin{2*iv-1},'x')
-                            if isnumeric(varargin{2*iv})
-                                obj.x = obj.x+varargin{2*iv};
-                            else
-                                error('error in the method ''moveTo'' of Dipole. Not a number.')
-                            end
-                        elseif strcmp(varargin{2*iv-1},'y')
-                            if isnumeric(varargin{2*iv})
-                                obj.y = obj.y+varargin{2*iv};
-                            else
-                                error('error in the method ''moveTo'' of Dipole. Not a number.')
-                            end
-                        elseif strcmp(varargin{2*iv-1},'z')
-                            if isnumeric(varargin{2*iv})
-                                obj.z = obj.z+varargin{2*iv};
-                            else
-                                error('error in the method ''moveTo'' of Dipole. Not a number.')
-                            end
-                        end
+            No = numel(obj);
+            for io = 1:No
+                if nargin==2
+                    if ~isnumeric(varargin{1})
+                        error('the position must be a number')
+                    end
+                    if length(varargin{1})~=3
+                        error('when specifying a single input of the moveTo function, it must be a 3-vector')
+                    end
+                    targetPos = varargin{1};
+                    obj(io).x = obj(io).x+targetPos(1);
+                    obj(io).y = obj(io).y+targetPos(2);
+                    obj(io).z = obj(io).z+targetPos(3);
+                elseif nargin==4
+                    if isnumeric(varargin{1}) && isnumeric(varargin{2}) && isnumeric(varargin{3})
+                        obj(io).x = obj(io).x+varargin{1};
+                        obj(io).y = obj(io).y+varargin{2};
+                        obj(io).z = obj(io).z+varargin{3};
                     else
-                        error('error in the method ''moveTo'' of Dipole. Not a string.')
+                        error('error in the method ''moveTo'' of Dipole. Not a number.')
+                    end
+                elseif nargin==3 || nargin==5 || nargin==7 
+                    for iv = 1:(nargin-1)/2
+                        if ischar(varargin{2*iv-1})
+                            if strcmp(varargin{2*iv-1},'x')
+                                if isnumeric(varargin{2*iv})
+                                    obj(io).x = obj(io).x+varargin{2*iv};
+                                else
+                                    error('error in the method ''moveTo'' of Dipole. Not a number.')
+                                end
+                            elseif strcmp(varargin{2*iv-1},'y')
+                                if isnumeric(varargin{2*iv})
+                                    obj(io).y = obj(io).y+varargin{2*iv};
+                                else
+                                    error('error in the method ''moveTo'' of Dipole. Not a number.')
+                                end
+                            elseif strcmp(varargin{2*iv-1},'z')
+                                if isnumeric(varargin{2*iv})
+                                    obj(io).z = obj(io).z+varargin{2*iv};
+                                else
+                                    error('error in the method ''moveTo'' of Dipole. Not a number.')
+                                end
+                            end
+                        else
+                            error('error in the method ''moveTo'' of Dipole. Not a string.')
+                        end
                     end
                 end
+                if ~all([obj(io).x obj(io).y obj(io).z]<0.01)
+                    warning('Are you sure the positions are in [m]?')
+                end  
             end
-            if ~all([obj.x obj.y obj.z]<0.01)
-                warning('Are you sure the positions are in [m]?')
-            end                
         end
 
 

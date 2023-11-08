@@ -8,6 +8,10 @@ classdef CrossGrating  <  handle & matlab.mixin.Copyable
         RI      (1,1) double % Refractive index of the material
         lambda0 (1,1) double % Wavelength the grating is made for
     end
+
+    properties
+        angle = acos(3/5)   % rotation angle of the grating
+    end
         
     methods
 

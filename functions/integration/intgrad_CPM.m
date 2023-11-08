@@ -18,7 +18,7 @@ ky(logical((kx==0).*(ky==0)))=Inf;
 %kx(Ny/2,Nx/2) = Inf;
 %ky(Ny/2,Nx/2) = Inf;
 
-superW = ifft2(ifftshift((fftshift(fft2(superDWx)) + 1i*fftshift(fft2(superDWy)))./(1i*2*pi*(kx/Nx + 1i*ky/Ny))));
+superW = ifft2(ifftshift((fftshift(fft2(superDWx + 1i*superDWy)))./(1i*2*pi*(kx/Nx + 1i*ky/Ny))));
 
 %W = abs(superW(1:Ny/2, 1:Nx/2))/2; % Don't know why there is this factor of 2.
 

@@ -70,7 +70,6 @@ if NA>nS
 end
 
 %% excitation field
-lambda = IL.lambda;             % illumination wavelength (m)
 
 k0 = IL.k0;            % wavevector in vacuum
 tr = IL.tr;            % transmission coefficient through the interface
@@ -156,7 +155,9 @@ for id = 1:NDI
                 s1 = cross(uz,kv);
                 if (s1==0)
                     %s = [1;0;0];
-                    s = (IL.polar).';
+                    %s = (IL.polar).';
+                    s = abs(IL.polar).';
+                    s=s/norm(s);
                     %s = (abs(DI.p/norm(DI.p))).';% norm vector along the dipole
                     
                     p = [0;0;0];
@@ -171,7 +172,8 @@ for id = 1:NDI
                 sb1 = cross(uz,kvb);
                 if (sb1==0)
                     %sb=[1;0;0];
-                    sb = (IL.polar).';
+                    sb = abs(IL.polar).';
+                    sb = sb/norm(sb);
                     %sb=(abs(DI.p/norm(DI.p))).';% norm vector along the dipole
                                     % ASSUME THE DIPOLE IS LINEAR! WHAT IF IT IS EXCITED WITH
                                     % A CIRCULARLY POLARIZED LIGHT?, OR IF IT IS A DIPOLE WITHIN

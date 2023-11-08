@@ -26,7 +26,7 @@ Gamma = MI.CGcam.CG.Gamma;       % size [m] of the unit cell of the grating
 grexel = QLSIunitCell(nCell,pi*wl/eD,Gamma);
 GratingBig=grexel.tile(ceil(6*nCell*Npx/(sqrt(2)*zeta)));
 GratingBig=GratingBig.rotation(beta);
-GratingBig=GratingBig.crop(round(3*nCell*Npx/zeta),round(3*nCell*Npx/zeta));
+GratingBig=GratingBig.crop(3*nCell*Npx/zeta,3*nCell*Npx/zeta);
 CG=GratingBig.redimension(p_p,zeta/(3*nCell));
 
 

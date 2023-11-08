@@ -1,0 +1,81 @@
+function dynamicFigure(varargin)
+% dynamicFigure('ph',IM,'tf',Itf)
+% dynamicFigure('gb',IM,'tf',Itf)
+
+Ni2 = numel(varargin);
+
+
+if mod(Ni2,2)==1
+    error('not the proper number of inputs')
+end
+
+Ni = Ni2/2; % number of images
+
+h = figure(WindowKeyPressFcn=@figureCallback);
+subplot(1,Ni,1)
+
+% extraction of the images from the objects
+h.UserData.imageList = cell(1,Ni);
+for ii = 1:Ni
+    switch class(varargin{2*ii})
+        case 'Interfero'
+            h.UserData.imageList{ii} = {varargin{2*ii}.Itf};
+        case {'ImageMethods','ImageEM','ImageQLSI'}
+            h.UserData.imageList{ii} = {varargin{2*ii}.OPD};
+    end
+end
+
+% defining the list of display functions
+for ii = 1:Ni
+    h.UserData.ax(ii)=subplot(1,Ni,ii);
+    switch varargin{2*ii-1}
+        case 'ph'
+            h.UserData.fun{ii} = @imageph;
+        case 'gb'
+            h.UserData.fun{ii} = @imagegb;
+        case 'tf'
+            h.UserData.fun{ii} = @imagetf;
+    end
+end
+
+h.UserData.nIm = 1; % # of the displayed image
+
+updateImages(h)
+
+
+%linkAxes
+
+end
+
+
+%%%%%%
+function figureCallback(src,event)
+    %axeList=[src.UserData.ax];
+    %src.UserData.imageList
+    %src
+    %event
+    if strcmp(event.Key,'rightarrow')
+        src.UserData.nIm = src.UserData.nIm+1;
+        updateImages(src)
+    elseif strcmp(event.Key,'leftarrow')
+        src.UserData.nIm = src.UserData.nIm-1;
+        updateImages(src)
+    end
+
+end
+
+
+%%%%%%
+function updateImages(h)
+    Ni = numel(h.UserData.ax);
+    nIm = h.UserData.nIm;
+    for ii = 1:Ni
+        subplot(1,Ni,ii)
+        h.UserData.fun{ii}(h.UserData.imageList{ii}{nIm})
+    end
+
+end
+
+
+
+

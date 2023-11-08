@@ -1,4 +1,4 @@
-function [Itf, Grating, EE] = CGMinSilico(Image,opt)
+function [Itf, Grating] = CGMinSilico(Image,opt)
 % Function that creates a simulated interferogram from a given T/OPD set of
 % images, including the image noise
 % For this purpose, it uses all the data of the Microscope object contained
@@ -8,12 +8,11 @@ arguments
     Image ImageMethods
     opt.Nimages (1,1) {mustBeInteger,mustBePositive} = 1
     opt.NimagesRef (1,1) {mustBeNumeric} = -1  % = 0 or Inf to avoid noise on the ref interfero
-    opt.ShotNoise (1,1) {mustBeNumericOrLogical} = false
+    opt.ShotNoise (1,1) {mustBeNumericOrLogical} = true
     opt.Grating char ='QLSI'
     opt.NAill double = 0
     opt.setI0 (1,:) char {mustBeMember(opt.setI0,{'max','mean'})} = 'max'
     opt.cut (1,1) double = 0
-    opt.method {mustBeMember(opt.method,{'tiling','rotation'})} = 'tiling'
 end
 
 if opt.NimagesRef == -1 % not defined by the user
@@ -58,8 +57,6 @@ for io = 1:No
 
     %% construction of the interferograms (Itf & Ref) according to Fig 2.
 
-    switch opt.method
-        case "tiling"
     % (Fig 2a) Build the unit cell :
     if strcmpi(opt.Grating,'QLSI')
         grexel = QLSIunitCell(nCell,pi*wl/eD,Gamma);
@@ -77,10 +74,6 @@ for io = 1:No
     % (Fig2d) generation of the final E field by tiling until reaching the desired Npx
     % px number of the image :
     Grating = superUnitPixelized.tile(Nx,Ny);
-
-        case "rotation"
-            Grating = CGgeneration(MI,IL);
-    end
 
     Emodelx = Grating;  % initialisation to have to good size
     Emodely = Grating;  % initialisation to have to good size
@@ -121,14 +114,11 @@ for io = 1:No
     %Eref = ErefGrating.propagation(wl,d0);
     %E    = Egrating.propagation2(MI,IL,dir='forward');
     %Eref = ErefGrating.propagation2(MI,IL,dir='forward');
-    
-    [E20x, E0x]    =    Emodelx.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
-    [E2Ref0x, ERef0x] = EmodelRefx.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
-    [E20y, E0y]    =    Emodely.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
-    [E2Ref0y, ERef0y] = EmodelRefy.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
-    
-    EE = ImageEM(E0x, E0y, E0y*0, ERef0x, ERef0y, ERef0y*0);
-   
+
+    E20x    =    Emodelx.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
+    E2Ref0x = EmodelRefx.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
+    E20y    =    Emodely.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
+    E2Ref0y = EmodelRefy.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
     E20 = E20x+E20y;
     E2Ref0 = E2Ref0x+E2Ref0y;
     % (Fig 2h,i) compute the intensity images:
@@ -148,7 +138,7 @@ for io = 1:No
     % Note it reduces the image size from Npx to Npx-cut.
 
     % Add the shot noise on the interferograms:
-    Itf(io)    = Interfero(noiseFunction(   E2.im(1+cut:end-cut,1+cut:end-cut)  ),MI);
+    Itf(io)    = Interfero(noiseFunction(   E2.im(1+cut:end-cut,1+cut:end-cut)),MI);
     ItfRef(io) = Interfero(noiseFunctionRef(E2Ref.im(1+cut:end-cut,1+cut:end-cut)),MI);
     Itf(io).Reference(ItfRef(io));
 
