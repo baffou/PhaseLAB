@@ -189,9 +189,13 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
             INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote,'imageNumber',opt.selection(ii),'color',opt.color);
             INT(ii).Microscope = MI;
             if Nrf ~= 0
-                currentRefFileName  =  [getTag(TIFF,270)]
+                currentRefFileName  =  [getTag(TIFF,270)];
                 RefIndice  =  strcmp(RefFileNames,currentRefFileName);
+                try
                 INT(ii).Reference(REF(RefIndice));
+                catch
+                    pause(1)
+                end
             end
         end
     else % if MI = 'metadatas'
