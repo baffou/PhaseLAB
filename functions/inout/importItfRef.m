@@ -193,7 +193,11 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
             if Nrf ~= 0
                 currentRefFileName  =  [getTag(TIFF,270)];
                 RefIndice  =  strcmp(RefFileNames,currentRefFileName);
+                try
                 INT(ii).Reference(REF(RefIndice));
+                catch
+                    pause(1)
+                end
             end
         end
     else % if MI = 'metadatas'
