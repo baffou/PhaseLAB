@@ -4,9 +4,8 @@ function h0 = dynamicFigure(varargin)
 % dynamicFigure('ph',IM,'bk',{IM.T},'tf',Itf)
 % possible labels: 'ph'  display a phase-like colorscale
 %                  'gb'  display a Parula colorscale
+%                  'bk'  display a gray scale image
 %                  'tf'  computes and display the fft2 of the image
-
-
 
 Np2 = numel(varargin);
 
@@ -38,6 +37,9 @@ for ii = 1:Np
         %     for jj = 1:size(varargin{2*ii},3)
         %         h.UserData.imageList{ii}{jj} = varargin{2*ii}(:,:,jj);
         %     end
+        case 'double'
+            h.UserData.imageList{ii} = {varargin{2*ii}};
+            
     end
 end
 
@@ -79,6 +81,8 @@ function figureCallback(src,event)
         nIm = mod(src.UserData.nIm,Nim)+1;
     elseif strcmp(event.Key,'leftarrow')
         nIm = mod(src.UserData.nIm-2,Nim)+1;
+    else
+        return
     end
     src.UserData.nIm = nIm;
     updateImages(src)
