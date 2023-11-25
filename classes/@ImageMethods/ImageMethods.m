@@ -363,6 +363,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.label = 'Optical path difference (nm)'
                 opt.imType = 'OPD'
                 opt.axisDisplay (1,1) logical = true
+                opt.displayedTime = string.empty()
             end
             % zrange in nm
             EL_camera=90-opt.theta;
@@ -533,6 +534,11 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                         set(gcf,'Position',Mmax*axisDimensions);
                         set(gca, 'Position', [0 0 1 1]);
                     end
+
+ %                   if ~isempty(opt.displayedTime)
+                        text(Nmax/10, Nmax/10, [num2str(opt.displayedTime) ' s'],'Units','pixels',...
+                            'FontSize',Nmax/15, 'Color',[1 1 1])
+  %                  end
                     drawnow
                 end
             end
@@ -701,6 +707,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.label = 'Optical path difference (nm)'
                 opt.imType  = 'OPD'
                 opt.axisDisplay  (1,1) logical = true
+                opt.frameRate  % if empty, nothing is displayed, if numeric value, the time is displayed on each frame
             end
 
             % create the video writer with 1 fps
@@ -716,15 +723,15 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 fullscreen
                 %                hfig.Position=[1 1 1800 800];
                 if isempty(opt.zrange)
-                    opendx(IM(u),persp=opt.persp,phi=opt.phi,theta=opt.theta,...
-                        ampl=opt.ampl,colorMap=opt.colorMap,title=opt.title, ...
-                        factor=opt.factor,label=opt.label,imType=opt.imType, ...
-                        axisDisplay=opt.axisDisplay)
+                    opendx(IM(u),'persp',opt.persp,'phi',opt.phi,'theta',opt.theta,...
+                        'ampl',opt.ampl,'colorMap',opt.colorMap,'title',opt.title, ...
+                        'factor',opt.factor,'label',opt.label,'imType',opt.imType, ...
+                        'axisDisplay',opt.axisDisplay,'displayedTime',opt.frameRate*u)
                 else
-                    opendx(IM(u),persp=opt.persp,phi=opt.phi,theta=opt.theta,...
-                        ampl=opt.ampl,zrange=opt.zrange,colorMap=opt.colorMap, ...
-                        title=opt.title,factor=opt.factor,label=opt.label,imType=opt.imType, ...
-                        axisDisplay=opt.axisDisplay)
+                    opendx(IM(u),'persp',opt.persp,'phi',opt.phi,'theta',opt.theta,...
+                        'ampl',opt.ampl,'zrange',opt.zrange,'colorMap',opt.colorMap, ...
+                        'title',opt.title,'factor',opt.factor,'label',opt.label,'imType',opt.imType, ...
+                        'axisDisplay',opt.axisDisplay,'displayedTime',opt.frameRate*u)
                 end
                 frame=getframe(hfig);
                 drawnow
