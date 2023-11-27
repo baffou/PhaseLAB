@@ -14,6 +14,7 @@ classdef ImageQLSI   <   ImageMethods
         OPDnm   % Optical path difference image [nm]
         DWx     % OPD gradient along x
         DWy     % OPD gradient along y
+        DWn
         Ph      % Phase image
         Nx
         Ny
@@ -739,6 +740,13 @@ classdef ImageQLSI   <   ImageMethods
             end
 
         end        
+
+        function val = get.DWn(obj)
+            if isempty(obj.DWx)
+                error('The gradients have not been calculated upon using QLSIprocess. Please use the option saveGradients=1')
+            end
+            val = sqrt(obj.DWx.^2 + obj.DWy.^2);
+        end
 
         function val = DWnorm(obj)
             if isempty(obj.DWx)

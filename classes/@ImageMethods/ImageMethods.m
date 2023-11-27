@@ -535,10 +535,11 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                         set(gca, 'Position', [0 0 1 1]);
                     end
 
- %                   if ~isempty(opt.displayedTime)
+                    if ~isempty(opt.displayedTime)
+                        Nmax = max([obj.Nx, obj.Ny]);
                         text(Nmax/10, Nmax/10, [num2str(opt.displayedTime) ' s'],'Units','pixels',...
                             'FontSize',Nmax/15, 'Color',[1 1 1])
-  %                  end
+                    end
                     drawnow
                 end
             end
@@ -707,7 +708,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.label = 'Optical path difference (nm)'
                 opt.imType  = 'OPD'
                 opt.axisDisplay  (1,1) logical = true
-                opt.frameRate  % if empty, nothing is displayed, if numeric value, the time is displayed on each frame
+                opt.frameRate = []  % if empty, nothing is displayed, if numeric value, the time is displayed on each frame
             end
 
             % create the video writer with 1 fps
