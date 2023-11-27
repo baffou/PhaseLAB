@@ -1,5 +1,5 @@
 function export(IMlist,varargin)
-
+% export(IMlist, 'folder',path,'OPD','T')
 
 saveT = 1;
 saveOPD = 1;
