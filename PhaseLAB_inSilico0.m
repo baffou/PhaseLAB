@@ -33,12 +33,12 @@ IM0 = imaging(DI,IL,MI,Npx);
 
 %% Creation of the inSilico Interfero
 
-Itf = CGMinSilico(IM0,shotNoise=0,Nimages=1,NAill=IL.NA);
+Itf = CGMinSilico(IM0,shotNoise=1,Nimages=1,NAill=IL.NA);
 
 %% Postprocessing of the insilico data
 
 IM = QLSIprocess(Itf,IL);
 
 
-dynamicFigure("ph",IM);
+dynamicFigure("gb",IM);
 

@@ -25,6 +25,7 @@ end
 
 % extraction of the images from the objects
 h.UserData.imageList = cell(1,Np);
+
 for ii = 1:Np
     switch class(varargin{2*ii})
         case 'Interfero'
