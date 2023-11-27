@@ -97,7 +97,7 @@ function updateImages(h)
     nIm = h.UserData.nIm;
     for ip = 1:Np
         subplot(1,Np,ip)
-        h.UserData.fun{ip}(h.UserData.imageList{ip}{nIm})
+        h.UserData.fun{ip}(h.UserData.imageList{ip}{nIm}) % imagesc(...
     end
     h.Name = num2str(nIm);
 
