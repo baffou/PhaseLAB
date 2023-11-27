@@ -37,11 +37,8 @@ for ii = 1:Ni
             fileNameOPD = ['im_' textkkk(ii)];
             pointPos = length(fileNameOPD);
         end
-        if strcmpi(format,'.txt')
-            writematrix(IM0.OPD,[folder '/OPD_' fileNameOPD(1:pointPos) format])
-        else
-            imwrite(uint16(2^16*(IM0.OPD-min(IM0.OPD(:)))/max(IM0.OPD(:)-min(IM0.OPD(:)))),[folder '/OPD_' fileNameOPD(1:pointPos) format],'BitDepth',16)
-        end
+        if strcmpi(opt.fo)
+        imwrite(uint16(2^16*(IM0.OPD-min(IM0.OPD(:)))/max(IM0.OPD(:)-min(IM0.OPD(:)))),[folder '/OPD_' fileNameOPD(1:pointPos) format],'BitDepth',16)
     end
     if saveT==1
         fileNameT = IM0.TfileName;
