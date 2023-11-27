@@ -6,6 +6,7 @@ function h0 = dynamicFigure(varargin)
 %                  'gb'  display a Parula colorscale
 %                  'bk'  display a gray scale image
 %                  'tf'  computes and display the fft2 of the image
+%                  'jet' display a jet colorscale
 
 Np2 = numel(varargin);
 
@@ -53,6 +54,8 @@ for ii = 1:Np
             h.UserData.fun{ii} = @imagegb;
         case 'tf'
             h.UserData.fun{ii} = @imagetf;
+        case 'jet'
+            h.UserData.fun{ii} = @imagejet;
         case {'bk','gr'}
             h.UserData.fun{ii} = @imagebk;
     end

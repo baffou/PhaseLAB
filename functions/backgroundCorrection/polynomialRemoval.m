@@ -40,12 +40,12 @@ end
 % un-normalized masked basis functions
 Hm=Hx.*Hy.*opt.mask;
 
-Hm=Hm-mean(Hm(:));
+Hm(opt.mask==1)=Hm(opt.mask==1)-mean(Hm(opt.mask==1));
 
 % make sure they are proper, normalized basis functions
 Hm0=Hm;
 
-Hm0(opt.mask==1)=Hm(opt.mask==1)-mean(Hm(opt.mask==1));
+Hm0(opt.mask==1)=(Hm(opt.mask==1)-mean(Hm(opt.mask==1)));%.*opt.mask;
 
 
 if n~=0 || m~=0 % normalization unless for a flat profile
@@ -57,7 +57,7 @@ end
 Hm0n=Hm0/mnorm;
 
 % moments of the image on these basis functions
-I0=mean(Im(:));
+I0=mean(Im(opt.mask==1));
 
 ms=sum(sum((Im-I0).*Hm0n));
 

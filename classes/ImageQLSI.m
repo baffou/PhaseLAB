@@ -579,7 +579,7 @@ classdef ImageQLSI   <   ImageMethods
         function [obj, params] = level0(obj0,opt)
             arguments
                 obj0
-                opt.method (1,:) char {mustBeMember(opt.method,{'mean','average','median','boundary'})}= 'mean'
+                opt.method (1,:) char {mustBeMember(opt.method,{'mean','average','median','boundaryMedian'})}= 'mean'
                 % parameters for boxSelection()
                 opt.xy1 = []
                 opt.xy2 = []
@@ -592,7 +592,7 @@ classdef ImageQLSI   <   ImageMethods
             end
 
             if nargout
-                obj=copy(obj0);
+                obj=duplicate(obj0);
             else
                 obj=obj0;
             end
@@ -633,7 +633,7 @@ classdef ImageQLSI   <   ImageMethods
                     offsetFunction = @(im) mean(im(:));
                 elseif strcmpi(opt.method,'median')
                     offsetFunction = @(im) median(im(:));
-                elseif strcmpi(opt.method,'boundary')
+                elseif strcmpi(opt.method,'boundaryMedian')
                     offsetFunction = @(im) boundaryMedian(im);
                 else
                     error('unkown option')
