@@ -58,6 +58,7 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
     methods
 
         function m = Microscope(OB,f_TL,CGcam,software)
+            %Microscope(M)
             %Microscope(OB)
             %Microscope(OB,f_TL)
             %Microscope(OB,f_TL,CGcam)
@@ -71,7 +72,9 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
                     error(['input numbers must be either 1, 2 or 4. Here it is ' num2str(nargin)])
                 end
                 
-                if ~isa(OB,'Objective')
+                if isnumeric(OB) % OB is the magnification
+                    OB = Objective(OB);
+                elseif ~isa(OB,'Objective')
                     error('First input must be an Objective object')
                 end
                 

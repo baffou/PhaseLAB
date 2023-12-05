@@ -17,26 +17,27 @@ arguments
     opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
     opt.displayT logical = false
     opt.colorImage = false % if it is true, keeps the same color in pixel (1,1) after cropping
+    opt.colormap = parula;
     %    opt.figure = []; % figure uifigure object to be considered in case the image is already open
 end
 
 
 isapp = 0;
 if isnumeric(im)
-    h=figure;imagegb(im)
+    h=figure;imagegb(im,opt.colormap)
     [Ny, Nx]= size(im);
     h.UserData.Axes = gca;
 elseif isa(im,'ImageMethods')
     if opt.displayT
-        h=figure;imagegb(im(1).T)
+        h=figure;imagegb(im(1).T,opt.colormap)
     else
-        h=figure;imagegb(im(1).OPD)
+        h=figure;imagegb(im(1).OPD,opt.colormap)
     end
     Nx = im(1).Nx;
     Ny = im(1).Ny;
     h.UserData.Axes = gca;
 elseif isa(im,'Interfero')
-    h=figure;imagegb(im(1).Itf)
+    h=figure;imagegb(im(1).Itf,opt.colormap)
     Nx = im(1).Nx;
     Ny = im(1).Ny;
     h.UserData.Axes = gca;

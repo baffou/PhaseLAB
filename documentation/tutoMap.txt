@@ -1,0 +1,19 @@
+Tutorial PhaseLAB (Open classroom mind)
+
+
+
+Build your first code
+
+
+clear
+addpath(genpath('/Users/perseus/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
+
+OB=Objective(100,1.3,'Olympus');
+
+%% BUILDING OF THE MICROSCOPE -- Microscope(OBJ,tl_f,Sid4model,software)
+%MI=Microscope(OB,180,'sC8-830','PhaseLIVE');
+MI=Microscope(OB,200,'Silios_mono','PhaseLIVE');
+
+%% BUILDING OF THE ILLUMINATION -- IL=Illumination(lambda);
+lambda=625e-9;
+IL=Illumination(lambda,ME);

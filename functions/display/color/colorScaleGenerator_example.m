@@ -1,13 +1,12 @@
-colorList = ["ffffff";"d9d1a7";"b4913e";"805b28";"492d15";"000000"];
-posList = [0, 12, 33, 50, 70, 100];
+%       colorList = ["ffffff";"d9d1a7";"b4913e";"805b28";"492d15";"000000"];
+colorList = ["100080";"6500dc";"9a00c4";"d21536";"ff8000";"ffe700";"ffffff"];
+colorList = ["000000";"560000";"AD3200";"FF8B00";"FFD900";"FFFF5B";"FFFFFF"];
+posList = [0, 17, 33, 50, 66, 84, 100];
 
 colMap = colorScaleGenerator(colorList,posList);
 
 figure
-subplot(1,2,1)
-imagegb(IM0.OPD)
+imagegb(meshgrid(1:1024,1:100))
 colormap(colMap)
-subplot(1,2,2)
-imageph(IM0.OPD)
 
-
+%writematrix(colMap,
