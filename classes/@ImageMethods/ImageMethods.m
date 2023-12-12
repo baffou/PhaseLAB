@@ -796,8 +796,9 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.twoPoints logical = false
                 opt.params double = double.empty()
                 opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
-                opt.app = []; % figure uifigure object to be considered in case the image is already open
+                opt.app = [] % figure uifigure object to be considered in case the image is already open
                 opt.displayT logical = false
+                opt.colormap = parula
             end
 
             if nargout

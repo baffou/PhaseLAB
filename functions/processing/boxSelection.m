@@ -17,7 +17,7 @@ arguments
     opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
     opt.displayT logical = false
     opt.colorImage = false % if it is true, keeps the same color in pixel (1,1) after cropping
-    opt.colormap = parula;
+    opt.colormap = parula
     %    opt.figure = []; % figure uifigure object to be considered in case the image is already open
 end
 

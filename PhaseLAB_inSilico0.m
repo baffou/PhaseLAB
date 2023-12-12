@@ -22,6 +22,7 @@ IL = Illumination(lambda,ME);
 %%
 
 MI.CGcam.setDistance(d);
+MI.zo =0.5e-6;
 
 radius=50e-9;
 DI = Dipole('Au',radius);
@@ -33,11 +34,11 @@ IM0 = imaging(DI,IL,MI,Npx);
 
 %% Creation of the inSilico Interfero
 
-Itf = CGMinSilico(IM0,shotNoise=1,Nimages=1,NAill=IL.NA);
+Itf = CGMinSilico(IM0,shotNoise=1,Nimages=15,NAill=IL.NA);
 
 %% Postprocessing of the insilico data
 
-IM = QLSIprocess(Itf,IL);
+IM = QLSIprocess(Itf,IL,'resolution','low');
 
 
 dynamicFigure("gb",IM);

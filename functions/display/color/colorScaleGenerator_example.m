@@ -3,7 +3,7 @@ colorList = ["100080";"6500dc";"9a00c4";"d21536";"ff8000";"ffe700";"ffffff"];
 colorList = ["000000";"560000";"AD3200";"FF8B00";"FFD900";"FFFF5B";"FFFFFF"];
 posList = [0, 17, 33, 50, 66, 84, 100];
 
-colMap = colorScaleGenerator(colorList,posList);
+colMap = colorScaleGenerator(colorList,posList,256);
 
 figure
 imagegb(meshgrid(1:1024,1:100))
