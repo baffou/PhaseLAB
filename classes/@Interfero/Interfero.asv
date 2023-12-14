@@ -327,14 +327,15 @@ classdef Interfero < handle & matlab.mixin.Copyable
             elseif numel(val)==1
                 No = numel(obj);
                 for io = 1:No
-                    io
                     if ~strcmp(val.software,obj(io).software)
                         error('not the same software in Itf and Ref')
                     elseif val.CGcam~=obj(io).CGcam
                         val.CGcam
                         error('not the same CGcam in Itf and Ref')
-                    elseif val.Nx~=obj(io).Nx || val.Ny~=obj(io).Ny
-                        error('not the same image size in Itf and Ref')
+%                    elseif val.Nx~=obj(io).Nx || val.Ny~=obj(io).Ny   %
+%                    this lignes were removed because it takes too much
+%                    time
+%                        error('not the same image size in Itf and Ref')
                     end
                     obj(io).Ref = val;
                 end

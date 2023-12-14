@@ -57,7 +57,7 @@ if manual==1
     
 else
     if strcmpi(acquisitionSoftware,'phast') || strcmpi(acquisitionSoftware,'Sid4Bio')
-        ItfFileList = dir([folder 'SID ' opt.nickname '*.tif']);
+        ItfFileList = dir([folder 'SID ' opt.nickname '_*.tif*']);
         ItfFileNames0 = {ItfFileList.name};
         Nif = numel(ItfFileNames0);
         
@@ -83,7 +83,7 @@ else
             ItfFileNames = ItfFileNames0;
         end
     elseif strcmpi(acquisitionSoftware,'phaselive')
-        ItfFileList = dir([folder opt.nickname '*.tif*']);
+        ItfFileList = dir([folder opt.nickname '_*.tif*']);
         ItfFileNamesTemp = {ItfFileList.name};
         ItfFileNamesTempBool = ~contains(ItfFileNamesTemp,'REF_');
         ItfFileNames0 = ItfFileNamesTemp(ItfFileNamesTempBool);
