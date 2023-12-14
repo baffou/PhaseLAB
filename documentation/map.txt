@@ -1,0 +1,45 @@
+Documentation for PhaseLAB
+
+
+0. Quick start
+
+Run the simplest code
+
+
+
+1. Build the microscope
+- medium
+- load an existing CGMcamera
+- custom-made CGMcamera
+- create a CGMcamera profile
+
+
+2. load images
+Load a la mano
+Automatic load
+Remote load
+
+3. run the QLSI process
+The simplest code
+the options
+
+4. display data
+the dynamicFigure function
+the .figure method and the gui interface
+
+5. postprocess your images
+using command lines
+using the gui interface
+
+6. In silico experiments
+
+
+7. Object oriented programming with Matlab
+
+
+8. Appendix
+All the classes, their properties, their methods
+
+
+
+
