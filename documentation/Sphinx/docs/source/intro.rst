@@ -1,11 +1,10 @@
 .. include:: substitutions.rst
 
-
 Introduction
-------------
+============
 
 What are QLSI and CGM?
-^^^^^^^^^^^^^^^^^^^^^^
+----------------------
 
 **QLSI (quadriwave lateral shearing interferometry)** is an optical imaging technique capable of mapping both the intensity and the wavefront profile of a light beam.\ [#ACSP10_322]_ Here are for instance intensity and wavefront images of a Bessel-like beam:
 
@@ -34,7 +33,7 @@ The **PhaseLAB Matlab toolbox** is aimed to deal with :abbr:`QLSI (quadriwave la
 
 
 The 3 main functionalities of PhaseLAB
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------
 
 |PhaseLAB| can be used for 3 main purposes:
 
@@ -50,7 +49,7 @@ The 3 functionalities are sketched below:
    
 
 This Matlab toolbox uses OOP
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------
 
 Instead of using functions with an arbitrary large number of input parameters, which can be quite cumbersome, the |PhaseLAB| Matlab toolbox leverages on the elegance of **object oriented programming (OOP)**. Basically, instead of using a function that needs all the parameters of the microscope (magnification, numerical aperture, wavelength, etc) ::
 
@@ -64,7 +63,7 @@ one simply defines a variable (an object), ``MI``, that gathers all these proper
 
 
 Simple PhaseLAB codes
-^^^^^^^^^^^^^^^^^^^^^
+---------------------
 
 As explained above, there are three categories of codes. Here are some code examples for each of them, the simplest one can imagine.
 

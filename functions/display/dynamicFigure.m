@@ -57,7 +57,7 @@ for ii = 1:Np
             h.UserData.fun{ii} = @imagetf;
         case 'jet'
             h.UserData.fun{ii} = @imagejet;
-        case {'bk','gr'}
+        case {'bk','gr','bw'}
             h.UserData.fun{ii} = @imagebk;
     end
 end

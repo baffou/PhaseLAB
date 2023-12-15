@@ -48,7 +48,9 @@ The toolbox is accessible at `github.com/baffou/PhaseLAB <https://github.com/baf
 .. toctree::
    :maxdepth: 2
    :caption: Classes
+   :glob:
 
    Microscope
    Illumination
    ImageQLSI
+

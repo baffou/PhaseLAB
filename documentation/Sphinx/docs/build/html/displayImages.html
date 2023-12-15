@@ -56,6 +56,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Display experimental images</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#imagesc-imageph-imagebw-imagegb-imagejet">imagesc(), imageph(), imagebw(), imagegb, imagejet()</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dynamicfigure">dynamicFigure()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#figure">.figure()</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="example.html">Some Sphinx coding examples</a></li>
@@ -65,6 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Microscope.html">The Microscope class</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Illumination.html">The Illumination class</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ImageQLSI.html">The ImageQLSI class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/ImageQLSI/ZernikeRemove.html">ZernikeRemove(n,m,r0)</a></li>
 </ul>
 
         </div>
@@ -139,6 +141,53 @@
 </section>
 <section id="dynamicfigure">
 <h2>dynamicFigure()<a class="headerlink" href="#dynamicfigure" title="Link to this heading"></a></h2>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">dynamicFigure()</span></code> is a function that can display more than one type of image in one figure (wavefront and intensity for instance). It also enables the navigation thoughout a series of images using the left- and right-arrow keys of the keyboard.</p>
+<p>For instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">dynamicFigure</span><span class="p">(</span><span class="s1">&#39;ph&#39;</span><span class="p">,</span> <span class="n">IMlist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>displays the first figure of the ImageQLSI array. By pressing the right-arrow key, one can move to the next image.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/displayFigure1.jpg"><img alt="_images/displayFigure1.jpg" src="_images/displayFigure1.jpg" style="width: 400px;" /></a>
+</figure>
+<p>ONe ca also display more than one image per figure. For instance, to display both wavefront and intensity, the synthax is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">dynamicFigure</span><span class="p">(</span><span class="s1">&#39;ph&#39;</span><span class="p">,</span> <span class="n">IMlist</span><span class="p">,</span><span class="s1">&#39;bw&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">IMlist</span><span class="o">.</span><span class="n">T</span><span class="p">})</span>
+<span class="linenos">2</span><span class="n">linkAxes</span>
+</pre></div>
+</div>
+<p>Don’t forget the braces when calling the property of the object. The keywork ‘bw’ just means here display in gray scale. The command <code class="docutils literal notranslate"><span class="pre">linkAxes</span></code> is optional. It links the two images so that any rescaling of the images using the zoom tool applies to both images.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/displayFigure2.jpg"><img alt="_images/displayFigure2.jpg" src="_images/displayFigure2.jpg" style="width: 400px;" /></a>
+</figure>
+<p>There is no limit in the number of images that can be displayed. On can for instance write:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">dynamicFigure</span><span class="p">(</span><span class="s1">&#39;ph&#39;</span><span class="p">,</span> <span class="n">IMlist</span><span class="p">,</span><span class="s1">&#39;bw&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">IMlist</span><span class="o">.</span><span class="n">T</span><span class="p">},</span><span class="s1">&#39;bw&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">IMlist</span><span class="o">.</span><span class="n">DWx</span><span class="p">},</span><span class="s1">&#39;bw&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">IMlist</span><span class="o">.</span><span class="n">DWy</span><span class="p">})</span>
+<span class="linenos">2</span><span class="n">linkAxes</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/displayFigure4.png"><img alt="_images/displayFigure4.png" src="_images/displayFigure4.png" style="width: 600px;" /></a>
+</figure>
+<p>to display the wavefront gradients as well.</p>
+<p>To display a figure full screen, using the command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fullScreen</span>
+</pre></div>
+</div>
+<p>One can also use this function to display interferograms (object and reference):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">dynamicFigure</span><span class="p">(</span><span class="s1">&#39;bw&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">Itf</span><span class="o">.</span><span class="n">Itf</span><span class="p">},</span> <span class="s1">&#39;bw&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">Itf</span><span class="o">.</span><span class="n">Ref</span><span class="o">.</span><span class="n">Itf</span><span class="p">})</span>
+<span class="linenos">2</span><span class="n">linkAxes</span>
+<span class="linenos">3</span><span class="n">fullscreen</span>
+</pre></div>
+</div>
+</section>
+<section id="figure">
+<h2>.figure()<a class="headerlink" href="#figure" title="Link to this heading"></a></h2>
+<p>The class <code class="docutils literal notranslate"><span class="pre">ImageQLSI</span></code> has a method called <code class="xref py py-func docutils literal notranslate"><span class="pre">figure()</span></code>, aimed to display the wavefront and intensity images of an ImageQLSI object, or object array, on a GUI. The possible synthaxes are:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">IM</span><span class="o">.</span><span class="n">figure</span>
+<span class="n">IM</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">IM</span><span class="o">.</span><span class="n">figure</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>It displays an advanced Matlab GUI where the wavefront and intensity images are displayed, along with a set of tools, for data processing and rendering. The use of this QUI interface is described later on.</p>
 </section>
 </section>
 

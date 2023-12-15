@@ -14,6 +14,7 @@ classdef ImageQLSI   <   ImageMethods
         OPDnm   % Optical path difference image [nm]
         DWx     % OPD gradient along x
         DWy     % OPD gradient along y
+        DWn
         Ph      % Phase image
         Nx
         Ny
@@ -397,7 +398,7 @@ classdef ImageQLSI   <   ImageMethods
         function IMout = mean(IM,opt)
             arguments
                 IM
-                opt.Tsum = 
+                opt.Tsum logical = false
             end
             % computes the average image of a list of ImageQLSI objects.
             Nim = numel(IM);
@@ -411,7 +412,11 @@ classdef ImageQLSI   <   ImageMethods
                 DWxsum = DWysum+IM(ii).DWx;
                 DWysum = DWxsum+IM(ii).DWy;
             end
-            INT = intsum/Nim;
+            if opt.Tsum % sum the intensities in case QLSIprocess was used with the option Tnormalisation='subtraction'
+                INT = intsum;
+            else
+                INT = intsum/Nim;
+            end
             OPD = OPDsum/Nim;
             DWx = DWxsum/Nim;
             DWy = DWysum/Nim;
@@ -575,7 +580,7 @@ classdef ImageQLSI   <   ImageMethods
         function [obj, params] = level0(obj0,opt)
             arguments
                 obj0
-                opt.method (1,:) char {mustBeMember(opt.method,{'mean','average','median','boundary'})}= 'mean'
+                opt.method (1,:) char {mustBeMember(opt.method,{'mean','average','median','boundaryMedian'})}= 'mean'
                 % parameters for boxSelection()
                 opt.xy1 = []
                 opt.xy2 = []
@@ -588,7 +593,7 @@ classdef ImageQLSI   <   ImageMethods
             end
 
             if nargout
-                obj=copy(obj0);
+                obj=duplicate(obj0);
             else
                 obj=obj0;
             end
@@ -629,7 +634,7 @@ classdef ImageQLSI   <   ImageMethods
                     offsetFunction = @(im) mean(im(:));
                 elseif strcmpi(opt.method,'median')
                     offsetFunction = @(im) median(im(:));
-                elseif strcmpi(opt.method,'boundary')
+                elseif strcmpi(opt.method,'boundaryMedian')
                     offsetFunction = @(im) boundaryMedian(im);
                 else
                     error('unkown option')
@@ -735,6 +740,13 @@ classdef ImageQLSI   <   ImageMethods
             end
 
         end        
+
+        function val = get.DWn(obj)
+            if isempty(obj.DWx)
+                error('The gradients have not been calculated upon using QLSIprocess. Please use the option saveGradients=1')
+            end
+            val = sqrt(obj.DWx.^2 + obj.DWy.^2);
+        end
 
         function val = DWnorm(obj)
             if isempty(obj.DWx)

@@ -161,7 +161,6 @@ Home made camera including a relay-lens
 
 
 .. code-block:: python
-   :emphasize-lines: 3,5
 
    def some_function():
        interesting = False

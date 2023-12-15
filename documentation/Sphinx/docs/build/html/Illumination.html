@@ -59,8 +59,19 @@
 <p class="caption" role="heading"><span class="caption-text">Classes</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Microscope.html">The Microscope class</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">The Illumination class</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The Illumination class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#properties">Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#constructor">Constructor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ee0-pos">EE0(pos)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rotate-pos">rotate(pos)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jones-pos">Jones(pos)</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="ImageQLSI.html">The ImageQLSI class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/ImageQLSI/ZernikeRemove.html">ZernikeRemove(n,m,r0)</a></li>
 </ul>
 
         </div>
@@ -89,6 +100,140 @@
              
   <section id="the-illumination-class">
 <h1>The Illumination class<a class="headerlink" href="#the-illumination-class" title="Link to this heading"></a></h1>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Link to this heading"></a></h2>
+<table class="docutils align-center" id="id1">
+<caption><span class="caption-text">Public properties</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 15.8%" />
+<col style="width: 15.8%" />
+<col style="width: 15.8%" />
+<col style="width: 52.6%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>type</p></th>
+<th class="head"><p>default</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lambda</span></code></p></td>
+<td><p><em>double</em></p></td>
+<td></td>
+<td><p>illumination wavelength</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">I</span></code></p></td>
+<td><p><em>double</em></p></td>
+<td><p>1</p></td>
+<td><p>Illumination irradiance (power per unit area)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">direct</span></code></p></td>
+<td><p>(1,3) <em>double</em></p></td>
+<td><p>[0 0 1]</p></td>
+<td><p>unit vector defining the direction of propagation</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">polar</span></code></p></td>
+<td><p>(1,3) <em>char</em></p></td>
+<td><p>[1 0 0]</p></td>
+<td><p>polarization unit vector</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NA</span></code></p></td>
+<td><p><em>double</em></p></td>
+<td><p>0</p></td>
+<td><p>Numerical aperture of the illumination</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-center" id="id2">
+<caption><span class="caption-text">Dependent properties</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 15.8%" />
+<col style="width: 15.8%" />
+<col style="width: 15.8%" />
+<col style="width: 52.6%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>type</p></th>
+<th class="head"><p>dependence</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">n</span></code></p></td>
+<td><p>double</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">this.Medium.n</span></code></p></td>
+<td><p>refractive index of the upper medium</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nS</span></code></p></td>
+<td><p>double</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">this.Medium.nS</span></code></p></td>
+<td><p>refractive index of the lower medium</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">e0</span></code></p></td>
+<td><p>double</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">sqrt(2*obj.I/(obj.n*obj.c*obj.eps0));</span></code></p></td>
+<td><p>incident electric field</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">k0</span></code></p></td>
+<td><p>double</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">2*pi./obj.lambda;2*pi./obj.lambda;</span></code></p></td>
+<td><p>wavevector in vacuum</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">tr</span></code></p></td>
+<td><p>double</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">2*obj.n/(obj.n+obj.nS);</span></code></p></td>
+<td><p>light transmission at the interface</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="constructor">
+<h2>Constructor<a class="headerlink" href="#constructor" title="Link to this heading"></a></h2>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Prototypes</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Illumination</span><span class="p">(</span><span class="k">lambda</span><span class="p">)</span>
+<span class="n">Illumination</span><span class="p">(</span><span class="k">lambda</span><span class="p">,</span><span class="n">ME</span><span class="p">)</span>
+<span class="n">Illumination</span><span class="p">(</span><span class="k">lambda</span><span class="p">,</span><span class="n">ME</span><span class="p">,</span><span class="n">I</span><span class="p">)</span>
+<span class="n">Illumination</span><span class="p">(</span><span class="k">lambda</span><span class="p">,</span><span class="n">ME</span><span class="p">,</span><span class="n">I</span><span class="p">,</span><span class="n">polar</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>. polar can be a 2- or 3-vector, not necessarily unitary.</p>
+<p>where <code class="docutils literal notranslate"><span class="pre">lambda</span></code> is the illumination wavelength, <code class="docutils literal notranslate"><span class="pre">ME</span></code> is a <em>Medium</em> object, <code class="docutils literal notranslate"><span class="pre">I</span></code> is the illumination irradiance, <code class="docutils literal notranslate"><span class="pre">polar</span></code> is the light polarization vector. It can be a 2- or 3-vector, not necessarily unitary.</p>
+</section>
+<section id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Link to this heading"></a></h2>
+<section id="ee0-pos">
+<h3>EE0(pos)<a class="headerlink" href="#ee0-pos" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mf">1.2</span> <span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mf">1e-6</span><span class="p">;</span>
+<span class="n">IL</span><span class="o">.</span><span class="n">EE0</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>returns the value of the electric field of the illumination, in the absence of the object, at the position <code class="docutils literal notranslate"><span class="pre">pos</span></code> (3-vector) taking into account the reflection on the interface.</p>
+</section>
+<section id="rotate-pos">
+<h3>rotate(pos)<a class="headerlink" href="#rotate-pos" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">IL</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">IL</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="mi">45</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>rotates the <code class="docutils literal notranslate"><span class="pre">polar</span></code> and <code class="docutils literal notranslate"><span class="pre">direct</span></code> around the specified axes, <em>x</em>, <em>y</em>, and/or <em>z</em>.</p>
+</section>
+<section id="jones-pos">
+<h3>Jones(pos)<a class="headerlink" href="#jones-pos" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">IL</span><span class="o">.</span><span class="n">Jones</span><span class="p">(</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">&#39;QWP&#39;</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span> <span class="s1">&#39;HWP&#39;</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Applies optical plates to the illumination beam, according to the Jones matrix formulation. The inputs are the rotation angles of the wave plates.</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">'QWP'</span></code>: Quarter waveplate</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">'HWP'</span></code>: Half waveplate</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">'P'</span></code>: Linear polarizer</div>
+</div>
+</section>
+</section>
 </section>
 
 

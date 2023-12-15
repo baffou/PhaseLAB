@@ -59,7 +59,19 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Microscope.html">The Microscope class</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Illumination.html">The Illumination class</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">The ImageQLSI class</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The ImageQLSI class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#properties">Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#constructor">Constructor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#camlist">camList()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#highpassfilter-ncrop">highPassFilter(nCrop)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lowpassfilter-ncrop">lowPassFilter(nCrop)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#zernikeremove-n-m-r0">ZernikeRemove(n,m,r0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#untilt-objlist-opt">untilt(objList,opt)</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -88,6 +100,287 @@
              
   <section id="the-imageqlsi-class">
 <h1>The ImageQLSI class<a class="headerlink" href="#the-imageqlsi-class" title="Link to this heading"></a></h1>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Link to this heading"></a></h2>
+<table class="docutils align-center" id="id1">
+<caption><span class="caption-text">Public properties inherited from the superclass <em>ImageMethods</em>:</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 15.8%" />
+<col style="width: 15.8%" />
+<col style="width: 15.8%" />
+<col style="width: 52.6%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>type</p></th>
+<th class="head"><p>default</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Microscope</span></code></p></td>
+<td><p><em>Microscope</em></p></td>
+<td></td>
+<td><p>Microscope object</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Illumination</span></code></p></td>
+<td><p><em>Illumination</em></p></td>
+<td></td>
+<td><p>Illumination object</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">comment</span></code></p></td>
+<td><p>char</p></td>
+<td></td>
+<td><p>Any comment on the image</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-center" id="id2">
+<caption><span class="caption-text">Public properties</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 15.8%" />
+<col style="width: 15.8%" />
+<col style="width: 15.8%" />
+<col style="width: 52.6%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>type</p></th>
+<th class="head"><p>default</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">T</span></code></p></td>
+<td><p>double array</p></td>
+<td></td>
+<td><p>Intensity image</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">OPD</span></code></p></td>
+<td><p>double array</p></td>
+<td></td>
+<td><p>OPD image</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-center" id="id3">
+<caption><span class="caption-text">Read-only properties</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 15.8%" />
+<col style="width: 15.8%" />
+<col style="width: 15.8%" />
+<col style="width: 52.6%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>type</p></th>
+<th class="head"><p>default</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DWx</span></code></p></td>
+<td><p>double array</p></td>
+<td></td>
+<td><p>OPD gradient along <em>x</em></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">DWy</span></code></p></td>
+<td><p>double array</p></td>
+<td></td>
+<td><p>OPD gradient along <em>y</em></p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-center" id="id4">
+<caption><span class="caption-text">Dependent properties</span><a class="headerlink" href="#id4" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 15.8%" />
+<col style="width: 15.8%" />
+<col style="width: 15.8%" />
+<col style="width: 52.6%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>type</p></th>
+<th class="head"><p>dependence</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OPDnm</span></code></p></td>
+<td><p>double array</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">this.OPD*1e9</span></code>;</p></td>
+<td><p>OPD in nm</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">DWn</span></code></p></td>
+<td><p>double array</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">sqrt(this.DWx.^2</span> <span class="pre">+</span> <span class="pre">this.DWy.^2);</span></code></p></td>
+<td><p>norm of the OPD gradient</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Ph</span></code></p></td>
+<td><p>double array</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">2*pi/this.lambda*obj.OPD;</span></code></p></td>
+<td><p>Phase image</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Nx</span></code></p></td>
+<td><p>double</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">size(this.OPD,2);</span></code></p></td>
+<td><p>Number of columns</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Ny</span></code></p></td>
+<td><p>double</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">size(this.OPD,1);</span></code></p></td>
+<td><p>Number of rows</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="constructor">
+<h2>Constructor<a class="headerlink" href="#constructor" title="Link to this heading"></a></h2>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Prototype</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span> <span class="o">=</span> <span class="n">ImageQLSI</span><span class="p">(</span><span class="n">INT</span><span class="p">,</span><span class="n">OPD</span><span class="p">,</span><span class="n">MI</span><span class="p">,</span><span class="n">IL</span><span class="p">)</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">ImageQLSI</span><span class="p">(</span><span class="n">INT</span><span class="p">,</span><span class="n">OPD</span><span class="p">,</span><span class="n">MI</span><span class="p">,</span><span class="n">IL</span><span class="p">,</span><span class="s2">&quot;remotePath&quot;</span><span class="p">,</span><span class="n">logical</span><span class="p">)</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">ImageQLSI</span><span class="p">(</span><span class="n">INT</span><span class="p">,</span><span class="n">OPD</span><span class="p">,</span><span class="n">MI</span><span class="p">,</span><span class="n">IL</span><span class="p">,</span><span class="s2">&quot;fileName&quot;</span><span class="p">,</span><span class="n">char</span><span class="p">)</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">ImageQLSI</span><span class="p">(</span><span class="n">INT</span><span class="p">,</span><span class="n">OPD</span><span class="p">,</span><span class="n">MI</span><span class="p">,</span><span class="n">IL</span><span class="p">,</span><span class="s2">&quot;imageNumber&quot;</span><span class="p">,</span><span class="nb">int</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<table class="docutils align-center" id="id6">
+<caption><span class="caption-text">function inputs</span><a class="headerlink" href="#id6" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 15.8%" />
+<col style="width: 84.2%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">INT</span></code></p></th>
+<th class="head"><p>Intensity image. Can be either a char (name of the file) or a matrix</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OPD</span></code></p></td>
+<td><p>OPD image. Can be either a char (name of the file) or a matrix</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MI</span></code></p></td>
+<td><p><em>Microscope</em> object</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">IL</span></code></p></td>
+<td><p><em>Illumination</em> object</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;remotePath&quot;</span></code></p></td>
+<td><p>Tells whether the T and OPD matrices should be actually saved in the RAM (<code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">false</span></code>), or rather on the hard disk (<code class="docutils literal notranslate"><span class="pre">=true</span></code>).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;fileName&quot;</span></code></p></td>
+<td><p>Prefix of the T and OPD fileNames to be saved on the hard disk in case the option <code class="docutils literal notranslate"><span class="pre">&quot;remotePath&quot;</span></code> is set to <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;imageNumber&quot;</span></code></p></td>
+<td><p>Number of the image</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Link to this heading"></a></h2>
+<section id="camlist">
+<h3>camList()<a class="headerlink" href="#camlist" title="Link to this heading"></a></h3>
+<p>Displays the list of predefined camera names.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">MI</span><span class="o">.</span><span class="n">camList</span>
+
+<span class="n">ans</span> <span class="o">=</span>
+
+    <span class="mi">5</span><span class="n">x1</span> <span class="n">cell</span> <span class="n">array</span>
+
+    <span class="p">{</span><span class="s1">&#39;Sid4Element-Sona&#39;</span><span class="p">}</span>
+    <span class="p">{</span><span class="s1">&#39;Sid4Element&#39;</span>     <span class="p">}</span>
+    <span class="p">{</span><span class="s1">&#39;Silios_mono&#39;</span>     <span class="p">}</span>
+    <span class="p">{</span><span class="s1">&#39;sC8-830&#39;</span>         <span class="p">}</span>
+    <span class="p">{</span><span class="s1">&#39;sC8-944&#39;</span>         <span class="p">}</span>
+</pre></div>
+</div>
+<p>This list gives the possible values of the <code class="docutils literal notranslate"><span class="pre">CGcam</span></code> input in the Microscope constructor.</p>
+</section>
+<section id="highpassfilter-ncrop">
+<h3>highPassFilter(nCrop)<a class="headerlink" href="#highpassfilter-ncrop" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">IM</span><span class="o">.</span><span class="n">highPassFilter</span><span class="p">(</span><span class="n">nCrop</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">nCrop</span></code> is an integer.</p>
+<p>Remove the low frequencies of the OPD image simply by <code class="docutils literal notranslate"><span class="pre">IM.OPD</span> <span class="pre">-</span> <span class="pre">imgaussfilt(IM.OPD,nCrop);</span></code>.</p>
+</section>
+<section id="lowpassfilter-ncrop">
+<h3>lowPassFilter(nCrop)<a class="headerlink" href="#lowpassfilter-ncrop" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">IM</span><span class="o">.</span><span class="n">lowPassFilter</span><span class="p">(</span><span class="n">nCrop</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">nCrop</span></code> is an integer.</p>
+<p>Applies a Gaussian filter to the OPD image simply by <code class="docutils literal notranslate"><span class="pre">imgaussfilt(IM.OPD,nCrop);</span></code>.</p>
+</section>
+<section id="zernikeremove-n-m-r0">
+<h3>ZernikeRemove(n,m,r0)<a class="headerlink" href="#zernikeremove-n-m-r0" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">IM</span><span class="o">.</span><span class="n">ZernikeRemove</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">r0</span><span class="p">);</span>
+<span class="n">IM2</span> <span class="o">=</span> <span class="n">IM</span><span class="o">.</span><span class="n">ZernikeRemove</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">r0</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">n</span></code>, <code class="docutils literal notranslate"><span class="pre">m</span></code> are the orders of the Zernike moment.</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">r0</span></code> is the radius of the area over which the Zerninke moment is calculated.</div>
+</div>
+<p>If an output <code class="docutils literal notranslate"><span class="pre">IM2</span></code> is specified, IM is copied. If not, IM is modified.</p>
+</section>
+<section id="untilt-objlist-opt">
+<h3>untilt(objList,opt)<a class="headerlink" href="#untilt-objlist-opt" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">IM</span><span class="o">.</span><span class="n">untilt</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+<span class="n">IM2</span> <span class="o">=</span> <span class="n">IM</span><span class="o">.</span><span class="n">untilt</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+<span class="n">IM</span><span class="o">.</span><span class="n">untilt</span><span class="p">(</span><span class="s1">&#39;xy1&#39;</span><span class="p">,[</span><span class="mi">1</span> <span class="mi">10</span><span class="p">],</span> <span class="s1">&#39;xy2&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">100</span> <span class="mi">210</span><span class="p">])</span>
+<span class="n">IM</span><span class="o">.</span><span class="n">untilt</span><span class="p">(</span><span class="n">Center</span> <span class="o">=</span> <span class="s1">&#39;Manual&#39;</span><span class="p">)</span>
+
+
+
+    <span class="n">arguments</span>
+        <span class="n">objList</span>
+        <span class="o">%</span> <span class="n">parameters</span> <span class="k">for</span> <span class="n">boxSelection</span><span class="p">()</span>
+        <span class="n">opt</span><span class="o">.</span><span class="n">xy1</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">opt</span><span class="o">.</span><span class="n">xy2</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">opt</span><span class="o">.</span><span class="n">Center</span> <span class="o">=</span> <span class="s1">&#39;Auto&#39;</span> <span class="o">%</span> <span class="s1">&#39;Auto&#39;</span><span class="p">,</span> <span class="s1">&#39;Manual&#39;</span> <span class="ow">or</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span>
+        <span class="n">opt</span><span class="o">.</span><span class="n">Size</span> <span class="o">=</span> <span class="s1">&#39;Auto&#39;</span> <span class="o">%</span> <span class="s1">&#39;Auto&#39;</span><span class="p">,</span> <span class="s1">&#39;Manual&#39;</span><span class="p">,</span> <span class="n">d</span> <span class="ow">or</span> <span class="p">[</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">]</span>
+        <span class="n">opt</span><span class="o">.</span><span class="n">twoPoints</span> <span class="n">logical</span> <span class="o">=</span> <span class="n">false</span>
+        <span class="n">opt</span><span class="o">.</span><span class="n">params</span> <span class="n">double</span> <span class="o">=</span> <span class="n">double</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span> <span class="o">%</span> <span class="o">=</span> <span class="p">[</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">]</span>
+        <span class="n">opt</span><span class="o">.</span><span class="n">shape</span> <span class="n">char</span> <span class="p">{</span><span class="n">mustBeMember</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">shape</span><span class="p">,{</span><span class="s1">&#39;square&#39;</span><span class="p">,</span><span class="s1">&#39;rectangle&#39;</span><span class="p">,</span><span class="s1">&#39;Square&#39;</span><span class="p">,</span><span class="s1">&#39;Rectangle&#39;</span><span class="p">})}</span><span class="o">=</span> <span class="s1">&#39;square&#39;</span>
+        <span class="n">opt</span><span class="o">.</span><span class="n">app</span> <span class="n">PhaseLABgui</span> <span class="o">=</span> <span class="n">PhaseLABgui</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
+    <span class="n">end</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">n</span></code>, <code class="docutils literal notranslate"><span class="pre">m</span></code> are the orders of the Zernike moment.</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">r0</span></code> is the radius of the area over which the Zerninke moment is calculated.</div>
+</div>
+<blockquote>
+<div><p>function [objList2,params] = untilt(objList,opt)
+function IMout = mean(IM,opt)
+function IM2 = smooth(IM,nn,hfigInit)
+function objList2 = square(objList)
+function objList2 = phase0(objList,option)
+function obj = setFcrops(obj,crops)
+function obj2 = binning(obj,n)
+function obj = setProcessingSoftware(obj,name)
+function [obj, params] = level0(obj0,opt)
+function obj2 = gauss(obj,nn)
+function obj = rot90(obj0,k)
+function obj = mirrorH(obj0)
+function obj = mirrorV(obj0)
+function val = get.DWn(obj)
+function val = DWnorm(obj)
+function val = D2Wnorm(obj)
+function val = PDCM(obj)
+function val = DM(obj)
+function PDCMdisplay(obj,hfig)
+function obj2List = download(objList)
+function save(objList,folder,varargin)
+function write(obj,obj_in)
+function IMout = propagation(IM, z, opt)</p>
+</div></blockquote>
+</section>
+</section>
 </section>
 
 

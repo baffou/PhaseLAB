@@ -132,6 +132,17 @@ Lorem ipsum [Ref]_ dolor sit amet.
 .. This is a comment.
 
 
+
+.. code-block:: python
+   :emphasize-lines: 3,5
+
+   def some_function():
+       interesting = False
+       print('This line is highlighted.')
+       print('This one is not...')
+       print('...but this one is.')
+
+
 ..
    This whole indented block
    is a comment.
@@ -149,3 +160,5 @@ Lorem ipsum [Ref]_ dolor sit amet.
 
 .. [#f1] Text of the first footnote.
 .. [#f2] Text of the second footnote.
+
+
