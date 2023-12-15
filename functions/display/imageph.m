@@ -31,12 +31,12 @@ set(gca,'YDir','normal')
 if opt.reverseColor
     colormap(gca,flipud(phase1024));
 else
-    colormap(gca,phase1024);
+    colormap(gca,Sepia);
 end
 
 if Amax~=0 && Amin==0
-    caxis([min(A(:)) Amax])
+    clim([min(A(:)) Amax])
 elseif Amax~=0 && Amin~=0
-    caxis([Amin Amax])
+    clim([Amin Amax])
 end
 

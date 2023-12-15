@@ -32,7 +32,10 @@ classdef Objective  <  handle & matlab.mixin.Copyable
         function obj = Objective(Mobj,NA,brand)
             % . Objective() or Objective(Mobj,NA) or Objective(Mobj,NA,brand)
             if nargin~=0
-                if nargin==2
+                if nargin == 1
+                    obj.Mobj = abs(Mobj);
+                    obj.NA = 1;
+                elseif nargin==2
                     obj.Mobj = abs(Mobj);
                     obj.NA = NA;
                 elseif nargin==3

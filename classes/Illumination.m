@@ -52,6 +52,9 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
             % (lambda[,Medium(n,nS),I,polar]). polar can be a 2- or 3-vector, not necessarily unitary.
             if nargin~=0
                 obj.lambda = lambda;
+                if nargin == 1
+                    obj.Medium = Medium('water','glass');
+                end
                 if nargin>=2
                     if ~isa(ME,'Medium')
                         error('The 2nd input must be a Medium object')

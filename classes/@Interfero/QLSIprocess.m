@@ -77,7 +77,9 @@ Ny0 = 0;
 
 for ii = 1:Nf
 
-    fprintf('Interfero %d / %d, ',ii,Nf)
+    if Nf>1
+        fprintf('Interfero %d / %d, ',ii,Nf)
+    end
 
     % cancels the offset of the camera
     if isnumeric(opt.RemoveCameraOffset) && opt.RemoveCameraOffset~=1 % an offset is set manually
@@ -316,17 +318,19 @@ for ii = 1:Nf
     
 %    if updateRefFcrop==1
         Itfi.Ref.Fcrops = [cropParam0; cropParam1; cropParam2];
-        fprintf(['Measured zeta factor: ' num2str(cropParam1.zeta) '\n'])
-        fprintf(['Theoreti zeta factor: ' num2str(MI.CGcam.zeta) '\n'])
-        if cropParam1.zeta-MI.CGcam.zeta>0.1
+        if cropParam1.zeta-MI.CGcam.zeta>0.05
             warning('the zeta measured and theoretical values are much different\n')
+        fprintf(['Measured zeta factor: ' num2str(cropParam1.zeta) '\n'])
+        fprintf(['Theo. zeta factor   : ' num2str(MI.CGcam.zeta) '\n'])
         end
 %    end
 
     IM(ii).ItfFileName = Itf(ii).fileName;
     IM(ii).comment = Itf(ii).comment;
 
-    fprintf('\n')
+   if Nf>1
+       fprintf('\n')
+   end
 end
 
 if Nf>=2 % delete waitbar
