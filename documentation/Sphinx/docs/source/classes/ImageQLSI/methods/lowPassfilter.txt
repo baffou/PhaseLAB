@@ -1,0 +1,12 @@
+.. dropdown:: **lowPassFilter**
+        
+
+    .. code-block:: python
+
+        IM.lowPassFilter(nCrop)
+
+
+    ``nCrop`` is an integer.
+
+    Applies a Gaussian filter to the OPD image simply by ``imgaussfilt(IM.OPD,nCrop);``.
+

@@ -1,0 +1,12 @@
+.. dropdown:: **highPassFilter**
+        
+
+
+
+    .. code-block:: python
+
+        IM.highPassFilter(nCrop)
+
+    ``nCrop`` is an integer.
+
+    Remove the low frequencies of the OPD image simply by ``IM.OPD - imgaussfilt(IM.OPD,nCrop);``.

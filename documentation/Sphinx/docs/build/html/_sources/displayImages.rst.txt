@@ -1,10 +1,10 @@
 .. include:: substitutions.rst
     
 Display experimental images
----------------------------
+===========================
 
 imagesc(), imageph(), imagebw(), imagegb, imagejet()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------------------
 Once the Image QLSI objects have been created, they contained all the information regarding the QLSI images. In particular, the OPD and intensity images (matrices) can be accessed by writing ``IM.OPD`` and ``IM.T``.
 
 The images can be displayed using any standard function of Matlab. We recommend :py:func:`imagesc` this way:
@@ -47,7 +47,7 @@ Other similar functions are defined, each using a different colorscale, namely
 
 
 dynamicFigure()
-^^^^^^^^^^^^^^^
+---------------
 
 :py:func:`dynamicFigure` is a function that can display more than one type of image in one figure (wavefront and intensity for instance). It also enables the navigation thoughout a series of images using the left- and right-arrow keys of the keyboard.
 
@@ -107,11 +107,11 @@ One can also use this function to display interferograms (object and reference):
     dynamicFigure('bw', {Itf.Itf}, 'bw', {Itf.Ref.Itf})
     linkAxes
     fullscreen
-    
+
 
 
 .figure()
-^^^^^^^^^^^^^^^^^^^
+---------
 
 The class ``ImageQLSI`` has a method called :py:func:`figure`, aimed to display the wavefront and intensity images of an ImageQLSI object, or object array, on a GUI. The possible synthaxes are::
 

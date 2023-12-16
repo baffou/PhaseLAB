@@ -1,7 +1,7 @@
 .. include:: substitutions.rst
     
 Process experimental images
----------------------------
+===========================
 
 Once the *Interfero* object, or object array, is created, the interferograms can be converted into intensity and wavefront images using the :py:func:`QLSIprocess` method of the class *Interfero*. Here is the synthax:
 

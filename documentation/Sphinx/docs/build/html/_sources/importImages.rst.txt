@@ -2,12 +2,12 @@
 
 
 Import experimental images
---------------------------
+==========================
 
 Experimental images (interferograms) are imported as matrices, embedded in *Interfero* objects. There are at least two images to import: the object interferogram and the reference interferogram.
 
 Manual import
-^^^^^^^^^^^^^
+-------------
 
 Let us import the tiff images, named *Itf.tiff* and *Ref.tiff*, located in the folder *data*:
 
@@ -23,7 +23,7 @@ Let us import the tiff images, named *Itf.tiff* and *Ref.tiff*, located in the f
 
 
 Automatic import
-^^^^^^^^^^^^^^^^
+----------------
 
 If the images have been created using a well-defined acquisition software, the software can be specified when creating the microscope. And the importation of the images gets simplified, using the function :py:func:`importItfRef`. For instance here, one assumes that the images located in the folder data have been saved using PhaseLIVE:
 

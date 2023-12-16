@@ -1,5 +1,5 @@
 Build the optical setup
------------------------
+=======================
 
 In CGM, the grating-camera distance is the only required knowledge to be able to reconstruct a wavefront profile from a recorded interferogram. One does not need to know the wavelength or the microscope magnification. However, in the first part of a PhaseLAB, we shall nevertheless indicate all the parameters of the microscope, because some postprocessing tools require the knowledge of some general features of the microscope.
 
@@ -8,7 +8,7 @@ In PhaseLAB, a microscope is an object, from the class ``Microscope``. We usuall
 
 
 Defining the Illumination
-^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------
 
 Here is the simplest definition of an Illumination object::
 
@@ -33,7 +33,7 @@ The ``IL`` variable contains all the properties of the illumination. Since only 
 5 public properties are displayed. For instance, the wavelength we just specified is the ``lambda`` property. One can access this parameter by writing ``IL.lambda``. The other parameters, ``I``, ``direct``, ``polar``,  and ``NA``, are used when using the simulation functionalites of the PhaseLAB toolbox. To process experimental images, they are ignored, and only the wavelength matters.
 
 Defining the Microscope
-^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 Here is the simplest definition of a Microscope object::
 
     >> MI = Microscope(100);
@@ -96,10 +96,10 @@ The properties ``Mobj``is set to 100, the value we specified when building the m
 
 
 Defining a Camera
-^^^^^^^^^^^^^^^^^
+-----------------
 
 Compact camera
-""""""""""""""
+**************
 
 
 The main package of the folder contains several subfolders. One of them, called *CGcameras*, contains of the ascii (.txt) files gathering the properties of QLSI cameras.  For instance, the commercial cameras from Silios and Phasics companies can be selected. Let us pich the Silios one, called *Silios_mono*. For this purpose, one can use the constructor of the CGcamera class with the name of the camera as the only input::
@@ -157,7 +157,7 @@ These parameters represent respectively:
 
 
 Home made camera including a relay-lens
-"""""""""""""""""""""""""""""""""""""""
+***************************************
 
 
 .. code-block:: python

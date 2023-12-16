@@ -1,0 +1,37 @@
+
+Methods
+-------
+
+EE0(pos) 
+********
+
+.. code-block:: python
+
+    pos = [0 1.2 0]*1e-6;
+    IL.EE0(pos)
+
+returns the value of the electric field of the illumination, in the absence of the object, at the position ``pos`` (3-vector) taking into account the reflection on the interface.
+
+rotate(pos) 
+***********
+
+.. code-block:: python
+
+    IL.rotate('z',30)
+    IL.rotate('x',45,'y',30,'z',10)
+
+rotates the ``polar`` and ``direct`` around the specified axes, *x*, *y*, and/or *z*.
+
+ 
+Jones(pos) 
+**********
+
+.. code-block:: python
+
+    IL.Jones('P', 45, 'QWP',90, 'HWP',30, ...)
+
+| Applies optical plates to the illumination beam, according to the Jones matrix formulation. The inputs are the rotation angles of the wave plates.
+| ``'QWP'``: Quarter waveplate
+| ``'HWP'``: Half waveplate
+| ``'P'``: Linear polarizer
+

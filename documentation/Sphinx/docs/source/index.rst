@@ -11,8 +11,12 @@
 
 
 
+
+
 PhaseLAB documentation
 ######################
+
+
 
 |PhaseLAB| is a Matlab toolbox aimed at dealing with quantitative phase images. It has been developed by Guillaume Baffou, CNRS research scientist at the Fresnel Institute (Marseille, France).
 
@@ -25,6 +29,7 @@ The toolbox is accessible at `github.com/baffou/PhaseLAB <https://github.com/baf
 .. * :ref:`genindex`
 .. * :ref:`search`
 
+.. # = - * " ^ 
 
 **Table of Content**:
 
@@ -33,7 +38,6 @@ The toolbox is accessible at `github.com/baffou/PhaseLAB <https://github.com/baf
    :maxdepth: 2
 
    intro
-
 
 .. toctree::
    :maxdepth: 2
@@ -47,10 +51,23 @@ The toolbox is accessible at `github.com/baffou/PhaseLAB <https://github.com/baf
 
 .. toctree::
    :maxdepth: 2
+   :caption: Tutorial - in Silico
+
+
+.. toctree::
+   :maxdepth: 2
    :caption: Classes
+
+   Microscope <classes/Microscope>
+   Illumination <classes/Illumination>
+   ImageQLSI <classes/ImageQLSI>
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Functions
    :glob:
 
-   Microscope
-   Illumination
-   ImageQLSI
+   functions/*
+
+
 
