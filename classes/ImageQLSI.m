@@ -14,7 +14,6 @@ classdef ImageQLSI   <   ImageMethods
         OPDnm   % Optical path difference image [nm]
         DWx     % OPD gradient along x
         DWy     % OPD gradient along y
-        DWn
         Ph      % Phase image
         Nx
         Ny
@@ -55,7 +54,7 @@ classdef ImageQLSI   <   ImageMethods
                 OPD = []     % fileName or Matrix
                 MI  Microscope = Microscope.empty()
                 IL  Illumination = Illumination.empty
-                opt.remotePath =[]
+                opt.remotePath =[] % path on the computer to save the T and OPD matrices. Used to save space on the RAM
                 opt.fileName =[]
                 opt.imageNumber =[]
             end
@@ -260,7 +259,7 @@ classdef ImageQLSI   <   ImageMethods
 
         end
 
-        function obj2 = lowPassFilter(obj,nCrop)
+        function obj2 = smooth(obj,nCrop)
             arguments
                 obj
                 nCrop double = 10
@@ -428,36 +427,6 @@ classdef ImageQLSI   <   ImageMethods
             IMout.OPDfileName = 'Average images';
         end
 
-        function IM2 = smooth(IM,nn,hfigInit)
-            if nargout
-                IM2=copy(IM);
-            else
-                IM2=IM;
-            end
-            %smooth(IM,nn,hfigInit)
-            % nn: intensity of the smoothing in pixels
-            if nargin>=3
-                if ~strcmp(hfigInit.UserData{2},'px')
-                    error('Please select px units to use the alpha function')
-                end
-            end
-            if isa(IM,'ImageEM')
-                if norm(IM.EE0)==0
-                    warning('As E0 is zero at the image plane, the T map is not normalized and the alpha won''t be absolutely measured.')
-                end
-            end
-            if nargin==1
-                nn = 4;
-            end
-            for ii = 1:numel(IM)
-                IM2(ii).T = imgaussfilt(IM(ii).T,nn);
-                IM2(ii).OPD = imgaussfilt(IM(ii).OPD,nn);
-            end
-            if nargin==3
-                hfigInit.UserData{5} = IMout;
-            end
-        end
-
         function objList2 = square(objList)
             if nargout
                 objList2=copy(objList);
@@ -473,38 +442,6 @@ classdef ImageQLSI   <   ImageMethods
                 y2 = objList(io).Ny/2  +Npx/2;
                 objList2(io).T = objList(io).T(y1:y2,x1:x2);
                 objList2(io).OPD = objList(io).OPD(y1:y2,x1:x2);
-            end
-
-        end
-
-        function objList2 = phase0(objList,option)
-            if nargout
-                objList2=copy(objList);
-            else
-                objList2=objList;
-            end
-            manual = 0;
-            if nargin==2
-                if strcmp(option,'manual')
-                    objList.figure
-                    manual = 1;
-                    roi = drawrectangle;
-                    x1 = round(roi.Position(1));
-                    x2 = round(roi.Position(1)+roi.Position(3));
-                    y1 = round(roi.Position(2));
-                    y2 = round(roi.Position(2)+roi.Position(4));
-                    mean(mean(objList(1).OPD(y1:y2,x1:x2)))
-                else
-                    error('unkown option')
-                end
-            end
-            No = numel(objList);
-            for io = 1:No
-                if manual==1
-                    objList2(io).OPD = objList(io).OPD-mean(mean(objList(io).OPD(y1:y2,x1:x2)));
-                else
-                    objList2(io).OPD = objList(io).OPD-mean(objList(io).OPD(:));
-                end
             end
 
         end
@@ -574,9 +511,7 @@ classdef ImageQLSI   <   ImageMethods
             end
 
         end
-
-
-        
+      
         function [obj, params] = level0(obj0,opt)
             arguments
                 obj0
@@ -656,21 +591,7 @@ classdef ImageQLSI   <   ImageMethods
                 val = median(bound);
             end
         end        
-        
-        function obj2 = gauss(obj,nn)
-            if nargout
-                obj2=copy(obj);
-            else
-                obj2=obj;
-            end
-            No = numel(obj);
-            for io = 1:No
-                obj2(io).T = obj(io).T-imgaussfilt(obj(io).T,nn);
-                obj2(io).OPD = obj(io).OPD-imgaussfilt(obj(io).OPD,nn);
-            end
-
-        end
-
+       
         function obj = rot90(obj0,k)
             % rotate the images of the object by k*90°
             arguments
@@ -697,7 +618,7 @@ classdef ImageQLSI   <   ImageMethods
 
         end            
     
-        function obj = mirrorH(obj0)
+        function obj = flipud(obj0)
             % Mirror image with an horizontal mirror
 
             if nargout
@@ -719,7 +640,7 @@ classdef ImageQLSI   <   ImageMethods
 
         end            
     
-        function obj = mirrorV(obj0)
+        function obj = fliplr(obj0)
             % Mirror image with an horizontal mirror
 
             if nargout
@@ -741,12 +662,39 @@ classdef ImageQLSI   <   ImageMethods
 
         end        
 
-        function val = get.DWn(obj)
-            if isempty(obj.DWx)
-                error('The gradients have not been calculated upon using QLSIprocess. Please use the option saveGradients=1')
+        function IMout = propagation(IM, z, opt)
+            % numerical propagation over the distance z
+            arguments
+                IM
+                z      {mustBeNumeric}
+                opt.n  {mustBeNumeric} = [] % refractive index of the propagation medium
+            
+                opt.dx {mustBeNumeric} = 0 % dx and dy shift the phase of the image by dx and dy pixels
+                opt.dy {mustBeNumeric} = 0 %  (not necessarily integers)
             end
-            val = sqrt(obj.DWx.^2 + obj.DWy.^2);
+
+            if nargout
+                IMout=copy(IM);
+            else
+                IMout=IM;
+            end
+
+            No = numel(IM);
+            for io = 1:No
+                if isempty(opt.n)
+                    n = IM(io).Illumination.Medium.nS;
+                else
+                    n = opt.n;
+                end
+                image=sqrt(IM(io).T).*exp(1i*IM(io).Ph);
+                [~, Pha, Int]=imProp(image,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
+                [~, Pha0]=imProp(image*0+1,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
+    
+                IMout(io).T0 = Int;
+                IMout(io).OPD0 = (Pha-Pha0)*IM(io).Illumination.lambda/(2*pi);
+            end
         end
+
 
         function val = DWnorm(obj)
             if isempty(obj.DWx)
@@ -770,9 +718,9 @@ classdef ImageQLSI   <   ImageMethods
             val = imgaussfilt(dxDWy-dyDWx,3);
         end
 
-        function val = DM(obj)
+        function val = dmd(obj)
             % returns the dry mass density in pg/µm^2
-            val=5.56*1e-3 * obj.OPD*1e9;
+            val = 5.56*1e-3 * obj.OPD*1e9;
         end
 
         function PDCMdisplay(obj,hfig)
@@ -858,54 +806,6 @@ classdef ImageQLSI   <   ImageMethods
 
         end
 
-        function write(obj,obj_in)
-            % makes obj2 = obj, but without giving a new handle
-            propList = ["T0","OPD0","DWx0","DWy0","ItfFileName",...
-                "TfileName","OPDfileName","imageNumber","folder"...
-                "Microscope","Illumination","comment","processingSoft","pxSizeCorrection"];
-
-            if numel(obj) ~= numel(obj_in) 
-                error('The input and output image lists must have the same number of elements')
-            end
-            for io = 1:numel(obj_in)
-                for propName = propList
-                    obj(io).(propName) = obj_in(io).(propName);
-                end
-            end
-        end
-
-        function IMout = propagation(IM, z, opt)
-            % numerical propagation over the distance z
-            arguments
-                IM
-                z      {mustBeNumeric}
-                opt.n  {mustBeNumeric} = [] % refractive index of the propagation medium
-            
-                opt.dx {mustBeNumeric} = 0 % dx and dy shift the phase of the image by dx and dy pixels
-                opt.dy {mustBeNumeric} = 0 %  (not necessarily integers)
-            end
-
-            if nargout
-                IMout=copy(IM);
-            else
-                IMout=IM;
-            end
-
-            No = numel(IM);
-            for io = 1:No
-                if isempty(opt.n)
-                    n = IM(io).Illumination.Medium.nS;
-                else
-                    n = opt.n;
-                end
-                image=sqrt(IM(io).T).*exp(1i*IM(io).Ph);
-                [~, Pha, Int]=imProp(image,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
-                [~, Pha0]=imProp(image*0+1,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
-    
-                IMout(io).T0 = Int;
-                IMout(io).OPD0 = (Pha-Pha0)*IM(io).Illumination.lambda/(2*pi);
-            end
-        end
     end
 
     methods(Static)

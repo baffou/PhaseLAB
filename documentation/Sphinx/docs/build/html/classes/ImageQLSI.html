@@ -10,6 +10,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ec619127" />
 
   
     <link rel="shortcut icon" href="../_static/favicon2.png"/>
@@ -22,10 +23,11 @@
         <script src="../_static/documentation_options.js?v=9f5556dd"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="DDA" href="../functions/DDA.html" />
+    <link rel="next" title="The Interfero class" href="Interfero.html" />
     <link rel="prev" title="The Illumination class" href="Illumination.html" /> 
 </head>
 
@@ -57,11 +59,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../importImages.html">Import experimental images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../processImages.html">Process experimental images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../displayImages.html">Display experimental images</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../example.html">Some Sphinx coding examples</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Classes</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="Microscope.html">Microscope</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Illumination.html">Illumination</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">ImageQLSI</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#attributes">Attributes</a></li>
@@ -69,21 +69,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a></li>
 </ul>
 </li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../functions/DDA.html">DDA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functions/Laserbeams.html">Laser beams</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functions/basic.html">basic</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functions/colorCamera.html">color camera</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functions/display.html">display</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functions/inSilico.html">in Silico</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functions/inout.html">in &amp; out</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functions/integration.html">integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functions/magicWand.html">Segmentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functions/polarCamera.html">Polar Camera</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functions/postprocessing.html">Postprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functions/processing.html">Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Interfero.html">Interfero</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Microscope.html">Microscope</a></li>
 </ul>
 
         </div>
@@ -112,6 +99,7 @@
              
   <section id="the-imageqlsi-class">
 <h1>The ImageQLSI class<a class="headerlink" href="#the-imageqlsi-class" title="Link to this heading"></a></h1>
+<p><em>ImageQLSI</em> is handle class.</p>
 <section id="attributes">
 <h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h2>
 <details class="sphinx-bs dropdown card mb-3">
@@ -121,8 +109,8 @@
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<table class="docutils align-center" id="id1">
-<caption><span class="caption-text">Public attributes inherited from the superclass <em>ImageMethods</em>:</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<table class="docutils align-center" id="id2">
+<caption><span class="caption-text">Public attributes inherited from the superclass <em>ImageMethods</em>:</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 15.8%" />
 <col style="width: 15.8%" />
@@ -154,8 +142,8 @@
 </tr>
 </tbody>
 </table>
-<table class="docutils align-center" id="id2">
-<caption><span class="caption-text">Public attributes</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<table class="docutils align-center" id="id3">
+<caption><span class="caption-text">Public attributes</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 15.8%" />
 <col style="width: 15.8%" />
@@ -182,8 +170,8 @@
 </tr>
 </tbody>
 </table>
-<table class="docutils align-center" id="id3">
-<caption><span class="caption-text">Read-only attributes</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
+<table class="docutils align-center" id="id4">
+<caption><span class="caption-text">Read-only attributes</span><a class="headerlink" href="#id4" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 15.8%" />
 <col style="width: 15.8%" />
@@ -210,8 +198,8 @@
 </tr>
 </tbody>
 </table>
-<table class="docutils align-center" id="id4">
-<caption><span class="caption-text">Dependent attributes</span><a class="headerlink" href="#id4" title="Link to this table"></a></caption>
+<table class="docutils align-center" id="id5">
+<caption><span class="caption-text">Dependent attributes</span><a class="headerlink" href="#id5" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 15.8%" />
 <col style="width: 15.8%" />
@@ -231,22 +219,17 @@
 <td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">OPD*1e9</span></code>;</p></td>
 <td><p class="card-text">OPD in nm</p></td>
 </tr>
-<tr class="row-odd"><td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">DWn</span></code></p></td>
-<td><p class="card-text">double array</p></td>
-<td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">sqrt(DWx.*2</span> <span class="pre">+</span> <span class="pre">DWy.*2);</span></code></p></td>
-<td><p class="card-text">Norm of the OPD gradient</p></td>
-</tr>
-<tr class="row-even"><td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">Ph</span></code></p></td>
+<tr class="row-odd"><td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">Ph</span></code></p></td>
 <td><p class="card-text">double array</p></td>
 <td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">2*pi/lambda*obj.OPD;</span></code></p></td>
 <td><p class="card-text">Phase image</p></td>
 </tr>
-<tr class="row-odd"><td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">Nx</span></code></p></td>
+<tr class="row-even"><td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">Nx</span></code></p></td>
 <td><p class="card-text">double</p></td>
 <td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">size(OPD,2);</span></code></p></td>
 <td><p class="card-text">Number of columns</p></td>
 </tr>
-<tr class="row-even"><td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">Ny</span></code></p></td>
+<tr class="row-odd"><td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">Ny</span></code></p></td>
 <td><p class="card-text">double</p></td>
 <td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">size(OPD,1);</span></code></p></td>
 <td><p class="card-text">Number of rows</p></td>
@@ -259,121 +242,297 @@
 <h2>Constructor<a class="headerlink" href="#constructor" title="Link to this heading"></a></h2>
 <details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>ImageQLSI</strong><div class="summary-down docutils">
+<strong>Constructor</strong><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Prototype</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span> <span class="o">=</span> <span class="n">ImageQLSI</span><span class="p">(</span><span class="n">INT</span><span class="p">,</span><span class="n">OPD</span><span class="p">,</span><span class="n">MI</span><span class="p">,</span><span class="n">IL</span><span class="p">)</span>
-<span class="n">obj</span> <span class="o">=</span> <span class="n">ImageQLSI</span><span class="p">(</span><span class="n">INT</span><span class="p">,</span><span class="n">OPD</span><span class="p">,</span><span class="n">MI</span><span class="p">,</span><span class="n">IL</span><span class="p">,</span><span class="s2">&quot;remotePath&quot;</span><span class="p">,</span><span class="n">logical</span><span class="p">)</span>
-<span class="n">obj</span> <span class="o">=</span> <span class="n">ImageQLSI</span><span class="p">(</span><span class="n">INT</span><span class="p">,</span><span class="n">OPD</span><span class="p">,</span><span class="n">MI</span><span class="p">,</span><span class="n">IL</span><span class="p">,</span><span class="s2">&quot;fileName&quot;</span><span class="p">,</span><span class="n">char</span><span class="p">)</span>
-<span class="n">obj</span> <span class="o">=</span> <span class="n">ImageQLSI</span><span class="p">(</span><span class="n">INT</span><span class="p">,</span><span class="n">OPD</span><span class="p">,</span><span class="n">MI</span><span class="p">,</span><span class="n">IL</span><span class="p">,</span><span class="s2">&quot;imageNumber&quot;</span><span class="p">,</span><span class="nb">int</span><span class="p">)</span>
+<p class="title">Synthax</p><div class="custom-code highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">ImageQLSI</span><span class="p">()</span>
+<span class="n">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">ImageQLSI</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">ImageQLSI</span><span class="p">(</span><span class="no">IM</span><span class="p">)</span>
+<span class="n">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">ImageQLSI</span><span class="p">(</span><span class="no">INT</span><span class="p">,</span><span class="no">OPD</span><span class="p">,</span><span class="w"> </span><span class="no">MI</span><span class="p">,</span><span class="w"> </span><span class="no">IL</span><span class="p">,</span><span class="w"> </span><span class="n">int</span><span class="p">)</span>
+<span class="n">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">ImageQLSI</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="no">Name</span><span class="p">,</span><span class="no">Value</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="title">Description</div><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span> <span class="pre">=</span> <span class="pre">ImageQLSI()</span></code> creates an empty <em>ImageQLSI</em> object.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><code class="docutils literal notranslate"><span class="pre">objList</span> <span class="pre">=</span> <span class="pre">ImageQLSI(n)</span></code> create a <em>n</em>-vector <code class="docutils literal notranslate"><span class="pre">objList</span></code> of empty <em>ImageQLSI</em> objects.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span> <span class="pre">=</span> <span class="pre">ImageQLSI(obj0)</span></code> creates a <em>ImageQLSI</em> object <code class="docutils literal notranslate"><span class="pre">obj</span></code> from an <em>ImageEM</em> object <code class="docutils literal notranslate"><span class="pre">obj0</span></code>.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span> <span class="pre">=</span> <span class="pre">ImageQLSI(INT,</span> <span class="pre">OPD,</span> <span class="pre">MI,</span> <span class="pre">IL)</span></code> creates an <em>ImageQLSI</em> object. <code class="docutils literal notranslate"><span class="pre">INT</span></code> defining the intensity image, <code class="docutils literal notranslate"><span class="pre">OPD</span></code> the optical path difference, <code class="docutils literal notranslate"><span class="pre">MI</span></code> the microscope and <code class="docutils literal notranslate"><span class="pre">IL</span></code> the illumination.</p>
+<p class="card-text"><code class="docutils literal notranslate"><span class="pre">INT</span></code> an <code class="docutils literal notranslate"><span class="pre">OPD</span></code> can be either a matrix, or a file name containing the data. <code class="docutils literal notranslate"><span class="pre">MI</span></code> is a <em>Microscope</em> object. <code class="docutils literal notranslate"><span class="pre">IL</span></code> is an <em>Illumination</em> object.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><code class="docutils literal notranslate"><span class="pre">ImageQLSI</span></code> accepts <em>Name-Value</em> options.</p>
+<p class="title">Examples</p><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>Build an ImageQLSI object by importing data</strong><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">readMatrix</span><span class="p">(</span><span class="s">&#39;data/T.txt&#39;</span><span class="p">);</span>
+<span class="n">W</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">readMatrix</span><span class="p">(</span><span class="s">&#39;data/W.txt&#39;</span><span class="p">);</span>
+
+<span class="n">MI</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Microscope</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span><span class="w">         </span><span class="c">% creates a microscope with 100x magnification</span>
+<span class="n">IL</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Illumintation</span><span class="w"> </span><span class="p">(</span><span class="mf">530e-9</span><span class="p">);</span><span class="w">  </span><span class="c">% creates an illumination at lambda = 530 nm</span>
+
+<span class="n">IM</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ImageQLSI</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">W</span><span class="p">,</span><span class="w"> </span><span class="n">MI</span><span class="p">,</span><span class="w"> </span><span class="n">IL</span><span class="p">);</span><span class="w"> </span><span class="c">% creates the ImageQLSI object</span>
 </pre></div>
 </div>
 </div>
-<table class="docutils align-center" id="id6">
-<caption><span class="caption-text">function inputs</span><a class="headerlink" href="#id6" title="Link to this table"></a></caption>
-<colgroup>
-<col style="width: 15.8%" />
-<col style="width: 84.2%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p class="card-text"><code class="docutils literal notranslate"><span class="pre">INT</span></code></p></th>
-<th class="head"><p class="card-text">Intensity image. Can be either a char (name of the file) or a matrix</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">OPD</span></code></p></td>
-<td><p class="card-text">OPD image. Can be either a char (name of the file) or a matrix</p></td>
-</tr>
-<tr class="row-odd"><td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">MI</span></code></p></td>
-<td><p class="card-text"><em>Microscope</em> object</p></td>
-</tr>
-<tr class="row-even"><td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">IL</span></code></p></td>
-<td><p class="card-text"><em>Illumination</em> object</p></td>
-</tr>
-<tr class="row-odd"><td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">&quot;remotePath&quot;</span></code></p></td>
-<td><p class="card-text">Tells whether the T and OPD matrices should be actually saved in the RAM (<code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">false</span></code>), or rather on the hard disk (<code class="docutils literal notranslate"><span class="pre">=true</span></code>).</p></td>
-</tr>
-<tr class="row-even"><td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">&quot;fileName&quot;</span></code></p></td>
-<td><p class="card-text">Prefix of the T and OPD fileNames to be saved on the hard disk in case the option <code class="docutils literal notranslate"><span class="pre">&quot;remotePath&quot;</span></code> is set to <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p></td>
-</tr>
-<tr class="row-odd"><td><p class="card-text"><code class="docutils literal notranslate"><span class="pre">&quot;imageNumber&quot;</span></code></p></td>
-<td><p class="card-text">Number of the image</p></td>
-</tr>
-</tbody>
-</table>
+</details><p class="title">Name-value arguments</p><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p class="card-text">Specify optional pairs of arguments as <code class="docutils literal notranslate"><span class="pre">Name1</span> <span class="pre">=</span> <span class="pre">Value1,</span> <span class="pre">...,</span> <span class="pre">NameN</span> <span class="pre">=</span> <span class="pre">ValueN</span></code>, where Name is the argument name and Value is the corresponding value. Name-value arguments must appear after other arguments, but the order of the pairs does not matter.</p>
+<p class="card-text">Example: <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">ImageQLSI</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;remotePath&#39;</span><span class="p">,</span><span class="s">&#39;images/data&#39;</span><span class="p">)</span></code></p>
+</div>
+<ul>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">remotePath</span></code></p>
+<p class="card-text">When working with a long vector of <em>ImageQLSI</em> objects, one can save RAM memory by storing the <code class="docutils literal notranslate"><span class="pre">T</span></code> and <code class="docutils literal notranslate"><span class="pre">OPD</span></code> matrices on the hard disk drive, when creating the objects. For this purpose, specify the folder to store these data.</p>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">FileName</span></code></p>
+<p class="card-text">The <code class="docutils literal notranslate"><span class="pre">remotePath</span></code> has to be used in conjonction with</p>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">imageNumber</span></code></p></li>
+</ul>
 </div>
 </details></section>
 <section id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Link to this heading"></a></h2>
 <details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>ZernikeRemove</strong><div class="summary-down docutils">
+<strong>binning</strong><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Removes the Zernike moments of the OPD image of an ImageQLSI object.</p>
-<p class="card-text"><strong>Synthax</strong></p>
-<hr/><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="n">ZernikeRemove</span><span class="p">();</span>
-<span class="n">obj</span><span class="o">.</span><span class="n">ZernikeRemove</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
-<span class="n">obj</span><span class="o">.</span><span class="n">ZernikeRemove</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">r</span><span class="p">);</span>
-<span class="n">obj2</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">ZernikeRemove</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">r</span><span class="p">);</span>
+<p class="card-text">Performs 2x2 or 3x3 pixel binning of the images of the ImageQLSI object.</p>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">binning</span><span class="p">()</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">binning</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">binning</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
 </pre></div>
 </div>
-<p class="card-text"><strong>Description</strong></p>
-<hr/><p class="card-text"><strong>Examples</strong></p>
-<hr/><p class="card-text"><strong>Input arguments</strong></p>
-<hr/><p class="card-text"><strong>Name-Value arguments</strong></p>
-<hr/><p class="card-text"><strong>Output arguments</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">IM</span><span class="o">.</span><span class="n">ZernikeRemove</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">r0</span><span class="p">);</span>
-<span class="n">IM2</span> <span class="o">=</span> <span class="n">IM</span><span class="o">.</span><span class="n">ZernikeRemove</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">r0</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><code class="docutils literal notranslate"><span class="pre">n</span></code>, <code class="docutils literal notranslate"><span class="pre">m</span></code> are the orders of the Zernike moment.</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">r0</span></code> is the radius of the area over which the Zerninke moment is calculated.</div>
-</div>
-<p class="card-text">If an output <code class="docutils literal notranslate"><span class="pre">IM2</span></code> is specified, IM is copied. If not, IM is modified.</p>
+<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span></code> can by a vector of <em>ImageQLSI</em> objects. In that case, the treatment will be perform on all the objects of the list.</p>
+<p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.binning()</span></code> performs, by default, a 3x3 binning of the images of <code class="docutils literal notranslate"><span class="pre">obj</span></code>.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.binning(n)</span></code> performs, nxn binning of the images of <code class="docutils literal notranslate"><span class="pre">obj</span></code>. Only works with <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">=</span> <span class="pre">2</span></code> or <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">=</span> <span class="pre">3</span></code>.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an output arguments is specified, <code class="docutils literal notranslate"><span class="pre">obj</span></code> is not modified, but duplicated.</p>
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>camList</strong><div class="summary-down docutils">
+<strong>dmd</strong><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Displays the list of predefined camera names.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">MI</span><span class="o">.</span><span class="n">camList</span>
-
-<span class="n">ans</span> <span class="o">=</span>
-
-    <span class="mi">5</span><span class="n">x1</span> <span class="n">cell</span> <span class="n">array</span>
-
-    <span class="p">{</span><span class="s1">&#39;Sid4Element-Sona&#39;</span><span class="p">}</span>
-    <span class="p">{</span><span class="s1">&#39;Sid4Element&#39;</span>     <span class="p">}</span>
-    <span class="p">{</span><span class="s1">&#39;Silios_mono&#39;</span>     <span class="p">}</span>
-    <span class="p">{</span><span class="s1">&#39;sC8-830&#39;</span>         <span class="p">}</span>
-    <span class="p">{</span><span class="s1">&#39;sC8-944&#39;</span>         <span class="p">}</span>
+<p class="card-text">Returns the dry mass density (DMD) image.</p>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">dmd</span><span class="p">();</span>
 </pre></div>
 </div>
-<p class="card-text">This list gives the possible values of the <code class="docutils literal notranslate"><span class="pre">CGcam</span></code> input in the Microscope constructor.</p>
+<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">val</span></code> is the DMD image, pg/um^2. This function actually just consists of multiplying the <code class="docutils literal notranslate"><span class="pre">OPD</span></code> in [nm] by 5.56e-3.</p>
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>highPassFilter</strong><div class="summary-down docutils">
+<strong>download</strong><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">IM</span><span class="o">.</span><span class="n">highPassFilter</span><span class="p">(</span><span class="n">nCrop</span><span class="p">)</span>
+<p class="card-text">Import on the RAM of the computer an object that is in ‘remote’ mode.</p>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">download</span><span class="p">();</span>
 </pre></div>
 </div>
-<p class="card-text"><code class="docutils literal notranslate"><span class="pre">nCrop</span></code> is an integer.</p>
-<p class="card-text">Remove the low frequencies of the OPD image simply by <code class="docutils literal notranslate"><span class="pre">IM.OPD</span> <span class="pre">-</span> <span class="pre">imgaussfilt(IM.OPD,nCrop);</span></code>.</p>
+<p class="title">Description</p><p class="card-text">Import on the RAM of the computer an object that is in ‘remote’ mode, i.e., where the <code class="docutils literal notranslate"><span class="pre">T</span></code> and <code class="docutils literal notranslate"><span class="pre">OPD</span></code> attributes are stored in the hard disk drive. This happens when creating an <em>ImageQLSI</em> object using <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">QLSIprocess</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;remote&#39;</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span></code>.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>DWnorm</strong><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="card-text">Returns the norm of the gradient of the <code class="docutils literal notranslate"><span class="pre">OPD</span></code> image of the <em>ImageQLSI</em> object.</p>
+<p class="title">Synthax</p><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">val</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">D2Wnorm</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p class="card-text">For this method to work, the <em>ImageQLSI</em> object had to be created using the <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">QLSIprocess</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;saveGradients&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span></code>, so that the gradients of the OPD images are saved and stored in the attributes <code class="docutils literal notranslate"><span class="pre">DWx</span></code> and <code class="docutils literal notranslate"><span class="pre">DWy</span></code>.</p>
+</div>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>D2Wnorm</strong><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="card-text">Returns the second derivative (Lapacian) of the <code class="docutils literal notranslate"><span class="pre">OPD</span></code> image of the <em>ImageQLSI</em> object.</p>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">D2Wnorm</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p class="card-text">For this method to work, the <em>ImageQLSI</em> object had to be created using the <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">QLSIprocess</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;saveGradients&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span></code>, so that the gradients of the OPD images are saved and stored in the attributes <code class="docutils literal notranslate"><span class="pre">DWx</span></code> and <code class="docutils literal notranslate"><span class="pre">DWy</span></code>.</p>
+</div>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>flipud</strong><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="card-text">Flips the images of the object about the horizontal axis (flips up-down).</p>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">flipud</span><span class="p">();</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">flipud</span><span class="p">();</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">flipud</span><span class="p">();</span>
+</pre></div>
+</div>
+<p class="title">Description</p><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><em>ImageQLSI</em> objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an output <code class="docutils literal notranslate"><span class="pre">obj2</span></code> is used, then the object is not modified, and duplicated.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>fliplr</strong><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="card-text">Flips the images of the object about the vertical axis (flips left-right).</p>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">fliplr</span><span class="p">();</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">fliplr</span><span class="p">();</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">fliplr</span><span class="p">();</span>
+</pre></div>
+</div>
+<p class="title">Description</p><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><em>ImageQLSI</em> objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an output <code class="docutils literal notranslate"><span class="pre">obj2</span></code> is used, then the object is not modified, and duplicated.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>highPassFilter</strong> Applies a high-pass filter on the spatial frequencies of the image, as a means to remove the lwo frequencies and highlight the details.<div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="card-text">Applies a high-pass filter on the spatial frequencies of the image, as a means to remove the lwo frequencies and highlight the details.</p>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">highPassFilter</span><span class="p">()</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">highPassFilter</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">highPassFilter</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">highPassFilter</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
+<span class="n">objList2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">objList</span><span class="p">.</span><span class="n">highPassFilter</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.highPassFilter()</span></code> applies a high-pass filter on the spatial frequencies of the <code class="docutils literal notranslate"><span class="pre">OPD</span></code> image, as a means to remove the low frequencies and highlight the details. It actually removes a Gaussian-blurring of the image from the image. For this purpose, it uses the <em>imgaussfilt</em> function with, by default, <code class="docutils literal notranslate"><span class="pre">sigma</span> <span class="pre">=</span> <span class="pre">10</span></code>.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.highPassFilter(n)</span></code> applies a high-pass filter on the spatial frequencies of the image. <code class="docutils literal notranslate"><span class="pre">n</span></code> is the <code class="docutils literal notranslate"><span class="pre">sigma</span></code> parameter of the <em>imgaussfilt</em> function. The larger <code class="docutils literal notranslate"><span class="pre">n</span></code>, the flatter the OPD image look.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><em>ImageQLSI</em> objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an output is used, <code class="docutils literal notranslate"><span class="pre">obj2</span></code>, then the object is not modified, and duplicated.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>mean</strong><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="card-text">Average the <code class="docutils literal notranslate"><span class="pre">OPD``and</span> <span class="pre">``T</span></code> images of a list of <em>ImageQLSI</em> objects.</p>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">objList</span><span class="p">.</span><span class="n">mean</span><span class="p">();</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">Average the <code class="docutils literal notranslate"><span class="pre">OPD</span></code> and <code class="docutils literal notranslate"><span class="pre">T</span></code> images of a list of <em>ImageQLSI</em> objects <code class="docutils literal notranslate"><span class="pre">objList</span></code>, aand retur a newn single <em>ImageQLSI</em> object with these averaged images.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>PDCM</strong><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="card-text">Computes the PDCM (phase derivatives closure map) of the <code class="docutils literal notranslate"><span class="pre">OPD</span></code> image.</p>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">PDCM</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.PDCM()</span></code> computes the PDCM (phase derivatives closure map) of the <code class="docutils literal notranslate"><span class="pre">OPD</span></code> image, as introduced by J. Rizzi et al. <a class="footnote-reference brackets" href="#oe21-17340" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. It is defines as</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{PDCM}(x,y) = \frac{\partial \mathrm{DWx}}{\partial y} - \frac{\partial \mathrm{DWy}}{\partial x}\]</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p class="card-text">For this method to work, the <em>ImageQLSI</em> object had to be created using the <code class="docutils literal notranslate"><span class="pre">obj</span> <span class="pre">=</span> <span class="pre">QLSIprocess(___,</span> <span class="pre">&quot;saveGradients&quot;,</span> <span class="pre">true)</span></code>, so that the gradients of the OPD images are saved and stored in the attributes <code class="docutils literal notranslate"><span class="pre">DWx</span></code> and <code class="docutils literal notranslate"><span class="pre">DWy</span></code>.</p>
+</div>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="oe21-17340" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p class="card-text">Opt. Express 21, 17340 (2013)</p>
+</aside>
+</aside>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>propagation</strong><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="card-text">Applies a variation of the microscope focus on the <em>ImageQLSI</em> object.</p>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">propagation</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">propagation</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">propagation</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.propagation(z)</span></code> computes the new <code class="docutils literal notranslate"><span class="pre">T</span></code> and <code class="docutils literal notranslate"><span class="pre">OPD</span></code> images when a variation <code class="docutils literal notranslate"><span class="pre">z</span></code> of the focus of the microscope is numerically applied.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><em>ImageQLSI</em> objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an output <code class="docutils literal notranslate"><span class="pre">obj2</span></code> is used, <code class="docutils literal notranslate"><span class="pre">obj2</span> <span class="pre">=</span> <span class="pre">obj.propagation(z)</span></code>, then the object is not modified, and is duplicated.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>rot90</strong><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="card-text">Rotate the images of the object by multiples of 90°.</p>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">rot90</span><span class="p">();</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">k</span><span class="p">);</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.rot90()</span></code> rotates the images of the object by 90°, counterclockwise.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.rot90(k)</span></code> rotates the images of the object by <span class="math notranslate nohighlight">\(k\times90°\)</span>, counterclockwise. <code class="docutils literal notranslate"><span class="pre">k</span></code> must be an integer and can be negative.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><em>ImageQLSI</em> objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an output <code class="docutils literal notranslate"><span class="pre">obj2</span></code> is used, then the object is not modified, and duplicated.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>smooth</strong><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="card-text">Applies a low-pass filter on the spatial frequencies of the image, as a means to blur the image.</p>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">smooth</span><span class="p">()</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">smooth</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">smooth</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">smooth</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
+<span class="n">objList2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">objList</span><span class="p">.</span><span class="n">smooth</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.smooth()</span></code> applies a low-pass filter on the spatial frequencies of the <code class="docutils literal notranslate"><span class="pre">OPD</span></code> image, as a means to remove the high frequencies and blur the OPD image. It actually simply applies a Gaussian-blurring on the <code class="docutils literal notranslate"><span class="pre">OPD</span></code> image using the <em>imgaussfilt</em> function with, by default, <code class="docutils literal notranslate"><span class="pre">sigma</span> <span class="pre">=</span> <span class="pre">10</span></code>.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.smooth(n)</span></code> applies a low-pass filter on the spatial frequencies of the image. <code class="docutils literal notranslate"><span class="pre">n</span></code> is the <code class="docutils literal notranslate"><span class="pre">sigma</span></code> parameter of the <em>imgaussfilt</em> function. The larger <code class="docutils literal notranslate"><span class="pre">n</span></code>, the flatter the OPD image look.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><em>ImageQLSI</em> objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an output is used, <code class="docutils literal notranslate"><span class="pre">obj2</span></code>, then the object is not modified, and is duplicated.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>square</strong><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="card-text">Transforms rectangle images to square images by cropping.</p>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">square</span><span class="p">()</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">square</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">square</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.square()</span></code> crops the images of the <em>ImageQLSI</em> object so that they are square. To define the size of the square, the smallest image dimension is considered (<code class="docutils literal notranslate"><span class="pre">min([obj.Nx,</span> <span class="pre">obj.Ny])</span></code>).</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><em>ImageQLSI</em> objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an output is specified, <code class="docutils literal notranslate"><span class="pre">obj2</span></code>, then the object is not modified, but duplicated.</p>
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
@@ -382,56 +541,67 @@
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">IM</span><span class="o">.</span><span class="n">untilt</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
-<span class="n">IM2</span> <span class="o">=</span> <span class="n">IM</span><span class="o">.</span><span class="n">untilt</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
-<span class="n">IM</span><span class="o">.</span><span class="n">untilt</span><span class="p">(</span><span class="s1">&#39;xy1&#39;</span><span class="p">,[</span><span class="mi">1</span> <span class="mi">10</span><span class="p">],</span> <span class="s1">&#39;xy2&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">100</span> <span class="mi">210</span><span class="p">])</span>
-<span class="n">IM</span><span class="o">.</span><span class="n">untilt</span><span class="p">(</span><span class="n">Center</span> <span class="o">=</span> <span class="s1">&#39;Manual&#39;</span><span class="p">)</span>
-
-
-
-    <span class="n">arguments</span>
-        <span class="n">objList</span>
-        <span class="o">%</span> <span class="n">parameters</span> <span class="k">for</span> <span class="n">boxSelection</span><span class="p">()</span>
-        <span class="n">opt</span><span class="o">.</span><span class="n">xy1</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">opt</span><span class="o">.</span><span class="n">xy2</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">opt</span><span class="o">.</span><span class="n">Center</span> <span class="o">=</span> <span class="s1">&#39;Auto&#39;</span> <span class="o">%</span> <span class="s1">&#39;Auto&#39;</span><span class="p">,</span> <span class="s1">&#39;Manual&#39;</span> <span class="ow">or</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span>
-        <span class="n">opt</span><span class="o">.</span><span class="n">Size</span> <span class="o">=</span> <span class="s1">&#39;Auto&#39;</span> <span class="o">%</span> <span class="s1">&#39;Auto&#39;</span><span class="p">,</span> <span class="s1">&#39;Manual&#39;</span><span class="p">,</span> <span class="n">d</span> <span class="ow">or</span> <span class="p">[</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">]</span>
-        <span class="n">opt</span><span class="o">.</span><span class="n">twoPoints</span> <span class="n">logical</span> <span class="o">=</span> <span class="n">false</span>
-        <span class="n">opt</span><span class="o">.</span><span class="n">params</span> <span class="n">double</span> <span class="o">=</span> <span class="n">double</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span> <span class="o">%</span> <span class="o">=</span> <span class="p">[</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">]</span>
-        <span class="n">opt</span><span class="o">.</span><span class="n">shape</span> <span class="n">char</span> <span class="p">{</span><span class="n">mustBeMember</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">shape</span><span class="p">,{</span><span class="s1">&#39;square&#39;</span><span class="p">,</span><span class="s1">&#39;rectangle&#39;</span><span class="p">,</span><span class="s1">&#39;Square&#39;</span><span class="p">,</span><span class="s1">&#39;Rectangle&#39;</span><span class="p">})}</span><span class="o">=</span> <span class="s1">&#39;square&#39;</span>
-        <span class="n">opt</span><span class="o">.</span><span class="n">app</span> <span class="n">PhaseLABgui</span> <span class="o">=</span> <span class="n">PhaseLABgui</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
-    <span class="n">end</span>
+<p class="card-text">Removes a tilt on the <code class="docutils literal notranslate"><span class="pre">OPD</span></code> image.</p>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">untilt</span><span class="p">()</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">untilt</span><span class="p">(</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Value</span><span class="p">)</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">untilt</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">untilt</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="line-block">
-<div class="line"><code class="docutils literal notranslate"><span class="pre">n</span></code>, <code class="docutils literal notranslate"><span class="pre">m</span></code> are the orders of the Zernike moment.</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">r0</span></code> is the radius of the area over which the Zerninke moment is calculated.</div>
+<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.untilt()</span></code> removes any possible tilt of the <code class="docutils literal notranslate"><span class="pre">OPD</span></code> image by calculating the (1,1) aand (1, -1) Zernike moments of the image, and subtracting the corresponding tilts to the image.</p>
+<p class="card-text">By default, the moment are calculated on the whole image. The power of this methods lies on the fact that the moments can also be calculated on any sub-area of the image, if some Name-Value arguments are specified (see next section).</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><em>ImageQLSI</em> objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an output is used, <code class="docutils literal notranslate"><span class="pre">obj2</span></code>, then the object is not modified, and is duplicated.</p>
+<p class="title">Name-value arguments</p><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p class="card-text">Specify optional pairs of arguments as <code class="docutils literal notranslate"><span class="pre">Name1</span> <span class="pre">=</span> <span class="pre">Value1,</span> <span class="pre">...,</span> <span class="pre">NameN</span> <span class="pre">=</span> <span class="pre">ValueN</span></code>, where Name is the argument name and Value is the corresponding value. Name-value arguments must appear after other arguments, but the order of the pairs does not matter.</p>
+<p class="card-text">Example:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">untilt</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Center&#39;</span><span class="p">,</span><span class="s">&#39;Manual&#39;</span><span class="p">,</span><span class="s">&#39;Size&#39;</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
 </div>
+</div>
+<p class="card-text">The Name-Value arguments in the <em>untilt</em> method are used to define how the reference area is chosen. This referenc area is the one that will feature a no-tilt when the tilt correction will be applied. When some arguments are set to <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Manual&#39;</span></code>, a figure appears so that the user can select this area, in 1 or 2 clicks.</p>
+<ul>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Center&#39;</span></code></p>
 <blockquote>
-<div><p class="card-text">function [objList2,params] = untilt(objList,opt)
-function IMout = mean(IM,opt)
-function IM2 = smooth(IM,nn,hfigInit)
-function objList2 = square(objList)
-function objList2 = phase0(objList,option)
-function obj = setFcrops(obj,crops)
-function obj2 = binning(obj,n)
-function obj = setProcessingSoftware(obj,name)
-function [obj, params] = level0(obj0,opt)
-function obj2 = gauss(obj,nn)
-function obj = rot90(obj0,k)
-function obj = mirrorH(obj0)
-function obj = mirrorV(obj0)
-function val = get.DWn(obj)
-function val = DWnorm(obj)
-function val = D2Wnorm(obj)
-function val = PDCM(obj)
-function val = DM(obj)
-function PDCMdisplay(obj,hfig)
-function obj2List = download(objList)
-function save(objList,folder,varargin)
-function write(obj,obj_in)
-function IMout = propagation(IM, z, opt)</p>
+<div><p class="card-text">With <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">untilt</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Center&#39;</span><span class="p">,</span><span class="s">&#39;Manual&#39;</span><span class="p">)</span></code>, the user has to first click on the center of the reference area. If the argument is set to <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Auto&#39;</span></code>, then this step is skipped, and the center is automatically set to the center of the image. Also, the user can indicate the coordinates of the center: <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">untilt</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Center&#39;</span><span class="p">,[</span><span class="n">x_c</span><span class="p">,</span><span class="w"> </span><span class="n">y_c</span><span class="p">])</span></code>.</p>
 </div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Size&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">With <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">untilt</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Size&#39;</span><span class="p">,</span><span class="s">&#39;Manual&#39;</span><span class="p">)</span></code>, once the center is defined (either manually or automatically), the user has to click on the figure to define the shape of the area, around the center point. The user can also indicate the dimensions of the reference area: <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">untilt</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Size&#39;</span><span class="p">,</span><span class="n">Npx</span><span class="p">)</span></code> for a square area, or  <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">untilt</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Size&#39;</span><span class="p">,[</span><span class="n">Nx</span><span class="p">,</span><span class="w"> </span><span class="n">Ny</span><span class="p">])</span></code> for a rectangular area.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;twoPoints&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">Instead of using the <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Center&#39;</span></code> and <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Size&#39;</span></code> keywords, one can also click on two opposite corners of the reference area, using <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">untilt</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;twoPoints&#39;</span><span class="p">,</span><span class="nb">true</span><span class="p">)</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;params&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">One can also direclty write the coordinates of the bottom-left and top-right corners, using <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;params&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">x1</span><span class="p">,</span><span class="w"> </span><span class="n">x2</span><span class="p">,</span><span class="w"> </span><span class="n">y1</span><span class="p">,</span><span class="w"> </span><span class="n">y2</span><span class="p">])</span></code>. In this case, no figure opens.</p>
+</div></blockquote>
+</li>
+</ul>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>ZernikeRemove</strong><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="card-text">Removes the Zernike moments of the OPD image of an ImageQLSI object.</p>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">ZernikeRemove</span><span class="p">()</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">ZernikeRemove</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">ZernikeRemove</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">r</span><span class="p">);</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">ZernikeRemove</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.ZernikeRemove()</span></code> removes, by default, the <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">m)</span> <span class="pre">=</span> <span class="pre">(1,</span> <span class="pre">1)</span></code> Zernike order from the <code class="docutils literal notranslate"><span class="pre">OPD</span></code> image of <code class="docutils literal notranslate"><span class="pre">obj</span></code>.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.ZernikeRemove(n);</span></code> removes all the Zernike orders up to order <code class="docutils literal notranslate"><span class="pre">n</span></code>. For instance, <code class="docutils literal notranslate"><span class="pre">obj.ZernikeRemove(2)</span></code> removes the orders <span class="math notranslate nohighlight">\((1,1)\)</span>, <span class="math notranslate nohighlight">\((1,-1)\)</span>, <span class="math notranslate nohighlight">\((2,-2)\)</span>, <span class="math notranslate nohighlight">\((2,0), :math:`(2,2)`\)</span> from the OPD image.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">In <code class="docutils literal notranslate"><span class="pre">obj.ZernikeRemove(n,m,r);</span></code>, <code class="docutils literal notranslate"><span class="pre">r</span></code> is the radius of the disc over which the Zerninke moment is calculated. By default, it is half the size of the image (<code class="docutils literal notranslate"><span class="pre">r</span> <span class="pre">=</span> <span class="pre">min([obj.Nx,</span> <span class="pre">obj.Ny])/2-1</span></code>).</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an output <code class="docutils literal notranslate"><span class="pre">obj2</span></code> is specified, IM is copied. If not, obj is modified.</p>
 </div>
 </details></section>
 </section>
@@ -441,7 +611,7 @@ function IMout = propagation(IM, z, opt)</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="Illumination.html" class="btn btn-neutral float-left" title="The Illumination class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../functions/DDA.html" class="btn btn-neutral float-right" title="DDA" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="Interfero.html" class="btn btn-neutral float-right" title="The Interfero class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

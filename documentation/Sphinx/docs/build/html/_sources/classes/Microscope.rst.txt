@@ -1,8 +1,13 @@
 .. include:: substitutions.rst
 
+.. role:: matlab(code)
+  :language: matlab
+  :class: highlight
 
 The Microscope class
 ====================
+
+*Microscope* is handle class.
 
 Attributes
 ----------
@@ -56,4 +61,9 @@ Attributes
      - ``= abs( this.CGcam.dxSize()/this.M );``
      - pixel size of the image
 
+
+.. include:: Microscope/Microscope_constructor.rst
+
+
+.. include:: Microscope/Microscope_methods.rst
 

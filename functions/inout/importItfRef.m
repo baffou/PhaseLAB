@@ -3,7 +3,7 @@ function [INT,REF,IL] = importItfRef(folder,MI,opt)
 arguments
     folder char
     MI Microscope
-    opt.nickname = []
+    opt.nickname = '*'
     opt.selection = []
     opt.remote = 0
     opt.color (1,:) char {mustBeMember(opt.color,{'R','G','none'})} = 'none'

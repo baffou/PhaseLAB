@@ -59,8 +59,8 @@ RefGm = RefG.mean();
 ItfR.Reference(RefRm);
 ItfG.Reference(RefGm);
 
-ItfR.backgroundCorrection(BkgR.mean());
-ItfG.backgroundCorrection(BkgG.mean());
+ItfR.removeOffset(BkgR.mean());
+ItfG.removeOffset(BkgG.mean());
 
 %% correcting for the crosstalk
 [ItfGc, ItfRc] = crosstalkCorrection(ItfG, ItfR);

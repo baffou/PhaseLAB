@@ -47,7 +47,6 @@ The toolbox is accessible at `github.com/baffou/PhaseLAB <https://github.com/baf
    importImages
    processImages
    displayImages
-   example
 
 .. toctree::
    :maxdepth: 2
@@ -58,16 +57,18 @@ The toolbox is accessible at `github.com/baffou/PhaseLAB <https://github.com/baf
    :maxdepth: 2
    :caption: Classes
 
-   Microscope <classes/Microscope>
    Illumination <classes/Illumination>
    ImageQLSI <classes/ImageQLSI>
+   Interfero <classes/Interfero>
+   Microscope <classes/Microscope>
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Functions
-   :glob:
 
-   functions/*
+
+..   :maxdepth: 2
+..   :caption: Functions
+..   :glob:
+..
+..   functions/*
 
 
 

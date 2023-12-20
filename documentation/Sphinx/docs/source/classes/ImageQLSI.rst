@@ -1,8 +1,12 @@
-.. include:: substitutions.rst
+.. role:: matlab(code)
+  :language: matlab
+  :class: highlight
 
 
 The ImageQLSI class
 ===================
+
+*ImageQLSI* is handle class.
 
 Attributes
 ----------
@@ -89,10 +93,6 @@ Attributes
       - double array
       - ``= OPD*1e9``;
       - OPD in nm
-    * - ``DWn``
-      - double array
-      - ``= sqrt(DWx.*2 + DWy.*2);``
-      - Norm of the OPD gradient
     * - ``Ph``
       - double array
       - ``= 2*pi/lambda*obj.OPD;``
@@ -107,7 +107,8 @@ Attributes
       - Number of rows
 
 
-.. include:: ImageQLSI/ImageQLSI_constructor.txt
+.. include:: ImageQLSI/ImageQLSI_constructor.rst
 
 
-.. include:: ImageQLSI/ImageQLSI_methods.txt
+.. include:: ImageQLSI/ImageQLSI_methods.rst
+

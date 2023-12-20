@@ -7,22 +7,28 @@
 
 classdef Interfero < handle & matlab.mixin.Copyable
 
-    properties(SetAccess = private)
-        Itf0     % interferogram (matrix or path)
+    properties (Dependent)
+        Itf     (:,:) double
+    end
+
+    properties
         Ref      Interfero % interfero object corresponding to the reference image
+    end
+
+    properties(SetAccess = private)
         TF       % Fourier transform of the interfero
         TFapo    = []% tells wether the TF has been calculated with an apodization (equals the width of the apodization)
         color (1,:) char {mustBeMember(color,{'R','G','none'})} = 'none'
         polar (1,:) char {mustBeMember(polar,{'0','45','90','135','none'})} = 'none'
     end
 
+    properties(SetAccess = private, Hidden)
+        Itf0     % interferogram (matrix or path)
+    end
     properties
         comment  % Any comment to leave to this image
     end
 
-    properties (Dependent)
-        Itf     (:,:) double
-    end
 
     properties(SetAccess = private)
         fileName char % Interferogram name on the computer
@@ -48,6 +54,12 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
     methods
         function obj = Interfero(fileName,MI,opt)
+            % obj = Interfero()
+            % obj = Interfero(n)
+            % obj = Interfero(fileName, MI)
+            % obj = Interfero(matrix, MI)
+            % obj = Interfero(___,Name,Value)
+
             arguments
                 fileName =[]  % fileName or matrix
                 MI = Microscope.empty()
@@ -72,7 +84,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
 
             %% Interfero(3)  Interfero(fileName,MI).
-            if nargin==1 % Interfero(3)
+            if nargin==1 % Interfero(n)
                 if isnumeric(fileName)
                     if numel(fileName)==1
                         obj=Interfero(N=fileName);
@@ -164,6 +176,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             obj.Itf0 = val;
             obj.TF = [];
         end
+
         function val = get.Nx(obj)
             if isnumeric(obj.Itf0)
                 val = size(obj.Itf0,2);
@@ -225,9 +238,13 @@ classdef Interfero < handle & matlab.mixin.Copyable
             val = obj.Microscope.pxSize();
         end
 
-        function deleteFcrops(obj)
-            obj.Fcrops = [FcropParameters(); FcropParameters(); FcropParameters()];
-            obj.Ref.Fcrops = [FcropParameters(); FcropParameters(); FcropParameters()];
+        function obj = clearFcrops(obj)
+            Nim=numel(obj);
+            for ii=1:Nim
+                obj(ii).Ref.Fcrops(1)=FcropParameters();
+                obj(ii).Ref.Fcrops(2)=FcropParameters();
+                obj(ii).Ref.Fcrops(3)=FcropParameters();
+            end
         end
 
         function [obj,params] = crop(obj0,opt)
@@ -290,17 +307,24 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         end
 
-        function objList = square(objList)
-            No = numel(objList);
+        function obj = square(obj0)
+
+            if nargout
+                obj = duplicate(obj0);
+            else
+                obj = obj0;
+            end
+            
+            No = numel(obj);
             for io = 1:No
-                Npx = min(objList(io).Nx,objList(io).Ny);
-                x1 = objList(io).Nx/2+1-Npx/2;
-                x2 = objList(io).Nx/2  +Npx/2;
-                y1 = objList(io).Ny/2+1-Npx/2;
-                y2 = objList(io).Ny/2  +Npx/2;
-                objList(io).Itf = objList(io).Itf(y1:y2,x1:x2);
-                if ~isempty(objList(io).Ref)
-                    objList(io).Ref.square();
+                Npx = min(obj(io).Nx,obj(io).Ny);
+                x1 = obj(io).Nx/2+1-Npx/2;
+                x2 = obj(io).Nx/2  +Npx/2;
+                y1 = obj(io).Ny/2+1-Npx/2;
+                y2 = obj(io).Ny/2  +Npx/2;
+                obj(io).Itf = obj(io).Itf(y1:y2,x1:x2);
+                if ~isempty(obj(io).Ref)
+                    obj(io).Ref.square();
                 end
             end
 
@@ -327,7 +351,6 @@ classdef Interfero < handle & matlab.mixin.Copyable
             elseif numel(val)==1
                 No = numel(obj);
                 for io = 1:No
-                    io
                     if ~strcmp(val.software,obj(io).software)
                         error('not the same software in Itf and Ref')
                     elseif val.CGcam~=obj(io).CGcam
@@ -414,9 +437,18 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         end
 
-        function mask0 = spotRemoval(obj,mask)
+        function [objList,mask0] = spotRemoval(objList0,mask)
 
-            if nargin==1 % no predfined mask
+            if nargout>=1
+                objList=duplicate(objList0);
+            else
+                objList=objList0;
+            end
+
+
+            obj = objList(1);
+
+            if nargin==1 % no predefined mask
 
 
                 h = figure;
@@ -470,8 +502,8 @@ classdef Interfero < handle & matlab.mixin.Copyable
                         mask = mask.*double(circle1.*circle2);
                         imagegb(log(abs(TF.*mask)))
                         drawnow
-                        obj.Itf = ifft2(ifftshift(TF.*circle1.*circle2));
-                        obj.Ref.Itf = ifft2(ifftshift(TFref.*circle1.*circle2));
+                        obj.Itf0 = ifft2(ifftshift(TF.*circle1.*circle2));
+                        obj.Ref.Itf0 = ifft2(ifftshift(TFref.*circle1.*circle2));
                     end
                 end
                 if nargout
@@ -481,10 +513,15 @@ classdef Interfero < handle & matlab.mixin.Copyable
             elseif nargin==2
                 TF = fftshift(fft2(obj.Itf));
                 TFref = fftshift(fft2(obj.Ref.Itf));
-                obj.Itf = ifft2(ifftshift(TF.*mask));
-                obj.Ref.Itf = ifft2(ifftshift(TFref.*mask));
+                obj.Itf0 = ifft2(ifftshift(TF.*mask));
+                obj.Ref.Itf0 = ifft2(ifftshift(TFref.*mask));
             else
                 error('not the proper number of inputs')
+            end
+
+            % applies the mask on the other Interfero objects of the list.
+            for io = 2:numel(objList)
+                objList(io).spotRemoval(mask)
             end
 
         end
@@ -568,22 +605,43 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         end
 
-        function val = sizeof(IM)
-            Nim = numel(IM);
+        function val = sizeof(obj,isref)
+            arguments
+                obj
+                isref logical = true % tells whether the size of the ref image has to be taken into account. Use to avoid infinite recursive loop
+            end
+            
+            % in case there are redundant handle objects. Use ful when
+            % calculating the size of [Itf.Ref]
+
+            [~,nList] = independentObjects(obj); 
+            nList = unique(nList); % list of the n of the independent interferos
+            obj0 = obj(nList);
+
+            Nim = numel(obj0);
             val = 0;
             for j = 1:Nim
-                props = properties(IM(j));
+                props = properties(obj0(j));
                 totSize = 0;
 
                 for ii = 1:length(props)
-                    currentProperty = getfield(IM(j), char(props(ii)));
+                    currentProperty = getfield(obj0(j), char(props(ii)));
                     s = whos('currentProperty');
                     totSize = totSize + s.bytes;
                 end
 
                 val = val+totSize;
             end
-            fprintf('%.3g Ko\n',val)
+
+            % size of the Ref
+            sizeofRef = 0;
+            if isref
+                sizeofRef = sizeof([obj.Ref],0);
+            end
+
+            val = val + sizeofRef;
+            fprintf('%.3g Kb\n',val)
+
         end
 
         function obj = mask(obj,M)
@@ -594,15 +652,6 @@ classdef Interfero < handle & matlab.mixin.Copyable
         function obj2 = copy2(obj)
             obj2 = copy(obj);
             obj2.Reference(copy(obj.Ref));
-        end
-
-        function obj = clearFcrops(obj)
-            Nim=numel(obj);
-            for ii=1:Nim
-                obj(ii).Ref.Fcrops(1)=FcropParameters();
-                obj(ii).Ref.Fcrops(2)=FcropParameters();
-                obj(ii).Ref.Fcrops(3)=FcropParameters();
-            end
         end
 
         function [ImG,ImR]=splitColors(Im)
@@ -639,7 +688,6 @@ classdef Interfero < handle & matlab.mixin.Copyable
             end
 
         end
-
 
         function [Im00,Im45,Im90,Im135]=splitPolars(Im)
             % Im comes from a 4-polar camera
@@ -688,13 +736,6 @@ classdef Interfero < handle & matlab.mixin.Copyable
             end
 
         end
-
-
-
-
-
-
-
 
         function [objG2, objR2] = crosstalkCorrection(obj1List, obj2List)
             arguments
@@ -768,7 +809,9 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         end
 
-        function obj2 = backgroundCorrection(obj,val)
+        function obj2 = removeOffset(obj,val)
+            % removes an offset to an interferogram, supposedly the offset
+            % set by the constructor.
             arguments
                 obj Interfero
                 val
@@ -781,9 +824,9 @@ classdef Interfero < handle & matlab.mixin.Copyable
             No = numel(obj);
             for io = 1:No
                 if nargin == 1  % automatic background subtraction
-                    offset = mean(obj(io).Ref.Itf);
+                    offset = min(obj(io).Ref.Itf(:));
                     obj2(io).Itf0 = obj(io).Itf - offset;
-                elseif isa(val,'Interfero') % Itf.subtractBackground(Itf_bkg)
+                elseif isa(val,'Interfero') % Itf.subtractBackground(Itf_bkg): should be the interferogram with zero light intensity
                     obj2(io).Itf0 = obj(io).Itf - val.Itf;
                 elseif isnumeric(val) % Itf.subtractBackground(matrix or number)
                     obj2(io).Itf0 = obj(io).Itf0 - val;
@@ -804,7 +847,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             obj.Ref.Itf0 = obj1.Ref.Itf() + obj2.Ref.Itf();
         end
 
-        function obj = sum(objList)
+        function obj = daqdaqdaqhgjfkjgfhgjhgfgfk,nb,bvhjgggffqsdfqqsdfqobjList)
             No=numel(objList);
             obj=copy(objList(1));
             for io = 2:No

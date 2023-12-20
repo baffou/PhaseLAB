@@ -1,13 +1,18 @@
 .. include:: substitutions.rst
 
+.. role:: matlab(code)
+  :language: matlab
+  :class: highlight
 
 The Illumination class
 ======================
 
-Properties
+*Illumination* is handle class.
+
+Attributes
 ----------
 
-.. list-table:: Public properties
+.. list-table:: Public attributes
    :widths: 30 30 30 100 
    :header-rows: 1
    :align: center
@@ -39,7 +44,7 @@ Properties
 
 
 
-.. list-table:: Dependent properties
+.. list-table:: Dependent attributes
    :widths: 30 30 30 100 
    :header-rows: 1
    :align: center
@@ -68,4 +73,9 @@ Properties
      - double
      - ``= 2*obj.n/(obj.n+obj.nS);``
      - light transmission at the interface
+
+
+.. include:: Illumination/Illumination_constructor.rst
+
+.. include:: Illumination/Illumination_methods.rst
 
