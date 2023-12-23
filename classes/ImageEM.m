@@ -118,14 +118,13 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
         end
 
-        function T = sumT(objList) % coherent sum of the fields
+        function T = sumT(objList)
             No = numel(objList);
             T=0;
             for io = 1:No
                 T = T+objList(io).T;
             end
         end
-
 
         function val = Npx(obj) % the images of the class ImageEM are supposed to be squared anyway: Npx=Nx=Ny
             val = obj.Nx;
@@ -161,21 +160,6 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
 
             val0 = pha_x.*Ex_norm+pha_y.*Ey_norm;% weighted average of the phase images
-            val = val0./(Ex_norm+Ey_norm);
-        end
-
-        function val = get.Ph0(obj)
-
-            Ex_norm = abs(obj.Ex).^2;%enables the phase subtraction of E0x
-            Ey_norm = abs(obj.Ey).^2;%enables the phase subtraction of E0y
-            tic
-            pha_x = angle(obj.Ex);% phase image of the x-polarized wavefront
-            pha_y = angle(obj.Ey);% phase image of the y-polarized wavefront
-            toc
-            % ERREUR : cette formule est fausse si on illumine avec un
-            % angle. Q: que mesure-t-on en QLSI alors ???
-            val0 = pha_x.*Ex_norm+pha_y.*Ey_norm;% weighted average of the phase images
-            
             val = val0./(Ex_norm+Ey_norm);
         end
 
@@ -259,7 +243,6 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
         end
         
-
         function val = integral(obj)
             Nim = length(obj);
             val = zeros(Nim,1);
@@ -457,7 +440,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
         end   
 
-        function obj = mirrorH(obj0)
+        function obj = flipud(obj0)
             % Mirror image with an horizontal mirror
 
             if nargout
@@ -477,7 +460,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
         end            
     
-        function obj = mirrorV(obj0)
+        function obj = fliplr(obj0)
             % Mirror image with an horizontal mirror
 
             if nargout
@@ -498,7 +481,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end            
     
         function objList = applyPhaseShift(objList0,phi)
-            % applies of phase shift to all the components of a field, but
+            % applies a phase shift to all the components of a field, but
             % not to its Einc. Useful to articially simulate SLIM imaging.
             if nargout
                 objList=duplicate(objList0);
@@ -604,7 +587,6 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 end
             end
         end
-
 
 
     end

@@ -1,6 +1,4 @@
-.. dropdown:: **spotRemoval**
-    
-    Removes undesired spots in the Interferogram Fourier space.
+.. dropdown:: **spotRemoval** |subTitle| Removes undesired spots in the Interferogram Fourier space. |/subTitle|
 
     .. raw:: html
       
@@ -30,7 +28,7 @@
 
     If an *Interfero* object is specified as an output, ``obj2 = obj.spotRemoval(___);``; the original object is not modified, but duplicated.
 
-   .. include:: ../hr.txt
+    .. include:: ../hr.txt
 
     The mask defined by the user can also be returned as a second output argument, to possibly be used as an input for a forthcoming call of this method with another *Interfero* object.
 

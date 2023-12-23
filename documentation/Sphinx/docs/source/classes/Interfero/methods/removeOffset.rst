@@ -1,6 +1,4 @@
-.. dropdown:: **removeOffset**
-    
-    Substract an number, or an image to the interferogram image.
+.. dropdown:: **removeOffset** |subTitle| Substract an number, or an image to the interferogram image. |/subTitle|
 
     .. raw:: html
       

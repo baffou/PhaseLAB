@@ -847,7 +847,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             obj.Ref.Itf0 = obj1.Ref.Itf() + obj2.Ref.Itf();
         end
 
-        function obj = daqdaqdaqhgjfkjgfhgjhgfgfk,nb,bvhjgggffqsdfqqsdfqobjList)
+        function obj = sum(objList)
             No=numel(objList);
             obj=copy(objList(1));
             for io = 2:No

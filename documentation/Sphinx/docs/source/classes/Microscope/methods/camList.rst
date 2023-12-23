@@ -1,6 +1,4 @@
-.. dropdown:: **camList**
-
-    Displays the list of predefined camera names.
+.. dropdown:: **camList** |subTitle| Displays the list of predefined camera names. |/subTitle|
 
     .. code-block:: matlab
 

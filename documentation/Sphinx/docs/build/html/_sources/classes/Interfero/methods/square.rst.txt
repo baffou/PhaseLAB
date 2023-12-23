@@ -1,6 +1,4 @@
-.. dropdown:: **square**
-    
-    Transforms rectangle interferograms to square interferograms by cropping.
+.. dropdown:: **square** |subTitle| Transforms rectangle interferograms to square interferograms by cropping. |/subTitle|
 
     .. raw:: html
       
@@ -25,7 +23,7 @@
 
     .. include:: ../hr.txt
 
-    If an output is specified, ``obj2``, then the object is not modified, and is duplicated.
+    If an output is specified, ``obj2``, then the object is not modified, but duplicated.
     
 
 

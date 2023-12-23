@@ -1,6 +1,4 @@
-.. dropdown:: **square**
-    
-    Transforms rectangle images to square images by cropping.
+.. dropdown:: **square** |subTitle| Transforms rectangle images to square images by cropping. |/subTitle|
 
     .. raw:: html
       

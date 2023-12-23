@@ -1,6 +1,4 @@
-.. dropdown:: **propagation**
-        
-    Applies a variation of the microscope focus on the *ImageQLSI* object.
+.. dropdown:: **propagation** |subTitle| Applies a variation of the microscope focus on the *ImageQLSI* object. |/subTitle|
 
     .. raw:: html
       

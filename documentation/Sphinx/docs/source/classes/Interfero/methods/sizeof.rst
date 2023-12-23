@@ -1,6 +1,4 @@
-.. dropdown:: **sizeof**
-    
-    Returns aand displays the size of the object occupied on the RAM of the computer, in kiloytes (kb).
+.. dropdown:: **sizeof** |subTitle| Returns aand displays the size of the object occupied on the RAM of the computer, in kiloytes (kb). |/subTitle|
 
     .. raw:: html
       
@@ -17,4 +15,5 @@
     .. code-block:: matlab
 
         >> Itf.sizeof;
+        
         1.01e+08 Ko

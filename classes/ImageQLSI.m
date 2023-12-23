@@ -592,6 +592,10 @@ classdef ImageQLSI   <   ImageMethods
             end
         end        
        
+        function IMout = plus(IM1,IM2)
+            IMout = [IM1(:);IM2(:)];
+        end
+
         function obj = rot90(obj0,k)
             % rotate the images of the object by k*90°
             arguments
@@ -716,11 +720,6 @@ classdef ImageQLSI   <   ImageMethods
             dxDWy  = imgradientxy(obj.DWy);
             [~, dyDWx] = imgradientxy(obj.DWx);
             val = imgaussfilt(dxDWy-dyDWx,3);
-        end
-
-        function val = dmd(obj)
-            % returns the dry mass density in pg/µm^2
-            val = 5.56*1e-3 * obj.OPD*1e9;
         end
 
         function PDCMdisplay(obj,hfig)

@@ -1,6 +1,4 @@
-.. dropdown:: **clearFcrops**
-    
-    Clear the FcropParameters settings of the reference *Interfero*.
+.. dropdown:: **clearFcrops** |subTitle| Clear the FcropParameters settings of the reference *Interfero*. |/subTitle|
 
     .. raw:: html
       

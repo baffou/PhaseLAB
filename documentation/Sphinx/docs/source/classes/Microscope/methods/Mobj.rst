@@ -1,4 +1,4 @@
-.. dropdown:: **Mobj**
+.. dropdown:: **Mobj** |subTitle| Returns the magnification of the objective lens. |/subTitle|
 
 
     .. code-block:: matlab

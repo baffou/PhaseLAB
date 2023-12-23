@@ -1,6 +1,4 @@
-.. dropdown:: **splitPolars**
-    
-    Extract the 4 interferograms corresponding to the 4 polarizations of a polarized camera
+.. dropdown:: **splitPolars** |subTitle| Extract the 4 interferograms corresponding to the 4 polarizations of a polarized camera. |/subTitle|
 
     .. raw:: html
       

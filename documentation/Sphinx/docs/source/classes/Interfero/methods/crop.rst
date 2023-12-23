@@ -1,7 +1,5 @@
   
-.. dropdown:: **crop**
-    
-    Crop the image and reference interferograms.
+.. dropdown:: **crop** |subTitle| Crop the image and reference interferograms. |/subTitle|
 
     .. raw:: html
       
@@ -13,7 +11,7 @@
         obj.crop()
         obj.crop(Name, Value)
         objList.crop(___)
-        obj2 = obj.crop(___)
+        obj2 = obj.crop(___);
 
     .. raw:: html
       

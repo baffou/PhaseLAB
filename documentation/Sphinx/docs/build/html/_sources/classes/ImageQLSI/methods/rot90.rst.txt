@@ -1,6 +1,4 @@
-.. dropdown:: **rot90**
-    
-    Rotate the images of the object by multiples of 90°.
+.. dropdown:: **rot90** |subTitle| Rotate the images of the object by multiples of 90°. |/subTitle|
 
     .. raw:: html
       

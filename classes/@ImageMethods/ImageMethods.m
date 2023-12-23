@@ -37,205 +37,12 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             val=obj.Illumination.lambda;
         end
 
-        function HVcrosscuts(obj,hfig)
-            % plots horizontal and vertical cross cuts.
-            if nargin==1
-                hfig=obj.figure('px');
-            else
-                figure(hfig)
-                %if ~strcmp(hfig.UserData{2},'px') % force the unit to be px in case it is µm
-                %    figure_callback(hfig,obj,'px',hfig.UserData{3},hfig.UserData{4},str2double(get(hfig.UserData{8}.UIk,'String')),hfig.UserData{8})
-                %end
-            end
-            linkaxes(hfig.UserData{7},'off');
-            linkaxes(hfig.UserData{7},'x');
-
-            [x0,y0]=ginput(1);
-            x0=round(x0);
-            y0=round(y0);
-            if nargin==2
-                if strcmp(hfig.UserData{2},'µm')
-                    factorAxis=obj.pxSize*1e6;
-                elseif strcmp(hfig.UserData{2},'px')
-                    factorAxis=1;
-                end
-            else
-                factorAxis=1;
-            end
-            subplot(1,2,1)
-            plot((1:obj.Nx)*factorAxis-x0,obj.T(round(y0/factorAxis),:),'LineWidth',2);
-            if nargin==2
-                xlabel(hfig.UserData{2})
-            else
-                xlabel('px')
-            end
-            ylabel('normalized intensity')
-            hold on
-            plot((1:obj.Ny)*factorAxis-y0,obj.T(:,round(x0/factorAxis)),'LineWidth',2);
-            set(gca,'fontsize', 18)
-            legend({'horizontal','vertical'})
-            ax=gca;
-            plot([0 0],ax.YLim,'b');%vertical line
-            set(ax,'FontSize',14)
-            hold off
-            subplot(1,2,2)
-            plot((1:obj.Nx)*factorAxis-x0,1e9*obj.OPD(round(y0/factorAxis),:),'LineWidth',2);
-            if nargin==2
-                xlabel(hfig.UserData{2})
-            else
-                xlabel('px')
-            end
-            ylabel('Optical path difference [nm]')
-            hold on
-            plot((1:obj.Ny)*factorAxis-y0,1e9*obj.OPD(:,round(x0/factorAxis)),'LineWidth',2);
-            set(gca,'fontsize', 18)
-            legend({'horizontal','vertical'})
-            ax=gca;
-            plot([0 0],ax.YLim,'b');%vertical line
-            set(ax,'FontSize',14)
-            hold off
-        end
-
-        function crosscut(obj,hfig)
-            if nargin==1
-                hfig=obj.figure('px');
-            else
-                figure(hfig)
-                %if ~strcmp(hfig.UserData{2},'px') % force the unit to be px in case it is µm
-                %    figure_callback(hfig,obj,'px',hfig.UserData{3},hfig.UserData{4},str2double(get(hfig.UserData{8}.UIk,'String')),hfig.UserData{8})
-                %end
-            end
-            linkaxes(hfig.UserData{7},'off');
-            linkaxes(hfig.UserData{7},'x');
-
-            [cx,cy,c]=improfile(100);
-            dist=0;
-            for ni=1:length(cx)-1
-                dist=dist+sqrt((cx(ni)-cx(ni+1))^2+(cy(ni)-cy(ni+1))^2);
-            end
-            figure,
-            crossplot=c;%obj.lambda*c*1e9/(2*pi);
-            hp=plot(  crossplot);
-            hp.XData=hp.XData/max(hp.XData)*dist;
-            xlabel(hfig.UserData{2})
-            ylabel('OPD [nm]')
-            size(hp.XData')
-            size(crossplot')
-            hfig.UserData{10}=[hp.XData',crossplot];
-
-        end
-
-        function distance(obj,hfig)
-            % measures a distance between two points.
-            if nargin==1
-                hfig=obj.figure('µm');
-            else
-                figure(hfig)
-                figure_callback(hfig,obj,'µm',hfig.UserData{3},hfig.UserData{4},'1')
-                %if ~strcmp(hfig.UserData{2},'px') % force the unit to be px in case it is µm
-                %    figure_callback(hfig,obj,'px',hfig.UserData{3},hfig.UserData{4},str2double(get(hfig.UserData{8}.UIk,'String')),hfig.UserData{8})
-                %end
-            end
-            hp=drawpolyline;
-            dist=lineLength(hp);
-            %clipboard('copy',sprintf([hfig.UserData{5}.OPDfileName '\t%.4g\t' hfig.UserData{2}],dist))
-
-            %             if nargin==2
-            %                 if strcmp(hfig.UserData{2},'µm')
-            %                     factorAxis=obj.pxSize*1e6;
-            %                 elseif strcmp(hfig.UserData{2},'px')
-            %                     factorAxis=1;
-            %                 end
-            %             else
-            %                 factorAxis=1;
-            %             end
-            UIresult=hfig.UserData{8}.UIresult;
-            set(UIresult,'String',[sprintf('%.4g',dist) ' ' hfig.UserData{2}]);
-            hfig.UserData{10}=dist;
-
-        end
-
-
-        function val=getPixel(obj,hfig)
-            if nargin==1
-                obj.figure()
-            end
-
-            [x,y]=ginput(1);
-
-            valT=obj.T(round(y),round(x));
-            valOPD=obj.OPD(round(y),round(x));
-            val=[valT;valOPD];
-
-            if nargin==2
-                UIresult=hfig.UserData{8}.UIresult;
-                set(UIresult,'String',[sprintf('%.4g',valT) ', ' sprintf('%.3g',1e9*valOPD) ' nm']);
-                hfig.UserData{10}=[valT;valOPD];
-            end
-        end
-
         function val=dxSize(obj)
             val=obj.Microscope.CGcam.dxSize;
         end
 
         function val=pxSize(obj)
             val=obj.pxSizeCorrection*obj.Microscope.pxSize*obj.binningFactor;
-        end
-
-        function val=getAreaMean(obj,Narea,hfig)
-            if nargin==1
-                obj.figure()
-                Narea=1;
-            end
-
-            val=zeros(Narea,3);
-            valstd=zeros(Narea,3);
-            for ia=1:Narea
-
-                [x,y]=ginput(2);
-                xmin=round(min(x));
-                xmax=round(max(x));
-                ymin=round(min(y));
-                ymax=round(max(y));
-
-                valT=mean(mean(obj.T(ymin:ymax,xmin:xmax)));
-                valOPD=mean(mean(obj.OPD(ymin:ymax,xmin:xmax)));
-                valPh=mean(mean(obj.Ph(ymin:ymax,xmin:xmax)));
-                val(ia,1)=valT;
-                val(ia,2)=valOPD;
-                val(ia,3)=valPh;
-
-                valstdT=std2(obj.T(ymin:ymax,xmin:xmax));
-                valstdOPD=std2(obj.OPD(ymin:ymax,xmin:xmax));
-                valstdPh=std2(obj.Ph(ymin:ymax,xmin:xmax));
-                valstd(ia,1)=valstdT;
-                valstd(ia,2)=valstdOPD;
-                valstd(ia,3)=valstdPh;
-
-                if nargin==3
-                    UIresult=hfig.UserData{8}.UIresult;
-                    set(UIresult,'String',[sprintf('%.4g',valT) '\pm' sprintf('%.4g',valstdT) ', ' sprintf('%.3g',1e9*valOPD) '\pm' sprintf('%.4g',valstdOPD) ' nm']);
-                end
-
-            end
-            hfig.UserData{10}=val;
-
-            hc=figure;
-            subplot(1,3,1)
-            plot(val(:,1),'o-')
-            title('intensity')
-            subplot(1,3,2)
-            plot(val(:,2),'o-')
-            title('OPD (nm)')
-            subplot(1,3,3)
-            plot(val(:,3)*180/pi,'o-')
-            title('phase(degrees)')
-
-            if get(hfig.UserData{8}.autosave,'value')
-                saveData(hfig,hc)
-            end
-
-
         end
 
         function imageHSV(obj)
@@ -314,10 +121,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             for io=1:No
                 objList(io).Illumination=IL;
             end
-        end
-
-        function IMout = plus(IM1,IM2)
-            IMout = [IM1(:);IM2(:)];
         end
 
         function add(IMlist0,IM,pos)
@@ -786,6 +589,11 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             fprintf('%.3g Ko\n',val)
         end
 
+        function val = dmd(obj)
+            % returns the dry mass density in pg/µm^2
+            val = 5.56*1e-3 * obj.OPD*1e9;
+        end
+
         function [obj, params] = crop(obj0,opt)
             arguments
                 obj0
@@ -860,8 +668,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
 
         end
-
-
 
         function bool = is_empty(obj)
             % return 1 is the object is empty, or if all the properties are empty

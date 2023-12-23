@@ -1,4 +1,4 @@
-.. include:: substitutions.rst
+.. include:: ../substitutions.rst
 
 .. role:: matlab(code)
   :language: matlab

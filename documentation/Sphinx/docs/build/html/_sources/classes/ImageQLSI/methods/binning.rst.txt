@@ -1,6 +1,4 @@
-.. dropdown:: **binning**
-    
-    Performs 2x2 or 3x3 pixel binning of the images of the ImageQLSI object.
+.. dropdown:: **binning** |subTitle| Performs 2x2 or 3x3 pixel binning of the images of the ImageQLSI object. |/subTitle|
 
     .. raw:: html
       
@@ -27,7 +25,7 @@
     
     .. include:: ../hr.txt
 
-    If an output arguments is specified, ``obj`` is not modified, but duplicated.
+    If an output argument is specified, ``obj`` is not modified, but duplicated.
     
 
 

@@ -1,6 +1,4 @@
-.. dropdown:: **mean**
-    
-    Average the ``OPD``and ``T`` images of a list of *ImageQLSI* objects.
+.. dropdown:: **mean** |subTitle| Average the OPD and T images of a list of *ImageQLSI* objects. |/subTitle|
 
     .. raw:: html
       

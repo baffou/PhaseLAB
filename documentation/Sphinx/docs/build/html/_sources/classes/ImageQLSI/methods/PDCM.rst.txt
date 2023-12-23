@@ -1,6 +1,4 @@
-.. dropdown:: **PDCM**
-    
-    Computes the PDCM (phase derivatives closure map) of the ``OPD`` image.
+.. dropdown:: **PDCM** |subTitle| Computes the PDCM (phase derivatives closure map) of the OPD image. |/subTitle|
 
     .. raw:: html
       

@@ -1,6 +1,4 @@
-.. dropdown:: **DWnorm**
-    
-    Returns the norm of the gradient of the ``OPD`` image of the *ImageQLSI* object.
+.. dropdown:: **DWnorm** |subTitle| Returns the norm of the gradient of the OPD image of the *ImageQLSI* object. |/subTitle|
 
     .. raw:: html
       

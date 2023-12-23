@@ -1,6 +1,4 @@
-.. dropdown:: **crossTalkCorrection**
-    
-    Correct for the crosstalk on 2-color cameras.
+.. dropdown:: **crossTalkCorrection** |subTitle| Correct for the crosstalk on 2-color cameras. |/subTitle|
 
     .. raw:: html
       

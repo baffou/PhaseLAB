@@ -1,4 +1,4 @@
-.. dropdown:: **NA**
+.. dropdown:: **NA** |subTitle| Returns de numerical aperture of the objective lens. |subTitle|
 
     .. code-block:: matlab
 

@@ -1,4 +1,4 @@
-.. dropdown:: **Jones**
+.. dropdown:: **Jones** |subTitle| Applies a Jones matrix to an *Illumination* object. |/subTitle|
 
     .. code-block:: matlab
 

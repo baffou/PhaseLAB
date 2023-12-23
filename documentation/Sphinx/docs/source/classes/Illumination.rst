@@ -55,23 +55,23 @@ Attributes
      - description
    * - ``n``
      - double
-     - ``= this.Medium.n``
+     - ``= Medium.n``
      - refractive index of the upper medium
    * - ``nS``
      - double
-     - ``= this.Medium.nS``
+     - ``= Medium.nS``
      - refractive index of the lower medium
    * - ``e0``
      - double
-     - ``= sqrt(2*obj.I/(obj.n*obj.c*obj.eps0));``
+     - ``= sqrt(2*I/(n*c*eps0));``
      - incident electric field
    * - ``k0``
      - double
-     - ``= 2*pi./obj.lambda;2*pi./obj.lambda;``
+     - ``= 2*pi./lambda;2*pi./lambda;``
      - wavevector in vacuum
    * - ``tr``
      - double
-     - ``= 2*obj.n/(obj.n+obj.nS);``
+     - ``= 2*n/(n+nS);``
      - light transmission at the interface
 
 

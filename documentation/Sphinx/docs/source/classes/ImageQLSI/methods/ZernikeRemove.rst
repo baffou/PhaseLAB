@@ -1,6 +1,4 @@
-.. dropdown:: **ZernikeRemove**
-    
-    Removes the Zernike moments of the OPD image of an ImageQLSI object.
+.. dropdown:: **ZernikeRemove** |subTitle| Removes the Zernike moments of the OPD image of an ImageQLSI object. |/subTitle|
 
     .. raw:: html
       

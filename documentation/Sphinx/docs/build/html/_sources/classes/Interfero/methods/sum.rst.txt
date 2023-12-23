@@ -1,6 +1,4 @@
-.. dropdown:: **sum**
-    
-    Return the sum of interferograms.
+.. dropdown:: **sum** |subTitle| Return the sum of interferograms. |/subTitle|
 
     .. raw:: html
       

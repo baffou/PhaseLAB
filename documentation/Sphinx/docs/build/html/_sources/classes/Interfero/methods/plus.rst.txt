@@ -1,6 +1,4 @@
-.. dropdown:: **plus**
-    
-    Defines the addition between two *Interfero* objects: ``Itf1 + Itf2``.
+.. dropdown:: **plus** |subTitle| Defines the addition between two *Interfero* objects: ``Itf1 + Itf2``. |/subTitle|
 
     .. raw:: html
       

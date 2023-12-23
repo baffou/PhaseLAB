@@ -1,4 +1,4 @@
-.. dropdown:: **sigmaTheo**
+.. dropdown:: **sigmaTheo** |subTitle| returns the theoretical noise standard deviation of the OPD image. |/subTitle|
 
     .. code-block:: matlab
 

@@ -1,6 +1,4 @@
-.. dropdown:: **splitColors**
-    
-    Extract the two color interferograms from one interferogram acquired with a 2-color camera
+.. dropdown:: **splitColors** |subTitle| Extract the two color interferograms from one interferogram acquired with a 2-color camera. |/subTitle|
 
     .. raw:: html
       

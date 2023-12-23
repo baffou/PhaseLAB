@@ -3,10 +3,13 @@
   :class: highlight
 
 
+
+
+
 The ImageQLSI class
 ===================
 
-*ImageQLSI* is handle class.
+*ImageQLSI* is a handle class.
 
 Attributes
 ----------

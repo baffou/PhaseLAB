@@ -62,6 +62,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Classes</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="CGcamera.html">CGcamera</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Illumination.html">Illumination</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">ImageQLSI</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#attributes">Attributes</a></li>
@@ -297,12 +298,11 @@
 <h2>Methods<a class="headerlink" href="#methods" title="Link to this heading"></a></h2>
 <details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>binning</strong><div class="summary-down docutils">
+<strong>binning</strong> <br /> <span style="color:#888"> Performs 2x2 or 3x3 pixel binning of the images of the ImageQLSI object. </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Performs 2x2 or 3x3 pixel binning of the images of the ImageQLSI object.</p>
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">binning</span><span class="p">()</span>
 <span class="n">obj</span><span class="p">.</span><span class="n">binning</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">binning</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
@@ -311,16 +311,63 @@
 <p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span></code> can by a vector of <em>ImageQLSI</em> objects. In that case, the treatment will be perform on all the objects of the list.</p>
 <p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.binning()</span></code> performs, by default, a 3x3 binning of the images of <code class="docutils literal notranslate"><span class="pre">obj</span></code>.</p>
 <hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.binning(n)</span></code> performs, nxn binning of the images of <code class="docutils literal notranslate"><span class="pre">obj</span></code>. Only works with <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">=</span> <span class="pre">2</span></code> or <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">=</span> <span class="pre">3</span></code>.</p>
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an output arguments is specified, <code class="docutils literal notranslate"><span class="pre">obj</span></code> is not modified, but duplicated.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an output argument is specified, <code class="docutils literal notranslate"><span class="pre">obj</span></code> is not modified, but duplicated.</p>
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>dmd</strong><div class="summary-down docutils">
+<strong>crop</strong> <br /> <span style="color:#888"> Crop the images of the object. </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Returns the dry mass density (DMD) image.</p>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">crop</span><span class="p">()</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">crop</span><span class="p">(</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Value</span><span class="p">)</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.crop()</span></code> crops the <code class="docutils literal notranslate"><span class="pre">T</span></code> and <code class="docutils literal notranslate"><span class="pre">OPD</span></code> attribute images, identically. It also crops <code class="docutils literal notranslate"><span class="pre">DWx</span></code> and <code class="docutils literal notranslate"><span class="pre">DWy</span></code> if they are defined. A figure window opens, inviting the user to click on the image to define a square area centered in the middle of the image.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">Objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.</p>
+<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an output is used, <code class="docutils literal notranslate"><span class="pre">obj2</span></code>, then the object is not modified, and is duplicated.</p>
+<p class="title">Name-value arguments</p><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p class="card-text">Specify optional pairs of arguments as <code class="docutils literal notranslate"><span class="pre">Name1</span> <span class="pre">=</span> <span class="pre">Value1,</span> <span class="pre">...,</span> <span class="pre">NameN</span> <span class="pre">=</span> <span class="pre">ValueN</span></code>, where Name is the argument name and Value is the corresponding value. Name-value arguments must appear after other arguments, but the order of the pairs does not matter.</p>
+<p class="card-text">Example:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Center&#39;</span><span class="p">,</span><span class="s">&#39;Manual&#39;</span><span class="p">,</span><span class="s">&#39;Size&#39;</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p class="card-text">The Name-Value arguments in the <em>crop</em> method are used to define how the reference area is chosen. This reference area is the one that will feature a no-tilt when the tilt correction will be applied. When some arguments are set to <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Manual&#39;</span></code>, a figure appears so that the user can select this area, in 1 or 2 clicks.</p>
+<ul>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Center&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">With <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Center&#39;</span><span class="p">,</span><span class="s">&#39;Manual&#39;</span><span class="p">)</span></code>, the user has to first click on the center of the reference area. If the argument is set to <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Auto&#39;</span></code>, then this step is skipped, and the center is automatically set to the center of the image. Also, the user can indicate the coordinates of the center: <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Center&#39;</span><span class="p">,[</span><span class="n">x_c</span><span class="p">,</span><span class="w"> </span><span class="n">y_c</span><span class="p">])</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Size&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">With <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Size&#39;</span><span class="p">,</span><span class="s">&#39;Manual&#39;</span><span class="p">)</span></code>, once the center is defined (either manually or automatically), the user has to click on the figure to define the shape of the area, around the center point. The user can also indicate the dimensions of the reference area: <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Size&#39;</span><span class="p">,</span><span class="n">Npx</span><span class="p">)</span></code> for a square area, or  <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Size&#39;</span><span class="p">,[</span><span class="n">Nx</span><span class="p">,</span><span class="w"> </span><span class="n">Ny</span><span class="p">])</span></code> for a rectangular area.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;twoPoints&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">Instead of using the <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Center&#39;</span></code> and <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Size&#39;</span></code> keywords, one can also click on two opposite corners of the reference area, using <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;twoPoints&#39;</span><span class="p">,</span><span class="nb">true</span><span class="p">)</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;params&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">One can also direclty write the coordinates of the crops, using <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;params&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">x1</span><span class="p">,</span><span class="w"> </span><span class="n">x2</span><span class="p">,</span><span class="w"> </span><span class="n">y1</span><span class="p">,</span><span class="w"> </span><span class="n">y2</span><span class="p">])</span></code>. In this case, no figure opens.</p>
+</div></blockquote>
+</li>
+</ul>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>dmd</strong> <br /> <span style="color:#888"> Returns the dry mass density (DMD) image. </span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">dmd</span><span class="p">();</span>
 </pre></div>
 </div>
@@ -328,12 +375,11 @@
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>download</strong><div class="summary-down docutils">
+<strong>download</strong> <br /> <span style="color:#888"> Import on the RAM of the computer an object that is in ‘remote’ mode. </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Import on the RAM of the computer an object that is in ‘remote’ mode.</p>
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">download</span><span class="p">();</span>
 </pre></div>
 </div>
@@ -341,12 +387,11 @@
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>DWnorm</strong><div class="summary-down docutils">
+<strong>DWnorm</strong> <br /> <span style="color:#888"> Returns the norm of the gradient of the OPD image of the <em>ImageQLSI</em> object. </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Returns the norm of the gradient of the <code class="docutils literal notranslate"><span class="pre">OPD</span></code> image of the <em>ImageQLSI</em> object.</p>
 <p class="title">Synthax</p><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">val</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">D2Wnorm</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -357,12 +402,11 @@
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>D2Wnorm</strong><div class="summary-down docutils">
+<strong>D2Wnorm</strong> <br /> <span style="color:#888"> Returns the second derivative (Lapacian) of the OPD image of the <em>ImageQLSI</em> object. </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Returns the second derivative (Lapacian) of the <code class="docutils literal notranslate"><span class="pre">OPD</span></code> image of the <em>ImageQLSI</em> object.</p>
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">D2Wnorm</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -373,12 +417,11 @@
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>flipud</strong><div class="summary-down docutils">
+<strong>flipud</strong> <br /> <span style="color:#888"> Flips the images of the object about the horizontal axis (flips up-down). </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Flips the images of the object about the horizontal axis (flips up-down).</p>
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">flipud</span><span class="p">();</span>
 <span class="n">objList</span><span class="p">.</span><span class="n">flipud</span><span class="p">();</span>
 <span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">flipud</span><span class="p">();</span>
@@ -389,12 +432,11 @@
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>fliplr</strong><div class="summary-down docutils">
+<strong>fliplr</strong> <br /> <span style="color:#888"> Flips the images of the object about the vertical axis (flips left-right). </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Flips the images of the object about the vertical axis (flips left-right).</p>
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">fliplr</span><span class="p">();</span>
 <span class="n">objList</span><span class="p">.</span><span class="n">fliplr</span><span class="p">();</span>
 <span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">fliplr</span><span class="p">();</span>
@@ -405,12 +447,11 @@
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>highPassFilter</strong> Applies a high-pass filter on the spatial frequencies of the image, as a means to remove the lwo frequencies and highlight the details.<div class="summary-down docutils">
+<strong>highPassFilter</strong> <br /> <span style="color:#888"> Applies a high-pass filter on the spatial frequencies of the image, as a means to remove the lwo frequencies and highlight the details. </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Applies a high-pass filter on the spatial frequencies of the image, as a means to remove the lwo frequencies and highlight the details.</p>
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">highPassFilter</span><span class="p">()</span>
 <span class="n">obj</span><span class="p">.</span><span class="n">highPassFilter</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">highPassFilter</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
@@ -425,12 +466,11 @@
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>mean</strong><div class="summary-down docutils">
+<strong>mean</strong> <br /> <span style="color:#888"> Average the OPD and T images of a list of <em>ImageQLSI</em> objects. </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Average the <code class="docutils literal notranslate"><span class="pre">OPD``and</span> <span class="pre">``T</span></code> images of a list of <em>ImageQLSI</em> objects.</p>
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">objList</span><span class="p">.</span><span class="n">mean</span><span class="p">();</span>
 </pre></div>
 </div>
@@ -438,12 +478,11 @@
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>PDCM</strong><div class="summary-down docutils">
+<strong>PDCM</strong> <br /> <span style="color:#888"> Computes the PDCM (phase derivatives closure map) of the OPD image. </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Computes the PDCM (phase derivatives closure map) of the <code class="docutils literal notranslate"><span class="pre">OPD</span></code> image.</p>
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">PDCM</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -463,12 +502,11 @@
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>propagation</strong><div class="summary-down docutils">
+<strong>propagation</strong> <br /> <span style="color:#888"> Applies a variation of the microscope focus on the <em>ImageQLSI</em> object. </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Applies a variation of the microscope focus on the <em>ImageQLSI</em> object.</p>
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">propagation</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 <span class="n">objList</span><span class="p">.</span><span class="n">propagation</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
 <span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">propagation</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
@@ -480,12 +518,11 @@
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>rot90</strong><div class="summary-down docutils">
+<strong>rot90</strong> <br /> <span style="color:#888"> Rotate the images of the object by multiples of 90°. </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Rotate the images of the object by multiples of 90°.</p>
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">rot90</span><span class="p">();</span>
 <span class="n">obj</span><span class="p">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">k</span><span class="p">);</span>
 <span class="n">objList</span><span class="p">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
@@ -499,12 +536,11 @@
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>smooth</strong><div class="summary-down docutils">
+<strong>smooth</strong> <br /> <span style="color:#888"> Applies a low-pass filter on the spatial frequencies of the image, as a means to blur the image. </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Applies a low-pass filter on the spatial frequencies of the image, as a means to blur the image.</p>
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">smooth</span><span class="p">()</span>
 <span class="n">obj</span><span class="p">.</span><span class="n">smooth</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">smooth</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
@@ -519,12 +555,11 @@
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>square</strong><div class="summary-down docutils">
+<strong>square</strong> <br /> <span style="color:#888"> Transforms rectangle images to square images by cropping. </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Transforms rectangle images to square images by cropping.</p>
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">square</span><span class="p">()</span>
 <span class="n">objList</span><span class="p">.</span><span class="n">square</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
 <span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">square</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
@@ -536,12 +571,11 @@
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>untilt</strong><div class="summary-down docutils">
+<strong>untilt</strong> <br /> <span style="color:#888"> Removes a tilt on the OPD image. </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Removes a tilt on the <code class="docutils literal notranslate"><span class="pre">OPD</span></code> image.</p>
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">untilt</span><span class="p">()</span>
 <span class="n">obj</span><span class="p">.</span><span class="n">untilt</span><span class="p">(</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Value</span><span class="p">)</span>
 <span class="n">objList</span><span class="p">.</span><span class="n">untilt</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
@@ -586,12 +620,11 @@
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>ZernikeRemove</strong><div class="summary-down docutils">
+<strong>ZernikeRemove</strong> <br /> <span style="color:#888"> Removes the Zernike moments of the OPD image of an ImageQLSI object. </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Removes the Zernike moments of the OPD image of an ImageQLSI object.</p>
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">ZernikeRemove</span><span class="p">()</span>
 <span class="n">obj</span><span class="p">.</span><span class="n">ZernikeRemove</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
 <span class="n">obj</span><span class="p">.</span><span class="n">ZernikeRemove</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">r</span><span class="p">);</span>
@@ -603,7 +636,8 @@
 <hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">In <code class="docutils literal notranslate"><span class="pre">obj.ZernikeRemove(n,m,r);</span></code>, <code class="docutils literal notranslate"><span class="pre">r</span></code> is the radius of the disc over which the Zerninke moment is calculated. By default, it is half the size of the image (<code class="docutils literal notranslate"><span class="pre">r</span> <span class="pre">=</span> <span class="pre">min([obj.Nx,</span> <span class="pre">obj.Ny])/2-1</span></code>).</p>
 <hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an output <code class="docutils literal notranslate"><span class="pre">obj2</span></code> is specified, IM is copied. If not, obj is modified.</p>
 </div>
-</details></section>
+</details><p>Methods inherited from the Parent class <em>ImageMethods</em>, which are shared with the <em>ImageEM</em> class.</p>
+</section>
 </section>
 
 

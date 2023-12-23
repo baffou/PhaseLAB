@@ -59,6 +59,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Classes</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CGcamera.html">CGcamera</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Illumination.html">Illumination</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../ImageQLSI.html">ImageQLSI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Interfero.html">Interfero</a></li>
@@ -91,13 +92,11 @@
              
   <details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>spotRemoval</strong><div class="summary-down docutils">
+<strong>spotRemoval</strong> <br /> <span style="color:#888"> Removes undesired spots in the Interferogram Fourier space. </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<blockquote>
-<div><p class="card-text">Removes undesired spots in the Interferogram Fourier space.</p>
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">spotRemoval</span><span class="p">()</span>
 <span class="n">obj</span><span class="p">.</span><span class="n">spotRemoval</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
 <span class="n">objList</span><span class="p">.</span><span class="n">spotRemoval</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
@@ -109,7 +108,7 @@
 <img alt="classes/Interfero/images/spotRemoval.png" src="classes/Interfero/images/spotRemoval.png" />
 <p class="card-text">Alternatively, a mask can be specified at the input argument. In that case, no figure opens:<code class="docutils literal notranslate"><span class="pre">obj.spotRemoval(mask)</span></code>.</p>
 <p class="card-text">If an <em>Interfero</em> object is specified as an output, <code class="docutils literal notranslate"><span class="pre">obj2</span> <span class="pre">=</span> <span class="pre">obj.spotRemoval(___);</span></code>; the original object is not modified, but duplicated.</p>
-</div></blockquote>
+<p class="card-text">The mask defined by the user can also be returned as a second output argument, to possibly be used as an input for a forthcoming call of this method with another <em>Interfero</em> object.</p>
 </div>
 </details>
 

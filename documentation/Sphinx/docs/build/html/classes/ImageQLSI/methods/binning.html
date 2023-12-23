@@ -59,6 +59,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Classes</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CGcamera.html">CGcamera</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Illumination.html">Illumination</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../ImageQLSI.html">ImageQLSI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Interfero.html">Interfero</a></li>
@@ -91,12 +92,11 @@
              
   <details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>binning</strong><div class="summary-down docutils">
+<strong>binning</strong> <br /> <span style="color:#888"> Performs 2x2 or 3x3 pixel binning of the images of the ImageQLSI object. </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="card-text">Performs 2x2 or 3x3 pixel binning of the images of the ImageQLSI object.</p>
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">binning</span><span class="p">()</span>
 <span class="n">obj</span><span class="p">.</span><span class="n">binning</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">binning</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
@@ -105,7 +105,7 @@
 <p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span></code> can by a vector of <em>ImageQLSI</em> objects. In that case, the treatment will be perform on all the objects of the list.</p>
 <p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.binning()</span></code> performs, by default, a 3x3 binning of the images of <code class="docutils literal notranslate"><span class="pre">obj</span></code>.</p>
 <p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.binning(n)</span></code> performs, nxn binning of the images of <code class="docutils literal notranslate"><span class="pre">obj</span></code>. Only works with <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">=</span> <span class="pre">2</span></code> or <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">=</span> <span class="pre">3</span></code>.</p>
-<p class="card-text">If an output arguments is specified, <code class="docutils literal notranslate"><span class="pre">obj</span></code> is not modified, but duplicated.</p>
+<p class="card-text">If an output argument is specified, <code class="docutils literal notranslate"><span class="pre">obj</span></code> is not modified, but duplicated.</p>
 </div>
 </details>
 

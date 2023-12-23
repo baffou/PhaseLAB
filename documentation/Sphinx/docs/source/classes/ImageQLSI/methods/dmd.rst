@@ -1,6 +1,4 @@
-.. dropdown:: **dmd**
-    
-    Returns the dry mass density (DMD) image.
+.. dropdown:: **dmd** |subTitle| Returns the dry mass density (DMD) image. |/subTitle|
 
     .. raw:: html
       

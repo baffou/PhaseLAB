@@ -54,11 +54,11 @@ Attributes
      - description
    * - ``M``
      - double
-     - ``= -this.Mobj*m.f_TL/this.f_brand``
+     - ``= -Mobj*f_TL/f_brand``
      - magnification of the microscope
    * - ``pxSize``
      - double
-     - ``= abs( this.CGcam.dxSize()/this.M );``
+     - ``= abs( CGcam.dxSize()/M );``
      - pixel size of the image
 
 

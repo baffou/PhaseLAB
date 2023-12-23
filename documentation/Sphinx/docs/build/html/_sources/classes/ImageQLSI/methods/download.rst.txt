@@ -1,6 +1,4 @@
-.. dropdown:: **download**
-    
-    Import on the RAM of the computer an object that is in 'remote' mode.
+.. dropdown:: **download** |subTitle| Import on the RAM of the computer an object that is in 'remote' mode. |/subTitle|
 
     .. raw:: html
       

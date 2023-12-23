@@ -1,6 +1,4 @@
-.. dropdown:: **D2Wnorm**
-    
-    Returns the second derivative (Lapacian) of the ``OPD`` image of the *ImageQLSI* object.
+.. dropdown:: **D2Wnorm** |subTitle| Returns the second derivative (Lapacian) of the OPD image of the *ImageQLSI* object. |/subTitle|
 
 
     .. raw:: html

@@ -1,7 +1,6 @@
-.. dropdown:: **highPassFilter** Applies a high-pass filter on the spatial frequencies of the image, as a means to remove the lwo frequencies and highlight the details.
+.. dropdown:: **highPassFilter** |subTitle| Applies a high-pass filter on the spatial frequencies of the image, as a means to remove the lwo frequencies and highlight the details. |/subTitle|
 
-    
-    Applies a high-pass filter on the spatial frequencies of the image, as a means to remove the lwo frequencies and highlight the details.
+
 
     .. raw:: html
       

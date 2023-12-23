@@ -57,10 +57,12 @@ The toolbox is accessible at `github.com/baffou/PhaseLAB <https://github.com/baf
    :maxdepth: 2
    :caption: Classes
 
+   CGcamera     <classes/CGcamera>
    Illumination <classes/Illumination>
-   ImageQLSI <classes/ImageQLSI>
-   Interfero <classes/Interfero>
-   Microscope <classes/Microscope>
+   ImageQLSI    <classes/ImageEM>
+   ImageQLSI    <classes/ImageQLSI>
+   Interfero    <classes/Interfero>
+   Microscope   <classes/Microscope>
 
 
 

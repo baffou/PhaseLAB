@@ -3,6 +3,9 @@
   :class: highlight
 
 
+
+
+
 The ImageQLSI class
 ===================
 

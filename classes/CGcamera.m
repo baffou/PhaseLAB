@@ -6,6 +6,9 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
     end
     properties
         fileName char  = 'sC8-944'% fileName of the CGcamera, if any
+    end
+
+    properties(SetAccess = private)
         CGpos    (1,1) {mustBeNumeric} % grating position
     end
 
@@ -23,11 +26,10 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
 
         function obj = CGcamera(varargin)
             %CGcamera('Zyla')
-            %CGcamera('Zyla')
             %CGcamera('sc8-944')
             %CGcamera('Zyla','P4')
             %CGcamera('Zyla','P4',zoom)
-            %CGcamera(Camera(),CrossGrating())
+
             if nargin==0 % CGcamera()
                 obj = CGcamera('Zyla');
             end
@@ -93,6 +95,7 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
                         elseif strcmpi(camType,'Camera') % the input is just a Camera, not a CGcamera
                             obj.Camera = Camera(varargin{1});
                             obj.CG = CrossGrating.empty();
+                            obj.fileName = varargin{1};
                         else
                             error('not a proper input for a CGcamera')
                         end

@@ -1,7 +1,5 @@
   
-.. dropdown:: **untilt**
-    
-    Removes a tilt on the ``OPD`` image.
+.. dropdown:: **untilt** |subTitle| Removes a tilt on the OPD image. |/subTitle|
 
     .. raw:: html
       

@@ -1,7 +1,11 @@
+
+
 Methods
 -------
 
 .. include:: ImageQLSI/methods/binning.rst
+
+.. include:: ImageQLSI/methods/crop.rst
 
 .. include:: ImageQLSI/methods/dmd.rst
 
@@ -35,6 +39,28 @@ Methods
 
 .. include:: ImageQLSI/methods/ZernikeRemove.rst
 
+Methods inherited from the Parent class *ImageMethods*, which are shared with the *ImageEM* class.
 
+.. include:: ImageQLSI/methods/dxSize.rst
+
+.. include:: ImageQLSI/methods/figure.rst
+
+.. include:: ImageQLSI/methods/imageHSV.rst
+
+.. include:: ImageQLSI/methods/isempty.rst
+
+.. include:: ImageQLSI/methods/lambda.rst
+
+.. include:: ImageQLSI/methods/MakeMoviedx.rst
+
+.. include:: ImageQLSI/methods/opendx.rst
+
+.. include:: ImageQLSI/methods/overview.rst
+
+.. include:: ImageQLSI/methods/plus.rst
+
+.. include:: ImageQLSI/methods/pxSize.rst
+
+.. include:: ImageQLSI/methods/sizeof.rst
 
 

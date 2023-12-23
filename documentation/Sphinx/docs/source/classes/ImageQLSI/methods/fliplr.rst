@@ -1,6 +1,4 @@
-.. dropdown:: **fliplr**
-    
-    Flips the images of the object about the vertical axis (flips left-right).
+.. dropdown:: **fliplr** |subTitle| Flips the images of the object about the vertical axis (flips left-right). |/subTitle|
 
     .. raw:: html
       

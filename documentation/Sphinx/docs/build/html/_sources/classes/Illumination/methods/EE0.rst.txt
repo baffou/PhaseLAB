@@ -1,4 +1,4 @@
-.. dropdown:: **EE0**
+.. dropdown:: **EE0** |subTitle| Return the value of the incident electric field at a given position. |/subTitle|
     
 
     .. code-block:: matlab

@@ -1,4 +1,4 @@
-.. dropdown:: **rotate**
+.. dropdown:: **rotate** |subTitle| Rotate the incident illumination. |/subTitle|
 
     .. code-block:: matlab
 

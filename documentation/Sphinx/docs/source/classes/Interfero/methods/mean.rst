@@ -1,6 +1,4 @@
-.. dropdown:: **mean**
-    
-    Computes the average interferogram from a series of interferograms.
+.. dropdown:: **mean** |subTitle| Computes the average interferogram from a series of interferograms. |/subTitle|
 
     .. raw:: html
       

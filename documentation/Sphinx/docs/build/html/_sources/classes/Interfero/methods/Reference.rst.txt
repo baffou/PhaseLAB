@@ -1,6 +1,4 @@
-.. dropdown:: **Reference**
-    
-    Defines the reference interferogram of an *Interferogram* object.
+.. dropdown:: **Reference** |subTitle| Defines the reference interferogram of an *Interferogram* object. |/subTitle|
 
     .. raw:: html
       
@@ -22,6 +20,6 @@
 
     ``obj`` can be a list (vector) of interferogram. In that case, ``ref`` is assigned to all of them, without being duplicated.
 
-.. include:: ../hr.txt
+    .. include:: ../hr.txt
 
-    ``ref`` can be a list (vector) of interferogram, as long as it has the same number of objects as ``obj``. in that case, the reference interferograms are assigned one by one to the interferograms.
+    ``ref`` can be a list (vector) of interferogram, as long as it has the same number of objects as ``obj``. in that case, the reference interferograms of ``ref`` are assigned one by one to the interferograms of ``obj``.
