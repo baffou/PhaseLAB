@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Interfero class &mdash; PhaseLAB documentation 4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
       <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
@@ -59,18 +60,36 @@
 <li class="toctree-l1"><a class="reference internal" href="../processImages.html">Process experimental images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../displayImages.html">Display experimental images</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../codeExamples.html">Code examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../GUI.html">GUI</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Classes</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Camera.html">Camera</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CGcamera.html">CGcamera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CrossGrating.html">CrossGrating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dipole.html">Dipole</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Illumination.html">Illumination</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ImageEM.html">ImageEM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ImageQLSI.html">ImageQLSI</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Interfero</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#attributes">Attributes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#constructor">Constructor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#interfero-methods">Interfero methods</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Microscope.html">Microscope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Objective.html">Objective</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functions/importItfRef.html">importItfRef</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/dynamicFigure.html">dynamicFigure</a></li>
 </ul>
 
         </div>
@@ -99,16 +118,16 @@
              
   <section id="the-interfero-class">
 <h1>The Interfero class<a class="headerlink" href="#the-interfero-class" title="Link to this heading"></a></h1>
-<p><em>Interfero</em> is handle class.</p>
+<p><em>Interfero</em> is a handle class.</p>
 <section id="attributes">
 <h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h2>
 <table class="docutils align-center" id="id1">
 <caption><span class="caption-text">Private access properties</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
 <colgroup>
-<col style="width: 15.8%" />
-<col style="width: 15.8%" />
-<col style="width: 15.8%" />
-<col style="width: 52.6%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 53%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>name</p></th>
@@ -168,10 +187,14 @@
 </pre></div>
 </div>
 <div class="title">Description</div><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Interfero</span><span class="p">()</span></code> creates an empty <em>Interfero</em> object.</p>
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">objList</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Interfero</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></code> create a <em>n</em>-vector <code class="docutils literal notranslate"><span class="pre">objList</span></code> of empty <em>Interfero</em> objects.</p>
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Interfero</span><span class="p">(</span><span class="nb">fileName</span><span class="p">,</span><span class="w"> </span><span class="n">MI</span><span class="p">)</span></code> creates a <em>Interfero</em> object <code class="docutils literal notranslate"><span class="pre">obj</span></code> from a specified file <code class="docutils literal notranslate"><span class="pre">fileName</span></code> and a given <em>Microscope</em> object <code class="docutils literal notranslate"><span class="pre">MI</span></code>.</p>
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Interfero</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span><span class="w"> </span><span class="n">MI</span><span class="p">)</span></code> creates a <em>Interfero</em> object <code class="docutils literal notranslate"><span class="pre">obj</span></code> from a matrix <code class="docutils literal notranslate"><span class="pre">mat</span></code> and a given <em>Microscope</em> object <code class="docutils literal notranslate"><span class="pre">MI</span></code>.</p>
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">The <code class="docutils literal notranslate"><span class="pre">Interfero</span></code> constructor accepts <em>Name-Value</em> options.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">objList</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Interfero</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></code> create a <em>n</em>-vector <code class="docutils literal notranslate"><span class="pre">objList</span></code> of empty <em>Interfero</em> objects.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Interfero</span><span class="p">(</span><span class="nb">fileName</span><span class="p">,</span><span class="w"> </span><span class="n">MI</span><span class="p">)</span></code> creates a <em>Interfero</em> object <code class="docutils literal notranslate"><span class="pre">obj</span></code> from a specified file <code class="docutils literal notranslate"><span class="pre">fileName</span></code> and a given <em>Microscope</em> object <code class="docutils literal notranslate"><span class="pre">MI</span></code>.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Interfero</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span><span class="w"> </span><span class="n">MI</span><span class="p">)</span></code> creates a <em>Interfero</em> object <code class="docutils literal notranslate"><span class="pre">obj</span></code> from a matrix <code class="docutils literal notranslate"><span class="pre">mat</span></code> and a given <em>Microscope</em> object <code class="docutils literal notranslate"><span class="pre">MI</span></code>.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">The <code class="docutils literal notranslate"><span class="pre">Interfero</span></code> constructor accepts <em>Name-Value</em> options.</p>
 <p class="title">Examples</p><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
 <strong>Build an Interfero object from matrices</strong><div class="summary-down docutils">
@@ -225,8 +248,8 @@
 </div>
 </details></div>
 </details></section>
-<section id="methods">
-<h2>Methods<a class="headerlink" href="#methods" title="Link to this heading"></a></h2>
+<section id="interfero-methods">
+<h2>Interfero methods<a class="headerlink" href="#interfero-methods" title="Link to this heading"></a></h2>
 <details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
 <strong>clearFcrops</strong> <br /> <span style="color:#888"> Clear the FcropParameters settings of the reference <em>Interfero</em>. </span><div class="summary-down docutils">
@@ -239,7 +262,8 @@
 </div>
 <p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.clearFcrops()</span></code> resets the value of <code class="docutils literal notranslate"><span class="pre">obj.Ref.Fcrop</span></code>.</p>
 <p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.clearFcrops(val)</span></code> remove <code class="docutils literal notranslate"><span class="pre">val</span></code>, which can be a number, or a matrix of the same size as <code class="docutils literal notranslate"><span class="pre">Itf</span></code>.</p>
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span></code> can be a list (vector) of <em>Interfero</em> objects.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span></code> can be a list (vector) of <em>Interfero</em> objects.</p>
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
@@ -255,8 +279,10 @@
 </pre></div>
 </div>
 <p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.crop()</span></code> crops the <code class="docutils literal notranslate"><span class="pre">obj.Itf</span></code> and <code class="docutils literal notranslate"><span class="pre">obj.Ref.Itf</span></code> images, identically. A figure window opens, inviting the user to click on the image to define a square area centered in the middle of the image.</p>
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><em>Interfero</em> objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.</p>
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an output is used, <code class="docutils literal notranslate"><span class="pre">obj2</span></code>, then the object is not modified, and is duplicated.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><em>Interfero</em> objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">If an output is used, <code class="docutils literal notranslate"><span class="pre">obj2</span></code>, then the object is not modified, and is duplicated.</p>
 <p class="title">Name-value arguments</p><div class="admonition note">
 <p class="admonition-title">Note</p>
 <p class="card-text">Specify optional pairs of arguments as <code class="docutils literal notranslate"><span class="pre">Name1</span> <span class="pre">=</span> <span class="pre">Value1,</span> <span class="pre">...,</span> <span class="pre">NameN</span> <span class="pre">=</span> <span class="pre">ValueN</span></code>, where Name is the argument name and Value is the corresponding value. Name-value arguments must appear after other arguments, but the order of the pairs does not matter.</p>
@@ -329,21 +355,19 @@
 </div>
 <p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">objList</span></code> is a vector of <em>Interferogram</em> images. <code class="docutils literal notranslate"><span class="pre">mean(objList)</span></code> returns a single interferogram where the attributes <code class="docutils literal notranslate"><span class="pre">Itf</span></code> is an image that is the average of the <code class="docutils literal notranslate"><span class="pre">Itf</span></code> images of all the interferograms of <code class="docutils literal notranslate"><span class="pre">objList</span></code>. The method is also applied to the <code class="docutils literal notranslate"><span class="pre">Itf.Ref</span></code> <em>Interfero</em> object, so that the average is also performed on the reference images.</p>
 </div>
-</details><details class="sphinx-bs dropdown card mb-3">
+</details><details class="sphinx-bs dropdown card mb-3" id="the-qlsiprocess-method">
 <summary class="summary-title card-header">
-<strong>plus</strong> <br /> <span style="color:#888"> Defines the addition between two <em>Interfero</em> objects: <code class="docutils literal notranslate"><span class="pre">Itf1</span> <span class="pre">+</span> <span class="pre">Itf2</span></code>. </span><div class="summary-down docutils">
+<strong>QLSIprocess</strong> <br /> <span style="color:#888"> Process and return the intensity and wavefront images. </span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="title">Synthax</p><div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plus</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="w"> </span><span class="n">obj2</span><span class="p">);</span>
-<span class="n">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">obj1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">obj2</span><span class="p">;</span>
-<span class="n">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">obj1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">obj2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="o">...</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">objN</span><span class="p">;</span>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">Im</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">QLSIprocess</span><span class="p">(</span><span class="n">Itf</span><span class="p">,</span><span class="w"> </span><span class="n">IL</span><span class="p">);</span>
+<span class="n">ImList</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">QLSIprocess</span><span class="p">(</span><span class="n">ItfList</span><span class="p">,</span><span class="w"> </span><span class="n">IL</span><span class="p">);</span>
+<span class="n">ImList</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">QLSIprocess</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Value</span><span class="p">);</span>
 </pre></div>
 </div>
-<p class="title">Description</p><p class="card-text">The method overload the operator <code class="docutils literal notranslate"><span class="pre">+</span></code> by defining the method <code class="docutils literal notranslate"><span class="pre">plus</span></code>. It actually adds the two interferograms <code class="docutils literal notranslate"><span class="pre">obj1.Itf</span></code> and <code class="docutils literal notranslate"><span class="pre">obj2.Itf</span></code> and stores the result in attribue <code class="docutils literal notranslate"><span class="pre">Itf</span></code> of the output <code class="docutils literal notranslate"><span class="pre">obj</span></code>. It does the same for the references  <code class="docutils literal notranslate"><span class="pre">obj1.Ref.Itf</span></code> and <code class="docutils literal notranslate"><span class="pre">obj2.Ref.Itf</span></code>.</p>
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">The method also work with several additions at a time: <code class="docutils literal notranslate"><span class="pre">obj</span> <span class="pre">=</span> <span class="pre">obj1</span> <span class="pre">+</span> <span class="pre">obj2</span> <span class="pre">+</span> <span class="pre">...</span> <span class="pre">+</span> <span class="pre">objN;</span></code></p>
-</div>
+<p class="title">Description</p></div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
 <strong>Reference</strong> <br /> <span style="color:#888"> Defines the reference interferogram of an <em>Interferogram</em> object. </span><div class="summary-down docutils">
@@ -351,14 +375,16 @@
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="title">Synthax</p><div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="n">ref</span><span class="p">);</span>
-<span class="n">objList</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="n">ref</span><span class="p">);</span>
-<span class="n">objList</span><span class="o">.</span><span class="n">Reference</span><span class="p">(</span><span class="n">refList</span><span class="p">);</span>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">Reference</span><span class="p">(</span><span class="n">ref</span><span class="p">);</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">Reference</span><span class="p">(</span><span class="n">ref</span><span class="p">);</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">Reference</span><span class="p">(</span><span class="n">refList</span><span class="p">);</span>
 </pre></div>
 </div>
 <p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">ref</span></code> is an <em>Interfero</em> object supposed to be the reference interferogram of the <em>Interfero</em> <code class="docutils literal notranslate"><span class="pre">obj</span></code>. The method <code class="docutils literal notranslate"><span class="pre">Reference</span></code> assigns <code class="docutils literal notranslate"><span class="pre">ref</span></code> as the reference of <code class="docutils literal notranslate"><span class="pre">obj</span></code>.</p>
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span></code> can be a list (vector) of interferogram. In that case, <code class="docutils literal notranslate"><span class="pre">ref</span></code> is assigned to all of them, without being duplicated.</p>
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><code class="docutils literal notranslate"><span class="pre">ref</span></code> can be a list (vector) of interferogram, as long as it has the same number of objects as <code class="docutils literal notranslate"><span class="pre">obj</span></code>. in that case, the reference interferograms of <code class="docutils literal notranslate"><span class="pre">ref</span></code> are assigned one by one to the interferograms of <code class="docutils literal notranslate"><span class="pre">obj</span></code>.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span></code> can be a list (vector) of interferogram. In that case, <code class="docutils literal notranslate"><span class="pre">ref</span></code> is assigned to all of them, without being duplicated.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><code class="docutils literal notranslate"><span class="pre">ref</span></code> can be a list (vector) of interferogram, as long as it has the same number of objects as <code class="docutils literal notranslate"><span class="pre">obj</span></code>. in that case, the reference interferograms of <code class="docutils literal notranslate"><span class="pre">ref</span></code> are assigned one by one to the interferograms of <code class="docutils literal notranslate"><span class="pre">obj</span></code>.</p>
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
@@ -373,8 +399,10 @@
 </pre></div>
 </div>
 <p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.removeOffset()</span></code> removes from <cite>Itf</cite>, by default, the value of the pixel of weakest intensity in the <cite>Itf</cite> image.</p>
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.removeOffset(val)</span></code> remove <code class="docutils literal notranslate"><span class="pre">val</span></code>, which can be a number, or a matrix of the same size as <code class="docutils literal notranslate"><span class="pre">Itf</span></code>.</p>
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an output argument <code class="docutils literal notranslate"><span class="pre">obj2</span></code> is specified, <code class="docutils literal notranslate"><span class="pre">obj</span></code> is not modified, but duplicated.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.removeOffset(val)</span></code> remove <code class="docutils literal notranslate"><span class="pre">val</span></code>, which can be a number, or a matrix of the same size as <code class="docutils literal notranslate"><span class="pre">Itf</span></code>.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">If an output argument <code class="docutils literal notranslate"><span class="pre">obj2</span></code> is specified, <code class="docutils literal notranslate"><span class="pre">obj</span></code> is not modified, but duplicated.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p class="card-text">It only removes the offset to the <code class="docutils literal notranslate"><span class="pre">Itf</span></code> attribute, not to the reference <code class="docutils literal notranslate"><span class="pre">Ref.Itf</span></code>.</p>
@@ -387,7 +415,7 @@
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="title">Synthax</p><div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">obj</span><span class="o">.</span><span class="n">sizeof</span><span class="p">();</span>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">sizeof</span><span class="p">();</span>
 </pre></div>
 </div>
 <p class="title">Description</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">Itf</span><span class="p">.</span><span class="n">sizeof</span><span class="p">;</span>
@@ -437,8 +465,10 @@
 </pre></div>
 </div>
 <p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.square()</span></code> crops the images of the <em>Interfero</em> object so that they are square. To define the size of the square, the smallest image dimension is considered (<code class="docutils literal notranslate"><span class="pre">min([obj.Nx,</span> <span class="pre">obj.Ny])</span></code>).</p>
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text"><em>Interfero</em> objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.</p>
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an output is specified, <code class="docutils literal notranslate"><span class="pre">obj2</span></code>, then the object is not modified, but duplicated.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><em>Interfero</em> objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">If an output is specified, <code class="docutils literal notranslate"><span class="pre">obj2</span></code>, then the object is not modified, but duplicated.</p>
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
@@ -456,9 +486,12 @@
 </div>
 <p class="title">Description</p><p class="card-text">This methods opens a windows to diplay the Fourier transform of the interferogram. The user should then repeat 2-click sequences to remove all the undesired spots. The first click defines the position of the spot, and the second click defines the radius of the disc to be cropped. The sequence can be repeated many times and to stop it, any other key than the left-click should be pressed.</p>
 <img alt="../_images/spotRemoval.png" src="../_images/spotRemoval.png" />
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">Alternatively, a mask can be specified at the input argument. In that case, no figure opens:<code class="docutils literal notranslate"><span class="pre">obj.spotRemoval(mask)</span></code>.</p>
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">If an <em>Interfero</em> object is specified as an output, <code class="docutils literal notranslate"><span class="pre">obj2</span> <span class="pre">=</span> <span class="pre">obj.spotRemoval(___);</span></code>; the original object is not modified, but duplicated.</p>
-<hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /><p class="card-text">The mask defined by the user can also be returned as a second output argument, to possibly be used as an input for a forthcoming call of this method with another <em>Interfero</em> object.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">Alternatively, a mask can be specified at the input argument. In that case, no figure opens:<code class="docutils literal notranslate"><span class="pre">obj.spotRemoval(mask)</span></code>.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">If an <em>Interfero</em> object is specified as an output, <code class="docutils literal notranslate"><span class="pre">obj2</span> <span class="pre">=</span> <span class="pre">obj.spotRemoval(___);</span></code>; the original object is not modified, but duplicated.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">The mask defined by the user can also be returned as a second output argument, to possibly be used as an input for a forthcoming call of this method with another <em>Interfero</em> object.</p>
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
@@ -479,10 +512,26 @@
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="title">Synthax</p><div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">objList</span><span class="p">);</span>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">sum</span><span class="p">(</span><span class="n">objList</span><span class="p">);</span>
 </pre></div>
 </div>
 <p class="title">Description</p><p class="card-text">The methods return an <em>Interfero</em> object where the attributes <code class="docutils literal notranslate"><span class="pre">Itf</span></code> equals the sum of all the <code class="docutils literal notranslate"><span class="pre">Itf</span></code> images of the <em>Interfero</em> objects of the list, and idem for the <code class="docutils literal notranslate"><span class="pre">Ref</span></code> attribute.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>+</strong> <br /> <span style="color:#888"> Defines the addition between two <em>Interfero</em> objects: <code class="docutils literal notranslate"><span class="pre">Itf1</span> <span class="pre">+</span> <span class="pre">Itf2</span></code>. </span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">plus</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="w"> </span><span class="n">obj2</span><span class="p">);</span>
+<span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">obj2</span><span class="p">;</span>
+<span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">obj2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="k">...</span><span class="c"> + objN;</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">The method overload the operator <code class="docutils literal notranslate"><span class="pre">+</span></code> by defining the method <code class="docutils literal notranslate"><span class="pre">plus</span></code>. It actually adds the two interferograms <code class="docutils literal notranslate"><span class="pre">obj1.Itf</span></code> and <code class="docutils literal notranslate"><span class="pre">obj2.Itf</span></code> and stores the result in attribue <code class="docutils literal notranslate"><span class="pre">Itf</span></code> of the output <code class="docutils literal notranslate"><span class="pre">obj</span></code>. It does the same for the references  <code class="docutils literal notranslate"><span class="pre">obj1.Ref.Itf</span></code> and <code class="docutils literal notranslate"><span class="pre">obj2.Ref.Itf</span></code>.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">The method also work with several additions at a time: <code class="docutils literal notranslate"><span class="pre">obj</span> <span class="pre">=</span> <span class="pre">obj1</span> <span class="pre">+</span> <span class="pre">obj2</span> <span class="pre">+</span> <span class="pre">...</span> <span class="pre">+</span> <span class="pre">objN;</span></code></p>
 </div>
 </details></section>
 </section>

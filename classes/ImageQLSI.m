@@ -45,6 +45,7 @@ classdef ImageQLSI   <   ImageMethods
     properties(Hidden,SetAccess = private)
         Fcrops %3-cell FcropParameters object crops{1:3}
         processingSoftware
+        avgIm = 1  % the image results from the average of avgIm images, using the plus method
     end
 
     methods
@@ -593,7 +594,26 @@ classdef ImageQLSI   <   ImageMethods
         end        
        
         function IMout = plus(IM1,IM2)
-            IMout = [IM1(:);IM2(:)];
+
+            avg1 = IM1.avgIm;
+            avg2 = IM1.avgIm;
+            
+            val0 = IM1.OPD.*IM1.T*avg1 + IM2.OPD.*IM2.T*avg2;% weighted average of the phase images
+            OPDout = val0./(IM1.T*avg1 + IM2.T*avg2);
+            Tout = (IM1.T*avg1+IM2.T*avg2)/(avg1+avg2);
+            IMout = copy(IM1);
+            IMout.OPD0 = OPDout;
+            IMout.T0 = Tout;
+            IMout.avgIm = avg1 + avg2;
+
+            if ~isempty(IM1.DWx)
+                val0       = IM1.DWx.*IM1.T*avg1 + IM2.DWx.*IM2.T*avg2;
+                IMout.DWx0 = val0 ./ (IM1.T*avg1 + IM2.T*avg2);
+
+                val0       = IM1.DWy.*IM1.T*avg1 + IM2.DWy.*IM2.T*avg2;
+                IMout.DWy0 = val0 ./ (IM1.T*avg1+IM2.T*avg2);
+            end                
+
         end
 
         function obj = rot90(obj0,k)

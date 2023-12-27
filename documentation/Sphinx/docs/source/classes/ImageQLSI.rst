@@ -1,10 +1,4 @@
-.. role:: matlab(code)
-  :language: matlab
-  :class: highlight
-
-
-
-
+.. _The_ImageQLSI_class:
 
 The ImageQLSI class
 ===================

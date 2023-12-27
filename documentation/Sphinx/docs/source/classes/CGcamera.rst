@@ -1,13 +1,9 @@
-.. include:: ../substitutions.rst
-
-.. role:: matlab(code)
-  :language: matlab
-  :class: highlight
+.. _The_CGcamera_class:
 
 The CGcamera class
 ==================
 
-*CGcamera* is handle class.
+*CGcamera* is a handle class.
 
 The CGcamera object represents the imaging system. It is composed of a regular camera, a cross-grating, and possibly a relay lens in between. Each of these three components are also represented by objects, respectively from the classes *Camera*, *CrossGrating*, and *RelayLens*.
 

@@ -19,15 +19,15 @@
     
     ``obj.rot90()`` rotates the images of the object by 90°, counterclockwise.
     
-    .. include:: ../hr.txt
+    |hr|
 
     ``obj.rot90(k)`` rotates the images of the object by :math:`k\times90°`, counterclockwise. ``k`` must be an integer and can be negative.
 
-    .. include:: ../hr.txt
+    |hr|
 
     *ImageQLSI* objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.
 
-    .. include:: ../hr.txt
+    |hr|
 
     If an output ``obj2`` is used, then the object is not modified, and duplicated.
     

@@ -1,10 +1,7 @@
-.. include:: substitutions.rst
-
-
 Import experimental images
 ==========================
 
-Experimental images (interferograms) are imported as matrices, embedded in *Interfero* objects. There are at least two images to import: the object interferogram and the reference interferogram.
+Experimental images (interferograms) are imported as matrices, embedded in *Interfero* objects. There are at least two images to import: the *main* interferogram and the *reference* interferogram.
 
 Manual import
 -------------
@@ -25,7 +22,7 @@ Let us import the tiff images, named *Itf.tiff* and *Ref.tiff*, located in the f
 Automatic import
 ----------------
 
-If the images have been created using a well-defined acquisition software, the software can be specified when creating the microscope. And the importation of the images gets simplified, using the function :py:func:`importItfRef`. For instance here, one assumes that the images located in the folder data have been saved using PhaseLIVE:
+If the images have been created using a well-defined acquisition software, the software can be specified when creating the microscope. And the importation of the images gets simplified, using the function :py:func:`importItfRef`. For instance here, one assumes that the images located in the folder *data* have been acquired using PhaseLIVE:
 
 .. code-block::
     :linenos:
@@ -48,7 +45,27 @@ Also, one can import a subset of the images with the keywork *selection*:
 .. code-block::
     :linenos:
 
-    Itf = importItfRef(folder, MI, 'remote', true, 'selection', [1 10 20]);
+    Itf = importItfRef(folder, MI, 'remote', true, 'selection', [1 10 20:50]);
     Itf = importItfRef(folder, MI, 'remote', true, 'selection', 1/20);
 
-Line 1 imports the images 1, 10 and 20, while line 2 imports 1 image every 20 images.
+Line 1 imports the images 1, 10 and all the images from 20 to 50, while line 2 imports 1 image every 20 images (1, 21, 41, etc).
+
+
+Finally, it is common to have several series of images within the same folder. For instance, when using PhaseLIVE, one can choose a prefix of the saved images. For instance, here is a list of saved interferograms where the prefixes were successively ITF and ITF2:
+
+| *ITF_0001.tif*
+| *ITF_0002.tif*
+| *ITF_0003.tif*
+| *ITF_0004.tif*
+| *ITF2_0001.tif*
+| *ITF2_0002.tif*
+| *ITF2_0003.tif*
+| *REF_20210924_11h_38min_405sec.tif*
+| *REF_20210924_11h_52min_168sec.tif*
+
+One can specifically choose to import only the *ITF2*-tagged interferogram with the command:
+
+.. code-block::
+    :linenos:
+
+    Itf = importItfRef(folder, MI, 'nickname', 'ITF2');

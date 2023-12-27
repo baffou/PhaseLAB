@@ -4,7 +4,7 @@
       
         <p class="title">Synthax</p>
     
-    .. code-block:: ruby
+    .. code-block:: matlab
 
         obj = sum(objList);
 

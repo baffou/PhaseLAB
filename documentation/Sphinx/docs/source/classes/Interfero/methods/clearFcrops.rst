@@ -16,7 +16,7 @@
 
     ``obj.clearFcrops(val)`` remove ``val``, which can be a number, or a matrix of the same size as ``Itf``.
     
-    .. include:: ../hr.txt
+    |hr|
 
     ``obj`` can be a list (vector) of *Interfero* objects.
     

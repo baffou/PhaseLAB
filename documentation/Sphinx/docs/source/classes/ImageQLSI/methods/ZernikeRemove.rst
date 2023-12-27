@@ -19,15 +19,15 @@
 
     ``obj.ZernikeRemove()`` removes, by default, the ``(n, m) = (1, 1)`` Zernike order from the ``OPD`` image of ``obj``.
 
-    .. include:: ../hr.txt
+    |hr|
 
     ``obj.ZernikeRemove(n);`` removes all the Zernike orders up to order ``n``. For instance, ``obj.ZernikeRemove(2)`` removes the orders :math:`(1,1)`, :math:`(1,-1)`, :math:`(2,-2)`, :math:`(2,0), :math:`(2,2)`` from the OPD image.
     
-    .. include:: ../hr.txt
+    |hr|
 
     In ``obj.ZernikeRemove(n,m,r);``, ``r`` is the radius of the disc over which the Zerninke moment is calculated. By default, it is half the size of the image (``r = min([obj.Nx, obj.Ny])/2-1``).
     
-    .. include:: ../hr.txt
+    |hr|
 
     If an output ``obj2`` is specified, IM is copied. If not, obj is modified.
 

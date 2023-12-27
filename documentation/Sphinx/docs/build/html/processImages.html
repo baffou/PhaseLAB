@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Process experimental images &mdash; PhaseLAB documentation 4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
       <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
@@ -59,13 +60,31 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Process experimental images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="displayImages.html">Display experimental images</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="codeExamples.html">Code examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="GUI.html">GUI</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Classes</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="classes/Camera.html">Camera</a></li>
 <li class="toctree-l1"><a class="reference internal" href="classes/CGcamera.html">CGcamera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/CrossGrating.html">CrossGrating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Dipole.html">Dipole</a></li>
 <li class="toctree-l1"><a class="reference internal" href="classes/Illumination.html">Illumination</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/ImageEM.html">ImageEM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="classes/ImageQLSI.html">ImageQLSI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="classes/Interfero.html">Interfero</a></li>
 <li class="toctree-l1"><a class="reference internal" href="classes/Microscope.html">Microscope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Objective.html">Objective</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="functions/importItfRef.html">importItfRef</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions/dynamicFigure.html">dynamicFigure</a></li>
 </ul>
 
         </div>
@@ -98,12 +117,12 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">IM</span> <span class="o">=</span> <span class="n">QLSIprocess</span><span class="p">(</span><span class="n">Itf</span><span class="p">,</span><span class="n">IL</span><span class="p">);</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">IM</span></code> is an <em>ImageQLSI</em> object. A large number of keywords can be appended in this method. The comprehensive list if provided in the class section. To name just a few, one can use the keyword <em>saveGradients</em> to make sure the gradients are saved, and embedded in <code class="docutils literal notranslate"><span class="pre">IM</span></code>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">IM</span></code> is an <em>ImageQLSI</em> object (see <a class="reference internal" href="classes/ImageQLSI.html#the-imageqlsi-class"><span class="std std-ref">The ImageQLSI class</span></a> section). A large number of keywords can be specified in this method. The comprehensive list is provided in <a class="reference internal" href="classes/Interfero/Interfero_methods.html#the-qlsiprocess-method"><span class="std std-ref">The QLSIprocess method</span></a> section. To name just a few, one can use the keyword <em>saveGradients</em> to make sure the gradients are saved, and embedded in <code class="docutils literal notranslate"><span class="pre">IM</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">IM</span> <span class="o">=</span> <span class="n">QLSIprocess</span><span class="p">(</span><span class="n">Itf</span><span class="p">,</span><span class="n">IL</span><span class="p">,</span><span class="s1">&#39;saveGradients&#39;</span><span class="p">,</span><span class="n">true</span><span class="p">);</span>
 <span class="linenos">2</span><span class="n">dynamicFigure</span><span class="p">(</span><span class="s1">&#39;ph&#39;</span><span class="p">,</span> <span class="n">IM</span><span class="o">.</span><span class="n">DWx</span><span class="p">,</span> <span class="s1">&#39;ph&#39;</span><span class="p">,</span> <span class="n">IM</span><span class="o">.</span><span class="n">DWy</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>One can also choose between high-definition or low-definition image processing, using the keyword*resolution*:</p>
+<p>One can also choose between high-definition or low-definition image processing, using the keyword <em>resolution</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">IM_high</span> <span class="o">=</span> <span class="n">QLSIprocess</span><span class="p">(</span><span class="n">Itf</span><span class="p">,</span><span class="n">IL</span><span class="p">,</span><span class="s1">&#39;resolution&#39;</span><span class="p">,</span><span class="s1">&#39;high&#39;</span><span class="p">);</span>
 <span class="linenos">2</span><span class="n">IM_low</span> <span class="o">=</span> <span class="n">QLSIprocess</span><span class="p">(</span><span class="n">Itf</span><span class="p">,</span><span class="n">IL</span><span class="p">,</span><span class="s1">&#39;resolution&#39;</span><span class="p">,</span><span class="s1">&#39;low&#39;</span><span class="p">);</span>
 </pre></div>

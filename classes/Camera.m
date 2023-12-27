@@ -19,8 +19,8 @@ classdef Camera  <  handle & matlab.mixin.Copyable
     methods
         
         function cam = Camera(var1,NX,NY)
-            % (6.5e-6,2560,2160)  pxSize in µm
-            % (6.5   ,2560,2160)  pxSize in m
+            % (6.5e-6,2560,2160)  dxSize in µm
+            % (6.5   ,2560,2160)  dxSize in m
             % ('Zyla')
             if nargin==3 % ex: (6.5e-6,2560,2160)
                 cam.Nx = NX;
@@ -76,14 +76,13 @@ classdef Camera  <  handle & matlab.mixin.Copyable
                         cam.dxSize = val;
                     else
                         cam.dxSize = val;
-                        val
-                        warning('this length does not look like a pixel size')
+                        warning('this length does not look like a dexel size')
                     end
                 else
-                    error('A pixel size must be a positive number')
+                    error('A dexel size must be a positive number')
                 end
             else
-                error('A pixel size must be a number')
+                error('A dexel size must be a number')
             end
         end
         

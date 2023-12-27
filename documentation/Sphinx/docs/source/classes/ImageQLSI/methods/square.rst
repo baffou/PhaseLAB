@@ -17,11 +17,11 @@
 
     ``obj.square()`` crops the images of the *ImageQLSI* object so that they are square. To define the size of the square, the smallest image dimension is considered (``min([obj.Nx, obj.Ny])``).
 
-    .. include:: ../hr.txt
+    |hr|
 
     *ImageQLSI* objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.
 
-    .. include:: ../hr.txt
+    |hr|
 
     If an output is specified, ``obj2``, then the object is not modified, but duplicated.
     

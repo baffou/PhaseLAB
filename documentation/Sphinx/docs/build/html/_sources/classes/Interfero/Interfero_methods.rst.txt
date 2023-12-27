@@ -1,32 +1,34 @@
 
-Methods
--------
+Interfero methods
+-----------------
 
-.. include:: Interfero/methods/clearFcrops.rst
+.. include:: /classes/Interfero/methods/clearFcrops.rst
 
-.. include:: Interfero/methods/crop.rst
+.. include:: /classes/Interfero/methods/crop.rst
 
-.. include:: Interfero/methods/crossTalkCorrection.rst
+.. include:: /classes/Interfero/methods/crossTalkCorrection.rst
 
-.. include:: Interfero/methods/mean.rst
+.. include:: /classes/Interfero/methods/mean.rst
 
-.. include:: Interfero/methods/plus.rst
+.. include:: /classes/Interfero/methods/QLSIprocess.rst
 
-.. include:: Interfero/methods/Reference.rst
+.. include:: /classes/Interfero/methods/Reference.rst
 
-.. include:: Interfero/methods/removeOffset.rst
+.. include:: /classes/Interfero/methods/removeOffset.rst
 
-.. include:: Interfero/methods/sizeof.rst
+.. include:: /classes/Interfero/methods/sizeof.rst
 
-.. include:: Interfero/methods/splitColors.rst
+.. include:: /classes/Interfero/methods/splitColors.rst
 
-.. include:: Interfero/methods/square.rst
+.. include:: /classes/Interfero/methods/square.rst
 
-.. include:: Interfero/methods/spotRemoval.rst
+.. include:: /classes/Interfero/methods/spotRemoval.rst
 
-.. include:: Interfero/methods/splitPolars.rst
+.. include:: /classes/Interfero/methods/splitPolars.rst
 
-.. include:: Interfero/methods/sum.rst
+.. include:: /classes/Interfero/methods/sum.rst
+
+.. include:: /classes/Interfero/methods/+.rst
 
 
 

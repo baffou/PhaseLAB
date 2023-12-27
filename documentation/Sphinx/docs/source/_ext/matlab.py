@@ -197,7 +197,7 @@ class MatlabLexer(ExtendedRegexLexer):
             # keywords
             (words((
                 'BEGIN', 'END', 'alias', 'begin', 'break', 'case', 'defined?',
-                'do', 'else', 'elsif', 'end', 'ensure', 'for', 'if', 'in', 'next', 'redo',
+                'do', 'else', 'elseif', 'end', 'ensure', 'for', 'if', 'in', 'next', 'redo',
                 'rescue', 'raise', 'retry', 'return', 'super', 'then', 'undef',
                 'unless', 'until', 'when', 'while', 'yield'), suffix=r'\b'),
              Keyword),

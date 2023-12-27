@@ -1,5 +1,3 @@
-.. include:: substitutions.rst
-
 Introduction
 ============
 
@@ -12,7 +10,7 @@ What are QLSI and CGM?
    :width: 400
    :align: center
 
-
+|br|
 This technique belongs to the quantitative phase imaging (QPI) family, the *wavefront* :math:`W` being simply related to the *phase* :math:`\phi` by the expression :math:`\phi=\frac{2\pi}{\lambda}W`.
 
 
@@ -23,9 +21,17 @@ This technique belongs to the quantitative phase imaging (QPI) family, the *wave
    :align: center
 
 
+Such an association gives rise to a modified image of the camera, called an interferogram, featuring an array of tiny bright spots. The intensity and wavefront images are processed from the interferogram image.
+
+.. image:: images/interferogram.png
+   :width: 400
+   :align: center
+
+|br|
+
 When a :abbr:`QLSI (quadriwave lateral shearing interferometry)` system is implemented in an optical microscope, the measured wavefront becomes the optical path difference (OPD) created by the micrometric object placed at the sample plane. This configuration is usually referred as **cross-grating wavefront microscopy (CGM)**.
 
-The **PhaseLAB Matlab toolbox** is aimed to deal with :abbr:`QLSI (quadriwave lateral shearing interferometry)` images.
+The **PhaseLAB Matlab toolbox** is aimed to deal with :abbr:`QLSI (quadriwave lateral shearing interferometry)` images. It enables the processing of the interferogram into intensity and wavefront images, but also the simulations of interferograms, intensity, wavefront and OPD images from model objects, such as nanoparticles.
 
 
 
@@ -46,7 +52,8 @@ The 3 functionalities are sketched below:
 .. image:: images/functionalities.png
    :width: 400
    :align: center
-   
+
+|br|   
 
 This Matlab toolbox uses OOP
 ----------------------------
@@ -62,48 +69,18 @@ one simply defines a variable (an object), ``MI``, that gathers all these proper
 
 
 
-Simple PhaseLAB codes
----------------------
+Basic examples of PhaseLAB codes
+--------------------------------
 
-As explained above, there are three categories of codes. Here are some code examples for each of them, the simplest one can imagine.
-
-.. code:: python
-
-    %% code to import an experimental interferogram, process it, and display the QLSI images
-
-    MI=Microscope(OB,180,'Silios_mono');% Create of the Microscope object
-    IL = Illumination(532e-9);          % Create of the Illumination object
-    Itf = imread('data/Itf.tif');       % Import the object interferogram
-    Ref = imread('data/Ref.tif');       % Import the reference interferogram
-    Im = Interfero(Itf,MI);             % Make the interferogram object
-    Im0 = Interfero(Ref,MI);            % Make the reference interferogram object
-    Im.Reference(Im0);                  % Assign the reference to the interferogram
-    IM = QLSIprocess(Im,IL);            % Process the QLSI images
-    IM.figure;                          % Display the QLSI images
-
-.. code:: python
-
-    %% code that simulates the image of a gold nanoparticle
-
-    lambda = 530e-9;                    % Illumination wavelength
-    Npx = 300;                          % Final image with Npx*Npx pixels 
-    n = 1.33;                           % Refractive index of the surrounding medium 
-
-    ME = Medium(n);
-    OB = Objective(200,1.3,'Olympus');
-    CGcam = CGcamera('Silios_mono');
-    MI = Microscope(OB,180,CGcam);
-    IL = Illumination(lambda,ME);
-
-    MI.CGcam.setDistance(d);
-
-    radius = 50e-9;                     % Nanoparticle radius
-    DI = Dipole('Au',radius);
-    DI = DI.shine(IL);
-
-    IM0 = imaging(DI,IL,MI,Npx);
-
-    IM0.figure
+Here are some simple code examples belonging to the three categories listed above. More examples can be found in the :ref:`Code_examples` section.
 
 
-The next sections break apart these codes lines.
+.. include:: /codeExamples/importExpImages.rst
+
+.. include:: /codeExamples/automaticImportExpImages.rst
+
+.. include:: /codeExamples/imageSimulation.rst
+
+.. include:: /codeExamples/imagePostprocessing.rst
+
+.. include:: /codeExamples/makeMovie.rst

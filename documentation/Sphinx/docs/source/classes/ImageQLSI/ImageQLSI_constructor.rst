@@ -7,7 +7,7 @@ Constructor
       
     <p class="title">Synthax</p>
 
-  .. code-block:: ruby
+  .. code-block:: matlab
     :class: custom-code
 
     obj = ImageQLSI()
@@ -23,21 +23,21 @@ Constructor
 
   ``obj = ImageQLSI()`` creates an empty *ImageQLSI* object.
 
-  .. include:: ../hr.txt
+  |hr|
 
   ``objList = ImageQLSI(n)`` create a *n*-vector ``objList`` of empty *ImageQLSI* objects.
 
-  .. include:: ../hr.txt
+  |hr|
 
   ``obj = ImageQLSI(obj0)`` creates a *ImageQLSI* object ``obj`` from an *ImageEM* object ``obj0``.
 
-  .. include:: ../hr.txt
+  |hr|
 
   ``obj = ImageQLSI(INT, OPD, MI, IL)`` creates an *ImageQLSI* object. ``INT`` defining the intensity image, ``OPD`` the optical path difference, ``MI`` the microscope and ``IL`` the illumination.
  
   ``INT`` an ``OPD`` can be either a matrix, or a file name containing the data. ``MI`` is a *Microscope* object. ``IL`` is an *Illumination* object.
 
-  .. include:: ../hr.txt
+  |hr|
 
   ``ImageQLSI`` accepts *Name-Value* options. 
 

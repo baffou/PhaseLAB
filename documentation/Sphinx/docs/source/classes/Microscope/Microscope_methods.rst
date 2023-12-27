@@ -1,13 +1,13 @@
 
-Methods
--------
+Microscope methods
+------------------
 
-.. include:: Microscope/methods/camList.rst
+.. include:: /classes/Microscope/methods/camList.rst
 
-.. include:: Microscope/methods/NA.rst
+.. include:: /classes/Microscope/methods/NA.rst
 
 
-.. include:: Microscope/methods/objBrand.rst
+.. include:: /classes/Microscope/methods/objBrand.rst
 
-.. include:: Microscope/methods/sigmaTheo.rst
+.. include:: /classes/Microscope/methods/sigmaTheo.rst
 

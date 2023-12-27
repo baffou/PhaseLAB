@@ -3,8 +3,6 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. include:: substitutions.rst
-
 .. meta::
    :description: The PhaseLAB Matlab toolbox documentation
    :keywords: QLSI, Matlab, toolbox
@@ -50,6 +48,21 @@ The toolbox is accessible at `github.com/baffou/PhaseLAB <https://github.com/baf
 
 .. toctree::
    :maxdepth: 2
+   :caption: Code examples
+
+   codeExamples
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: The GUI
+
+   GUI      <GUI>
+
+
+
+.. toctree::
+   :maxdepth: 2
    :caption: Tutorial - in Silico
 
 
@@ -57,11 +70,25 @@ The toolbox is accessible at `github.com/baffou/PhaseLAB <https://github.com/baf
    :maxdepth: 2
    :caption: Classes
 
+   Camera     <classes/Camera>
    CGcamera     <classes/CGcamera>
+   CrossGrating     <classes/CrossGrating>
+   Dipole     <classes/Dipole>
    Illumination <classes/Illumination>
+   ImageEM    <classes/ImageEM>
    ImageQLSI    <classes/ImageQLSI>
    Interfero    <classes/Interfero>
    Microscope   <classes/Microscope>
+   Objective   <classes/Objective>
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Functions
+
+   importItfRef  <functions/importItfRef>
+   dynamicFigure  <functions/dynamicFigure>
+
+
 
 
 
@@ -70,6 +97,4 @@ The toolbox is accessible at `github.com/baffou/PhaseLAB <https://github.com/baf
 ..   :glob:
 ..
 ..   functions/*
-
-
 

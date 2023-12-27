@@ -1,13 +1,9 @@
-.. include:: substitutions.rst
-
-.. role:: matlab(code)
-  :language: matlab
-  :class: highlight
+.. _The_Illumination_class:
 
 The Illumination class
 ======================
 
-*Illumination* is handle class.
+*Illumination* is a handle class.
 
 Attributes
 ----------

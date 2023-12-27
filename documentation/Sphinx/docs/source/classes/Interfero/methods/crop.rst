@@ -1,4 +1,3 @@
-  
 .. dropdown:: **crop** |subTitle| Crop the image and reference interferograms. |/subTitle|
 
     .. raw:: html
@@ -19,11 +18,11 @@
 
     ``obj.crop()`` crops the ``obj.Itf`` and ``obj.Ref.Itf`` images, identically. A figure window opens, inviting the user to click on the image to define a square area centered in the middle of the image.
 
-    .. include:: ../hr.txt
+    |hr|
 
     *Interfero* objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.
 
-    .. include:: ../hr.txt
+    |hr|
 
     If an output is used, ``obj2``, then the object is not modified, and is duplicated.
     

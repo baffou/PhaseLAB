@@ -1,5 +1,3 @@
-.. include:: substitutions.rst
-    
 Process experimental images
 ===========================
 
@@ -10,7 +8,7 @@ Once the *Interfero* object, or object array, is created, the interferograms can
 
     IM = QLSIprocess(Itf,IL);
 
-``IM`` is an *ImageQLSI* object. A large number of keywords can be appended in this method. The comprehensive list if provided in the class section. To name just a few, one can use the keyword *saveGradients* to make sure the gradients are saved, and embedded in ``IM``:
+``IM`` is an *ImageQLSI* object (see :ref:`The_ImageQLSI_class` section). A large number of keywords can be specified in this method. The comprehensive list is provided in :ref:`The QLSIprocess method <The_QLSIprocess_method>` section. To name just a few, one can use the keyword *saveGradients* to make sure the gradients are saved, and embedded in ``IM``:
 
 
 .. code-block::
@@ -19,7 +17,7 @@ Once the *Interfero* object, or object array, is created, the interferograms can
     IM = QLSIprocess(Itf,IL,'saveGradients',true);
     dynamicFigure('ph', IM.DWx, 'ph', IM.DWy)
 
-One can also choose between high-definition or low-definition image processing, using the keyword*resolution*:
+One can also choose between high-definition or low-definition image processing, using the keyword *resolution*:
 
 .. code-block::
     :linenos:

@@ -1,4 +1,4 @@
-camera pixel size:	5.5e-6
+dexel size:	5.5e-6
 Gamma:	33e-6
 Nx:2048
 Ny:2048

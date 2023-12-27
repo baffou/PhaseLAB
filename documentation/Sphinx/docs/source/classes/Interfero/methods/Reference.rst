@@ -4,7 +4,7 @@
       
         <p class="title">Synthax</p>
     
-    .. code-block:: ruby
+    .. code-block:: matlab
 
         obj.Reference(ref);
         objList.Reference(ref);
@@ -16,10 +16,10 @@
 
     ``ref`` is an *Interfero* object supposed to be the reference interferogram of the *Interfero* ``obj``. The method ``Reference`` assigns ``ref`` as the reference of ``obj``.
 
-    .. include:: ../hr.txt
+    |hr|
 
     ``obj`` can be a list (vector) of interferogram. In that case, ``ref`` is assigned to all of them, without being duplicated.
 
-    .. include:: ../hr.txt
+    |hr|
 
     ``ref`` can be a list (vector) of interferogram, as long as it has the same number of objects as ``obj``. in that case, the reference interferograms of ``ref`` are assigned one by one to the interferograms of ``obj``.

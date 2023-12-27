@@ -1,4 +1,3 @@
-  
 .. dropdown:: **crop** |subTitle| Crop the images of the object. |/subTitle|
 
     .. raw:: html
@@ -17,13 +16,13 @@
       
         <p class="title">Description</p>
 
-    ``obj.crop()`` crops the ``Ex``, ``Ey`` and ``Ez`` images of the *ImageEM* object ``obj``, and of the incident field ``obj.Einc`` as well.
+    ``obj.crop()`` crops the E fields of the object of the ``Ref`` object, identically. A figure window opens, inviting the user to click on the image to define a square area centered in the middle of the image.
 
-    .. include:: ../hr.txt
+    |hr|
 
     Objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.
 
-    .. include:: ../hr.txt
+    |hr|
 
     If an output is used, ``obj2``, then the object is not modified, and is duplicated.
     

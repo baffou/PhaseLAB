@@ -146,7 +146,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             val = sqrt(abs(obj.Ex).^2+abs(obj.Ey).^2+abs(obj.Ez).^2);
         end
 
-        function val = get.Ph(obj)
+            function val = get.Ph(obj)
 
             Ex_norm = abs(obj.Ex).^2;%enables the phase subtraction of E0x
             Ey_norm = abs(obj.Ey).^2;%enables the phase subtraction of E0y
@@ -286,12 +286,12 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
 
             mat = eye(2,2);
-            for ii = 1:2:Nvar
-                if isnumeric(varargin{ii}) % [a b; c d]
-                    if all(size(varargin{ii})==[2 2])
-                        mat = varargin{ii};
-                    end
-                else
+            if isnumeric(varargin{1}) % [a b; c d]
+                if all(size(varargin{1})==[2 2])
+                    mat = varargin{1};
+                end
+            else
+                for ii = 1:2:Nvar
                     if mod(Nvar,2)
                         error('Must have an even number of inputs')
                     end
@@ -332,11 +332,8 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
         function objList = Escat(objList0)
-            if nargout
-                objList=duplicate(objList0);
-            else
-                objList=objList0;
-            end
+            objList=duplicate(objList0);
+
             No=numel(objList0);
             for io=1:No
                 objList(io).Ex = objList0(io).Ex-objList0(io).Einc.Ex;
@@ -574,7 +571,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
         function write(obj,obj_in)
-            % makes obj2 = obj, but without giving a new handle
+            % makes obj = obj,_in but without giving a new handle
             propList = ["Ex","Ey","Ez","Einc",...
                 "Microscope","Illumination","comment","processingSoft","pxSizeCorrection"];
  

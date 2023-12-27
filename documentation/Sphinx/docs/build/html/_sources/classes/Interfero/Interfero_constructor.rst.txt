@@ -23,19 +23,19 @@ Constructor
 
     :matlab:`obj = Interfero()` creates an empty *Interfero* object.
 
-    .. include:: ../hr.txt
+    |hr|
 
     :matlab:`objList = Interfero(n)` create a *n*-vector ``objList`` of empty *Interfero* objects.
 
-    .. include:: ../hr.txt
+    |hr|
 
     :matlab:`obj = Interfero(fileName, MI)` creates a *Interfero* object ``obj`` from a specified file ``fileName`` and a given *Microscope* object ``MI``.
 
-    .. include:: ../hr.txt
+    |hr|
 
     :matlab:`obj = Interfero(mat, MI)` creates a *Interfero* object ``obj`` from a matrix ``mat`` and a given *Microscope* object ``MI``.
 
-    .. include:: ../hr.txt
+    |hr|
 
     The ``Interfero`` constructor accepts *Name-Value* options. 
 

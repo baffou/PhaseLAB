@@ -17,11 +17,11 @@
 
     ``obj.removeOffset()`` removes from `Itf`, by default, the value of the pixel of weakest intensity in the `Itf` image.
 
-    .. include:: ../hr.txt
+    |hr|
 
     ``obj.removeOffset(val)`` remove ``val``, which can be a number, or a matrix of the same size as ``Itf``.
     
-    .. include:: ../hr.txt
+    |hr|
 
     If an output argument ``obj2`` is specified, ``obj`` is not modified, but duplicated.
     

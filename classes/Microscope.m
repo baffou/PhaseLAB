@@ -90,7 +90,21 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
                 
                 m.Objective = OB;
                 if nargin~=1
-                    m.f_TL = f_TL;
+                    if isnumeric(f_TL)
+                       m.f_TL = f_TL;
+                    elseif strcmpi(f_TL,'nikon')
+                        m.f_TL = m.f_Nikon;
+                    elseif strcmpi(f_TL,'zeiss')
+                        m.f_TL = m.f_Zeiss;
+                    elseif strcmpi(f_TL,'leica')
+                        m.f_TL = m.f_Leica;
+                    elseif strcmpi(f_TL,'olympus')
+                        m.f_TL = m.f_Olympus;
+                    elseif strcmpi(f_TL,'Thorlabs')
+                        m.f_TL = m.f_Thorlabs;
+                    else
+                        error('wrong microscope brand')
+                    end
                 end                        
             end %nargin~=0
             eval(['m.f_brand=m(1).f_' m.Objective.objBrand ';'])

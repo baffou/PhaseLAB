@@ -1,4 +1,4 @@
-camera pixel size:	7.4e-6
+dexel size:	7.4e-6
 phase pixel binning:	4
 MHM angle
 phase factor:	1.80e-08

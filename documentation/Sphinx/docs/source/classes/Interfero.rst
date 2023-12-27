@@ -1,13 +1,7 @@
-.. include:: ../substitutions.rst
-
-.. role:: matlab(code)
-  :language: matlab
-  :class: highlight
-
 The Interfero class
 ===================
 
-*Interfero* is handle class.
+*Interfero* is a handle class.
 
 Attributes
 ----------

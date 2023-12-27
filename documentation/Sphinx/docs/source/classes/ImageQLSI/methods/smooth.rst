@@ -20,15 +20,15 @@
 
     ``obj.smooth()`` applies a low-pass filter on the spatial frequencies of the ``OPD`` image, as a means to remove the high frequencies and blur the OPD image. It actually simply applies a Gaussian-blurring on the ``OPD`` image using the *imgaussfilt* function with, by default, ``sigma = 10``.
 
-    .. include:: ../hr.txt
+    |hr|
 
     ``obj.smooth(n)`` applies a low-pass filter on the spatial frequencies of the image. ``n`` is the ``sigma`` parameter of the *imgaussfilt* function. The larger ``n``, the flatter the OPD image look.
     
-    .. include:: ../hr.txt
+    |hr|
 
     *ImageQLSI* objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.
 
-    .. include:: ../hr.txt
+    |hr|
 
     If an output is used, ``obj2``, then the object is not modified, and is duplicated.
     

@@ -22,15 +22,15 @@
 
     ``obj.highPassFilter()`` applies a high-pass filter on the spatial frequencies of the ``OPD`` image, as a means to remove the low frequencies and highlight the details. It actually removes a Gaussian-blurring of the image from the image. For this purpose, it uses the *imgaussfilt* function with, by default, ``sigma = 10``.
 
-    .. include:: ../hr.txt
+    |hr|
 
     ``obj.highPassFilter(n)`` applies a high-pass filter on the spatial frequencies of the image. ``n`` is the ``sigma`` parameter of the *imgaussfilt* function. The larger ``n``, the flatter the OPD image look.
     
-    .. include:: ../hr.txt
+    |hr|
 
     *ImageQLSI* objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.
 
-    .. include:: ../hr.txt
+    |hr|
 
     If an output is used, ``obj2``, then the object is not modified, and duplicated.
     

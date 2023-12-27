@@ -1,4 +1,4 @@
-camera pixel size:	6.5e-6
+dexel size:	6.5e-6
 phase pixel binning:	3
 relaylens zoom:	2
 Nx:2024

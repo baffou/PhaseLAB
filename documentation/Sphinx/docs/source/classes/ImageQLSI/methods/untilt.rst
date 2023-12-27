@@ -1,4 +1,3 @@
-  
 .. dropdown:: **untilt** |subTitle| Removes a tilt on the OPD image. |/subTitle|
 
     .. raw:: html
@@ -21,11 +20,11 @@
 
     By default, the moment are calculated on the whole image. The power of this methods lies on the fact that the moments can also be calculated on any sub-area of the image, if some Name-Value arguments are specified (see next section).
 
-    .. include:: ../hr.txt
+    |hr|
 
     *ImageQLSI* objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.
 
-    .. include:: ../hr.txt
+    |hr|
 
     If an output is used, ``obj2``, then the object is not modified, and is duplicated.
     

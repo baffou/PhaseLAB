@@ -1,4 +1,3 @@
-
 .. dropdown:: **objBrand** |subTitle| Returns the brand of the objective lens. |subTitle|
     
     .. code-block:: matlab

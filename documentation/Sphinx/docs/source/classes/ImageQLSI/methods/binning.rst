@@ -19,11 +19,11 @@
 
     ``obj.binning()`` performs, by default, a 3x3 binning of the images of ``obj``.
 
-    .. include:: ../hr.txt
+    |hr|
 
-    ``obj.binning(n)`` performs, nxn binning of the images of ``obj``. Only works with ``n = 2`` or ``n = 3``.
+    ``obj.binning(n)`` performs, :math:`n\times n` binning of the images of ``obj``. Only works with ``n = 2`` or ``n = 3``.
     
-    .. include:: ../hr.txt
+    |hr|
 
     If an output argument is specified, ``obj`` is not modified, but duplicated.
     

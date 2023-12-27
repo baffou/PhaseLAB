@@ -10,11 +10,18 @@ Constructor
     .. code-block:: matlab
         :caption: Prototypes
 
-        obj = CGcamera()
-        obj = CGcamera(camName)
-        obj = CGcamera(CGcamName)
-        obj = CGcamera(camName,CGname)
-        obj = CGcamera(camName,CGname,zoom)
+        % possible forms
+        obj = CGcamera();
+        obj = CGcamera(camName);
+        obj = CGcamera(CGcamName);
+        obj = CGcamera(camName,CGname);
+        obj = CGcamera(camName,CGname,zoom);
+
+        % examples
+        obj = CGcamera('Zyla');
+        obj = CGcamera('Silios_mono');
+        obj = CGcamera('Zyla', 'F3');
+        obj = CGcamera('Zyla', 'P2', 1.11);
 
     .. raw:: html
         
@@ -22,19 +29,22 @@ Constructor
 
     :matlab:`obj = CGcamera()` creates an empty *CGcamera* object.
 
-    .. include:: ../../hr.txt
+    |hr|
 
-    :matlab:`obj = CGcamera(camName)` creates a CGcamera object that consists only of a camera (no relay-lens, no cross-grating). ``camName`` is a *char* that defines the camera. The camera names must correspond to the names of the files contained in the folder **camera**. For instance, :matlab:`CGcam = CGcamera('Zyla');`.
 
-    .. include:: ../../hr.txt
+    :matlab:`obj = CGcamera(camName)` creates a *CGcamera* object that consists only of a camera (no relay-lens, no cross-grating). ``camName`` is a *char* that defines the camera. The camera names must correspond to the names of the files contained in the folder **cameras**. For instance, :matlab:`obj = CGcamera('Zyla');`.
 
-    :matlab:`obj = CGcamera(CGcamName)` creates a *CGcamera* object from the name of a QLSI device. The CGcamera names must correspond to the names of the files contained in the folder **CGcamera**. For instance, :matlab:`CGcam = CGcamera('Silios_mono');`.
+    |hr|
 
-    .. include:: ../../hr.txt
 
-    :matlab:`obj = Interfero(camName, CGname)` creates a *CGcamera* object ``obj`` from the specification of a camera and a cross-grating. ``camName`` is the *char* name of the camera, and ``CGname`` is the *char* name of the cross-grating. The possible names of the camera and cross-grating are the names of the files contained in the folder **cameras** and **CG**. For instance, :matlab:`CGcam = CGcamera('Zyla','P4');`.
+    :matlab:`obj = CGcamera(CGcamName)` creates a *CGcamera* object from the name of a QLSI device. The CGcamera names must correspond to the names of the files contained in the folder **CGcameras**. For instance, :matlab:`obj = CGcamera('Silios_mono');`.
 
-    .. include:: ../../hr.txt
+    |hr|
+
+
+    :matlab:`obj = Interfero(camName, CGname)` creates a *CGcamera* object ``obj`` from the specification of a camera and a cross-grating. ``camName`` is the *char* name of the camera, and ``CGname`` is the *char* name of the cross-grating. The possible names of the camera and cross-grating are the names of the files contained in the folder **cameras** and **CG**. For instance, :matlab:`obj = CGcamera('Zyla','P4');`.
+
+    |hr|
 
     :matlab:`obj = Interfero(camName, CGname, zoom)` creates a *CGcamera* object ``obj`` from the specification of a camera, a cross-grating, and a zoom. ``camName`` is the *char* name of the camera, ``CGname`` is the *char* name of the cross-grating, and ``zoom`` is a number that corresponds to the zoom of a relay lens. The possible names of the camera and cross-grating are the names of the files contained in the folder **cameras** and **CG**. For instance, :matlab:`CGcam = CGcamera('Zyla','P4');`. The specification of a zoom value leads to the creation of a non-empty ``RL`` attributes in the *CGcamera* object.
 
@@ -76,7 +86,7 @@ Each spec file contains all the characteristics of the camera. Here is for insta
 
 .. code-block::
 
-    camera pixel size: 5.5e-6
+    dexel size: 5.5e-6
     Gamma: 33e-6
     Nx: 2048
     Ny: 2048
@@ -84,11 +94,19 @@ Each spec file contains all the characteristics of the camera. Here is for insta
     CGdepth: 550e-9
     CGangle: 57.0078
 
-All these parameters are respectively the dexel size, the pitch of the cross-grating, the numbers of columns and rows, the distance between the grating and the sensor, the etching depth of the 0-pi checkerboard pattern of the cross-grating, and the rotation angle of the grating.
+
+These parameters represent respectively:
+
+* camera pixel size: The camera pixel size (i.e. dexel size)
+* Gamma: The Gamma factor
+* Nx: The number of columns of the sensor
+* Ny: The numer of rows of the sensor
+* distance: the grating-camera distance
+* CGdepth: The etching distance of the cross-grating
+* CGangle: the rotation angle of the grating
 
 
-
-
+If other QLSI cameras are being used, new custom files can be made, following this pattern and placed in the **CGcamera** folder,
 
 
 

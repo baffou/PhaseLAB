@@ -27,10 +27,12 @@ sys.path.insert(0, os.path.abspath('./_ext'))
 
 sys.path.append(os.path.abspath("./_ext"))
 
-extensions = ['sphinx_panels', 'matlab', 'sphinx.ext.extlinks']
+extensions = ['sphinx_panels', 'sphinxcontrib.matlab', 'sphinx.ext.extlinks', 'sphinx_tabs.tabs']
 
 templates_path = ['_templates']
-exclude_patterns = []
+
+
+exclude_patterns = ['**/methods/*.rst','classes/CGcamera/methods/*']
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
@@ -46,6 +48,13 @@ html_css_files = ['custom.css']
 
 
 rst_prolog = """
+.. |PhaseLAB| replace:: **PhaseLAB**
+
+.. role:: matlab(code)
+    :language: matlab
+    :class: highlight
+  
+
 .. |sub1| replace:: mine1
 .. |sub2| replace:: mine2
 
@@ -53,19 +62,24 @@ rst_prolog = """
 
    <br />
 
-.. |gr1| raw:: html
+.. |gr| raw:: html
 
     <span style="color:#888">
 
-.. |gr2| raw:: html
+
+.. |subTitle| replace:: |br| |gr|
+
+.. |/subTitle| raw:: html
 
     </span>
 
-.. |subTitle| replace:: |br| |gr1|
+.. |hr| raw:: html
+    
+    <hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" />
 
-.. |/subTitle| replace:: |gr2|
 
 
 """
+
 
 

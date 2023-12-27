@@ -1,13 +1,9 @@
-.. include:: substitutions.rst
-
-.. role:: matlab(code)
-  :language: matlab
-  :class: highlight
+.. _The_Microscope_class:
 
 The Microscope class
 ====================
 
-*Microscope* is handle class.
+*Microscope* is a handle class.
 
 Attributes
 ----------

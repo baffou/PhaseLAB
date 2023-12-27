@@ -1,4 +1,4 @@
-camera pixel size:	6.5e-6
+dexel size:	6.5e-6
 Gamma:	19.5e-6
 relaylens zoom:	2
 Nx:2560

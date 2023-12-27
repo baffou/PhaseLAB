@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Import experimental images &mdash; PhaseLAB documentation 4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
       <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
@@ -63,13 +64,31 @@
 <li class="toctree-l1"><a class="reference internal" href="processImages.html">Process experimental images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="displayImages.html">Display experimental images</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="codeExamples.html">Code examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="GUI.html">GUI</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Classes</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="classes/Camera.html">Camera</a></li>
 <li class="toctree-l1"><a class="reference internal" href="classes/CGcamera.html">CGcamera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/CrossGrating.html">CrossGrating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Dipole.html">Dipole</a></li>
 <li class="toctree-l1"><a class="reference internal" href="classes/Illumination.html">Illumination</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/ImageEM.html">ImageEM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="classes/ImageQLSI.html">ImageQLSI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="classes/Interfero.html">Interfero</a></li>
 <li class="toctree-l1"><a class="reference internal" href="classes/Microscope.html">Microscope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Objective.html">Objective</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="functions/importItfRef.html">importItfRef</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions/dynamicFigure.html">dynamicFigure</a></li>
 </ul>
 
         </div>
@@ -98,7 +117,7 @@
              
   <section id="import-experimental-images">
 <h1>Import experimental images<a class="headerlink" href="#import-experimental-images" title="Link to this heading"></a></h1>
-<p>Experimental images (interferograms) are imported as matrices, embedded in <em>Interfero</em> objects. There are at least two images to import: the object interferogram and the reference interferogram.</p>
+<p>Experimental images (interferograms) are imported as matrices, embedded in <em>Interfero</em> objects. There are at least two images to import: the <em>main</em> interferogram and the <em>reference</em> interferogram.</p>
 <section id="manual-import">
 <h2>Manual import<a class="headerlink" href="#manual-import" title="Link to this heading"></a></h2>
 <p>Let us import the tiff images, named <em>Itf.tiff</em> and <em>Ref.tiff</em>, located in the folder <em>data</em>:</p>
@@ -115,7 +134,7 @@
 </section>
 <section id="automatic-import">
 <h2>Automatic import<a class="headerlink" href="#automatic-import" title="Link to this heading"></a></h2>
-<p>If the images have been created using a well-defined acquisition software, the software can be specified when creating the microscope. And the importation of the images gets simplified, using the function <code class="xref py py-func docutils literal notranslate"><span class="pre">importItfRef()</span></code>. For instance here, one assumes that the images located in the folder data have been saved using PhaseLIVE:</p>
+<p>If the images have been created using a well-defined acquisition software, the software can be specified when creating the microscope. And the importation of the images gets simplified, using the function <code class="xref py py-func docutils literal notranslate"><span class="pre">importItfRef()</span></code>. For instance here, one assumes that the images located in the folder <em>data</em> have been acquired using PhaseLIVE:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">folder</span> <span class="o">=</span> <span class="s1">&#39;data&#39;</span><span class="p">;</span>
 <span class="linenos">2</span><span class="n">MI</span> <span class="o">=</span> <span class="n">Microscope</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="s1">&#39;PhaseLIVE&#39;</span><span class="p">);</span>
 <span class="linenos">3</span><span class="n">Itf</span> <span class="o">=</span> <span class="n">importItfRef</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">MI</span><span class="p">);</span>
@@ -127,11 +146,27 @@
 </pre></div>
 </div>
 <p>Also, one can import a subset of the images with the keywork <em>selection</em>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">Itf</span> <span class="o">=</span> <span class="n">importItfRef</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">MI</span><span class="p">,</span> <span class="s1">&#39;remote&#39;</span><span class="p">,</span> <span class="n">true</span><span class="p">,</span> <span class="s1">&#39;selection&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">10</span> <span class="mi">20</span><span class="p">]);</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">Itf</span> <span class="o">=</span> <span class="n">importItfRef</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">MI</span><span class="p">,</span> <span class="s1">&#39;remote&#39;</span><span class="p">,</span> <span class="n">true</span><span class="p">,</span> <span class="s1">&#39;selection&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">10</span> <span class="mi">20</span><span class="p">:</span><span class="mi">50</span><span class="p">]);</span>
 <span class="linenos">2</span><span class="n">Itf</span> <span class="o">=</span> <span class="n">importItfRef</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">MI</span><span class="p">,</span> <span class="s1">&#39;remote&#39;</span><span class="p">,</span> <span class="n">true</span><span class="p">,</span> <span class="s1">&#39;selection&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">20</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>Line 1 imports the images 1, 10 and 20, while line 2 imports 1 image every 20 images.</p>
+<p>Line 1 imports the images 1, 10 and all the images from 20 to 50, while line 2 imports 1 image every 20 images (1, 21, 41, etc).</p>
+<p>Finally, it is common to have several series of images within the same folder. For instance, when using PhaseLIVE, one can choose a prefix of the saved images. For instance, here is a list of saved interferograms where the prefixes were successively ITF and ITF2:</p>
+<div class="line-block">
+<div class="line"><em>ITF_0001.tif</em></div>
+<div class="line"><em>ITF_0002.tif</em></div>
+<div class="line"><em>ITF_0003.tif</em></div>
+<div class="line"><em>ITF_0004.tif</em></div>
+<div class="line"><em>ITF2_0001.tif</em></div>
+<div class="line"><em>ITF2_0002.tif</em></div>
+<div class="line"><em>ITF2_0003.tif</em></div>
+<div class="line"><em>REF_20210924_11h_38min_405sec.tif</em></div>
+<div class="line"><em>REF_20210924_11h_52min_168sec.tif</em></div>
+</div>
+<p>One can specifically choose to import only the <em>ITF2</em>-tagged interferogram with the command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">Itf</span> <span class="o">=</span> <span class="n">importItfRef</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">MI</span><span class="p">,</span> <span class="s1">&#39;nickname&#39;</span><span class="p">,</span> <span class="s1">&#39;ITF2&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
 </section>
 </section>
 

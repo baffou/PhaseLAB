@@ -21,7 +21,7 @@ classdef Dipole
         x = 0           % x position of the dipole [m]
         y = 0           % y position of the dipole [m]
         z               % z position of the dipole [m]
-        n_ext       % complex refractive index of the surroundings
+        n_ext           % refractive index of the surroundings
     end
 
     properties(Dependent)
@@ -87,6 +87,9 @@ classdef Dipole
 
         function obj = shine(obj,IL)
             % Runs de DDA simulation and returns the Nanoparticle object, updated with the P, EE, EE0 fields. Works with an assembly of dipoles.
+            if ~nargout
+                warning('an output argument must be specified, otherwise the DI object won''t be modified.')
+            end
             obj = DDA(obj,IL);
         end
 
@@ -176,7 +179,7 @@ classdef Dipole
 
         function obj = moveTo(obj,varargin)
             No = numel(obj);
-            for io = 1:No;
+            for io = 1:No
                 if nargin==2
                     if ~isnumeric(varargin{1})
                         error('the position must be a number')
@@ -231,6 +234,10 @@ classdef Dipole
         end
 
         function obj = moveBy(obj,varargin)
+            % obj2 = obj.moveBy([x, y, z]);  % moves the dipoles by 1 µm in the x direction
+            % obj2 = obj.moveBy(x, y, z);  % moves the dipoles by 1 µm in the x direction
+            % obj2 = obj.moveBy(Name, Value); % where Name is 'x', 'y', or 'z'
+
             No = numel(obj);
             for io = 1:No
                 if nargin==2
@@ -284,7 +291,6 @@ classdef Dipole
                 end  
             end
         end
-
 
         function prop = MieTheory(DIlist)
             
@@ -342,9 +348,6 @@ classdef Dipole
 
         end
         
-            
-
-
         function objs = plus(obj1,obj2)
             if ~isempty(obj1(1).Illumination) && ~isempty(obj2(1).Illumination)
                 if obj1(1).Illumination.identity~=obj2(1).Illumination.identity
@@ -363,22 +366,31 @@ classdef Dipole
         end
         
         function figure(obj)
+            % obj.figure()
+            % display the geometry of the dipole(s) system
             NDI = numel(obj);
             [xs,ys,zs] = sphere;
             hold on 
             posList = reshape([obj.pos],3,NDI).';
             for is = 1:NDI
                 a = obj(is).r;
-                surf(a*xs+posList(is,1),a*ys+posList(is,2),a*zs+posList(is,3), 'FaceColor', [0.7 0.3 0.2], 'FaceAlpha',0.9,'EdgeAlpha', 0)
+                surf((a*xs+posList(is,1))*1e6,(a*ys+posList(is,2))*1e6,(a*zs+posList(is,3))*1e6, 'FaceColor', [0.7 0.3 0.2], 'FaceAlpha',0.9,'EdgeAlpha', 0)
             end
             light
             axis equal
             ecart = max( max(5*[obj.r]) , 50e-9);
             [X, Y] = meshgrid(-ecart+min(min(posList(:,1))):1e-7:ecart+max(max(posList(:,1))) , -ecart+min(min(posList(:,2))):1e-7:ecart+max(max(posList(:,2))));
             Z = 0.*X + 0.*Y;
-            color = Z*0+1;
-            surf(X,Y,Z,color);
+            color = ones(size(X,2), size(X,1), 3);
+            surf(X*1e6,Y*1e6,Z*1e6,'FaceColor','w','EdgeColor','w');
+            colormap(Pradeep)
             view(14,28)
+            camproj('perspective')
+            xlabel('µm');
+            ylabel('µm');
+            zlabel('µm');
+
+% Ajout d'un titre 
         end
 
         function obj = set.Illumination(obj,val)
@@ -389,13 +401,19 @@ classdef Dipole
         end
         
         function val = matList(obj)
-            % returns the list of available cameras
-            matList = dir([obj.DIpath '/../materials/*.txt']);
+            % returns the list of available material
+            matList = dir([obj(1).DIpath '/../materials/*.txt']);
             Nc = numel(matList);
-            val = cell(Nc,1);
-            for ic = 1:Nc
-                val{ic} = matList(ic).name(1:end-4);
-            end
+            if nargout
+                val = cell(Nc,1);
+                for ic = 1:Nc
+                    val{ic} = matList(ic).name(2:end-4);
+                end
+            else
+                for ic = 1:Nc
+                    disp(" "+matList(ic).name(2:end-4))
+                end
+            end                
         end    
         
     end
