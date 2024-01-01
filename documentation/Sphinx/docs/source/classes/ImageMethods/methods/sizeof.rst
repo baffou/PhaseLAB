@@ -1,1 +1,0 @@
-.. dropdown:: **sizeof** |subTitle| sizeof |/subTitle|

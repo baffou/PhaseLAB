@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Build the optical setup &mdash; PhaseLAB documentation 4.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
+      <link rel="stylesheet" type="text/css" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
+      <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=be8f49e0" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon2.png"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=9f5556dd"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/tabs.js?v=3030b3cb"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Import experimental interferograms" href="importImages.html" />
+    <link rel="prev" title="Introduction" href="intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PhaseLAB documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="download.html">Download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Build the optical setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#defining-the-illumination">Defining the Illumination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-the-microscope">Defining the Microscope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-the-qlsi-camera">Defining the QLSI Camera</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="importImages.html">Import experimental interferograms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="processImages.html">Process experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="displayImages.html">Display experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inSilico.html">In silico QLSI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="codeExamples.html">Code examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="GUI.html">The GUI of <span style="font-family: 'Roboto';">PhaseLAB</span></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classes/Camera.html">Camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/CGcamera.html">CGcamera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/CrossGrating.html">CrossGrating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Dipole.html">Dipole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Illumination.html">Illumination</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/ImageEM.html">ImageEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/ImageQLSI.html">ImageQLSI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Interfero.html">Interfero</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Microscope.html">Microscope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Objective.html">Objective</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="functions/CGMinSilico.html">CGMinSilico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions/imaging.html">imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions/importItfRef.html">importItfRef</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions/dynamicFigure.html">dynamicFigure</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hidden</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="functions/CGMinSilico.html">CGMinSilico</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PhaseLAB documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Build the optical setup</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/buildMicroscope.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="build-the-optical-setup">
+<h1>Build the optical setup<a class="headerlink" href="#build-the-optical-setup" title="Link to this heading"></a></h1>
+<p>In <span style="font-family: 'Roboto';">PhaseLAB</span>, the setup is composed of two objects:</p>
+<ul>
+<li><p>a <a class="reference internal" href="classes/Microscope.html#the-microscope-class"><span class="std std-ref">Microscope</span></a> object</p>
+<blockquote>
+<div><p>We usually name the <a class="reference internal" href="classes/Microscope.html#the-microscope-class"><span class="std std-ref">Microscope</span></a> object <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">MI</span></code>. It gathers all the parameters related to the objective lens, camera, cross-grating, relay lens, etc.</p>
+</div></blockquote>
+</li>
+<li><p>an <a class="reference internal" href="classes/Illumination.html#the-illumination-class"><span class="std std-ref">Illumination</span></a> object.</p>
+<blockquote>
+<div><p>The <a class="reference internal" href="classes/Illumination.html#the-illumination-class"><span class="std std-ref">Illumination</span></a> object is usually called <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">IL</span></code>. It gathers the information on the incident light illumination (wavelength, polarization, direction, etc).</p>
+</div></blockquote>
+</li>
+</ul>
+<section id="defining-the-illumination">
+<h2>Defining the Illumination<a class="headerlink" href="#defining-the-illumination" title="Link to this heading"></a></h2>
+<p>Here is the simplest definition of an <a class="reference internal" href="classes/Illumination.html#the-illumination-class"><span class="std std-ref">Illumination</span></a> object:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">IL</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Illumination</span><span class="p">(</span><span class="mf">532e-9</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>where the argument is the wavelength of the illumination.</p>
+<p>The <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">IL</span></code> variable contains all the properties of the illumination. Since only one property of the microscope has been defined with this code line, the wavelength, all the other properties have been set to default values. To visualize all the <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">IL</span></code> properties, just enter <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">IL</span></code> in the Matlab command window:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">IL</span>
+
+<span class="n">IL</span><span class="w"> </span><span class="p">=</span>
+
+<span class="w">    </span><span class="n">Illumination</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="nb">properties</span><span class="p">:</span>
+
+<span class="w">    </span><span class="n">lambda</span><span class="p">:</span><span class="w"> </span><span class="mf">5.3200e-07</span>
+<span class="w">    </span><span class="n">I</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="n">direct</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span>
+<span class="w">    </span><span class="n">polar</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="mi">0</span><span class="p">]</span>
+<span class="w">    </span><span class="n">NA</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>5 public properties are displayed. For instance, the wavelength we just specified is the <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">lambda</span></code> property. One can access this parameter by writing <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">IL</span><span class="p">.</span><span class="n">lambda</span></code>. The other parameters, <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">I</span></code>, <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">direct</span></code>, <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">polar</span></code>,  and <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">NA</span></code>, are used when using the simulation functionalites of the <span style="font-family: 'Roboto';">PhaseLAB</span> toolbox. To process <em>experimental</em> images, they are ignored, and only the wavelength matters. When dealing with simulated images, however, one can modify these parameters. Here are some examples:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">IL</span><span class="p">.</span><span class="n">polar</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">0</span><span class="p">];</span>
+<span class="n">IL</span><span class="p">.</span><span class="n">NA</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">0.7</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>For more information on how to build an <a class="reference internal" href="classes/Illumination.html#the-illumination-class"><span class="std std-ref">Illumination</span></a> object, refer to <a class="reference internal" href="classes/Illumination.html#the-illumination-class"><span class="std std-ref">The Illumination class</span></a> section.</p>
+</section>
+<section id="defining-the-microscope">
+<h2>Defining the Microscope<a class="headerlink" href="#defining-the-microscope" title="Link to this heading"></a></h2>
+<p>Here are typical code lines to define the microscope:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w">  </span><span class="n">OB</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Objective</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mf">1.3</span><span class="p">,</span><span class="s">&#39;Olympus&#39;</span><span class="p">);</span>
+<span class="o">&gt;&gt;</span><span class="w">  </span><span class="n">MI</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Microscope</span><span class="p">(</span><span class="n">OB</span><span class="p">,</span><span class="s">&#39;Nikon&#39;</span><span class="p">,</span><span class="s">&#39;Silios_mono&#39;</span><span class="p">,</span><span class="s">&#39;PhaseLIVE&#39;</span><span class="p">)</span>
+
+<span class="n">MI</span><span class="w"> </span><span class="p">=</span>
+
+<span class="n">Microscope</span><span class="w"> </span><span class="s">with</span><span class="w"> </span><span class="s">properties:</span>
+
+<span class="w">    </span><span class="n">Objective</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span>×<span class="mi">1</span><span class="w"> </span><span class="n">Objective</span><span class="p">]</span>
+<span class="w">    </span><span class="n">CGcam</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span>×<span class="mi">1</span><span class="w"> </span><span class="n">CGcamera</span><span class="p">]</span>
+<span class="w">    </span><span class="n">f_TL</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span>
+<span class="w">    </span><span class="n">software</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;PhaseLIVE&#39;</span>
+<span class="w">    </span><span class="n">M</span><span class="p">:</span><span class="w"> </span><span class="o">-</span><span class="mf">111.1111</span>
+<span class="w">    </span><span class="n">pxSize</span><span class="p">:</span><span class="w"> </span><span class="mf">4.9500e-08</span>
+<span class="w">    </span><span class="n">zo</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">    </span><span class="n">T0</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+</pre></div>
+</div>
+<p>An <a class="reference internal" href="classes/Objective.html#the-objective-class"><span class="std std-ref">Objective</span></a> object is firstly defined. It enables the specification of the magnification, the numerical aperture and the objective brand. The 3rd (optional) input is the objective brand. If not specified, the default value is <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Olympus&#39;</span></code>.</p>
+<p>Then, a <a class="reference internal" href="classes/Microscope.html#the-microscope-class"><span class="std std-ref">Microscope</span></a> object is defined. It takes an <a class="reference internal" href="classes/Objective.html#the-objective-class"><span class="std std-ref">Objective</span></a> object as a first input, the microscope brand (or the focal length of the tube lens) as the second input, and optionally the name of the QLSI camera and the software used to acquire the images.</p>
+<p>For more information on how to build the microscope, see <a class="reference internal" href="classes/Microscope.html#the-microscope-class"><span class="std std-ref">The Microscope class</span></a> section.</p>
+</section>
+<section id="defining-the-qlsi-camera">
+<h2>Defining the QLSI Camera<a class="headerlink" href="#defining-the-qlsi-camera" title="Link to this heading"></a></h2>
+<p>The QLSI camera is represented by a <a class="reference internal" href="classes/CGcamera.html#the-cgcamera-class"><span class="std std-ref">CGcamera</span></a> object, and is contained within the <a class="reference internal" href="classes/Microscope.html#the-microscope-class"><span class="std std-ref">Microscope</span></a> object. Here is how it looks:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">MI</span><span class="p">.</span><span class="n">CGcam</span>
+
+<span class="nb">ans</span><span class="w"> </span><span class="p">=</span>
+
+<span class="w">    </span><span class="n">CGcamera</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="nb">properties</span><span class="p">:</span>
+
+<span class="w">    </span><span class="n">Camera</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span>×<span class="mi">1</span><span class="w"> </span><span class="n">Camera</span><span class="p">]</span>
+<span class="w">        </span><span class="n">RL</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span>×<span class="mi">0</span><span class="w"> </span><span class="n">RelayLens</span><span class="p">]</span>
+<span class="w">        </span><span class="n">CG</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span>×<span class="mi">1</span><span class="w"> </span><span class="n">CrossGrating</span><span class="p">]</span>
+<span class="w">    </span><span class="nb">fileName</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Silios_mono&#39;</span>
+<span class="w">        </span><span class="n">CGpos</span><span class="p">:</span><span class="w"> </span><span class="mf">7.5000e-04</span>
+<span class="w">        </span><span class="n">dxSize</span><span class="p">:</span><span class="w"> </span><span class="mf">5.5000e-06</span>
+<span class="w">        </span><span class="n">zeta</span><span class="p">:</span><span class="w"> </span><span class="mf">3.0000</span>
+<span class="w">        </span><span class="nb">zoom</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>Many parameters define a QLSI camera. But no need to enter all of them, one by one. There are predefined QLSI cameras in <span style="font-family: 'Roboto';">PhaseLAB</span>. Here is the list:</p>
+<table class="docutils align-center" id="id1">
+<caption><span class="caption-text">List of predefined cameras in PhaseLAB</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 77%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>File name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> sC8-830 </span></p></td>
+<td><p>SID4-sC8 camera we own.</p></td>
+</tr>
+<tr class="row-odd"><td><p><span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> sC8-940 </span></p></td>
+<td><p>SID4-sC8 camera we own.</p></td>
+</tr>
+<tr class="row-even"><td><p><span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> Sid4Element-Sona </span></p></td>
+<td><p>Relay lens from Phasics, when associated with a Sona camera</p></td>
+</tr>
+<tr class="row-odd"><td><p><span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> Sid4Element </span></p></td>
+<td><p>Relay lens from Phasics, when associated with a Zyla camera</p></td>
+</tr>
+<tr class="row-even"><td><p><span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> Silios_mono </span></p></td>
+<td><p>Camera from Silios</p></td>
+</tr>
+</tbody>
+</table>
+<p>Implementing a QLSI camera is done when building the microscope, by specifying a 3rd input to the constructor with the name of the QLSI camera:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">MI</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Microscope</span><span class="p">(</span><span class="n">OB</span><span class="p">,</span><span class="s">&#39;Nikon&#39;</span><span class="p">,</span><span class="s">&#39;Silios_mono&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If your camera is not in the list, you can build your own QLSI camera (i.e., <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">CGcam</span></code> object) step by step, this way:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">Grating</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">CrossGrating</span><span class="p">(</span><span class="n">Gamma</span><span class="p">=</span><span class="mf">39e-6</span><span class="p">,</span><span class="n">lambda0</span><span class="p">=</span><span class="mf">630e-9</span><span class="p">);</span><span class="w">  </span><span class="c">% define the cross-grating</span>
+<span class="n">Cam</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Camera</span><span class="p">(</span><span class="s">&#39;Zyla&#39;</span><span class="p">);</span><span class="w">                                </span><span class="c">% define the camera</span>
+<span class="n">relayLensZoom</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">1.11</span><span class="p">;</span><span class="w">                                </span><span class="c">% set the zoom of the relay-lens</span>
+<span class="n">CGcam</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">CGcamera</span><span class="p">(</span><span class="n">Cam</span><span class="p">,</span><span class="w"> </span><span class="n">Grating</span><span class="p">,</span><span class="w"> </span><span class="n">relayLensZoom</span><span class="p">);</span><span class="w">       </span><span class="c">% define the QLSI camera</span>
+<span class="n">MI</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Microscope</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Olympus&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">CGcam</span><span class="p">);</span><span class="w">              </span><span class="c">% defines the microscope</span>
+</pre></div>
+</div>
+<p>More information on the construction of custom <a class="reference internal" href="classes/CrossGrating.html#the-crossgrating-class"><span class="std std-ref">CrossGrating</span></a>, <a class="reference internal" href="classes/Camera.html#the-camera-class"><span class="std std-ref">Camera</span></a> and <a class="reference internal" href="classes/CGcamera.html#the-cgcamera-class"><span class="std std-ref">CGcamera</span></a> objects can be found in the sections <a class="reference internal" href="classes/Camera.html#the-camera-class"><span class="std std-ref">The Camera class</span></a>, <a class="reference internal" href="classes/CGcamera.html#the-cgcamera-class"><span class="std std-ref">The CGcamera class</span></a>, and <a class="reference internal" href="classes/CrossGrating.html#the-crossgrating-class"><span class="std std-ref">The CrossGrating class</span></a>.</p>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">Simple microscope construction</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">Advanced microscope construction</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">IL</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Illumination</span><span class="p">(</span><span class="mf">630e-9</span><span class="p">);</span><span class="w">                               </span><span class="c">% define the illumination</span>
+<span class="n">MI</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Microscope</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Nikon&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Silios_mono&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;PhaseLIVE&#39;</span><span class="p">);</span><span class="c">% define the microscope</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">IL</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Illumination</span><span class="p">(</span><span class="mf">630e-9</span><span class="p">);</span><span class="w">                         </span><span class="c">% define the illumination</span>
+<span class="n">Grating</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">CrossGrating</span><span class="p">(</span><span class="n">Gamma</span><span class="p">=</span><span class="mf">39e-6</span><span class="p">,</span><span class="n">lambda0</span><span class="p">=</span><span class="mf">630e-9</span><span class="p">);</span><span class="c">% define the cross-grating</span>
+<span class="n">Cam</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Camera</span><span class="p">(</span><span class="s">&#39;Zyla&#39;</span><span class="p">);</span><span class="w">                              </span><span class="c">% define the camera</span>
+<span class="n">relayLensZoom</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">1.11</span><span class="p">;</span><span class="w">                              </span><span class="c">% set the zoom of the relay-lens</span>
+<span class="n">CGcam</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">CGcamera</span><span class="p">(</span><span class="n">Cam</span><span class="p">,</span><span class="w"> </span><span class="n">Grating</span><span class="p">,</span><span class="w"> </span><span class="n">relayLensZoom</span><span class="p">);</span><span class="w">     </span><span class="c">% define the QLSI camera</span>
+<span class="n">OB</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Objective</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mf">1.3</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Olympus&#39;</span><span class="p">)</span><span class="w">                </span><span class="c">% define the objective lens</span>
+<span class="n">MI</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Microscope</span><span class="p">(</span><span class="n">OB</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Nikon&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">CGcam</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;PhaseLIVE&#39;</span><span class="p">);</span><span class="w">  </span><span class="c">% defines the microscope</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="intro.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="importImages.html" class="btn btn-neutral float-right" title="Import experimental interferograms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Guillaume Baffou.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

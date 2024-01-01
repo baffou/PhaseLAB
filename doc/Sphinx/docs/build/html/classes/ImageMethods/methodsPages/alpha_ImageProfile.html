@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>alpha_ImageProfile (ImageEM &amp; ImageQLSI classes method) Return the polarisability, optical volume and dry mass of small objects. &mdash; PhaseLAB documentation 4.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=be8f49e0" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/favicon2.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=9f5556dd"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PhaseLAB documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../download.html">Download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introduction</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../buildMicroscope.html">Build the optical setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../importImages.html">Import experimental interferograms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../processImages.html">Process experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../displayImages.html">Display experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../inSilico.html">In silico QLSI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../codeExamples.html">Code examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../GUI.html">The GUI of <span style="font-family: 'Roboto';">PhaseLAB</span></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Camera.html">Camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CGcamera.html">CGcamera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CrossGrating.html">CrossGrating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Dipole.html">Dipole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Illumination.html">Illumination</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ImageEM.html">ImageEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ImageQLSI.html">ImageQLSI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Interfero.html">Interfero</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Microscope.html">Microscope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Objective.html">Objective</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/CGMinSilico.html">CGMinSilico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/imaging.html">imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/importItfRef.html">importItfRef</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/dynamicFigure.html">dynamicFigure</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hidden</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/CGMinSilico.html">CGMinSilico</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PhaseLAB documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><strong>alpha_ImageProfile</strong> (ImageEM &amp; ImageQLSI classes method) <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Return the polarisability, optical volume and dry mass of small objects. </em></span></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/classes/ImageMethods/methodsPages/alpha_ImageProfile.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="alpha-imageprofile-imageem-imageqlsi-classes-method-subtitle-return-the-polarisability-optical-volume-and-dry-mass-of-small-objects-subtitle">
+<span id="alpha-imageprofile"></span><h1><strong>alpha_ImageProfile</strong> (ImageEM &amp; ImageQLSI classes method) <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Return the polarisability, optical volume and dry mass of small objects. </em></span><a class="headerlink" href="#alpha-imageprofile-imageem-imageqlsi-classes-method-subtitle-return-the-polarisability-optical-volume-and-dry-mass-of-small-objects-subtitle" title="Link to this heading"></a></h1>
+<details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>alpha_ImageProfile</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Return the polarisability, optical volume and dry mass of small objects. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">alpha_ImageProfile</span><span class="p">();</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">This method of the <em>ImageEM</em> and <em>ImageQLSI</em> classes returns the polarisability, optical volume and dry mass of small objects, using a radial profile method. The algorithm involves a sum of the pixels on a circular area. The method opens a window with the image. First, click on the OPD image to zoom in on the particle of interest, and press ‘z’ when the zoom is correct. Second, click on the center of the particle. A new figure will show up, plotting the pixel summation as a function of the radius of the circular area, from 0 to 100 px. Finally, click two times on the graph to define the range of value corresponding to a proper convergence of the integration. In practice, the line shape should feature a plateau, and the user should click at the beginning and at the end of the plateau. For instance, in this example, the user could click on <span class="math notranslate nohighlight">\(x=18\)</span> and <span class="math notranslate nohighlight">\(x=40\)</span>:</p>
+<a class="reference internal image-reference" href="../../../_images/GUI_alphaImageWindow.png"><img alt="../../../_images/GUI_alphaImageWindow.png" src="../../../_images/GUI_alphaImageWindow.png" style="width: 450px;" /></a>
+<p class="card-text">Finally, the values of polarisability, and optical volume are returned as a structure, containing the fields alpha, OV and OVw. OVw is the weighted optical volume as defined in Ref. <a class="footnote-reference brackets" href="#boe13-6550" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
+<p class="title">Name-Value inputs</p><p class="card-text">Several Name-Value inputs can be used to adjust the way the procedure works:</p>
+<ul>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'nmax'</span></code>, default value: 40</p>
+<blockquote>
+<div><p class="card-text">Maximum radius of the integration area.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'nBkg'</span></code>, default value: 3</p>
+<blockquote>
+<div><p class="card-text">width of the boundary considered to calculate the zero value of the background.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'NNP'</span></code>, default value: 1</p>
+<blockquote>
+<div><p class="card-text">Number of particle to be clicked on the image. The procedure will stoped after N particles will be processed, and data returned data will be an array of values.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'zoom'</span></code>, default value: 1</p>
+<blockquote>
+<div><p class="card-text">Enable the user to first zoom before clicking on the particle</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'step'</span></code>, default value: 1</p>
+<blockquote>
+<div><p class="card-text">Specifying a value larger than 1 can make the process faster. The integration as a function of the radius will be calculated only every <code class="docutils literal notranslate"><span class="pre">N</span></code> pixels, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the step value.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'keepPoint'</span></code>, default value: false</p>
+<blockquote>
+<div><p class="card-text">Keep the same clicking point from one image to another. It can save time if many images need to be processed, and if the NP does not move from one image to another.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'display'</span></code>, default value: false</p>
+<blockquote>
+<div><p class="card-text">Display the results of all the measurements in a single graph. Makes sense only if multiple measurements are made within a single call of the function.</p>
+</div></blockquote>
+</li>
+</ul>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="boe13-6550" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p class="card-text"><em>Biomass measurements of single neurites in vitro using optical wavefront microscopy</em>, L. Durdevic, A. Resano Gines, A. Roueff, G. Blivet, G. Baffou, <strong>Biomedical Optics Express</strong> 13, 6550-6560 (2022)</p>
+</aside>
+</aside>
+</div>
+</details></section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Guillaume Baffou.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

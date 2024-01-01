@@ -1,5 +1,0 @@
-:orphan:
-
-.. raw:: html
-    
-    <hr/>
