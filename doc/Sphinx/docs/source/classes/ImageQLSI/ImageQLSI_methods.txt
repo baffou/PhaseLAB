@@ -23,9 +23,9 @@ ImageQLSI methods
 
 .. include:: /classes/ImageMethods/methods/flatten.rst
 
-.. include:: /classes/ImageQLSI/methods/flipud.rst
-
 .. include:: /classes/ImageQLSI/methods/fliplr.rst
+
+.. include:: /classes/ImageQLSI/methods/flipud.rst
 
 .. include:: /classes/ImageQLSI/methods/highPassFilter.rst
 

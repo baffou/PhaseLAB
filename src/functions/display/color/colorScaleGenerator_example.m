@@ -8,5 +8,3 @@ colMap = colorScaleGenerator(colorList,posList,256);
 figure
 imagegb(meshgrid(1:1024,1:100))
 colormap(colMap)
-
-%writematrix(colMap,

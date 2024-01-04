@@ -47,21 +47,7 @@ classdef CrossGrating  <  handle & matlab.mixin.Copyable
             end
 
             function obj = jsonImport(jsonFile)
-                fileName = jsonFile; % filename in JSON extension
-                fid = fopen(fileName); % Opening the file
-                raw = fread(fid,inf); % Reading the contents
-                str = char(raw'); % Transformation
-                fclose(fid); % Closing the file
-                data = jsondecode(str); %
-                
-                eval(['obj=' data.class '();'])
-
-                objProps = properties(obj);
-                Np = numel(objProps);
-
-                for ip = 1:Np
-                    eval(['obj.' objProps{ip} '=data.' objProps{ip} ';'])
-                end
+                obj = json2obj(jsonFile);
             end
         end
 

@@ -13,7 +13,7 @@
       <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
-      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=be8f49e0" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=1e1f2f42" />
 
   
     <link rel="shortcut icon" href="_static/favicon2.png"/>
@@ -61,6 +61,7 @@
 <li class="toctree-l1"><a class="reference internal" href="importImages.html">Import experimental interferograms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="processImages.html">Process experimental images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="displayImages.html">Display experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="displayImages.html#the-c-dynamicfigure-c-function">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inSilico.html">In silico QLSI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
@@ -90,10 +91,6 @@
 <li class="toctree-l1"><a class="reference internal" href="functions/imaging.html">imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functions/importItfRef.html">importItfRef</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functions/dynamicFigure.html">dynamicFigure</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Hidden</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="functions/CGMinSilico.html">CGMinSilico</a></li>
 </ul>
 
         </div>
@@ -169,7 +166,9 @@
 <li class="toctree-l1"><a class="reference internal" href="processImages.html">Process experimental images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="displayImages.html">Display experimental images</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="displayImages.html#the-functions-c-imagesc-c-c-imageph-c-c-imagebw-c-c-imagegb-c-c-imagejet-c">The functions: <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> imagesc </span>, <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> imageph </span>, <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> imagebw </span> , <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> imagegb </span>, <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> imagejet </span></a></li>
-<li class="toctree-l2"><a class="reference internal" href="displayImages.html#the-dynamicfigure-function">The dynamicFigure function</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="displayImages.html#the-c-dynamicfigure-c-function">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="displayImages.html#the-c-figure-c-method">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> figure </span> method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="displayImages.html#the-c-opendx-c-method">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> opendx </span> method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="displayImages.html#color-scales">Color scales</a></li>
@@ -219,21 +218,18 @@
 <li class="toctree-l1"><a class="reference internal" href="classes/Camera.html">Camera</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="classes/Camera.html#properties">Properties</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classes/Camera.html#constructor">Constructor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="classes/Camera.html#camera-spec-files">Camera spec files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classes/Camera.html#camera-methods">Camera methods</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="classes/CGcamera.html">CGcamera</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="classes/CGcamera.html#properties">Properties</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classes/CGcamera.html#constructor">Constructor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="classes/CGcamera.html#cgcamera-spec-files">CGcamera spec files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classes/CGcamera.html#cgcamera-methods">CGcamera methods</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="classes/CrossGrating.html">CrossGrating</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="classes/CrossGrating.html#properties">Properties</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classes/CrossGrating.html#constructor">Constructor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="classes/CrossGrating.html#crossgrating-spec-files">CrossGrating spec files</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="classes/Dipole.html">Dipole</a><ul>
@@ -249,6 +245,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="classes/ImageEM.html">ImageEM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classes/ImageEM.html#properties">Properties</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classes/ImageEM.html#imageem-methods">ImageEM methods</a></li>
 </ul>
 </li>
@@ -267,6 +264,7 @@
 <li class="toctree-l1"><a class="reference internal" href="classes/Microscope.html">Microscope</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="classes/Microscope.html#properties">Properties</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classes/Microscope.html#constructor">Constructor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classes/Microscope.html#microscope-methods">Microscope methods</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="classes/Objective.html">Objective</a><ul>
@@ -279,13 +277,17 @@
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="functions/CGMinSilico.html">CGMinSilico</a></li>
-<li class="toctree-l1"><a class="reference internal" href="functions/imaging.html">imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions/CGMinSilico.html">CGMinSilico</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functions/CGMinSilico.html#in-silico-simulation">In Silico simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functions/imaging.html">imaging</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functions/imaging.html#image-simulation">Image simulation</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="functions/importItfRef.html">importItfRef</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functions/dynamicFigure.html">dynamicFigure</a></li>
 </ul>
-</div>
-<div class="toctree-wrapper compound">
 </div>
 </section>
 

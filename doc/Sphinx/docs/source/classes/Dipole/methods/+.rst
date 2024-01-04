@@ -1,4 +1,4 @@
-.. dropdown:: **+** |subTitle| Defines the addition between two *Interfero* objects: ``DI1 + DI2``. |/subTitle|
+.. dropdown:: **+** |subTitle| Defines the addition between two *Dipole* objects: ``DI1 + DI2``. |/subTitle|
 
     .. raw:: html
       
@@ -14,7 +14,7 @@
       
         <p class="title">Description</p>
 
-    The method overloads the operator ``+`` by defining the method ``plus``. It simply creates a *Dipole* 2-vector with the two input: ``obj = [obj1,  obj2];``. Once they are assembled this way, the dipoles are considered as coupled for any further DDA computation using the *imaging* method.
+    The method overloads the operator ``+`` by defining the method ``plus``. It simply creates a *Dipole* 2-vector with the two input: ``obj = [obj1,  obj2];``. Once they are assembled this way, the dipoles are considered as coupled for any further DDA computation using :ref:`The_imaging_function`.
 
     |hr|
 

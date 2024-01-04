@@ -101,6 +101,57 @@ For more information on the ``opendx`` method, see :ref:`The opendx method <The_
 Color scales
 ------------
 
+All the native color scale of Matlab can naturally be used when displaying |PhaseLAB| images. Also, in the |c| /src/colorMaps |/c| folder, there are predefined colormaps. To display them, just execute the following command, and window will appear with all of them:
+
+.. code-block::
+
+    displayColormaps()
+
+
+.. figure:: /images/displayColorMaps.png
+    :width: 600
+    :align: center
+
+To use any of them, use the ``colormap`` command:
+
+.. code-block:: matlab
+
+    colormap(Pradeep)
+
+where the input is simply the name of the desired color map.
+
 
 Color scale generator
 ---------------------
+
+colorMapGenerator is |PhaseLAB| function aim to easily create user-designed color maps. Here is an example:
+
+.. code-block:: matlab
+    :linenos:
+
+    colorList = ["000000";"560000";"AD3200";"FF8B00";"FFD900";"FFFF5B";"FFFFFF"];
+    % colorList = ["ffffff";"d9d1a7";"b4913e";"805b28";"492d15";"000000"];
+    % colorList = ["100080";"6500dc";"9a00c4";"d21536";"ff8000";"ffe700";"ffffff"];
+
+    posList = [0, 17, 33, 50, 66, 84, 100];
+
+    colMap = colorScaleGenerator(colorList,posList,256);
+
+    figure
+    imagegb(meshgrid(1:1024,1:100))
+    colormap(colMap)
+
+   
+
+.. figure:: /images/genColorMapEx.png
+    :width: 300
+    :align: center
+
+In line 1, a series of 7 colors is stored in a string array, in HEX format.
+
+Line 2 and 3 are other examples of color arrays
+
+Line 5 defines a vector that gathers the positions of the color along an axis going from 0 to 100.
+
+Line 7 uses the ``colorScaleGenerator`` function to create a 256x3 color matrix, in the format of a colormap variable to be used as an in put of the ``colormap``  function, as shown in line 11.
+

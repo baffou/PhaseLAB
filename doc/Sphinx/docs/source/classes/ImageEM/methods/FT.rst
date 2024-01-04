@@ -1,4 +1,4 @@
-.. dropdown:: **FT** |subTitle| Return the square of the norm of the Fourier transform of the E field. |/subTitle|
+.. dropdown:: **FT** |subTitle| Return the Fourier transform of the E field. |/subTitle|
 
     .. raw:: html
       
@@ -15,7 +15,7 @@
 
     |hr|
 
-    ``I = obj.FT()`` returns the square of the norm ``I`` of the Fourier transform of the E field:
+    ``I = obj.FT()`` returns the square of the norm ``I`` of the Fourier transform of the :math:`E` field:
 
     .. math::
 

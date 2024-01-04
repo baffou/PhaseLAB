@@ -1,4 +1,4 @@
-.. dropdown:: **flipud** |subTitle| Flips the images of the object about the horizontal axis (flips up-down). |/subTitle|
+.. dropdown:: **flipud** |subTitle| Flips the images of the object about the horizontal axis. |/subTitle|
 
     .. raw:: html
       
@@ -15,9 +15,11 @@
       
         <p class="title">Description</p>
 
+    Methods that flips all the images of the object about the horizontal axis (flips upside-down). |/subTitle|
+
     |hr|
 
-    *ImageEM* objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.
+    *ImageEM* object vectors can also be used with this method. The transformation applies then to all the objects of the vector.
 
     |hr|
 

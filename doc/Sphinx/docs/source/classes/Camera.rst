@@ -5,11 +5,10 @@ The Camera class
 
 *Camera* is a handle class.
 
-The Camera object represents the basis camera.
+The *Camera* object represents the basis camera.
 
 Properties
 ----------
-
 
 .. list-table:: Public properties
   :widths: 30 30 30 100 
@@ -23,19 +22,19 @@ Properties
   * - ``dxSize``
     - *double*
     - 6.5e-6
-    - dexel size
+    - dexel size :math:`p` \[m\]
   * - ``Nx``
     - *integer*
     - 600
-    - number of columns
+    - number of columns :math:`N_x`
   * - ``Ny``
     - *integer*
     - 600
-    - number of columns
+    - number of columns :math:`N_y`
   * - ``fullWellCapacity``
     - *integer*
     - 25000
-    - Full-well-capacity
+    - Full-well-capacity :math:`w`
   * - ``model``
     - *char*
     - 
@@ -53,7 +52,7 @@ Properties
     - 0
     - Crosstalk from dexel 2 to 1
 
-
+ 
 .. include:: Camera/Camera_constructor.txt
 
 

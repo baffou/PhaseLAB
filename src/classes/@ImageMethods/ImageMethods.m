@@ -57,16 +57,18 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
         end
 
         function hfig=overview(IMlist,opt)
+            % displays all the images of the object list within a single
+            % figure
             arguments
                 IMlist
-                opt.numbers double = numel(IMlist)
+                opt.numbers double = 1:numel(IMlist)
                 opt.types cell = {'OPD','T'}
             end
             Nim=numel(IMlist);
             Nt = numel(opt.types);
-            if opt.numbers
-                numbers=1:Nim;
-            end
+
+            numbers=opt.numbers;
+
             Nimx=2+floor(sqrt(Nt*Nim)); % +1 to elongate a bit horizontally, because of screen shape.
             if mod(Nimx,2) % the number of images horizontally is not even
                 Nimx=ceil(sqrt(2*Nim));

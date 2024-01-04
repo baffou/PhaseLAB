@@ -20,7 +20,7 @@
       
         <p class="title">Description</p>
 
-    The Jones function models the application of polarizers and wave plates to the image, with a Jones matrix formalism. For a given E field :math:`E = (E_x, E_y)`, the new E field :math:`E'` reads
+    The Jones function models the application of polarizers and wave plates to the image, with a Jones matrix formalism. For a given electric field :math:`E = (E_x, E_y)`, the new field :math:`E'` reads
 
     .. math::
 
@@ -39,7 +39,7 @@
         E_y
         \end{bmatrix}
 
-    :math:`[a, b; c, d]` is the Jones matrix. For instance, for a polarize along the x axis, it reads
+    :math:`[a, b; c, d]` is the Jones matrix. For instance, for a polarizer along the *x* axis, it reads
 
     .. math::
         

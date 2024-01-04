@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=be8f49e0" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=1e1f2f42" />
 
   
     <link rel="shortcut icon" href="../_static/favicon2.png"/>
@@ -60,6 +60,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../importImages.html">Import experimental interferograms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../processImages.html">Process experimental images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../displayImages.html">Display experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../displayImages.html#the-c-dynamicfigure-c-function">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../inSilico.html">In silico QLSI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
@@ -95,10 +96,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../functions/importItfRef.html">importItfRef</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functions/dynamicFigure.html">dynamicFigure</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Hidden</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../functions/CGMinSilico.html">CGMinSilico</a></li>
-</ul>
 
         </div>
       </div>
@@ -130,7 +127,7 @@
 <section id="properties">
 <h2>Properties<a class="headerlink" href="#properties" title="Link to this heading"></a></h2>
 <table class="docutils align-center" id="id2">
-<caption><span class="caption-text">Private access properties</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<caption><span class="caption-text">Read-only properties</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 16%" />
 <col style="width: 16%" />
@@ -198,11 +195,11 @@
 <p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
 <p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">objList</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Interfero</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></code> create a <em>n</em>-vector <code class="docutils literal notranslate"><span class="pre">objList</span></code> of empty <em>Interfero</em> objects.</p>
 <p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
-<p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Interfero</span><span class="p">(</span><span class="nb">fileName</span><span class="p">,</span><span class="w"> </span><span class="n">MI</span><span class="p">)</span></code> creates a <em>Interfero</em> object <code class="docutils literal notranslate"><span class="pre">obj</span></code> from a specified file <code class="docutils literal notranslate"><span class="pre">fileName</span></code> and a given <em>Microscope</em> object <code class="docutils literal notranslate"><span class="pre">MI</span></code>.</p>
+<p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Interfero</span><span class="p">(</span><span class="nb">fileName</span><span class="p">,</span><span class="w"> </span><span class="n">MI</span><span class="p">)</span></code> creates a <em>Interfero</em> object <code class="docutils literal notranslate"><span class="pre">obj</span></code> from a specified file <code class="docutils literal notranslate"><span class="pre">fileName</span></code> and a given <a class="reference internal" href="Microscope.html#the-microscope-class"><span class="std std-ref">Microscope</span></a> object <code class="docutils literal notranslate"><span class="pre">MI</span></code>.</p>
 <p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
 <p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Interfero</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span><span class="w"> </span><span class="n">MI</span><span class="p">)</span></code> creates a <em>Interfero</em> object <code class="docutils literal notranslate"><span class="pre">obj</span></code> from a matrix <code class="docutils literal notranslate"><span class="pre">mat</span></code> and a given <em>Microscope</em> object <code class="docutils literal notranslate"><span class="pre">MI</span></code>.</p>
 <p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
-<p class="card-text">The <code class="docutils literal notranslate"><span class="pre">Interfero</span></code> constructor accepts <em>Name-Value</em> options.</p>
+<p class="card-text">The <em>Interfero</em> constructor accepts <em>Name-Value</em> options.</p>
 <p class="title">Examples</p><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
 <strong>Build an Interfero object from matrices</strong><div class="summary-down docutils">
@@ -244,7 +241,7 @@
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
 <blockquote>
-<div><p class="card-text">Usually to build Interfero objects, the constructor is not directly used. One often automatically import interferograms from a folder using the <code class="docutils literal notranslate"><span class="pre">importItfRef</span></code> function.</p>
+<div><p class="card-text">Usually to build Interfero objects, the constructor is not directly used. One often automatically import interferograms from a folder using <a class="reference internal" href="../functions/importItfRef.html#the-importitfref-function"><span class="std std-ref">The  importItfRef  function</span></a>.</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">CGcam</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">CGcamera</span><span class="p">(</span><span class="s">&#39;Silios_mono&#39;</span><span class="p">);</span>
 <span class="n">MI</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Microscope</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="n">CGcam</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;PhaseLIVE&#39;</span><span class="p">);</span><span class="w"> </span><span class="c">% creates a microscope with 100x magnification</span>
 
@@ -252,7 +249,7 @@
 </pre></div>
 </div>
 </div></blockquote>
-<p class="card-text">Itf is a vector of interferograms, and the reference are automatically detected provided a software (here <em>PhaseLIVE</em>) correctly indicated when defining the microscope <code class="docutils literal notranslate"><span class="pre">MI</span></code>.</p>
+<p class="card-text">Itf is a vector of interferograms, and the reference are automatically detected provided a software (here <span style="font-family: 'Roboto';">PhaseLIVE</span>) correctly indicated when defining the microscope <code class="docutils literal notranslate"><span class="pre">MI</span></code>.</p>
 </div>
 </details></div>
 </details></section>
@@ -399,16 +396,12 @@ Reference <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;">
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-removeOffset <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Substract an number, or an image to the interferogram image. </em></span>
-.. raw:: html<div class="summary-down docutils">
+removeOffset <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Substract an number, or an image to the interferogram image. </em></span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<blockquote>
-<div><p class="card-text">&lt;p class=”title”&gt;Synthax&lt;/p&gt;</p>
-</div></blockquote>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">removeOffset</span><span class="p">()</span>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">removeOffset</span><span class="p">()</span>
 <span class="n">obj</span><span class="p">.</span><span class="n">removeOffset</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 <span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">removeOffset</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
 </pre></div>

@@ -8,9 +8,8 @@ Constructor
         <p class="title">Synthax</p>
 
     .. code-block:: matlab
-        :caption: Prototypes
 
-        % possible forms
+        % prototypes
         obj = CrossGrating();
         obj = CrossGrating(name);
         obj = CrossGrating(Gamma=val1,depth=val2);
@@ -30,7 +29,7 @@ Constructor
 
     |hr|
 
-    :matlab:`obj = CrossGrating(name)` creates a *CrossGrating* object, where ``name`` is a *char* that defines the grating. The grating names must correspond to the names of the .json files contained in the folder **CG**. For instance, :matlab:`obj = Camera('F2');`.
+    :matlab:`obj = CrossGrating(name)` creates a *CrossGrating* object, where ``name`` is a *char* that defines the grating. The grating names must correspond to the names of the .json files contained in the folder **spec/CG**. For instance, :matlab:`obj = Camera('F2');`.
 
     |hr|
 
@@ -41,19 +40,24 @@ Constructor
     :matlab:`obj = CrossGrating(Gamma=val1,depth=val2);` creates a *CrossGrating* object with a pitch specified by ``Gamma`` and the nominal wavelength ``'lambda0'``. Either the depth or lambda0 can be specified. The two are linked via the relation ``lambda0 = 2*depth*(RI-1)``.
  
 
-CrossGrating spec files
------------------------------
+    .. raw:: html
+        
+        <p class="title">CGcamera spec files</p>
 
-The folder **CG** contains *.json* files associated to each predefined cross-grating. Here is for instance a copy of the *F2.json* file:
 
-.. code-block:: json
+    The folder **spec/CG** contains *.json* files associated to each predefined cross-gratings. Here is for instance a copy of the *F2.json* file:
 
-    {"class":"CrossGrating",
-    "Gamma": 39e-6,
-    "name": "F2",
-    "depth": 554e-9,
-    "RI": 1.46,
-    "lambda0": 509.68e-9
-    }
+    .. code-block:: json
 
-All these parameters are respectively the class, the pitch, the reference, the etching depth, the refractive index of the grating glass, and the nominal wavelength.
+        {"class":"CrossGrating",
+        "Gamma": 39e-6,
+        "name": "F2",
+        "depth": 554e-9,
+        "RI": 1.46,
+        "lambda0": 509.68e-9
+        }
+
+    All these parameters are respectively the class, the pitch, the reference, the etching depth, the refractive index of the grating glass, and the nominal wavelength.
+
+
+    If other QLSI gratings are being used, new custom files can be made, following this pattern. Any new file can be saved in the **spec/CG** folder, or in any other folder known by Matlab. However, in order to simply keep track of the updated versions of PhaseLAB via Github, I suggest to store any custom-made file to a separate folder, out of the |PhaseLAB| package, and include this directory in the Matlab paths. Also, feel free to contact me to ask for any file addition/modification in the public Github version of |PhaseLAB| that would suit your studies.

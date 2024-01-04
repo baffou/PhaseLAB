@@ -1,6 +1,6 @@
-.. dropdown:: **lambda** |subTitle| lambda |/subTitle|
+.. dropdown:: **lambda** |subTitle| Return the wavelength of the illumination. |/subTitle|
     
-    Returns the wavelength of the illumination.
+    
 
     .. raw:: html
       
@@ -14,7 +14,7 @@
       
         <p class="title">Description</p>
 
-    Returns the wavelength of the illumination used to acquire the image, ``val = obj.Illumination.lambda;``.
+    This method returns the wavelength of the illumination used to acquire the image, ``val = obj.Illumination.lambda;``.
     
 
 

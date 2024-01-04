@@ -25,8 +25,6 @@ ImageEM methods
 
 .. include:: /classes/ImageMethods/methods/figure.rst
 
-.. include:: /classes/ImageMethods/methods/flatten.rst
-
 .. include:: /classes/ImageEM/methods/flipud.rst
 
 .. include:: /classes/ImageEM/methods/fliplr.rst

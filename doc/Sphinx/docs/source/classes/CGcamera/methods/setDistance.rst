@@ -12,5 +12,5 @@
       
         <p class="title">Description</p>
 
-    ``obj.setDistance(val);`` directly sets the value of the value of the grating-camera position, i.e., the value of the ``CGpos`` property.
+    ``obj.setDistance(val);`` directly sets the value of the grating-camera distance, i.e., the value of the ``CGpos`` property.
 

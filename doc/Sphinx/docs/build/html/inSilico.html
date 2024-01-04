@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
-      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=be8f49e0" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=1e1f2f42" />
 
   
     <link rel="shortcut icon" href="_static/favicon2.png"/>
@@ -60,6 +60,7 @@
 <li class="toctree-l1"><a class="reference internal" href="importImages.html">Import experimental interferograms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="processImages.html">Process experimental images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="displayImages.html">Display experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="displayImages.html#the-c-dynamicfigure-c-function">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">In silico QLSI</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#model-a-nanoparticle">Model a nanoparticle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#model-an-interferogram">Model an interferogram</a></li>
@@ -95,10 +96,6 @@
 <li class="toctree-l1"><a class="reference internal" href="functions/imaging.html">imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functions/importItfRef.html">importItfRef</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functions/dynamicFigure.html">dynamicFigure</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Hidden</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="functions/CGMinSilico.html">CGMinSilico</a></li>
 </ul>
 
         </div>
@@ -171,6 +168,9 @@
 <span class="linenos">25</span><span class="n">IM0</span><span class="p">.</span><span class="n">figure</span><span class="w">                  </span><span class="c">% display the images in the GUI</span>
 </pre></div>
 </div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/NPinSilico_Ex.png"><img alt="_images/NPinSilico_Ex.png" src="_images/NPinSilico_Ex.png" style="width: 600px;" /></a>
+</figure>
 <p>In line 16, the dipole is illuminated. It means that the polarisation vector of the dipole is calculated, and assigned to the object property <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">DI</span><span class="p">.</span><span class="n">p</span></code>:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">DI</span><span class="p">.</span><span class="n">p</span>
 
@@ -182,15 +182,15 @@
 </pre></div>
 </div>
 <p>This dipole needs to be calculated before the <code class="xref py py-func docutils literal notranslate"><span class="pre">imaging()</span></code> function is called (line 19).</p>
-<p>In line 19, the electromagnetic field is calculated using the <code class="xref py py-func docutils literal notranslate"><span class="pre">imaging()</span></code> function (see <a class="reference internal" href="functions/imaging.html#the-imaging-function"><span class="std std-ref">The imaging function</span></a> section.) The first input is the <em>Dipole</em>  object, the second is the <em>Illumination</em> object, the third the <em>Microscope</em> object and the last one, <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">Npx</span></code>, is the number of pixels (rows and columns) of the final (square) image. The function returs the electromagnetic field at the image plane of the microscope as an <a class="reference internal" href="classes/ImageEM.html#the-imageem-class"><span class="std std-ref">ImageEM object</span></a>.</p>
+<p>In line 19, the electromagnetic field is calculated using the <code class="docutils literal notranslate"><span class="pre">imaging</span></code> function (see <a class="reference internal" href="functions/imaging.html#the-imaging-function"><span class="std std-ref">The imaging function</span></a> section.) The first input is the <a class="reference internal" href="classes/Dipole.html#the-dipole-class"><span class="std std-ref">Dipole</span></a>  object, the second is the <a class="reference internal" href="classes/Illumination.html#the-illumination-class"><span class="std std-ref">Illumination</span></a> object, the third the <a class="reference internal" href="classes/Microscope.html#the-microscope-class"><span class="std std-ref">Microscope</span></a> object and the last one, <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">Npx</span></code>, is the number of pixels (rows and columns) of the final (square) image. The function returs the electromagnetic field at the image plane of the microscope as an <a class="reference internal" href="classes/ImageEM.html#the-imageem-class"><span class="std std-ref">ImageEM</span></a> object.</p>
 </section>
 <section id="model-an-interferogram">
 <h2>Model an interferogram<a class="headerlink" href="#model-an-interferogram" title="Link to this heading"></a></h2>
-<p>In the presence of a QLSI grating at a millimetric distance from the image plane, the electromagnetic gets modified to form an interferogram. This modification can be calculated using the <a class="reference internal" href="functions/CGMinSilico.html#the-cgminsilico-function"><span class="std std-ref">CGMinSilico function</span></a>. Here is the synthax:</p>
+<p>In the presence of a QLSI grating at a millimetric distance from the image plane, the electromagnetic field gets modified to form an interferogram. This modification can be calculated using the <a class="reference internal" href="functions/CGMinSilico.html#the-cgminsilico-function"><span class="std std-ref">CGMinSilico function</span></a>. Here is the synthax:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">Itf</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">CGMinSilico</span><span class="p">(</span><span class="n">IM0</span><span class="p">,</span><span class="s">&#39;shotNoise&#39;</span><span class="p">,</span><span class="nb">true</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>The keyword <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;shotNoise&#39;</span></code> adds the natural shot noise of the selected camera specified in the Microscope object <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">MI</span></code> (here an sC8 from Phasics). Other Name-value inputs caan be specified. For more information, refer to <a class="reference internal" href="functions/CGMinSilico.html#the-cgminsilico-function"><span class="std std-ref">The CGMinSilico function</span></a>.</p>
+<p>The keyword <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;shotNoise&#39;</span></code> adds the natural shot noise of the selected camera specified in the Microscope object <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">MI</span></code> (here an sC8 from Phasics). Other Name-value inputs can be specified. For more information, refer to <a class="reference internal" href="functions/CGMinSilico.html#the-cgminsilico-function"><span class="std std-ref">The  CGMinSilico  function</span></a>.</p>
 </section>
 <section id="process-the-interferogram">
 <h2>Process the interferogram<a class="headerlink" href="#process-the-interferogram" title="Link to this heading"></a></h2>

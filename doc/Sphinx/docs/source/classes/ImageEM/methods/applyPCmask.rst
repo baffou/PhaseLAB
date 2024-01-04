@@ -14,11 +14,11 @@
       
         <p class="title">Description</p>
 
-    ``obj = obj0.applyPCmask(mask);`` recalculate the E field at the image plane when adding a phase mask at the pupil of the objective. It is used to model Zernike phase-contrast microscopy. ``mask`` is a *PCmask** object.
+    ``obj = obj0.applyPCmask(mask);`` recalculate the :math:`E` field at the image plane when adding a phase mask at the pupil of the objective. It is used to model Zernike phase-contrast microscopy. ``mask`` is a *PCmask* object.
 
     |hr|
 
-    *ImageQLSI* objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.
+    ``objList = objList0.applyPCmask(mask);``: *ImageEM* object *vectors* can also be used with this method. The transformation applies then to all the objects of the vector.
     
 
      

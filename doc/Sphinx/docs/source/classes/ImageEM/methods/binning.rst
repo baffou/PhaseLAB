@@ -15,8 +15,9 @@
       
         <p class="title">Description</p>
 
-    ``obj`` can by a vector of *ImageEM* objects. In that case, the treatment will be perform on all the objects of the list.
-
+    The *binning* method applies a binning to all the images of the object.
+    
+    
     ``obj.binning()`` performs, by default, a 3x3 binning of the images of ``obj``.
 
     |hr|

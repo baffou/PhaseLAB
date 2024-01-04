@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=be8f49e0" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=1e1f2f42" />
 
   
     <link rel="shortcut icon" href="../../../_static/favicon2.png"/>
@@ -59,6 +59,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../importImages.html">Import experimental interferograms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../processImages.html">Process experimental images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../displayImages.html">Display experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../displayImages.html#the-c-dynamicfigure-c-function">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../inSilico.html">In silico QLSI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
@@ -88,10 +89,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../functions/imaging.html">imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functions/importItfRef.html">importItfRef</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functions/dynamicFigure.html">dynamicFigure</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Hidden</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../functions/CGMinSilico.html">CGMinSilico</a></li>
 </ul>
 
         </div>
@@ -133,15 +130,15 @@
 </div>
 <p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">=</span> <span class="pre">obj.alpha();</span></code> returns the <em>alpha</em> parameter of a QLSI system. The alpha parameter is defined by <a class="footnote-reference brackets" href="#jpdap54-294002" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>:</p>
 <div class="math notranslate nohighlight">
-\[\alpha = \frac{\Gamma p}{4\pi d}\]</div>
-<p class="card-text">where <span class="math notranslate nohighlight">\(\Gamma\)</span>  is the pitch of the grating, <span class="math notranslate nohighlight">\(p\)</span> is the dexel size of the camera and <span class="math notranslate nohighlight">\(d\)</span> is the camera-grating distance.</p>
+\[\alpha = \frac{\Gamma p}{4\pi d Z}\]</div>
+<p class="card-text">where <span class="math notranslate nohighlight">\(\Gamma\)</span>  is the pitch of the grating, <span class="math notranslate nohighlight">\(p\)</span> is the dexel size of the camera, <span class="math notranslate nohighlight">\(Z\)</span> the zoom of the <abbr title="relay-lens">RL</abbr>, and <span class="math notranslate nohighlight">\(d\)</span> is the camera-grating distance.</p>
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="jpdap54-294002" role="note">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
 <p class="card-text">Quantitative phase microscopy using quadriwave lateral shearing interferometry (QLSI): principle, terminology, algorithm and grating shadow description, Baffou G., J. Phys. D: Appl. Phys. 54, 294002 (2021)</p>
 </aside>
 </aside>
-<p class="card-text">Whe using a relay-lens, the <em>alpha</em> parameter depends on the wavelength, because of the imperfection of the relay-lens (the focal length of the relay lens slightly depends on the wavelength). In this case, the wavelength <code class="docutils literal notranslate"><span class="pre">lambda</span></code> should be indicated as an input argument:  <code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">=</span> <span class="pre">obj.alpha(lambda);</span></code>.</p>
+<p class="card-text">When using a <abbr title="relay-lens">RL</abbr>, the <em>alpha</em> parameter depends on the wavelength, because of the imperfection of the <abbr title="relay-lens">RL</abbr> (the focal lengths of the relay lens slightly depends on the wavelength). In this case, the wavelength <code class="docutils literal notranslate"><span class="pre">lambda</span></code> should be indicated as an input argument:  <code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">=</span> <span class="pre">obj.alpha(lambda);</span></code>.</p>
 </div>
 </details></section>
 

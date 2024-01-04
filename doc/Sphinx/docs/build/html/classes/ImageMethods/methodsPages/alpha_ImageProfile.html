@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=be8f49e0" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=1e1f2f42" />
 
   
     <link rel="shortcut icon" href="../../../_static/favicon2.png"/>
@@ -59,6 +59,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../importImages.html">Import experimental interferograms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../processImages.html">Process experimental images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../displayImages.html">Display experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../displayImages.html#the-c-dynamicfigure-c-function">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../inSilico.html">In silico QLSI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
@@ -88,10 +89,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../functions/imaging.html">imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functions/importItfRef.html">importItfRef</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functions/dynamicFigure.html">dynamicFigure</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Hidden</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../functions/CGMinSilico.html">CGMinSilico</a></li>
 </ul>
 
         </div>
@@ -130,53 +127,53 @@
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">alpha_ImageProfile</span><span class="p">();</span>
 </pre></div>
 </div>
-<p class="title">Description</p><p class="card-text">This method of the <em>ImageEM</em> and <em>ImageQLSI</em> classes returns the polarisability, optical volume and dry mass of small objects, using a radial profile method. The algorithm involves a sum of the pixels on a circular area. The method opens a window with the image. First, click on the OPD image to zoom in on the particle of interest, and press ‘z’ when the zoom is correct. Second, click on the center of the particle. A new figure will show up, plotting the pixel summation as a function of the radius of the circular area, from 0 to 100 px. Finally, click two times on the graph to define the range of value corresponding to a proper convergence of the integration. In practice, the line shape should feature a plateau, and the user should click at the beginning and at the end of the plateau. For instance, in this example, the user could click on <span class="math notranslate nohighlight">\(x=18\)</span> and <span class="math notranslate nohighlight">\(x=40\)</span>:</p>
-<a class="reference internal image-reference" href="../../../_images/GUI_alphaImageWindow.png"><img alt="../../../_images/GUI_alphaImageWindow.png" src="../../../_images/GUI_alphaImageWindow.png" style="width: 450px;" /></a>
+<p class="title">Description</p><p class="card-text">This method of the <a class="reference internal" href="../../ImageEM.html#the-imageem-class"><span class="std std-ref">ImageEM</span></a> and <a class="reference internal" href="../../ImageQLSI.html#the-imageqlsi-class"><span class="std std-ref">ImageQLSI</span></a> classes returns the polarisability, <abbr title="optical volume">OV</abbr> and <abbr title="dry mass">DM</abbr> of small objects, using a radial profile method. The algorithm involves a sum of the pixels on a circular area. The method opens a window with the image. First, click on the OPD image to zoom in on the particle of interest, and press ‘z’ when the zoom is correct. Second, click on the center of the particle. A new figure will show up, plotting the pixel summation as a function of the radius of the circular area, from 0 to 100 px. Finally, click two times on the graph to define the range of value corresponding to a proper convergence of the integration. In practice, the line shape should feature a plateau, and the user should click at the beginning and at the end of the plateau. For instance, in this example, the user could click on <span class="math notranslate nohighlight">\(x=18\)</span> and <span class="math notranslate nohighlight">\(x=40\)</span>:</p>
+<a class="reference internal image-reference" href="../../../_images/GUI_alphaImageWindow.png"><img alt="../../../_images/GUI_alphaImageWindow.png" class="align-center" src="../../../_images/GUI_alphaImageWindow.png" style="width: 450px;" /></a>
 <p class="card-text">Finally, the values of polarisability, and optical volume are returned as a structure, containing the fields alpha, OV and OVw. OVw is the weighted optical volume as defined in Ref. <a class="footnote-reference brackets" href="#boe13-6550" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
-<p class="title">Name-Value inputs</p><p class="card-text">Several Name-Value inputs can be used to adjust the way the procedure works:</p>
-<ul>
-<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'nmax'</span></code>, default value: 40</p>
-<blockquote>
-<div><p class="card-text">Maximum radius of the integration area.</p>
-</div></blockquote>
-</li>
-<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'nBkg'</span></code>, default value: 3</p>
-<blockquote>
-<div><p class="card-text">width of the boundary considered to calculate the zero value of the background.</p>
-</div></blockquote>
-</li>
-<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'NNP'</span></code>, default value: 1</p>
-<blockquote>
-<div><p class="card-text">Number of particle to be clicked on the image. The procedure will stoped after N particles will be processed, and data returned data will be an array of values.</p>
-</div></blockquote>
-</li>
-<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'zoom'</span></code>, default value: 1</p>
-<blockquote>
-<div><p class="card-text">Enable the user to first zoom before clicking on the particle</p>
-</div></blockquote>
-</li>
-<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'step'</span></code>, default value: 1</p>
-<blockquote>
-<div><p class="card-text">Specifying a value larger than 1 can make the process faster. The integration as a function of the radius will be calculated only every <code class="docutils literal notranslate"><span class="pre">N</span></code> pixels, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the step value.</p>
-</div></blockquote>
-</li>
-<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'keepPoint'</span></code>, default value: false</p>
-<blockquote>
-<div><p class="card-text">Keep the same clicking point from one image to another. It can save time if many images need to be processed, and if the NP does not move from one image to another.</p>
-</div></blockquote>
-</li>
-<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'display'</span></code>, default value: false</p>
-<blockquote>
-<div><p class="card-text">Display the results of all the measurements in a single graph. Makes sense only if multiple measurements are made within a single call of the function.</p>
-</div></blockquote>
-</li>
-</ul>
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="boe13-6550" role="note">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
 <p class="card-text"><em>Biomass measurements of single neurites in vitro using optical wavefront microscopy</em>, L. Durdevic, A. Resano Gines, A. Roueff, G. Blivet, G. Baffou, <strong>Biomedical Optics Express</strong> 13, 6550-6560 (2022)</p>
 </aside>
 </aside>
+<p class="title">Name-Value inputs</p><p class="card-text">Several Name-Value inputs can be used to adjust the way the procedure works:</p>
+<ul>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;nmax&#39;</span></code>, default value: <code class="docutils literal notranslate"><span class="pre">40</span></code></p>
+<blockquote>
+<div><p class="card-text">Maximum radius of the integration area.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;nBkg&#39;</span></code>, default value: <code class="docutils literal notranslate"><span class="pre">3</span></code></p>
+<blockquote>
+<div><p class="card-text">Width of the boundary considered to calculate the zero value of the background.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;NNP&#39;</span></code>, default value: <code class="docutils literal notranslate"><span class="pre">1</span></code></p>
+<blockquote>
+<div><p class="card-text">Number of particles to be clicked on the image. The procedure will stoped after <code class="docutils literal notranslate"><span class="pre">N</span></code> particles will be processed, and the returned data will be an array of values.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;zoom&#39;</span></code>, default value: <code class="code highlight matlab docutils literal highlight-matlab"><span class="nb">true</span></code></p>
+<blockquote>
+<div><p class="card-text">Enables the user to first zoom before clicking on the particle</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;step&#39;</span></code>, default value: <code class="docutils literal notranslate"><span class="pre">1</span></code></p>
+<blockquote>
+<div><p class="card-text">The integration as a function of the radius will be calculated only every <code class="docutils literal notranslate"><span class="pre">N</span></code> pixels, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the step value. Specifying a value larger than 1 can make the processing faster.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;keepPoint&#39;</span></code>, default value: <code class="code highlight matlab docutils literal highlight-matlab"><span class="nb">false</span></code></p>
+<blockquote>
+<div><p class="card-text">Keeps the same clicking point from one image to another. It can save time if many images need to be processed, and if the NP does not move from one image to another.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;display&#39;</span></code>, default value: <code class="code highlight matlab docutils literal highlight-matlab"><span class="nb">false</span></code></p>
+<blockquote>
+<div><p class="card-text">Displays the results of all the measurements in a single graph. Makes sense only if multiple measurements are made within a single call of the function.</p>
+</div></blockquote>
+</li>
+</ul>
 </div>
 </details></section>
 

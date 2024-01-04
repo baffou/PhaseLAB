@@ -25,3 +25,7 @@ Image simulation
         IM0 = imaging(DI,IL,MI,Npx);
 
         IM0.figure
+
+    .. figure:: /images/NPinSilico_Ex2.png
+        :width: 500
+        :align: center

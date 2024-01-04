@@ -1,4 +1,4 @@
-.. dropdown:: **Rytov** |subTitle| Returns the Rytov image. |/subTitle|
+.. dropdown:: **Rytov** |subTitle| Return the Rytov image. |/subTitle|
 
     .. raw:: html
       

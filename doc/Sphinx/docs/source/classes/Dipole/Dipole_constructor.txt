@@ -8,9 +8,8 @@ Constructor
         <p class="title">Synthax</p>
 
     .. code-block:: matlab
-        :caption: Prototypes
 
-        % possible forms
+        % protoypes
         obj = Dipole();
         obj = Dipole(mat, radius);
         obj = Dipole(mat, radius, z);
@@ -28,8 +27,8 @@ Constructor
     |hr|
 
 
-    :matlab:`obj = Dipole(mat, radius)` creates a *Dipole* object that corresponds to a nanosphere of radius ``radius``and material ``mat``.
+    :matlab:`obj = Dipole(mat, radius)` creates a *Dipole* object that corresponds to a nanosphere of radius ``radius`` and material ``mat``.
 
     |hr|
 
-    :matlab:`obj = Dipole(mat, radius, z)` creates a *Dipole* object that corresponds to a nanosphere of radius ``radius``and material ``mat``, shited to the position ``z`` along the $z$ axis.
+    :matlab:`obj = Dipole(mat, radius, z)` creates a *Dipole* object that corresponds to a nanosphere of radius ``radius`` and material ``mat``, shited to the position ``z`` along the :math:`z` axis.

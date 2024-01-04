@@ -62,8 +62,8 @@ div.related h3 {
 .highlight .c { color: #439c46; font-style: italic } /* Comment.Single */
 
 
-.highlight .mf { color: #777 } /* Literal.Number.Float */
-.highlight .mi { color: #777 } /* Literal.Number.Float */
+.highlight .mf { color: #000 } /* Literal.Number.Float */
+.highlight .mi { color: #000 } /* Literal.Number.Float */
 
 
 .rst-content code.literal{color:#222;background-color: none;} /* background des ``...`` */
@@ -176,4 +176,9 @@ footer a:hover {
 
 .document a.reference:hover{
     color: var(--hover);
+}
+
+/* avoid the horizontal scrollbar in tables*/
+.tight-table td {
+    white-space: normal !important
 }

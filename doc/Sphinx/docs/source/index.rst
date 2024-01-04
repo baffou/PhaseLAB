@@ -100,13 +100,6 @@ The toolbox is accessible at `github.com/baffou/PhaseLAB <https://github.com/baf
     dynamicFigure  <functions/dynamicFigure>
 
 
-.. toctree::
-    :caption: Hidden
-    :hidden:
-
-    CGMinSilico    <functions/CGMinSilico>
- 
-
 
 ..   :maxdepth: 2
 ..   :caption: Functions

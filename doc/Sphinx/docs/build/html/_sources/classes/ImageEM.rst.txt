@@ -4,16 +4,13 @@ The ImageEM class
 =================
 
 *ImageEM* is a handle class.
+
 Properties
 ----------
 
 
-.. dropdown:: **properties**
 
-
-
-
-  .. list-table:: Public properties inherited from the superclass *ImageMethods*:
+.. list-table:: Public properties
     :widths: 30 30 30 100 
     :header-rows: 1
     :align: center
@@ -38,60 +35,43 @@ Properties
 
 
 
-  .. list-table:: Public properties
-    :widths: 30 30 30 100 
+.. list-table:: Read-only properties
+    :widths: 30 30 100 
     :header-rows: 1
     :align: center
 
     * - name
       - type
-      - default
       - description
     * - ``Ex``
       - double array
-      - 
       - x component image of the electric field
     * - ``Ey``
       - double array
-      - 
       - y component image of the electric field
     * - ``Ez``
       - double array
-      - 
       - z component image of the electric field
     * - ``Einc``
       - *ImageEM*
-      - 
       - Incident electric field  
-
-  .. list-table:: Dependent properties
-    :widths: 30 30 30 100 
-    :header-rows: 1
-    :align: center
-
     * - name
       - type
-      - dependence
       - description
     * - ``Nx``
       - double
-      - ``= size(OPD,2);``
       - Number of columns
     * - ``Ny``
       - double
-      - ``= size(OPD,1);``
       - Number of rows
     * - ``E2``
       - double
-      - ``= abs(Ex).^2+abs(Ey).^2+abs(Ez).^2;``
       - Image of the Efield intensity
     * - ``E``
       - double
-      - ``= sqrt(E2);``
       - Amplitude of the Efield
     * - ``Ph``
       - double
-      - ``= sqrt(E2);``
       - Phase image
 
 

@@ -6,14 +6,12 @@
     
     .. code-block:: matlab
 
-            val = obj.Escat()
+            obj_sca = obj.Escat();
+            objList_sca = objList.Escat();
 
     .. raw:: html
       
         <p class="title">Description</p>
 
-    This method returns the norm of the incident field at the center of the field of view. If ``obj`` is already an incident field, it simply returns the norm of the field at the center of the field of view.
-
-    ``obj`` can by a vector of *ImageEM* objects. In that case, the treatment will be perform on all the objects of the list.
-
+    This method returns the scattered :math:`E` field image, as a new *ImageEM object*.
 

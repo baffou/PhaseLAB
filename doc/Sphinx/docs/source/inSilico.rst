@@ -48,6 +48,15 @@ The simplest object that can be modelled *in Silico* is a nanoparticle, or more 
     % display the images
     IM0.figure                  % display the images in the GUI
 
+
+
+
+.. figure:: /images/NPinSilico_Ex.png
+    :width: 600
+    :align: center
+
+
+
 In line 16, the dipole is illuminated. It means that the polarisation vector of the dipole is calculated, and assigned to the object property :matlab:`DI.p`:
 
 .. code-block:: matlab
@@ -62,19 +71,19 @@ In line 16, the dipole is illuminated. It means that the polarisation vector of 
 
 This dipole needs to be calculated before the :py:func:`imaging` function is called (line 19).
 
-In line 19, the electromagnetic field is calculated using the :py:func:`imaging` function (see :ref:`The imaging function <The_imaging_function>` section.) The first input is the *Dipole*  object, the second is the *Illumination* object, the third the *Microscope* object and the last one, :matlab:`Npx`, is the number of pixels (rows and columns) of the final (square) image. The function returs the electromagnetic field at the image plane of the microscope as an :ref:`ImageEM object <The_ImageEM_class>`.
+In line 19, the electromagnetic field is calculated using the ``imaging`` function (see :ref:`The imaging function <The_imaging_function>` section.) The first input is the |Dipole|  object, the second is the |Illumination| object, the third the |Microscope| object and the last one, :matlab:`Npx`, is the number of pixels (rows and columns) of the final (square) image. The function returs the electromagnetic field at the image plane of the microscope as an |ImageEM| object.
 
 
 Model an interferogram
 ----------------------
 
-In the presence of a QLSI grating at a millimetric distance from the image plane, the electromagnetic gets modified to form an interferogram. This modification can be calculated using the :ref:`CGMinSilico function <The_CGMinSilico_function>`. Here is the synthax:
+In the presence of a QLSI grating at a millimetric distance from the image plane, the electromagnetic field gets modified to form an interferogram. This modification can be calculated using the :ref:`CGMinSilico function <The_CGMinSilico_function>`. Here is the synthax:
 
 .. code-block:: matlab
 
     Itf = CGMinSilico(IM0,'shotNoise',true);
 
-The keyword :matlab:`'shotNoise'` adds the natural shot noise of the selected camera specified in the Microscope object :matlab:`MI` (here an sC8 from Phasics). Other Name-value inputs caan be specified. For more information, refer to :ref:`The_CGMinSilico_function`.
+The keyword :matlab:`'shotNoise'` adds the natural shot noise of the selected camera specified in the Microscope object :matlab:`MI` (here an sC8 from Phasics). Other Name-value inputs can be specified. For more information, refer to :ref:`The_CGMinSilico_function`.
 
 
 Process the interferogram

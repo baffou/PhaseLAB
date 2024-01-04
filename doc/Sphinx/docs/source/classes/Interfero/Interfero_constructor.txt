@@ -29,7 +29,7 @@ Constructor
 
     |hr|
 
-    :matlab:`obj = Interfero(fileName, MI)` creates a *Interfero* object ``obj`` from a specified file ``fileName`` and a given *Microscope* object ``MI``.
+    :matlab:`obj = Interfero(fileName, MI)` creates a *Interfero* object ``obj`` from a specified file ``fileName`` and a given |Microscope| object ``MI``.
 
     |hr|
 
@@ -37,7 +37,7 @@ Constructor
 
     |hr|
 
-    The ``Interfero`` constructor accepts *Name-Value* options. 
+    The *Interfero* constructor accepts *Name-Value* options. 
 
 
     .. raw:: html
@@ -70,7 +70,7 @@ Constructor
 
     .. dropdown:: **Automatic import from a folder**
 
-        Usually to build Interfero objects, the constructor is not directly used. One often automatically import interferograms from a folder using the ``importItfRef`` function.
+        Usually to build Interfero objects, the constructor is not directly used. One often automatically import interferograms from a folder using :ref:`The_importItfRef_function`.
 
         .. code-block:: matlab
 
@@ -79,5 +79,5 @@ Constructor
             
             Itf = importItfRef('data', MI);  % creates the Interfero object
             
-     Itf is a vector of interferograms, and the reference are automatically detected provided a software (here *PhaseLIVE*) correctly indicated when defining the microscope ``MI``.
+     Itf is a vector of interferograms, and the reference are automatically detected provided a software (here |PhaseLIVE|) correctly indicated when defining the microscope ``MI``.
 

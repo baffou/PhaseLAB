@@ -1,4 +1,4 @@
-.. dropdown:: **dmd** |subTitle| Returns the dry mass density (DMD) image. |/subTitle|
+.. dropdown:: **dmd** |subTitle| Return the dry mass density (DMD) image. |/subTitle|
 
     .. raw:: html
       
@@ -13,7 +13,7 @@
       
         <p class="title">Description</p>
 
-    ``val`` is the DMD image, pg/um^2. This function actually just consists of multiplying the ``OPD`` in [nm] by 5.56e-3.
+    ``val`` is the DMD image, in pg/µm\ :sup:`2`. This function actually just consists of multiplying the ``OPD`` in [nm] by 5.56e-3.
 
 
 

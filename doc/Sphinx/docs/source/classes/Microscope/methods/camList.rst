@@ -15,5 +15,5 @@
             {'sC8-944'         }
 
 
-    This list gives the possible values of the ``CGcam`` input in the Microscope constructor.
+    This list gives the possible values of the ``CGcam`` input in the *Microscope* constructor.
 

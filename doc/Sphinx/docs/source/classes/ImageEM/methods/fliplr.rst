@@ -1,4 +1,4 @@
-.. dropdown:: **fliplr** |subTitle| Flips the images of the object about the vertical axis (flips left-right). |/subTitle|
+.. dropdown:: **fliplr** |subTitle| Flips the images of the object about the vertical axis. |/subTitle|
 
     .. raw:: html
       
@@ -14,6 +14,8 @@
     .. raw:: html
       
         <p class="title">Description</p>
+
+    Methods that flips all the images of the object about the vertical axis (flips left-right). |/subTitle|
 
     |hr|
 

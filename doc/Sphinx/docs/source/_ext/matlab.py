@@ -196,9 +196,9 @@ class MatlabLexer(ExtendedRegexLexer):
             (r'=begin\s.*?\n=end.*?$', Comment.Multiline),
             # keywords
             (words((
-                'BEGIN', 'END', 'alias', 'begin', 'break', 'case', 'defined?',
-                'do', 'else', 'elseif', 'end', 'ensure', 'for', 'if', 'in', 'next', 'redo',
-                'rescue', 'raise', 'retry', 'return', 'super', 'then', 'undef',
+                'alias', 'begin', 'break', 'case', 'else', 'elseif', 'end', 
+                'ensure', 'false', 'for', 'if', 'in', 'next', 'redo',
+                'rescue', 'raise', 'retry', 'return', 'super', 'then', 'true', 'undef',
                 'unless', 'until', 'when', 'while', 'yield'), suffix=r'\b'),
              Keyword),
             # start of function, class and module names

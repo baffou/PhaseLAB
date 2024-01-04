@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=be8f49e0" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=1e1f2f42" />
 
   
     <link rel="shortcut icon" href="../_static/favicon2.png"/>
@@ -24,6 +24,7 @@
         <script src="../_static/documentation_options.js?v=9f5556dd"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -60,6 +61,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../importImages.html">Import experimental interferograms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../processImages.html">Process experimental images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../displayImages.html">Display experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../displayImages.html#the-c-dynamicfigure-c-function">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../inSilico.html">In silico QLSI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
@@ -94,10 +96,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../functions/imaging.html">imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functions/importItfRef.html">importItfRef</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functions/dynamicFigure.html">dynamicFigure</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Hidden</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../functions/CGMinSilico.html">CGMinSilico</a></li>
 </ul>
 
         </div>
@@ -148,7 +146,7 @@
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lambda</span></code></p></td>
 <td><p><em>double</em></p></td>
 <td></td>
-<td><p>illumination wavelength</p></td>
+<td><p>illumination wavelength [m]</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">I</span></code></p></td>
 <td><p><em>double</em></p></td>
@@ -173,7 +171,7 @@
 </tbody>
 </table>
 <table class="docutils align-center" id="id3">
-<caption><span class="caption-text">Dependent properties</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
+<caption><span class="caption-text">Read-only properties</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 16%" />
 <col style="width: 16%" />
@@ -206,7 +204,7 @@
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">k0</span></code></p></td>
 <td><p>double</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">2*pi./lambda;2*pi./lambda;</span></code></p></td>
-<td><p>wavevector in vacuum</p></td>
+<td><p>wavevector in vacuum  [m<sup>-1</sup>]</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">tr</span></code></p></td>
 <td><p>double</p></td>
@@ -218,15 +216,21 @@
 </section>
 <section id="constructor">
 <h2>Constructor<a class="headerlink" href="#constructor" title="Link to this heading"></a></h2>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Prototypes</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% possible forms</span>
+<details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>Constructor</strong><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% prototypes</span>
+<span class="n">Illumination</span><span class="p">()</span>
 <span class="n">Illumination</span><span class="p">(</span><span class="n">lambda</span><span class="p">)</span>
 <span class="n">Illumination</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span><span class="n">ME</span><span class="p">)</span>
 <span class="n">Illumination</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span><span class="n">ME</span><span class="p">,</span><span class="n">I</span><span class="p">)</span>
 <span class="n">Illumination</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span><span class="n">ME</span><span class="p">,</span><span class="n">I</span><span class="p">,</span><span class="n">polar</span><span class="p">)</span>
 
-<span class="c">% possible forms</span>
+<span class="c">% examples</span>
 <span class="n">Illumination</span><span class="p">(</span><span class="mf">650e-9</span><span class="p">)</span>
 <span class="n">Illumination</span><span class="p">(</span><span class="mf">530e-9</span><span class="p">,</span><span class="n">ME</span><span class="p">)</span>
 <span class="n">Illumination</span><span class="p">(</span><span class="mf">530e-9</span><span class="p">,</span><span class="n">ME</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
@@ -234,10 +238,15 @@
 <span class="n">Illumination</span><span class="p">(</span><span class="mf">580e-9</span><span class="p">,</span><span class="n">ME</span><span class="p">,</span><span class="n">I</span><span class="p">,[</span><span class="mi">1</span><span class="w"> </span>1<span class="nb">i</span><span class="w"> </span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
+<div class="title">Description</div><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">Illumination</span><span class="p">()</span></code> creates an empty <em>Illumination</em> object.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">Illumination</span><span class="p">(</span><span class="n">lambda</span><span class="p">)</span></code> creates an <em>Illumination</em> object with a specific wavelength <code class="docutils literal notranslate"><span class="pre">lambda</span></code>.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">Illumination</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span><span class="w"> </span><span class="n">ME</span><span class="p">)</span></code> creates an <em>Illumination</em> object with a specific wavelength <code class="docutils literal notranslate"><span class="pre">lambda</span></code>, and a given environment described by the <em>Medium</em> object <code class="docutils literal notranslate"><span class="pre">ME</span></code>. Specifying a <em>Medium</em> object is necessary only when simulating images, not really when working with experimental data.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">Illumination</span><span class="p">(</span><span class="mf">580e-9</span><span class="p">,</span><span class="n">ME</span><span class="p">,</span><span class="n">I</span><span class="p">,[</span><span class="mi">1</span><span class="w"> </span><span class="mi">1</span><span class="p">])</span></code> specifies the light intensity <code class="docutils literal notranslate"><span class="pre">I</span></code> and the polarization vector <code class="docutils literal notranslate"><span class="pre">polar</span></code>.  <code class="docutils literal notranslate"><span class="pre">polar</span></code> can be any 3D vector. It will be normalized before being assigned to the properties <code class="docutils literal notranslate"><span class="pre">obj.polar</span></code>.</p>
 </div>
-<p>. polar can be a 2- or 3-vector, not necessarily unitary.</p>
-<p>where <code class="docutils literal notranslate"><span class="pre">lambda</span></code> is the illumination wavelength, <code class="docutils literal notranslate"><span class="pre">ME</span></code> is a <em>Medium</em> object, <code class="docutils literal notranslate"><span class="pre">I</span></code> is the illumination irradiance, <code class="docutils literal notranslate"><span class="pre">polar</span></code> is the light polarization vector. It can be a 2- or 3-vector, not necessarily unitary.</p>
-</section>
+</details></section>
 <section id="illumination-methods">
 <h2>Illumination methods<a class="headerlink" href="#illumination-methods" title="Link to this heading"></a></h2>
 <details class="sphinx-bs dropdown card mb-3">
@@ -247,24 +256,20 @@
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="w"> </span><span class="mf">1.2</span><span class="w"> </span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mf">1e-6</span><span class="p">;</span>
-<span class="n">IL</span><span class="p">.</span><span class="n">EE0</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% prototype</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">EE0</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="card-text">returns the value of the electric field of the illumination, in the absence of the object, at the position <code class="docutils literal notranslate"><span class="pre">pos</span></code> (3-vector) taking into account the reflection on the interface.</p>
-</div>
-</details><details class="sphinx-bs dropdown card mb-3">
-<summary class="summary-title card-header">
-<strong>rotate</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Rotate the incident illumination. </em></span><div class="summary-down docutils">
-<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
-<div class="summary-up docutils">
-<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
-</summary><div class="summary-content card-body docutils">
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">IL</span><span class="p">.</span><span class="n">rotate</span><span class="p">(</span><span class="s">&#39;z&#39;</span><span class="p">,</span><span class="mi">30</span><span class="p">)</span>
-<span class="n">IL</span><span class="p">.</span><span class="n">rotate</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">,</span><span class="mi">45</span><span class="p">,</span><span class="s">&#39;y&#39;</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="s">&#39;z&#39;</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<p class="title">Description</p><p class="card-text">This method returns the value of the electric field of the illumination, in the absence of the object, at the sample plane, at the position <code class="docutils literal notranslate"><span class="pre">pos</span></code> (3-vector) taking into account the reflection on the interface. For instance:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">IL</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Illumination</span><span class="p">(</span><span class="mf">632e-9</span><span class="p">);</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">pos</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="w"> </span><span class="mf">1.2</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mf">1e-6</span><span class="p">;</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">IL</span><span class="p">.</span><span class="n">EE0</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+
+<span class="nb">ans</span><span class="w"> </span><span class="p">=</span>
+
+<span class="w">    </span><span class="mf">17.6637</span><span class="w"> </span><span class="o">+</span><span class="mi">15</span><span class="p">.</span>4410<span class="nb">i</span><span class="w">   </span><span class="mf">0.0000</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span>0000<span class="nb">i</span><span class="w">   </span><span class="mf">0.0000</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span>0000<span class="nb">i</span>
 </pre></div>
 </div>
-<p class="card-text">rotates the <code class="docutils literal notranslate"><span class="pre">polar</span></code> and <code class="docutils literal notranslate"><span class="pre">direct</span></code> around the specified axes, <em>x</em>, <em>y</em>, and/or <em>z</em>.</p>
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
@@ -273,14 +278,56 @@
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">IL</span><span class="p">.</span><span class="n">Jones</span><span class="p">(</span><span class="s">&#39;P&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;QWP&#39;</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;HWP&#39;</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="c">)</span>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% prototype</span>
+<span class="n">IL</span><span class="p">.</span><span class="n">Jones</span><span class="p">(</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Value</span><span class="p">)</span>
+
+<span class="c">% example</span>
+<span class="n">IL</span><span class="p">.</span><span class="n">Jones</span><span class="p">(</span><span class="s">&#39;P&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;QWP&#39;</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;HWP&#39;</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="c">)</span>
 </pre></div>
 </div>
-<div class="line-block">
-<div class="line">Applies optical plates to the illumination beam, according to the Jones matrix formulation. The inputs are the rotation angles of the wave plates.</div>
+<p class="title">Description</p><div class="line-block">
+<div class="line">Applies optical plates to the illumination beam, according to the Jones matrix formulation. The names can be:</div>
 <div class="line"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;QWP&#39;</span>`</code>: Quarter waveplate</div>
 <div class="line"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;HWP&#39;</span></code>: Half waveplate</div>
 <div class="line"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;P&#39;</span></code>: Linear polarizer</div>
+<div class="line">and the values are the rotation angles of the wave plates.</div>
+</div>
+<p class="card-text">The order of the Name-Value arguments matters. They will be applied to the Illumination from left to right.</p>
+<p class="card-text">For instance, here is a circularly polarized light that passes through a lambda/4 wave plate and that becomes a linearly polarized light along <span class="math notranslate nohighlight">\(x\)</span>:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">IL</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Illumination</span><span class="p">(</span><span class="mf">532e-9</span><span class="p">);</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">IL</span><span class="p">.</span><span class="n">polar</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="w"> </span>1<span class="nb">i</span><span class="w"> </span><span class="mi">0</span><span class="p">];</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">IL</span><span class="p">.</span><span class="n">Jones</span><span class="p">(</span><span class="s">&#39;QWP&#39;</span><span class="p">,</span><span class="mi">45</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">disp</span><span class="p">(</span><span class="n">IL</span><span class="p">.</span><span class="n">polar</span><span class="p">)</span>
+
+<span class="mf">0.7071</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span>7071<span class="nb">i</span><span class="w">   </span><span class="mf">0.0000</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span>0000<span class="nb">i</span><span class="w">   </span><span class="mf">0.0000</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span>0000<span class="nb">i</span>
+</pre></div>
+</div>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>rotate</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Rotate the incident illumination. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% prototype</span>
+<span class="n">IL</span><span class="p">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Value</span><span class="p">)</span>
+
+
+<span class="c">% examples</span>
+<span class="n">IL</span><span class="p">.</span><span class="n">rotate</span><span class="p">(</span><span class="s">&#39;z&#39;</span><span class="p">,</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">IL</span><span class="p">.</span><span class="n">rotate</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">,</span><span class="mi">45</span><span class="p">,</span><span class="s">&#39;y&#39;</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="s">&#39;z&#39;</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">This method rotates the <code class="docutils literal notranslate"><span class="pre">polar</span></code> and <code class="docutils literal notranslate"><span class="pre">direct</span></code> vector around the specified axes, <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, and/or <span class="math notranslate nohighlight">\(z\)</span>. The values are the angles in degrees. The order of the inputs matters.</p>
+<p class="card-text">For instance, here is a <span class="math notranslate nohighlight">\(x\)</span>-polarized light that is rotate by 45° around <span class="math notranslate nohighlight">\(z\)</span>:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">IL</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Illumination</span><span class="p">(</span><span class="mf">532e-9</span><span class="p">);</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">IL</span><span class="p">.</span><span class="n">polar</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="mi">0</span><span class="p">];</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">IL</span><span class="p">.</span><span class="n">rotate</span><span class="p">(</span><span class="s">&#39;z&#39;</span><span class="p">,</span><span class="mi">45</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span><span class="w"> </span><span class="nb">disp</span><span class="p">(</span><span class="n">IL</span><span class="p">.</span><span class="n">polar</span><span class="p">)</span>
+
+<span class="mf">0.7071</span><span class="w">    </span><span class="mf">0.7071</span><span class="w">         </span><span class="mi">0</span>
+</pre></div>
 </div>
 </div>
 </details></section>

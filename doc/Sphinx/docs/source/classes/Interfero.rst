@@ -8,7 +8,7 @@ The Interfero class
 Properties
 ----------
 
-.. list-table:: Private access properties
+.. list-table:: Read-only properties
    :widths: 30 30 30 100 
    :header-rows: 1
    :align: center

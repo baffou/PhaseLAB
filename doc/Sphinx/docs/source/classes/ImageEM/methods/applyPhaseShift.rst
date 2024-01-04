@@ -13,5 +13,5 @@
       
         <p class="title">Description</p>
 
-    ``obj = obj0.applyPhaseShift(phi);`` applies a phase shift ``phi`` to the whole image. Used to model phsae-shifting techniques, not really useful in CGM/QLSI.
+    ``obj = obj0.applyPhaseShift(phi);`` applies a phase shift ``phi`` to the whole image. Used to model phase-shifting techniques, not really useful in CGM/QLSI.
 

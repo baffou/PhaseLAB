@@ -1,4 +1,4 @@
-.. dropdown:: **MieTheory** |subTitle| Returns the polarisability and cross sections. |/subTitle|
+.. dropdown:: **MieTheory** |subTitle| Return the polarisability and cross sections. |/subTitle|
 
     .. raw:: html
       
@@ -13,7 +13,7 @@
       
         <p class="title">Description</p>
 
-    Returns a (list of) *NPprop* object that contains the properties of the nanoparticles, namely the complex optical polarisability and the three cross sections.
+    Returns a (list of) *NPprop* object(s) that contains the properties of the nanoparticles, namely the complex optical polarisability and the three cross sections.
 
     .. warning::
 

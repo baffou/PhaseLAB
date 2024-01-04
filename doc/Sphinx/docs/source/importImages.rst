@@ -32,7 +32,7 @@ If the images have been created using a well-defined acquisition software, the s
     MI = Microscope(100, 180, 'PhaseLIVE');
     Itf = importItfRef(folder, MI);
 
-In this example, in line 3, the interferogram is defined, and the reference image is automatically dowloaded from the proper file, and incorporated within the ``Itf`` object (``Itf.Ref``). If several images are contained in the *data* folder, then they are all imported at once, and ``Itf`` becomes an object array.
+In this example, in line 3, the interferogram is defined, and the reference image is automatically downloaded from the proper file, and incorporated within the ``Itf`` object (``Itf.Ref``). If several images are contained in the *data* folder, then they are all imported at once, and ``Itf`` becomes an object array.
 
 If the number of images is particularly large, like several 100s, then one can import only a link to the saved file, so that the RAM memory does not get saturated. The synthax is the following:
 
@@ -64,7 +64,7 @@ Finally, it is common to have several series of images within the same folder. F
 | *REF_20210924_11h_38min_405sec.tif*
 | *REF_20210924_11h_52min_168sec.tif*
 
-By default, PhaseLAB will import them all, without difficulty, but one may want to specifically import the *ITF2*-tagged interferograms for instance. In this case, here with the command:
+By default, |PhaseLAB| will import them all, without difficulty, but one may want to specifically import the *ITF2*-tagged interferograms for instance. In this case, here is the command:
 
 .. code-block:: matlab
     :linenos:

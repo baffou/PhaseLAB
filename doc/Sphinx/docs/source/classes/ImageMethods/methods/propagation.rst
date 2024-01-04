@@ -1,4 +1,4 @@
-.. dropdown:: **propagation** |subTitle| Applies a variation of the microscope focus on the images. |/subTitle|
+.. dropdown:: **propagation** |subTitle| Apply a variation of the microscope focus on the images. |/subTitle|
 
     .. raw:: html
       

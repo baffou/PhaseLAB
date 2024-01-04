@@ -43,28 +43,8 @@ classdef Camera  <  handle & matlab.mixin.Copyable
             end     
             
             function obj = jsonImport(jsonFile)
-                fileName = jsonFile; % filename in JSON extension
-                fid = fopen(fileName); % Opening the file
-                if fid==-1
-                    error(['File ' fileName ' does not exist. If the problem persists, you may need to restart Matlab.'])
-                end
-                raw = fread(fid,inf); % Reading the contents
-                str = char(raw'); % Transformation
-                fclose(fid); % Closing the file
-                data = jsondecode(str); %
-                eval(['obj=' data.class '();'])
-
-                objProps = properties(obj);
-                Np = numel(objProps);
-
-                for ip = 1:Np
-                    %eval(['obj.' objProps{ip} '=data.' objProps{ip} ';'])
-                    try
-                        obj.(objProps{ip}) =data.(objProps{ip}); % fails in the case of BW cameras for the crosstalks properties
-                    end
-                   
-                end
-            end        
+                obj = json2obj(jsonFile);
+            end
         end
 
         function set.dxSize(cam,val)

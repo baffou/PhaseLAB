@@ -39,22 +39,19 @@ Properties
      - defocus
 
 
-.. list-table:: Dependent properties
-   :widths: 30 30 30 100 
+.. list-table:: Read-only properties
+   :widths: 30 30 100 
    :header-rows: 1
    :align: center
 
    * - name
      - type
-     - dependence
      - description
    * - ``M``
      - double
-     - ``= -Mobj*f_TL/f_brand``
      - magnification of the microscope
    * - ``pxSize``
      - double
-     - ``= abs( CGcam.dxSize()/M );``
      - pixel size of the image
 
 

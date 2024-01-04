@@ -27,7 +27,7 @@ system='NP';
 %system='noise';
 %system='Gaussian';
 w=40000;
-shotNoise='off';
+shotNoise=false;
 
 MI.CGcam.setDistance(d);
 IL=Illumination(lambda,ME);
@@ -86,7 +86,7 @@ IM.figure
 %% comparison
 figure
 hold on
-plot(OPD(end/2,:))
+plot(IM0.OPD(end/2,:))
 plot(IM.OPD(end/2,:),'--')
 legend({'theo','insilico'})
 

@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=be8f49e0" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=1e1f2f42" />
 
   
     <link rel="shortcut icon" href="../_static/favicon2.png"/>
@@ -24,6 +24,7 @@
         <script src="../_static/documentation_options.js?v=9f5556dd"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -60,6 +61,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../importImages.html">Import experimental interferograms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../processImages.html">Process experimental images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../displayImages.html">Display experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../displayImages.html#the-c-dynamicfigure-c-function">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../inSilico.html">In silico QLSI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
@@ -95,10 +97,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../functions/importItfRef.html">importItfRef</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functions/dynamicFigure.html">dynamicFigure</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Hidden</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../functions/CGMinSilico.html">CGMinSilico</a></li>
-</ul>
 
         </div>
       </div>
@@ -127,6 +125,10 @@
   <section id="the-dipole-class">
 <span id="id1"></span><h1>The Dipole class<a class="headerlink" href="#the-dipole-class" title="Link to this heading"></a></h1>
 <p><em>Dipole</em> is a variable class (not a handle class!).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unlike <em>handle</em> classes, with a <em>variable</em> class, the methods do not modify the object itself: <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">DI</span><span class="p">.</span><span class="n">moveTo</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">,</span><span class="mf">1e-6</span><span class="p">)</span></code> does not affect <code class="docutils literal notranslate"><span class="pre">DI</span></code>.For instance, one should write <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">DI</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">DI</span><span class="p">.</span><span class="n">moveTo</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">,</span><span class="mf">1e-6</span><span class="p">);</span></code> or  <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">DI2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">DI</span><span class="p">.</span><span class="n">moveTo</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">,</span><span class="mf">1e-6</span><span class="p">);</span></code>.</p>
+</div>
 <section id="properties">
 <h2>Properties<a class="headerlink" href="#properties" title="Link to this heading"></a></h2>
 <table class="docutils align-center" id="id2">
@@ -198,7 +200,7 @@
 </tbody>
 </table>
 <table class="docutils align-center" id="id3">
-<caption><span class="caption-text">Dependent properties</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
+<caption><span class="caption-text">Read-only properties</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 16%" />
 <col style="width: 16%" />
@@ -255,9 +257,7 @@
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="title">Synthax</p><div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Prototypes</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% possible forms</span>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% protoypes</span>
 <span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Dipole</span><span class="p">();</span>
 <span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Dipole</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span><span class="w"> </span><span class="n">radius</span><span class="p">);</span>
 <span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Dipole</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">);</span>
@@ -267,12 +267,11 @@
 <span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Dipole</span><span class="p">(</span><span class="s">&#39;SiO2&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">50e-9</span><span class="o">&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">200e-9</span><span class="p">);</span>
 </pre></div>
 </div>
-</div>
 <div class="title">Description</div><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Dipole</span><span class="p">()</span></code> creates an empty <em>Dipole</em> object.</p>
 <p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
-<p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Dipole</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span><span class="w"> </span><span class="n">radius</span><span class="p">)</span></code> creates a <em>Dipole</em> object that corresponds to a nanosphere of radius <code class="docutils literal notranslate"><span class="pre">radius``and</span> <span class="pre">material</span> <span class="pre">``mat</span></code>.</p>
+<p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Dipole</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span><span class="w"> </span><span class="n">radius</span><span class="p">)</span></code> creates a <em>Dipole</em> object that corresponds to a nanosphere of radius <code class="docutils literal notranslate"><span class="pre">radius</span></code> and material <code class="docutils literal notranslate"><span class="pre">mat</span></code>.</p>
 <p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
-<p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Dipole</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">)</span></code> creates a <em>Dipole</em> object that corresponds to a nanosphere of radius <code class="docutils literal notranslate"><span class="pre">radius``and</span> <span class="pre">material</span> <span class="pre">``mat</span></code>, shited to the position <code class="docutils literal notranslate"><span class="pre">z</span></code> along the $z$ axis.</p>
+<p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Dipole</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">)</span></code> creates a <em>Dipole</em> object that corresponds to a nanosphere of radius <code class="docutils literal notranslate"><span class="pre">radius</span></code> and material <code class="docutils literal notranslate"><span class="pre">mat</span></code>, shited to the position <code class="docutils literal notranslate"><span class="pre">z</span></code> along the <span class="math notranslate nohighlight">\(z\)</span> axis.</p>
 </div>
 </details></section>
 <section id="dipole-methods">
@@ -284,19 +283,19 @@
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="n">objList</span><span class="p">.</span><span class="n">figure</span><span class="p">()</span>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">objList</span><span class="p">.</span><span class="n">figure</span><span class="p">()</span>
 </pre></div>
 </div>
 <p class="title">Description</p><p class="card-text">Display the geometry of a system of nanoparticles, defined by a <em>Dipole</em> vector <code class="docutils literal notranslate"><span class="pre">objList</span></code>. For instance:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% creation of a ring of nanoparticles</span>
-<span class="n">radius</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">550e-9</span><span class="p">;</span><span class="w">           </span><span class="c">% Nanoparticle radius</span>
+<span class="n">radius</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">550e-9</span><span class="p">;</span><span class="w">  </span><span class="c">% Nanoparticle radius</span>
 <span class="n">DI0</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Dipole</span><span class="p">(</span><span class="s">&#39;Au&#39;</span><span class="p">,</span><span class="n">radius</span><span class="p">);</span>
 
 <span class="n">DI</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">repmat</span><span class="p">(</span><span class="n">DI0</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
 
-<span class="n">R</span><span class="p">=</span><span class="mf">3e-6</span><span class="p">;</span><span class="w">                   </span><span class="c">% radius of the ring</span>
+<span class="n">R</span><span class="p">=</span><span class="mf">3e-6</span><span class="p">;</span><span class="w">           </span><span class="c">% radius of the ring</span>
 
+<span class="c">% creation of a ring of dipoles</span>
 <span class="k">for</span><span class="w"> </span><span class="n">ii</span><span class="p">=</span><span class="mi">1</span><span class="p">:</span><span class="mi">12</span>
 <span class="w">    </span><span class="n">DI</span><span class="p">(</span><span class="n">ii</span><span class="p">)=</span><span class="n">DI</span><span class="p">(</span><span class="n">ii</span><span class="p">).</span><span class="n">moveTo</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">,</span><span class="n">R</span><span class="o">*</span><span class="nb">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">pi</span><span class="o">*</span><span class="n">ii</span><span class="o">/</span><span class="mi">12</span><span class="p">),</span><span class="s">&#39;y&#39;</span><span class="p">,</span><span class="n">R</span><span class="o">*</span><span class="nb">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">pi</span><span class="o">*</span><span class="n">ii</span><span class="o">/</span><span class="mi">12</span><span class="p">));</span>
 <span class="k">end</span>
@@ -308,7 +307,7 @@
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>matList</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Returns the list of available materials. </em></span><div class="summary-down docutils">
+<strong>matList</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Return the list of available materials. </em></span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
@@ -317,9 +316,9 @@
 <span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">matList</span><span class="p">();</span>
 </pre></div>
 </div>
-<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.matList()</span></code> displays the list of available materials.</p>
+<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.matList()</span></code> displays the list of available materials in the command window.</p>
 <p class="card-text"><code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">=</span> <span class="pre">obj.matList();</span></code> returns a cell vector of available materials.</p>
-<p class="card-text">This list represents the possible input arguments for the <code class="docutils literal notranslate"><span class="pre">mat</span></code> value of the constructor.</p>
+<p class="card-text">This list represents the possible input arguments for the <code class="docutils literal notranslate"><span class="pre">mat</span></code> value of the constructor:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">DI</span><span class="p">.</span><span class="n">matList</span>
 <span class="w">    </span><span class="n">Ag</span>
 <span class="w">    </span><span class="n">Ag_Palik</span>
@@ -355,10 +354,12 @@
 <span class="w">    </span><span class="n">graphene</span>
 </pre></div>
 </div>
+<p class="card-text">Each item represents a material. Each line corresponds to file, containing the data, and stored in the <strong>spec/materials</strong> folder.</p>
+<p class="card-text">If other materials are being used, new custom files can be made, following a specific format: the file must be an ASCII file, containing 3 columns, the first for the energies in eV, the second for the real part of the refractive index, and the third for the imaginary part of the refractive index. Any new file can be saved in the <strong>spec/materials</strong> folder, or in any other folder known by Matlab. However, in order to simply keep track of the updated versions of PhaseLAB via Github, I suggest to store any custom-made file to a separate folder, out of the <span style="font-family: 'Roboto';">PhaseLAB</span> package, and include this directory in the Matlab paths. Also, feel free to contact me to ask for any file addition/modification in the public Github version of <span style="font-family: 'Roboto';">PhaseLAB</span> that would suit your studies.</p>
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>MieTheory</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Returns the polarisability and cross sections. </em></span><div class="summary-down docutils">
+<strong>MieTheory</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Return the polarisability and cross sections. </em></span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
@@ -367,7 +368,7 @@
 <span class="n">valList</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">objList</span><span class="p">.</span><span class="n">MieTheory</span><span class="p">();</span>
 </pre></div>
 </div>
-<p class="title">Description</p><p class="card-text">Returns a (list of) <em>NPprop</em> object that contains the properties of the nanoparticles, namely the complex optical polarisability and the three cross sections.</p>
+<p class="title">Description</p><p class="card-text">Returns a (list of) <em>NPprop</em> object(s) that contains the properties of the nanoparticles, namely the complex optical polarisability and the three cross sections.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p class="card-text">The dipole must be illuminated before using this method, using <code class="docutils literal notranslate"><span class="pre">obj.shine</span></code>.</p>
@@ -388,7 +389,7 @@
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>moveBy</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> moves the dipole by a given vector. </em></span><div class="summary-down docutils">
+<strong>moveBy</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> move the dipole by a given vector. </em></span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
@@ -406,12 +407,12 @@
 <span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">moveBy</span><span class="p">(</span><span class="s">&#39;z&#39;</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="o">-</span><span class="mf">1e-6</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;y&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;x&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">3e-6</span><span class="p">);</span><span class="w">  </span><span class="c">% moves the dipole in the three directions by specific distances</span>
 </pre></div>
 </div>
-<p class="title">Description</p><p class="card-text">Move the dipole by specific amounts along the <em>x</em>, <em>y</em>, and <em>z</em> directions. The motion is relative to the original position. To move the dipole to absolute positions, rather use the <code class="docutils literal notranslate"><span class="pre">moveTo</span></code> method.</p>
-<p class="card-text">The arguments can be either the 3 shifts in <em>x</em>, <em>y</em>, and <em>z</em> directions; or a 3-vector of these positions; or a Name-Value structure where the Names are <code class="docutils literal notranslate"><span class="pre">'x'</span></code>, <code class="docutils literal notranslate"><span class="pre">'y</span></code>, and/or <code class="docutils literal notranslate"><span class="pre">'z'</span></code>, in any order.</p>
+<p class="title">Description</p><p class="card-text">Move the dipole by specific amounts along the <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, and <span class="math notranslate nohighlight">\(z\)</span> directions. The motion is relative to the original position. To move the dipole to absolute positions, rather use the <code class="docutils literal notranslate"><span class="pre">moveTo</span></code> method.</p>
+<p class="card-text">The arguments can be either the 3 shifts in <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, and <span class="math notranslate nohighlight">\(z\)</span> directions; or a 3-vector of these positions; or a Name-Value structure where the Names are <code class="docutils literal notranslate"><span class="pre">'x'</span></code>, <code class="docutils literal notranslate"><span class="pre">'y'</span></code>, and/or <code class="docutils literal notranslate"><span class="pre">'z'</span></code>, in any order.</p>
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>moveTo</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> moves the dipole to aa given position. </em></span><div class="summary-down docutils">
+<strong>moveTo</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> move the dipole to aa given position. </em></span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
@@ -425,12 +426,12 @@
 <span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">moveTo</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.3</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mf">1e-6</span><span class="p">);</span><span class="w">  </span><span class="c">% moves the dipoles to the coordinates [0.1, 0.3, 0] µm.</span>
 <span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">moveTo</span><span class="p">(</span><span class="mf">0.1e-6</span><span class="p">,</span><span class="w"> </span><span class="mf">0.3e-6</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w">  </span><span class="c">% moves the dipoles to the coordinates [0.1, 0.3, 0] µm.</span>
 <span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">moveTo</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">1e-6</span><span class="p">);</span><span class="w">  </span><span class="c">% change the *x*-coordinate to 1 µm</span>
-<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">moveTo</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">1e-6</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;y&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">1e-6</span><span class="p">);</span><span class="w">  </span><span class="c">% change the (*x*,*y*)-coordinate to [1, 1] µm.</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">moveTo</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">1e-6</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;y&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">1e-6</span><span class="p">);</span><span class="w">  </span><span class="c">% change the (x, y)-coordinate to [1, 1] µm.</span>
 <span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">moveTo</span><span class="p">(</span><span class="s">&#39;z&#39;</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="o">-</span><span class="mf">1e-6</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;y&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;x&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">3e-6</span><span class="p">);</span><span class="w">  </span><span class="c">% moves the dipoles to the coordinates [-1, 0.5 3] µm.</span>
 </pre></div>
 </div>
 <p class="title">Description</p><p class="card-text">Move the dipole to a specific position in 3D. The motion is absolute, not relative to the original position. For a relative shift of the position, use the <code class="docutils literal notranslate"><span class="pre">moveBy</span></code> method.</p>
-<p class="card-text">The arguments can be either the 3 coordinates in <em>x</em>, <em>y</em>, and <em>z</em> axes; or a 3-vector; or a Name-Value structure where the Names are <code class="docutils literal notranslate"><span class="pre">'x'</span></code>, <code class="docutils literal notranslate"><span class="pre">'y</span></code>, and/or <code class="docutils literal notranslate"><span class="pre">'z'</span></code>, in any order.</p>
+<p class="card-text">The arguments can be either the 3 shifts in <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, and <span class="math notranslate nohighlight">\(z\)</span> directions; or a 3-vector of these positions; or a Name-Value structure where the Names are <code class="docutils literal notranslate"><span class="pre">'x'</span></code>, <code class="docutils literal notranslate"><span class="pre">'y'</span></code>, and/or <code class="docutils literal notranslate"><span class="pre">'z'</span></code>, in any order.</p>
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
@@ -444,7 +445,7 @@
 <span class="n">objList2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">objList</span><span class="p">.</span><span class="n">shine</span><span class="p">(</span><span class="n">IL</span><span class="p">);</span>
 </pre></div>
 </div>
-<p class="title">Description</p><p class="card-text">Run a DDA numerical simulation of the electromgnetic field generated inside a dipole, or inside a set of dipoles (<em>Dipole</em> vector). In the latter case, the interaction between the dipoles is taken into account. The presence of a substrate is also taken into account. This method provides values to all the missing properties, namely:</p>
+<p class="title">Description</p><p class="card-text">The <code class="docutils literal notranslate"><span class="pre">shine</span></code> method runs a DDA numerical simulation of the electromgnetic field generated inside a dipole, or inside a set of dipoles (<em>Dipole</em> vector). In the latter case, the interaction between the dipoles is taken into account. The presence of a substrate is also taken into account. This method provides values to all the missing properties, namely:</p>
 <ul class="simple">
 <li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">p</span></code>, the electric dipolar moment of the object(s),</p></li>
 <li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">EE0</span></code>, the local electric field vector of the incident illumination at the location of the dipole(s).</p></li>
@@ -457,7 +458,7 @@
 </div>
 </details><details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
-<strong>+</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Defines the addition between two <em>Interfero</em> objects: <code class="docutils literal notranslate"><span class="pre">DI1</span> <span class="pre">+</span> <span class="pre">DI2</span></code>. </em></span><div class="summary-down docutils">
+<strong>+</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Defines the addition between two <em>Dipole</em> objects: <code class="docutils literal notranslate"><span class="pre">DI1</span> <span class="pre">+</span> <span class="pre">DI2</span></code>. </em></span><div class="summary-down docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
@@ -467,7 +468,7 @@
 <span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">obj2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="k">...</span><span class="c"> + objN;</span>
 </pre></div>
 </div>
-<p class="title">Description</p><p class="card-text">The method overloads the operator <code class="docutils literal notranslate"><span class="pre">+</span></code> by defining the method <code class="docutils literal notranslate"><span class="pre">plus</span></code>. It simply creates a <em>Dipole</em> 2-vector with the two input: <code class="docutils literal notranslate"><span class="pre">obj</span> <span class="pre">=</span> <span class="pre">[obj1,</span>&#160; <span class="pre">obj2];</span></code>. Once they are assembled this way, the dipoles are considered as coupled for any further DDA computation using the <em>imaging</em> method.</p>
+<p class="title">Description</p><p class="card-text">The method overloads the operator <code class="docutils literal notranslate"><span class="pre">+</span></code> by defining the method <code class="docutils literal notranslate"><span class="pre">plus</span></code>. It simply creates a <em>Dipole</em> 2-vector with the two input: <code class="docutils literal notranslate"><span class="pre">obj</span> <span class="pre">=</span> <span class="pre">[obj1,</span>&#160; <span class="pre">obj2];</span></code>. Once they are assembled this way, the dipoles are considered as coupled for any further DDA computation using <a class="reference internal" href="../functions/imaging.html#the-imaging-function"><span class="std std-ref">The  imaging  function</span></a>.</p>
 <p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
 <p class="card-text">The method also work with several additions at a time: <code class="docutils literal notranslate"><span class="pre">obj</span> <span class="pre">=</span> <span class="pre">obj1</span> <span class="pre">+</span> <span class="pre">obj2</span> <span class="pre">+</span> <span class="pre">...</span> <span class="pre">+</span> <span class="pre">objN;</span></code></p>
 </div>

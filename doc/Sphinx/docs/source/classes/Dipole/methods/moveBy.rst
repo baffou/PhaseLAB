@@ -1,4 +1,4 @@
-.. dropdown:: **moveBy** |subTitle| moves the dipole by a given vector. |/subTitle|
+.. dropdown:: **moveBy** |subTitle| move the dipole by a given vector. |/subTitle|
     
     .. raw:: html
       
@@ -22,6 +22,6 @@
       
         <p class="title">Description</p>
 
-    Move the dipole by specific amounts along the *x*, *y*, and *z* directions. The motion is relative to the original position. To move the dipole to absolute positions, rather use the ``moveTo`` method.
+    Move the dipole by specific amounts along the :math:`x`, :math:`y`, and :math:`z` directions. The motion is relative to the original position. To move the dipole to absolute positions, rather use the ``moveTo`` method.
 
-    The arguments can be either the 3 shifts in *x*, *y*, and *z* directions; or a 3-vector of these positions; or a Name-Value structure where the Names are ``'x'``, ``'y``, and/or ``'z'``, in any order.
+    The arguments can be either the 3 shifts in :math:`x`, :math:`y`, and :math:`z` directions; or a 3-vector of these positions; or a Name-Value structure where the Names are ``'x'``, ``'y'``, and/or ``'z'``, in any order.

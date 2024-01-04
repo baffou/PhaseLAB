@@ -129,8 +129,6 @@ rst_prolog = """
 
 .. |Objective| replace:: :ref:`Objective <The_Objective_class>`
 
-.. |RelayLens| replace:: :ref:`Relaylens <The_RelayLens_class>`
-
 
 .. |importItfRef| replace:: |c| :ref:`importItfRef <The_importItfRef_function>` |/c|
 
@@ -151,6 +149,19 @@ rst_prolog = """
 .. |Itf| replace:: :matlab:`Itf`
 
 .. |Ref| replace:: :matlab:`Ref`
+
+
+.. |DM| replace:: :abbr:`DM (dry mass)`
+
+.. |OV| replace:: :abbr:`OV (optical volume)`
+
+.. |GUI| replace:: :abbr:`GUI (graphical user interface)`
+
+.. |OPD| replace:: :abbr:`OPD (optical path difference)`
+
+.. |RL| replace:: :abbr:`RL (relay-lens)`
+
+
 
 """
 

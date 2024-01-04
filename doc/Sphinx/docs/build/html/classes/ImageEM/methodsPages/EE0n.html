@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=be8f49e0" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=1e1f2f42" />
 
   
     <link rel="shortcut icon" href="../../../_static/favicon2.png"/>
@@ -58,6 +58,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../importImages.html">Import experimental interferograms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../processImages.html">Process experimental images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../displayImages.html">Display experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../displayImages.html#the-c-dynamicfigure-c-function">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../inSilico.html">In silico QLSI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
@@ -87,10 +88,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../functions/imaging.html">imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functions/importItfRef.html">importItfRef</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functions/dynamicFigure.html">dynamicFigure</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Hidden</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../functions/CGMinSilico.html">CGMinSilico</a></li>
 </ul>
 
         </div>
@@ -126,10 +123,10 @@
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">EE0</span><span class="p">()</span>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">EE0n</span><span class="p">()</span>
 </pre></div>
 </div>
-<p class="title">Description</p><p class="card-text">This method returns the norm of the incident field at the center of the field of view. If <code class="docutils literal notranslate"><span class="pre">obj</span></code> is already an incident field, it simply returns the norm of the field at the center of the field of view.</p>
+<p class="title">Description</p><p class="card-text">This method returns the norm of the incident field at the center of the field of view, at the sample plane (not at the image plane). If <code class="docutils literal notranslate"><span class="pre">obj</span></code> is already an incident field, it simply returns the norm of the field at the center of the field of view.</p>
 <p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span></code> can by a vector of <em>ImageEM</em> objects. In that case, the treatment will be perform on all the objects of the list.</p>
 </div>
 </details></section>

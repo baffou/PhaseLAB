@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=be8f49e0" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=1e1f2f42" />
 
   
     <link rel="shortcut icon" href="../../../_static/favicon2.png"/>
@@ -58,6 +58,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../importImages.html">Import experimental interferograms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../processImages.html">Process experimental images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../displayImages.html">Display experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../displayImages.html#the-c-dynamicfigure-c-function">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../inSilico.html">In silico QLSI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
@@ -87,10 +88,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../functions/imaging.html">imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functions/importItfRef.html">importItfRef</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../functions/dynamicFigure.html">dynamicFigure</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Hidden</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../functions/CGMinSilico.html">CGMinSilico</a></li>
 </ul>
 
         </div>
@@ -129,8 +126,18 @@
 <p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">imageHSV</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span>
 </pre></div>
 </div>
-<p class="title">Description</p><p class="card-text">Returns the dexel size (i.e. the camera pixel size), <code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">=</span> <span class="pre">obj.Microscope.CGcam.dxSize;</span></code>.</p>
-<p class="title">Example</p></div>
+<p class="title">Description</p><p class="card-text">The <code class="docutils literal notranslate"><span class="pre">imageHSV</span></code> method displays a mix of the intensity an <abbr title="optical path difference">OPD</abbr> images according to a abbr:<cite>HSV (hue, saturation, value)</cite> pattern. Just like the RVB coding, HSV coding codes any color with 3 numbers:</p>
+<ul class="simple">
+<li><p class="card-text"><em>H</em> means <em>Hue</em> and represents the color on a chromatic circle</p></li>
+<li><p class="card-text"><em>S</em> means <em>Saturation</em>  and tells if the colors are vivid or pale.</p></li>
+<li><p class="card-text"><em>V</em> means <em>Value</em> and tells if the color is bright or dark.</p></li>
+</ul>
+<p class="card-text">Here is a picture that explains the abbr:<cite>HSV (hue, saturation, value)</cite> color coding:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../../../_images/HSV.jpeg"><img alt="../../../_images/HSV.jpeg" src="../../../_images/HSV.jpeg" style="width: 500px;" /></a>
+</figure>
+<p class="title">Example</p><p class="card-text">The <code class="docutils literal notranslate"><span class="pre">imageHSV</span></code> method  assigns the <abbr title="optical path difference">OPD</abbr> image to the Hue (the colorscale), and the intensity image to the Saturation (this way, areas with low intensity appear dark), and keeping the Value to 1.</p>
+</div>
 </details></section>
 
 

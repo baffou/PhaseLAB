@@ -20,7 +20,7 @@ Properties
    * - ``lambda``
      - *double*
      - 
-     - illumination wavelength
+     - illumination wavelength \[m\]
    * - ``I``
      - *double*
      - 1
@@ -40,7 +40,7 @@ Properties
 
 
 
-.. list-table:: Dependent properties
+.. list-table:: Read-only properties
    :widths: 30 30 30 100 
    :header-rows: 1
    :align: center
@@ -64,7 +64,7 @@ Properties
    * - ``k0``
      - double
      - ``= 2*pi./lambda;2*pi./lambda;``
-     - wavevector in vacuum
+     - wavevector in vacuum  \[m\ :sup:`-1`\ \]
    * - ``tr``
      - double
      - ``= 2*n/(n+nS);``

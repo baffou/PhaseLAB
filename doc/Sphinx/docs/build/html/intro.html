@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
-      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=be8f49e0" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=1e1f2f42" />
 
   
     <link rel="shortcut icon" href="_static/favicon2.png"/>
@@ -74,6 +74,7 @@
 <li class="toctree-l1"><a class="reference internal" href="importImages.html">Import experimental interferograms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="processImages.html">Process experimental images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="displayImages.html">Display experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="displayImages.html#the-c-dynamicfigure-c-function">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inSilico.html">In silico QLSI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
@@ -103,10 +104,6 @@
 <li class="toctree-l1"><a class="reference internal" href="functions/imaging.html">imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functions/importItfRef.html">importItfRef</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functions/dynamicFigure.html">dynamicFigure</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Hidden</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="functions/CGMinSilico.html">CGMinSilico</a></li>
 </ul>
 
         </div>
@@ -194,8 +191,8 @@ This technique belongs to the quantitative phase imaging (QPI) family, the <em>w
 
 <span class="n">MI</span><span class="p">=</span><span class="n">Microscope</span><span class="p">(</span><span class="n">OB</span><span class="p">,</span><span class="mi">180</span><span class="p">,</span><span class="s">&#39;Silios_mono&#39;</span><span class="p">);</span><span class="c">% Create the Microscope object</span>
 <span class="n">IL</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Illumination</span><span class="p">(</span><span class="mf">532e-9</span><span class="p">);</span><span class="w">          </span><span class="c">% Create the Illumination object</span>
-<span class="n">Itf</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">imread</span><span class="p">(</span><span class="s">&#39;data/Itf.tif&#39;</span><span class="p">);</span><span class="w">       </span><span class="c">% Import the main interferogram</span>
-<span class="n">Ref</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">imread</span><span class="p">(</span><span class="s">&#39;data/Ref.tif&#39;</span><span class="p">);</span><span class="w">       </span><span class="c">% Import the reference interferogram</span>
+<span class="n">Itf</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">imread</span><span class="p">(</span><span class="s">&#39;data/Itf.tiff&#39;</span><span class="p">);</span><span class="w">      </span><span class="c">% Import the main interferogram</span>
+<span class="n">Ref</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">imread</span><span class="p">(</span><span class="s">&#39;data/Ref.tiff&#39;</span><span class="p">);</span><span class="w">      </span><span class="c">% Import the reference interferogram</span>
 <span class="n">Im</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Interfero</span><span class="p">(</span><span class="n">Itf</span><span class="p">,</span><span class="n">MI</span><span class="p">);</span><span class="w">             </span><span class="c">% Make the interferogram object</span>
 <span class="n">Im0</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Interfero</span><span class="p">(</span><span class="n">Ref</span><span class="p">,</span><span class="n">MI</span><span class="p">);</span><span class="w">            </span><span class="c">% Make the reference interferogram object</span>
 <span class="n">Im</span><span class="p">.</span><span class="n">Reference</span><span class="p">(</span><span class="n">Im0</span><span class="p">);</span><span class="w">                  </span><span class="c">% Assign the reference to the interferogram</span>
@@ -203,6 +200,9 @@ This technique belongs to the quantitative phase imaging (QPI) family, the <em>w
 <span class="n">IM</span><span class="p">.</span><span class="n">figure</span><span class="p">;</span><span class="w">                          </span><span class="c">% Display the QLSI images</span>
 </pre></div>
 </div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/cellEx.png"><img alt="_images/cellEx.png" src="_images/cellEx.png" style="width: 500px;" /></a>
+</figure>
 </div>
 </details></section>
 <section id="auto-import-experimental-images">
@@ -257,6 +257,9 @@ This technique belongs to the quantitative phase imaging (QPI) family, the <em>w
 <span class="n">IM0</span><span class="p">.</span><span class="n">figure</span>
 </pre></div>
 </div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/NPinSilico_Ex2.png"><img alt="_images/NPinSilico_Ex2.png" src="_images/NPinSilico_Ex2.png" style="width: 500px;" /></a>
+</figure>
 </div>
 </details></section>
 <section id="image-postprocessing">
