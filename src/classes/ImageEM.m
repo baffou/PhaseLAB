@@ -7,10 +7,11 @@
 
 classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
-    properties(GetAccess = public , SetAccess={?ImageMethods})
+    properties(GetAccess = public , SetAccess={?ImageMethods, ?Interfero})
         Ex
         Ey
         Ez
+        channel (1,:) char {mustBeMember(channel,{'R','G','0','45','90','135','none'})} = 'none'
     end
 
     properties%(Access = public,NonCopyable)

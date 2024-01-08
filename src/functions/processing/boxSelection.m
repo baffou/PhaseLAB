@@ -21,7 +21,6 @@ arguments
     %    opt.figure = []; % figure uifigure object to be considered in case the image is already open
 end
 
-
 isapp = 0;
 if isnumeric(im)
     h=figure;imagegb(im,opt.colormap)
@@ -41,7 +40,7 @@ elseif isa(im,'Interfero')
     Nx = im(1).Nx;
     Ny = im(1).Ny;
     h.UserData.Axes = gca;
-elseif isa(im,'PhaseLABgui')
+elseif isa(im,'matlab.apps.AppBase') % is im an app, PhaseLABgui, or PhaseLABgui_multiCanal
     isapp = 1;
     app = im;
     h = app.UIFigure;
@@ -106,7 +105,7 @@ else % if not twopoints
         end
     elseif strcmpi(opt.Center,'Manual') % crop('Center','Manual')
 
-        [xc_px,yc_px]=ginput(1);
+        [xc_px,yc_px] = ginput(1);
 
         if isapp
 
@@ -222,7 +221,7 @@ arguments
     yc_px
     shape = 'square';
 end
-if isa(h,'PhaseLABgui')
+if isa(h,'matlab.apps.AppBase')
     Pos_units = get (h.UIFigure.UserData.Axes(1), 'CurrentPoint');
     if strcmpi(h.scaleButton.SelectedObject.Text,'µm') % if µm scale is selected
         Pos_px = h.um2px(Pos_units);
@@ -248,14 +247,14 @@ elseif strcmpi(shape,'rectangle')
     side_px = floor([abs([2*(Pos_px(1)-xc_px), 2*(Pos_px(3)-yc_px)])]);
     set(rr,'Position',[xc_unit-side_units(1)/2 yc_unit-side_units(2)/2 side_units(1) side_units(2)])
 end
-if isa(h,'PhaseLABgui')
+if isa(h,'matlab.apps.AppBase')
     h.UIFigure.UserData.side_units = side_units;
     h.UIFigure.UserData.side_px = side_px;
 else
     h.UserData.side_units = side_units;
     h.UserData.side_px = side_px;
 end
-if isa(h,'PhaseLABgui')
+if isa(h,'matlab.apps.AppBase')
     title(sprintf('Size: %d µm, %d px\n',side_units,side_px))
 else
     title(sprintf('Size: %d px\n',side_px))

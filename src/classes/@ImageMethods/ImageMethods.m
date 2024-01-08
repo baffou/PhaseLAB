@@ -8,7 +8,7 @@
 
 classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
-    properties%(NonCopyable)
+    properties
         Microscope Microscope
         Illumination Illumination % Illumination object
     end
@@ -30,6 +30,14 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 app=PhaseLABgui(IM);
             else
                 PhaseLABgui(IM);
+            end
+        end
+        
+        function app = figure2(IM)
+            if nargout
+                app=PhaseLABgui_multiCanal(IM);
+            else
+                PhaseLABgui_multiCanal(IM);
             end
         end
         

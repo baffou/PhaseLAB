@@ -1,16 +1,19 @@
-%% NPimaging package
-% function that computes a nano-object polarizability from its image. To be
+function alpha = alpha_Image_crop(Image,ME)
+% ALPHA_IMAGE_CROP  computes a nano-object polarizability from its image. To be
 % used more specifically with experimental images, where a cropping area
 % has to be selected.
-
+%
+% For the moment, works for a uniform medium n=nS. Uncertain for a
+% non-uniform medium
+%
 % authors: Guillaume Baffou
 % affiliation: CNRS, Institut Fresnel
 % date: Aug 18, 2019
+%
+%   See also ALPHA_IMAGEPROFILE
 
-% For the moment, works for a uniform medium n=nS. Uncertain for a
-% non-uniform medium
 
-function alpha = alpha_Image_crop(Image,ME)
+
 [Ny,Nx] = size(Image.T);
 
 close all

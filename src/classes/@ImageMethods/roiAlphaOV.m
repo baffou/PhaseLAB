@@ -5,7 +5,7 @@ function [alpha,OV] = roiAlphaOV(IM,hand)
 
 %bkTh: thickness of the background ring in pixels
 
-if isa(hand,"PhaseLABgui")
+if isa(hand,"matlab.apps.AppBase")
     app = hand;
     hfig = app.UIFigure;
     bkTh = app.bkgRingEditField.Value;

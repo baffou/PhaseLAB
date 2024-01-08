@@ -327,6 +327,7 @@ for ii = 1:Nf
 
     IM(ii).ItfFileName = Itf(ii).fileName;
     IM(ii).comment = Itf(ii).comment;
+    IM(ii).channel = Itf(ii).channel;
 
    if Nf>1
        fprintf('\n')
@@ -337,5 +338,6 @@ if Nf>=2 % delete waitbar
     delete(fwb)
 end
 
+IM = reshape(IM,size(Itf)); % in case the Itf was an N*M array of interferos, i.e., in case there are channels
 
 end

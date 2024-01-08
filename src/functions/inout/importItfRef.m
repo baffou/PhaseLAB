@@ -6,7 +6,7 @@ arguments
     opt.nickname = '*'
     opt.selection = []
     opt.remote = 0
-    opt.color (1,:) char {mustBeMember(opt.color,{'R','G','none'})} = 'none'
+    opt.channel (1,:) char {mustBeMember(opt.channel,{'R','G','0','45','90','135','none'})} = 'none'
 end
 
 manual = 0;
@@ -142,13 +142,13 @@ INT = repmat(Interfero(),Nif,1);
 
 if strcmpi(acquisitionSoftware,'phast') || strcmpi(acquisitionSoftware,'Sid4Bio')
     for rr = 1:Nrf
-        REF(rr) = Interfero([folder RefFileNames{rr}],MI,'remote',opt.remote,'color',opt.color);
+        REF(rr) = Interfero([folder RefFileNames{rr}],MI,'remote',opt.remote,'color',opt.channel);
     end
     
     
     for ii = 1:Nif
         fprintf([ItfFileNames{ii} '\n'])
-        INT(ii) = Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote,'color',opt.color);
+        INT(ii) = Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote,'color',opt.channel);
         INT(ii).Microscope = MI;
         fid = fopen([folder ItfFileNames{ii}(1:end-4) ' REF.txt'],'r');
         if fid==-1
@@ -181,14 +181,14 @@ if strcmpi(acquisitionSoftware,'phast') || strcmpi(acquisitionSoftware,'Sid4Bio'
 elseif strcmpi(acquisitionSoftware,'phaselive')
     if isa(MI,'Microscope') % and not a char
         for rr = 1:Nrf
-            REF(rr) = Interfero([folder RefFileNames{rr}],MI,'remote',opt.remote,'color',opt.color);
+            REF(rr) = Interfero([folder RefFileNames{rr}],MI,'remote',opt.remote,'color',opt.channel);
         end
         
         for ii = 1:Nif
             fprintf([ItfFileNames{ii} '\n'])
             TIFF = Tiff([folder ItfFileNames{ii}]);
 %            fprintf([folder ItfFileNames{ii} '\n'])
-            INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote,'imageNumber',opt.selection(ii),'color',opt.color);
+            INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote,'imageNumber',opt.selection(ii),'color',opt.channel);
             INT(ii).Microscope = MI;
             if Nrf ~= 0
                 currentRefFileName  =  [getTag(TIFF,270)];
@@ -204,12 +204,12 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
         IL = repmat(Illumination(),Nif,1);
         for rr = 1:Nrf
             S_Ref = readTiffTag([folder RefFileNames{rr}], "PhaseLAB");
-            REF(rr) = Interfero([folder RefFileNames{rr}],S_Ref.Microscope,'remote',opt.remote,'color',opt.color);
+            REF(rr) = Interfero([folder RefFileNames{rr}],S_Ref.Microscope,'remote',opt.remote,'color',opt.channel);
         end
         for ii = 1:Nif
             fprintf([ItfFileNames{ii} '\n'])
             S_Itf = readTiffTag([folder ItfFileNames{ii}], "PhaseLAB");
-            INT(ii) = Interfero([folder ItfFileNames{ii}],S_Itf.Microscope,'remote',opt.remote,'color',opt.color);
+            INT(ii) = Interfero([folder ItfFileNames{ii}],S_Itf.Microscope,'remote',opt.remote,'color',opt.channel);
             RefIndice = strcmp(RefFileNames,S_Itf.Reference);
             if Nrf ~= 0 
                 INT(ii).Reference(REF(RefIndice));

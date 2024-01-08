@@ -14,7 +14,7 @@ end
 % nanoparticle location.
 % hfig is optional. If specified, must be the hfig of the main image panel: IM.figure.
 QLSIclass = isa(obj,'ImageMethods') || isa(obj,'Interfero');
-appClass = isa(obj,'PhaseLABgui');
+appClass = isa(obj,'matlab.apps.AppBase');
 
 if QLSIclass
     pxSize=obj.pxSize*1e6;

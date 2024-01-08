@@ -29,9 +29,10 @@ classdef ImageQLSI   <   ImageMethods
 
     properties(SetAccess={?Interfero})
         ItfFileName
+        channel (1,:) char {mustBeMember(channel,{'R','G','0','45','90','135','none'})} = 'none'
     end
 
-    properties(GetAccess = public, SetAccess = private)
+    properties(GetAccess = public, SetAccess={?ImageMethods})
         TfileName
         OPDfileName
         imageNumber
@@ -317,7 +318,7 @@ classdef ImageQLSI   <   ImageMethods
                 opt.twoPoints logical = false
                 opt.params double = double.empty() % = [x1, x2, y1, y2]
                 opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
-                opt.app PhaseLABgui = PhaseLABgui.empty()
+                opt.app matlab.apps.AppBase = PhaseLABgui.empty()
             end
 
             if nargout
@@ -637,7 +638,7 @@ classdef ImageQLSI   <   ImageMethods
                 opt.twoPoints logical = false
                 opt.params double = double.empty() % = [x1, x2, y1, y2]
                 opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
-                opt.app PhaseLABgui = PhaseLABgui.empty()
+                opt.app matlab.apps.AppBase = PhaseLABgui.empty()
             end
 
             if nargout

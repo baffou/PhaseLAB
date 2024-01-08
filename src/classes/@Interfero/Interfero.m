@@ -18,8 +18,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
     properties(SetAccess = private)
         TF       % Fourier transform of the interfero
         TFapo    = []% tells wether the TF has been calculated with an apodization (equals the width of the apodization)
-        color (1,:) char {mustBeMember(color,{'R','G','none'})} = 'none'
-        polar (1,:) char {mustBeMember(polar,{'0','45','90','135','none'})} = 'none'
+        channel (1,:) char {mustBeMember(channel,{'R','G','0','45','90','135','none'})} = 'none'
     end
 
     properties(SetAccess = private, Hidden)
@@ -66,7 +65,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 opt.N (1,1) {mustBeInteger} = 0
                 opt.imageNumber =[]
                 opt.remote (1,1) {mustBeInteger,mustBeGreaterThanOrEqual(opt.remote,0),mustBeLessThanOrEqual(opt.remote,1)} = 0
-                opt.color (1,:) char {mustBeMember(opt.color,{'R','G','none'})} = 'none'
+                opt.channel (1,:) char {mustBeMember(opt.channel,{'R','G','0','45','90','135','none'})} = 'none'
             end
 
             obj.remote = opt.remote;
@@ -77,7 +76,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 return
             end
 
-            if ~strcmpi(opt.color,'none') && MI.CGcam.Camera.colorChannels == 1
+            if ~strcmpi(opt.channel,'none') && MI.CGcam.Camera.colorChannels == 1
                 warning('You are trying to extract a color channel while the microscope does not include a color camera.')
             end
 
@@ -144,11 +143,11 @@ classdef Interfero < handle & matlab.mixin.Copyable
                         if strcmp(MI.software,'PHAST') || strcmp(MI.software,'Sid4Bio')
                             Itf0 = Itf0-2^15-100;% Removes the offset of Phasics, and removes the offset of the camera
                         end
-                        if ~strcmpi(opt.color,'none')
-                            obj.color = opt.color;
-                            switch opt.color
+                        if ~strcmpi(opt.channel,'none')
+                            obj.channel = opt.channel;
+                            switch opt.channel
                                 case {'G','R'}
-                                    obj.Itf0=colorInterpolation(Itf0,opt.color);
+                                    obj.Itf0=colorInterpolation(Itf0,opt.channel);
                                 case 'GR'
                                     obj.Itf0 = Itf0;
                             end
@@ -157,8 +156,8 @@ classdef Interfero < handle & matlab.mixin.Copyable
                         end
                     elseif obj.remote==1
                         obj.Itf0 = 'remote';
-                        if ~strcmpi(opt.color,'none')
-                            obj.color = opt.color;
+                        if ~strcmpi(opt.channel,'none')
+                            obj.channel = opt.channel;
                         end
                     end
                 end
@@ -216,10 +215,10 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 val = obj.Itf0;
             end
 
-            if ~strcmpi(obj.color,'none')
-                switch obj.color
+            if ~strcmpi(obj.channel,'none')
+                switch obj.channel
                     case {'R','G'}
-                        val = colorInterpolation(val,obj.color);
+                        val = colorInterpolation(val,obj.channel);
                 end
             end
 
@@ -258,7 +257,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 opt.params double = double.empty()
                 opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
                 opt.app = []; % figure uifigure object to be considered in case the image is already open
-                opt.color = false % true if 2-color interfero
+                opt.channel = false % true if 2-color interfero
             end
             if nargout>=1
                 fprintf('copying the object')
@@ -275,7 +274,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     'twoPoints',opt.twoPoints, ...
                     'params',opt.params, ...
                     'shape',opt.shape, ...
-                    'colorImage',opt.color);
+                    'colorImage',opt.channel);
                 params=[x1, x2, y1, y2];
             else
                 x1 = opt.params(1);
@@ -406,7 +405,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 end
 
                 obj.fileName = ['Mean ' objList(1).fileName ' to '  objList(end).fileName];
-                obj.color = objList(1).color;
+                obj.channel = objList(1).channel;
             end
         end
 
@@ -670,9 +669,9 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 ImR(io) = copy(Im(io));
 
                 ImG(io).Itf0 = colorInterpolation(Im(io).Itf,'g');
-                ImG(io).color = 'G';
+                ImG(io).channel = 'G';
                 ImR(io).Itf0 = colorInterpolation(Im(io).Itf,'r');
-                ImR(io).color = 'R';
+                ImR(io).channel = 'R';
             end
            
             % List independent references
@@ -689,7 +688,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         end
 
-        function [Im00,Im45,Im90,Im135]=splitPolars(Im)
+        function [Im00,Im45,Im90,Im135] = splitPolars(Im)
             % Im comes from a 4-polar camera
             % This function creates 4 Interfero objects, for each polars
             % Uses interpolation to keep the same number of pixels
@@ -709,16 +708,16 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 Im135(io) = copy(Im(io));
 
                 Im00(io).Itf0 = polarInterpolation(Im(io).Itf,0);
-                Im00(io).polar = '0';
+                Im00(io).channel = '0';
 
                 Im45(io).Itf0 = polarInterpolation(Im(io).Itf,45);
-                Im45(io).polar = '45';
+                Im45(io).channel = '45';
 
                 Im90(io).Itf0 = polarInterpolation(Im(io).Itf,90);
-                Im90(io).polar = '90';
+                Im90(io).channel = '90';
 
                 Im135(io).Itf0 = polarInterpolation(Im(io).Itf,135);
-                Im135(io).polar = '135';
+                Im135(io).channel = '135';
             end
            
             % List independent references
@@ -733,6 +732,10 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 Im45.Reference(Ref45(refPosList));
                 Im90.Reference(Ref90(refPosList));
                 Im135.Reference(Ref135(refPosList));
+            end
+
+            if nargout == 1
+                Im00 = [Im00,Im45,Im90,Im135];
             end
 
         end
@@ -766,14 +769,14 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     error('You try to correct the cross talk between two images that were not acquired with a color camera')
                 end
 
-                if strcmpi(obj1List(im).color(1),'r')
-                    if ~strcmpi(obj2List(im).color(1),'g')
+                if strcmpi(obj1List(im).channel(1),'r')
+                    if ~strcmpi(obj2List(im).channel(1),'g')
                         error('the second image should be green')
                     end
                     objR = obj1List(im);
                     objG = obj2List(im);
-                elseif strcmpi(obj1List(im).color(1),'g')
-                    if ~strcmpi(obj2List(im).color(1),'r')
+                elseif strcmpi(obj1List(im).channel(1),'g')
+                    if ~strcmpi(obj2List(im).channel(1),'r')
                         error('the second image should be red')
                     end
                     objG = obj1List(im);

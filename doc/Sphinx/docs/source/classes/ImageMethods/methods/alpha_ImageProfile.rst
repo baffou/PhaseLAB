@@ -7,7 +7,12 @@
 
     .. code-block:: matlab
 
-        val = obj.alpha_ImageProfile();
+        % prototype
+        params = obj.alpha_ImageProfile(Name,Value);
+
+        % examples
+        params = obj.alpha_ImageProfile();
+        params = obj.alpha_ImageProfile('nmax', 100, 'nBkg', 4);
 
     .. raw:: html
       

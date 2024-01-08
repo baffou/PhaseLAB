@@ -1,4 +1,29 @@
 function params = alpha_ImageProfile(IMlist,opt)
+% ALPHA_IMAGEPROFILE returns the polarisability and dry mass of small
+% objects, typically bacteria, nano- and microparticles.
+%
+% The algorithm involves a sum of the pixels on a circular area. The method
+% opens a window with the image. First, click on the OPD image to zoom in 
+% on the particle of interest, and press ‘z’ when the zoom is correct. 
+% Second, click on the center of the particle. A new figure will show up, 
+% plotting the pixel summation as a function of the radius of the circular 
+% area, from 0 to 100 px. Finally, click two times on the graph to define 
+% the range of value corresponding to a proper convergence of the 
+% integration. In practice, the line shape should feature a plateau, and 
+% the user should click at the beginning and at the end of the plateau. 
+% Name, Value options:
+%
+%   opt.figure = matlab.ui.Figure.empty()
+%   opt.nmax = 40
+%   opt.nBkg = 3
+%   opt.Dz = 0
+%   opt.NNP = 1
+%   opt.zoom = 1
+%   opt.step = 1
+%   opt.keepPoint = false  % keep the same clicking point from one image to another
+%   opt.display = false
+
+
 arguments
     IMlist
     opt.figure = matlab.ui.Figure.empty()
@@ -12,13 +37,6 @@ arguments
     opt.display = false
 end
 
-% alpha_ImagePorfile(app)
-% alpha_ImageProfile(IM,hfigInit)
-% alpha_ImageProfile(IM,nmax)
-% alpha_ImageProfile(IM,nmax,Dz)
-% alpha_ImageProfile(IM,nmax,Dz,nbgthick)
-% NNP: number of nanoparticles to be measured in the image
-% nmax: size of the max cropped area around the NP
 
 if isempty(opt.figure)
     %    hfigInit = IMlist.figure;
