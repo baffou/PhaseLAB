@@ -1,0 +1,184 @@
+/* custom.css */
+
+
+/* Couleur of the links :hover */
+:root {
+    --hover: #dfc75b; /* Define your variable and set its value */
+}
+
+/* Couleur du texte principal */
+body {
+    color: #333;
+}
+
+/* Couleur des liens */
+a {
+    color: #0071bb;
+}
+
+/* Couleur des liens au survol */
+a:hover {
+    color: #005493;
+}
+
+/* Couleur du texte de l'en-tête */
+div.header h1 {
+    color: #0071bb;
+}
+
+/* Couleur de l'arrière-plan de l'en-tête */
+div.related h3 {
+    background-color: #0071bb;
+    color: #fff;
+}
+
+/* titres de sections */
+.title {
+    font-weight: bold;
+    margin-bottom: 1.5em;
+    width: 100%;
+    border-bottom: 2px solid #000;
+}
+
+.custom-code {
+    background-color: #000000; /* Couleur de fond personnalisée */
+    font-family: 'Courier New', Courier, monospace; /* Police personnalisée */
+}
+
+.n { color: #000; }  /* colors of the variables in the code-block environment */
+
+
+.highlight .nb { color: #000000 } /* colors of the special keywords in the code-block environment */
+
+
+.highlight .s1 { color: #BA3604 } /* Literal.String.Single */
+
+.highlight .s2 { color: #BA3604 } /* Literal.String.Double, strings in code-block */
+
+.highlight .k { color: #2020aa; font-weight: bold } /* Keyword */
+
+.highlight .no { color: #000000 } /* Name.Constant, names of variables starting with uppercase in Ruby */
+
+.highlight .c { color: #439c46; font-style: italic } /* Comment.Single */
+
+
+.highlight .mf { color: #000 } /* Literal.Number.Float */
+.highlight .mi { color: #000 } /* Literal.Number.Float */
+
+
+.rst-content code.literal{color:#222;background-color: none;} /* background des ``...`` */
+
+
+
+.highlight-ruby{
+    background-color: #ff0000;
+}
+
+.highlight { background: #fffee8; } /* code of the code-block */
+
+li a:hover{color: var(--hover);} /* hover in the vertical menue
+/* aaff77 */
+
+li a.icon{color: #1e6ca7;} /* hover in the vertical menue */
+li a.icon:hover{color: #1e6ca7;} /* hover in the vertical menue */
+
+/* titres de chapitres dans le menu */
+.wy-menu-vertical header,.wy-menu-vertical p.caption{color:#55a5d9;height:32px;line-height:32px;padding:0 1.618em;margin:12px 0 0;display:block;font-weight:700;text-transform:uppercase;font-size:85%;white-space:nowrap}
+
+/* encadré en haut à gauche */
+.wy-side-nav-search{background-color:#222;color:#fcfcfc}
+
+.wy-side-nav-search a:hover{background-color:#222;color:#fde88a}
+
+
+
+footer, footer a, footer a:visited {
+    color:#CCC;
+}
+
+footer a:hover {
+    color:#1e6ca7;
+}
+
+
+/* make titles invisible of drop-down pages*/
+#in-silico-simulation h1, #in-silico-simulation h2 {
+    color: #fff;
+    font-size: 0.1em;
+    padding: 0;
+    margin: 0;
+}
+
+#auto-import-experimental-images h1, #auto-import-experimental-images h2 {
+    color: #fff;
+    font-size: 0.1em;
+    padding: 0;
+    margin: 0;
+}
+
+#image-postprocessing h1, #image-postprocessing h2 {
+    color: #fff;
+    font-size: 0.1em;
+    padding: 0;
+    margin: 0;
+}
+
+#image-simulation h1, #image-simulation h2 {
+    color: #fff;
+    font-size: 0.1em;
+    padding: 0;
+    margin: 0;
+}
+
+#import-experimental-images h1, #import-experimental-images h2 {
+    color: #fff;
+    font-size: 0.1em;
+    padding: 0;
+    margin: 0;
+}
+
+#make-a-movie h1, #make-a-movie h2 {
+    color: #fff;
+    font-size: 0.1em;
+    padding: 0;
+    margin: 0;
+}
+
+
+/* link-button */
+
+.card-text a.btn{
+    background-color: #1e6ca7;
+    font-weight:bold;
+    color: #EEE;
+    border: 2px solid #FFF;    
+}
+
+.card-text a.btn:hover{
+    color: var(--hover);
+    border: 2px solid #000;
+}
+
+@font-face {
+    font-family: "Roboto";
+    src: url("./fonts/RobotoCondensed-Medium.ttf");
+}
+
+
+
+.document a.reference{
+    color: #1e6ca7;
+}
+
+.document a.reference:visited{
+    color: #1e6ca7;
+}
+
+.document a.reference:hover{
+    color: var(--hover);
+}
+
+/* avoid the horizontal scrollbar in tables*/
+.tight-table td {
+    white-space: normal !important
+}

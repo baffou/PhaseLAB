@@ -1,0 +1,8 @@
+{"class":"CrossGrating",
+"Gamma": 13e-6,
+"name": "F03",
+"depth": 550e-9,
+"RI": 1.46,
+"lambda0": 506e-9,
+"angle": 0
+}

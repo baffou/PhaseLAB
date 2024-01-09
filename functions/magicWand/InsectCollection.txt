@@ -1,7 +1,0 @@
-InsectSpecies,InsectOrder,InsectFamily,PredatoryInsect
-Monarch Butterfly,Lepidoptera,Nymphalidae,0
-Seven-spot Ladybird,Coleoptera,Coccinellidae,1
-Orchid Mantis,Mantodea,Hymenopodidae,1
-American Bumblebee,Hymenoptera,Apidae,0
-Blue Dasher Dragonfly,Odonata,Libellulidae,1
-Red-banded leafhopper,Hemiptera,Cicadellidae,0

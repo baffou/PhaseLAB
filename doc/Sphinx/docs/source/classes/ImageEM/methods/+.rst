@@ -1,0 +1,25 @@
+.. dropdown:: **+** |subTitle| Defines the addition between two *ImageEM* objects: ``IM1 + IM2``. |/subTitle|
+
+    .. raw:: html
+      
+        <p class="title">Synthax</p>
+    
+    .. code-block:: matlab
+
+        obj = plus(obj1, obj2);
+        obj = obj1 + obj2;
+        obj = obj1 + obj2 + ... + objN;
+
+    .. raw:: html
+      
+        <p class="title">Description</p>
+
+    The method overloads the operator ``+`` by defining the method ``plus``. It simply sums the electromagnetic field associated to the 2 *ImageEM* objects. Note that it also sums the incident fields. It is relevant to use when the sample is illuminated at the same time with different plane waves at different angles for instance.
+
+    .. warning::
+
+        By summing images of different particles/dipoles, there is no self-consistent optical coupling between these objects. Prefer summing dipoles and then imaging the dipole array, which will run a DDA self consistent calculation of the dipolar moments.
+
+    |hr|
+
+    The method also work with several additions at a time: ``obj = obj1 + obj2 + ... + objN;``. When all these images are in a *ImageEM* array, one can write ``obj = sum(objList)``.

@@ -1,3 +1,0 @@
-.. |PhaseLAB| replace:: **PhaseLAB**
-
-

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>In silico QLSI &mdash; PhaseLAB documentation 4.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
+      <link rel="stylesheet" type="text/css" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
+      <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=1e1f2f42" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon2.png"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=9f5556dd"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Code examples" href="codeExamples.html" />
+    <link rel="prev" title="Display experimental images" href="displayImages.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PhaseLAB documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="download.html">Download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="buildMicroscope.html">Build the optical setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="importImages.html">Import experimental interferograms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="processImages.html">Process experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="displayImages.html">Display experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="displayImages.html#the-c-dynamicfigure-c-function">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">In silico QLSI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#model-a-nanoparticle">Model a nanoparticle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#model-an-interferogram">Model an interferogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#process-the-interferogram">Process the interferogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#model-arbitrary-objects">Model arbitrary objects</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="codeExamples.html">Code examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="GUI.html">The GUI of <span style="font-family: 'Roboto';">PhaseLAB</span></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classes/Camera.html">Camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/CGcamera.html">CGcamera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/CrossGrating.html">CrossGrating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Dipole.html">Dipole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Illumination.html">Illumination</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/ImageEM.html">ImageEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/ImageQLSI.html">ImageQLSI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Interfero.html">Interfero</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Microscope.html">Microscope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Objective.html">Objective</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="functions/CGMinSilico.html">CGMinSilico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions/imaging.html">imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions/importItfRef.html">importItfRef</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions/dynamicFigure.html">dynamicFigure</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PhaseLAB documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">In silico QLSI</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/inSilico.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="in-silico-qlsi">
+<h1>In silico QLSI<a class="headerlink" href="#in-silico-qlsi" title="Link to this heading"></a></h1>
+<p>PhaseLAB enables not only to <a class="reference internal" href="processImages.html#process-experimental-images"><span class="std std-ref">process QLSI interferograms</span></a>, it can also simulate the electromagnetic field at the image plane of a microscope, for a given object at the sample plane, and extract from it the theoretical intensity and wavefront images.</p>
+<p>Moreover, it can also model the interferogram of this exact same object, and process this modelled interferogram as it it were a real experimental one.</p>
+<p>This modality of PhaseLAB, called <em>in Silico QLSI</em>, enables the easy screening of parameters such as the wavelength, the grating pitch, the grating-camera distance, the dexel size, etc, and their effects on the image quality (signal to noise ratio, accuracy, artefacts, etc), without conduting any experiment.</p>
+<p>This modality of PhaseLAB was introduced in Ref. <a class="footnote-reference brackets" href="#oc521-128577" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> and widely used in Ref. <a class="footnote-reference brackets" href="#qpicomparison" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="oc521-128577" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p><em>Cross-grating phase microscopy (CGM): In silico experiment (insilex) algorithm, noise and accuracy</em>, B. Marthy, G. Baffou, <strong>Opt. Commun.</strong> 521, 128577 (2022)</p>
+</aside>
+<aside class="footnote brackets" id="qpicomparison" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p><em>Quantitative phase microscopies: accuracy comparison</em>, P.Chaumet, P. Bon, G. Maire, A. Sentenac, G. Baffou, <em>submitted</em>  (2023)</p>
+</aside>
+</aside>
+<section id="model-a-nanoparticle">
+<h2>Model a nanoparticle<a class="headerlink" href="#model-a-nanoparticle" title="Link to this heading"></a></h2>
+<p>The simplest object that can be modelled <em>in Silico</em> is a nanoparticle, or more precisely a dipole. Here is a code that models a microscope, and a dipole corresponding to a 100-nm gold nanoparticle placed on glass and immersed in water:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c">%% code that simulates the image of a gold nanoparticle</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="n">lambda</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">530e-9</span><span class="p">;</span><span class="w">            </span><span class="c">% Illumination wavelength</span>
+<span class="linenos"> 4</span><span class="n">Npx</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">300</span><span class="p">;</span><span class="w">                  </span><span class="c">% Final image with Npx*Npx pixels</span>
+<span class="linenos"> 5</span><span class="n">Mobj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">100</span><span class="w">                  </span><span class="c">% Objective magnification</span>
+<span class="linenos"> 6</span><span class="n">NA</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w">                    </span><span class="c">% Objective numerical aperture</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span><span class="n">radius</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">60e-9</span><span class="p">;</span><span class="w">             </span><span class="c">% Nanoparticle radius</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="c">% model the setup</span>
+<span class="linenos">11</span><span class="n">ME</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Medium</span><span class="p">(</span><span class="s">&#39;water&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;glass&#39;</span><span class="p">);</span>
+<span class="linenos">12</span><span class="n">OB</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Objective</span><span class="p">(</span><span class="n">Mobj</span><span class="p">,</span><span class="n">NA</span><span class="p">,</span><span class="s">&#39;Olympus&#39;</span><span class="p">);</span>
+<span class="linenos">13</span><span class="n">CGcam</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">CGcamera</span><span class="p">(</span><span class="s">&#39;sC8-944&#39;</span><span class="p">);</span>
+<span class="linenos">14</span><span class="n">MI</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Microscope</span><span class="p">(</span><span class="n">OB</span><span class="p">,</span><span class="s">&#39;Olympus&#39;</span><span class="p">,</span><span class="n">CGcam</span><span class="p">);</span>
+<span class="linenos">15</span><span class="n">IL</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Illumination</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span><span class="n">ME</span><span class="p">);</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span><span class="c">% model the nanoparticle</span>
+<span class="linenos">18</span><span class="n">DI</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Dipole</span><span class="p">(</span><span class="s">&#39;Au&#39;</span><span class="p">,</span><span class="n">radius</span><span class="p">);</span><span class="w">   </span><span class="c">% creation of the Dipole object</span>
+<span class="linenos">19</span><span class="n">DI</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">DI</span><span class="p">.</span><span class="n">shine</span><span class="p">(</span><span class="n">IL</span><span class="p">);</span><span class="w">          </span><span class="c">% illumination of the dipole</span>
+<span class="linenos">20</span>
+<span class="linenos">21</span><span class="c">% compute the images</span>
+<span class="linenos">22</span><span class="n">IM0</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">imaging</span><span class="p">(</span><span class="n">DI</span><span class="p">,</span><span class="n">IL</span><span class="p">,</span><span class="n">MI</span><span class="p">,</span><span class="n">Npx</span><span class="p">);</span>
+<span class="linenos">23</span>
+<span class="linenos">24</span><span class="c">% display the images</span>
+<span class="linenos">25</span><span class="n">IM0</span><span class="p">.</span><span class="n">figure</span><span class="w">                  </span><span class="c">% display the images in the GUI</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/NPinSilico_Ex.png"><img alt="_images/NPinSilico_Ex.png" src="_images/NPinSilico_Ex.png" style="width: 600px;" /></a>
+</figure>
+<p>In line 16, the dipole is illuminated. It means that the polarisation vector of the dipole is calculated, and assigned to the object property <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">DI</span><span class="p">.</span><span class="n">p</span></code>:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">DI</span><span class="p">.</span><span class="n">p</span>
+
+<span class="nb">ans</span><span class="w"> </span><span class="p">=</span>
+
+<span class="w">    </span><span class="mf">1.0e-30</span><span class="w"> </span><span class="o">*</span>
+
+<span class="w">    </span><span class="o">-</span><span class="mf">0.7697</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span>4309<span class="nb">i</span><span class="w">   </span><span class="mf">0.0000</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span>0000<span class="nb">i</span><span class="w">   </span><span class="mf">0.0000</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span>0000<span class="nb">i</span>
+</pre></div>
+</div>
+<p>This dipole needs to be calculated before the <code class="xref py py-func docutils literal notranslate"><span class="pre">imaging()</span></code> function is called (line 19).</p>
+<p>In line 19, the electromagnetic field is calculated using the <code class="docutils literal notranslate"><span class="pre">imaging</span></code> function (see <a class="reference internal" href="functions/imaging.html#the-imaging-function"><span class="std std-ref">The imaging function</span></a> section.) The first input is the <a class="reference internal" href="classes/Dipole.html#the-dipole-class"><span class="std std-ref">Dipole</span></a>  object, the second is the <a class="reference internal" href="classes/Illumination.html#the-illumination-class"><span class="std std-ref">Illumination</span></a> object, the third the <a class="reference internal" href="classes/Microscope.html#the-microscope-class"><span class="std std-ref">Microscope</span></a> object and the last one, <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">Npx</span></code>, is the number of pixels (rows and columns) of the final (square) image. The function returs the electromagnetic field at the image plane of the microscope as an <a class="reference internal" href="classes/ImageEM.html#the-imageem-class"><span class="std std-ref">ImageEM</span></a> object.</p>
+</section>
+<section id="model-an-interferogram">
+<h2>Model an interferogram<a class="headerlink" href="#model-an-interferogram" title="Link to this heading"></a></h2>
+<p>In the presence of a QLSI grating at a millimetric distance from the image plane, the electromagnetic field gets modified to form an interferogram. This modification can be calculated using the <a class="reference internal" href="functions/CGMinSilico.html#the-cgminsilico-function"><span class="std std-ref">CGMinSilico function</span></a>. Here is the synthax:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">Itf</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">CGMinSilico</span><span class="p">(</span><span class="n">IM0</span><span class="p">,</span><span class="s">&#39;shotNoise&#39;</span><span class="p">,</span><span class="nb">true</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The keyword <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;shotNoise&#39;</span></code> adds the natural shot noise of the selected camera specified in the Microscope object <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">MI</span></code> (here an sC8 from Phasics). Other Name-value inputs can be specified. For more information, refer to <a class="reference internal" href="functions/CGMinSilico.html#the-cgminsilico-function"><span class="std std-ref">The  CGMinSilico  function</span></a>.</p>
+</section>
+<section id="process-the-interferogram">
+<h2>Process the interferogram<a class="headerlink" href="#process-the-interferogram" title="Link to this heading"></a></h2>
+<p>Finally the interferogram can be processed as if it were an experimental interferogram using <a class="reference internal" href="classes/Interfero/methodsPages/QLSIprocess_method.html#the-qlsiprocess-method"><span class="std std-ref">the QLSIprocess method</span></a>:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">IM</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">QLSIprocess</span><span class="p">(</span><span class="n">Itf</span><span class="p">,</span><span class="n">IL</span><span class="p">);</span>
+
+<span class="n">dynamicFigure</span><span class="p">(</span><span class="s">&#39;gb&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">IM0</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;gb&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">IM</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here is the displayed figure, comparing the theoretical OPD image, and the OPD image measured with the sC8 camera from Phasics, including the camera shot noise.</p>
+<a class="reference internal image-reference" href="_images/NPinSilico.png"><img alt="_images/NPinSilico.png" src="_images/NPinSilico.png" style="width: 700px;" /></a>
+</section>
+<section id="model-arbitrary-objects">
+<h2>Model arbitrary objects<a class="headerlink" href="#model-arbitrary-objects" title="Link to this heading"></a></h2>
+<p>Objects of arbitrary geometry (big spheres, rods, biological cell, …) can also be modelled using the <em>in Silico</em> algorithm. For this purpose, PhaseLAB should be coupled with the IFDDA toolbox.</p>
+<p><em>to be continued…</em></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="displayImages.html" class="btn btn-neutral float-left" title="Display experimental images" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="codeExamples.html" class="btn btn-neutral float-right" title="Code examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Guillaume Baffou.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

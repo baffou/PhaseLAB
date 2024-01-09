@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The ImageEM class &mdash; PhaseLAB documentation 4.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
+      <link rel="stylesheet" type="text/css" href="../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
+      <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=1e1f2f42" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon2.png"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=9f5556dd"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The ImageQLSI class" href="ImageQLSI.html" />
+    <link rel="prev" title="The Illumination class" href="Illumination.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PhaseLAB documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../download.html">Download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../buildMicroscope.html">Build the optical setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../importImages.html">Import experimental interferograms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../processImages.html">Process experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../displayImages.html">Display experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../displayImages.html#the-c-dynamicfigure-c-function">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inSilico.html">In silico QLSI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../codeExamples.html">Code examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../GUI.html">The GUI of <span style="font-family: 'Roboto';">PhaseLAB</span></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Classes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Camera.html">Camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CGcamera.html">CGcamera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CrossGrating.html">CrossGrating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dipole.html">Dipole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Illumination.html">Illumination</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ImageEM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#properties">Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#imageem-methods">ImageEM methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ImageQLSI.html">ImageQLSI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Interfero.html">Interfero</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Microscope.html">Microscope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Objective.html">Objective</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functions/CGMinSilico.html">CGMinSilico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/imaging.html">imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/importItfRef.html">importItfRef</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functions/dynamicFigure.html">dynamicFigure</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PhaseLAB documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">The ImageEM class</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/classes/ImageEM.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="the-imageem-class">
+<span id="id1"></span><h1>The ImageEM class<a class="headerlink" href="#the-imageem-class" title="Link to this heading"></a></h1>
+<p><em>ImageEM</em> is a handle class.</p>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Link to this heading"></a></h2>
+<table class="docutils align-center" id="id4">
+<caption><span class="caption-text">Public properties</span><a class="headerlink" href="#id4" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 53%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>type</p></th>
+<th class="head"><p>default</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Microscope</span></code></p></td>
+<td><p><em>Microscope</em></p></td>
+<td></td>
+<td><p>Microscope object</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Illumination</span></code></p></td>
+<td><p><em>Illumination</em></p></td>
+<td></td>
+<td><p>Illumination object</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">comment</span></code></p></td>
+<td><p>char</p></td>
+<td></td>
+<td><p>Any comment on the image</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-center" id="id5">
+<caption><span class="caption-text">Read-only properties</span><a class="headerlink" href="#id5" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 19%" />
+<col style="width: 63%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>type</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Ex</span></code></p></td>
+<td><p>double array</p></td>
+<td><p>x component image of the electric field</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Ey</span></code></p></td>
+<td><p>double array</p></td>
+<td><p>y component image of the electric field</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Ez</span></code></p></td>
+<td><p>double array</p></td>
+<td><p>z component image of the electric field</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Einc</span></code></p></td>
+<td><p><em>ImageEM</em></p></td>
+<td><p>Incident electric field</p></td>
+</tr>
+<tr class="row-even"><td><p>name</p></td>
+<td><p>type</p></td>
+<td><p>description</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Nx</span></code></p></td>
+<td><p>double</p></td>
+<td><p>Number of columns</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Ny</span></code></p></td>
+<td><p>double</p></td>
+<td><p>Number of rows</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">E2</span></code></p></td>
+<td><p>double</p></td>
+<td><p>Image of the Efield intensity</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">E</span></code></p></td>
+<td><p>double</p></td>
+<td><p>Amplitude of the Efield</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Ph</span></code></p></td>
+<td><p>double</p></td>
+<td><p>Phase image</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="imageem-methods">
+<h2>ImageEM methods<a class="headerlink" href="#imageem-methods" title="Link to this heading"></a></h2>
+<details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>alpha_ImageProfile</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Return the polarisability, optical volume and dry mass of small objects. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">alpha_ImageProfile</span><span class="p">();</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">This method of the <a class="reference internal" href="#the-imageem-class"><span class="std std-ref">ImageEM</span></a> and <a class="reference internal" href="ImageQLSI.html#the-imageqlsi-class"><span class="std std-ref">ImageQLSI</span></a> classes returns the polarisability, <abbr title="optical volume">OV</abbr> and <abbr title="dry mass">DM</abbr> of small objects, using a radial profile method. The algorithm involves a sum of the pixels on a circular area. The method opens a window with the image. First, click on the OPD image to zoom in on the particle of interest, and press ‘z’ when the zoom is correct. Second, click on the center of the particle. A new figure will show up, plotting the pixel summation as a function of the radius of the circular area, from 0 to 100 px. Finally, click two times on the graph to define the range of value corresponding to a proper convergence of the integration. In practice, the line shape should feature a plateau, and the user should click at the beginning and at the end of the plateau. For instance, in this example, the user could click on <span class="math notranslate nohighlight">\(x=18\)</span> and <span class="math notranslate nohighlight">\(x=40\)</span>:</p>
+<a class="reference internal image-reference" href="../_images/GUI_alphaImageWindow.png"><img alt="../_images/GUI_alphaImageWindow.png" class="align-center" src="../_images/GUI_alphaImageWindow.png" style="width: 450px;" /></a>
+<p class="card-text">Finally, the values of polarisability, and optical volume are returned as a structure, containing the fields alpha, OV and OVw. OVw is the weighted optical volume as defined in Ref. <a class="footnote-reference brackets" href="#boe13-6550" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="boe13-6550" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">1</a><span class="fn-bracket">]</span></span>
+<p class="card-text"><em>Biomass measurements of single neurites in vitro using optical wavefront microscopy</em>, L. Durdevic, A. Resano Gines, A. Roueff, G. Blivet, G. Baffou, <strong>Biomedical Optics Express</strong> 13, 6550-6560 (2022)</p>
+</aside>
+</aside>
+<p class="title">Name-Value inputs</p><p class="card-text">Several Name-Value inputs can be used to adjust the way the procedure works:</p>
+<ul>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;nmax&#39;</span></code>, default value: <code class="docutils literal notranslate"><span class="pre">40</span></code></p>
+<blockquote>
+<div><p class="card-text">Maximum radius of the integration area.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;nBkg&#39;</span></code>, default value: <code class="docutils literal notranslate"><span class="pre">3</span></code></p>
+<blockquote>
+<div><p class="card-text">Width of the boundary considered to calculate the zero value of the background.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;NNP&#39;</span></code>, default value: <code class="docutils literal notranslate"><span class="pre">1</span></code></p>
+<blockquote>
+<div><p class="card-text">Number of particles to be clicked on the image. The procedure will stoped after <code class="docutils literal notranslate"><span class="pre">N</span></code> particles will be processed, and the returned data will be an array of values.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;zoom&#39;</span></code>, default value: <code class="code highlight matlab docutils literal highlight-matlab"><span class="nb">true</span></code></p>
+<blockquote>
+<div><p class="card-text">Enables the user to first zoom before clicking on the particle</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;step&#39;</span></code>, default value: <code class="docutils literal notranslate"><span class="pre">1</span></code></p>
+<blockquote>
+<div><p class="card-text">The integration as a function of the radius will be calculated only every <code class="docutils literal notranslate"><span class="pre">N</span></code> pixels, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the step value. Specifying a value larger than 1 can make the processing faster.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;keepPoint&#39;</span></code>, default value: <code class="code highlight matlab docutils literal highlight-matlab"><span class="nb">false</span></code></p>
+<blockquote>
+<div><p class="card-text">Keeps the same clicking point from one image to another. It can save time if many images need to be processed, and if the NP does not move from one image to another.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;display&#39;</span></code>, default value: <code class="code highlight matlab docutils literal highlight-matlab"><span class="nb">false</span></code></p>
+<blockquote>
+<div><p class="card-text">Displays the results of all the measurements in a single graph. Makes sense only if multiple measurements are made within a single call of the function.</p>
+</div></blockquote>
+</li>
+</ul>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>applyPCmask</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Returns a re-calculated image with a phase contrast mask in the objective lens. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj0</span><span class="p">.</span><span class="n">applyPCmask</span><span class="p">(</span><span class="n">mask</span><span class="p">);</span>
+<span class="n">objList</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">objList0</span><span class="p">.</span><span class="n">applyPCmask</span><span class="p">(</span><span class="n">mask</span><span class="p">);</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span> <span class="pre">=</span> <span class="pre">obj0.applyPCmask(mask);</span></code> recalculate the <span class="math notranslate nohighlight">\(E\)</span> field at the image plane when adding a phase mask at the pupil of the objective. It is used to model Zernike phase-contrast microscopy. <code class="docutils literal notranslate"><span class="pre">mask</span></code> is a <em>PCmask</em> object.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><code class="docutils literal notranslate"><span class="pre">objList</span> <span class="pre">=</span> <span class="pre">objList0.applyPCmask(mask);</span></code>: <em>ImageEM</em> object <em>vectors</em> can also be used with this method. The transformation applies then to all the objects of the vector.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>applyPhaseShift</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Apply a phase shift to the whole image. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj0</span><span class="p">.</span><span class="n">applyPhaseShift</span><span class="p">(</span><span class="n">phi</span><span class="p">);</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span> <span class="pre">=</span> <span class="pre">obj0.applyPhaseShift(phi);</span></code> applies a phase shift <code class="docutils literal notranslate"><span class="pre">phi</span></code> to the whole image. Used to model phase-shifting techniques, not really useful in CGM/QLSI.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>binning</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Performs 2x2 or 3x3 pixel binning of the images of the ImageEM object. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">binning</span><span class="p">()</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">binning</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">binning</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">The <em>binning</em> method applies a binning to all the images of the object.</p>
+<p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.binning()</span></code> performs, by default, a 3x3 binning of the images of <code class="docutils literal notranslate"><span class="pre">obj</span></code>.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.binning(n)</span></code> performs, <span class="math notranslate nohighlight">\(n\times n\)</span> binning of the images of <code class="docutils literal notranslate"><span class="pre">obj</span></code>. Only works with <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">=</span> <span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">4,</span> <span class="pre">6</span></code>.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">If an output argument is specified, <code class="docutils literal notranslate"><span class="pre">obj</span></code> is not modified, but duplicated.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>crop</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Crop the images of the object. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">crop</span><span class="p">()</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">crop</span><span class="p">(</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Value</span><span class="p">)</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">)</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
+<span class="p">[</span><span class="n">obj2</span><span class="p">,</span><span class="w"> </span><span class="n">params</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.crop()</span></code> crops the <span class="math notranslate nohighlight">\(E\)</span> fields of the object and of the <code class="docutils literal notranslate"><span class="pre">Ref</span></code> object, identically. A figure window opens, inviting the user to click on the image to define a square area centered in the middle of the image.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">Objects <em>vectors</em> can also be used with this method. The transformation applies then to all the objects of the vector.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">If an output is used, <code class="docutils literal notranslate"><span class="pre">obj2</span></code>, then the object is not modified, but duplicated.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">If a second output is specified, then the crop parameters are returned as a 4-vector <code class="docutils literal notranslate"><span class="pre">params</span> <span class="pre">=</span> <span class="pre">[x1,</span> <span class="pre">x2,</span> <span class="pre">y1,</span> <span class="pre">y2]</span></code>;</p>
+<p class="title">Name-value arguments</p><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p class="card-text">Specify optional pairs of arguments as <code class="docutils literal notranslate"><span class="pre">Name1</span> <span class="pre">=</span> <span class="pre">Value1,</span> <span class="pre">...,</span> <span class="pre">NameN</span> <span class="pre">=</span> <span class="pre">ValueN</span></code>, where <code class="docutils literal notranslate"><span class="pre">Name</span></code> is the argument name and <code class="docutils literal notranslate"><span class="pre">Value</span></code> is the corresponding value. Name-value arguments must appear after other arguments, but the order of the pairs does not matter.</p>
+<p class="card-text">Example:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Center&#39;</span><span class="p">,</span><span class="s">&#39;Manual&#39;</span><span class="p">,</span><span class="s">&#39;Size&#39;</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<ul>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Center&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">With <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Center&#39;</span><span class="p">,</span><span class="s">&#39;Manual&#39;</span><span class="p">)</span></code>, the user has to first click on the center of the reference area. If the argument is set to <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Auto&#39;</span></code>, then this step is skipped, and the center is automatically set to the center of the image. Also, the user can indicate the coordinates of the center using <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Center&#39;</span><span class="p">,[</span><span class="n">x_c</span><span class="p">,</span><span class="w"> </span><span class="n">y_c</span><span class="p">])</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Size&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">With <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Size&#39;</span><span class="p">,</span><span class="s">&#39;Manual&#39;</span><span class="p">)</span></code>, once the center is defined (either manually or automatically), the user has to click on the figure to define the shape of the area, around the center point. The user can also indicate the dimensions of the reference area using <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Size&#39;</span><span class="p">,</span><span class="n">Npx</span><span class="p">)</span></code> for a square area, or  <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;Size&#39;</span><span class="p">,[</span><span class="n">Nx</span><span class="p">,</span><span class="w"> </span><span class="n">Ny</span><span class="p">])</span></code> for a rectangular area.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;twoPoints&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">Instead of using the <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Center&#39;</span></code> and <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Size&#39;</span></code> keywords, one can also click on two opposite corners of the reference area, using <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;twoPoints&#39;</span><span class="p">,</span><span class="nb">true</span><span class="p">)</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;params&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">One can also direclty write the coordinates of the crops, using <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">crop</span><span class="p">(</span><span class="n">___</span><span class="p">,</span><span class="s">&#39;params&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">x1</span><span class="p">,</span><span class="w"> </span><span class="n">x2</span><span class="p">,</span><span class="w"> </span><span class="n">y1</span><span class="p">,</span><span class="w"> </span><span class="n">y2</span><span class="p">])</span></code>. In this case, no figure opens.</p>
+</div></blockquote>
+</li>
+</ul>
+<p class="card-text">Here is an example of a code that crops a first object manually, and applies automatically the same crop to a second object:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">IMc</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">params</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">IM</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">crop</span><span class="p">(</span><span class="s">&#39;Center&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Manual&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Size&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Manual&#39;</span><span class="p">);</span>
+<span class="n">IMc</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">IM</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="n">crop</span><span class="p">(</span><span class="s">&#39;params&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">params</span><span class="p">);</span>
+</pre></div>
+</div>
+<p class="card-text">Note that this code is equivalent to:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">IMc</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">IM</span><span class="p">.</span><span class="n">crop</span><span class="p">(</span><span class="s">&#39;Center&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Manual&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Size&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Manual&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>CrossSections</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Return the polarisability and cross sections of a NP image. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">CrossSections</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">This function applies when dealing with the image of a single nanoparticle.</p>
+<p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span></code> can by a vector of <em>ImageEM</em> objects. In this case, the calculation will be performed on all the objects of the list.</p>
+<p class="card-text"><code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">=</span> <span class="pre">obj.CrossSections()</span></code> return a <em>NPprop</em> object containing the complex optical polarisability of the NP, and the 3 cross-sections.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>dmd</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Return the dry mass density (DMD) image. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">dmd</span><span class="p">();</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">val</span></code> is the DMD image, in pg/µm<sup>2</sup>. This function actually just consists of multiplying the <code class="docutils literal notranslate"><span class="pre">OPD</span></code> in [nm] by 5.56e-3.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>dxSize</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Return the dexel size. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">dxSize</span><span class="p">();</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">Returns the dexel size (i.e. the camera pixel size), <code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">=</span> <span class="pre">obj.Microscope.CGcam.dxSize;</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p class="card-text">This method returns the <strong>effective</strong> dexel size, which is not necessarily the actual dexel size of the camera sensor. When there is a <abbr title="relay-lens">RL</abbr>, applying a zoom <span class="math notranslate nohighlight">\(Z\)</span> to the system, the {<abbr title="relay-lens">RL</abbr>, camera} system is equivalent to a single camera with a dexel size divided by the zoom. This method returns the dexel size fo this equivalent camera, called the effective dexel size.</p>
+</div>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>EE0</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Return the value of the incident field at the center of the field of view. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">EE0</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">This method returns the value of the incident field, at the center of the field of view, at the image plane (not at the image plane). If <code class="docutils literal notranslate"><span class="pre">obj</span></code> is already an incident field, it simply returns its value at the center of the field of view.</p>
+<p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span></code> can by a vector of <em>ImageEM</em> objects. In that case, the treatment will be perform on all the objects of the list.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>EE0n</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Return the value of the norm of the incident field at the center of the field of view. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">EE0n</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">This method returns the norm of the incident field at the center of the field of view, at the sample plane (not at the image plane). If <code class="docutils literal notranslate"><span class="pre">obj</span></code> is already an incident field, it simply returns the norm of the field at the center of the field of view.</p>
+<p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span></code> can by a vector of <em>ImageEM</em> objects. In that case, the treatment will be perform on all the objects of the list.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>Escat</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Return the image of the scattered electric field as an <em>ImageEM</em> object. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj_sca</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">Escat</span><span class="p">();</span>
+<span class="n">objList_sca</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">objList</span><span class="p">.</span><span class="n">Escat</span><span class="p">();</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">This method returns the scattered <span class="math notranslate nohighlight">\(E\)</span> field image, as a new <em>ImageEM object</em>.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>figure</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Display the PhaseLAB GUI </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">app</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">figure</span><span class="p">();</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">This method displays the images of the <code class="docutils literal notranslate"><span class="pre">obj</span></code> within the GUI (graphical user interface) of PhaseLAB. See the <a class="reference internal" href="../GUI.html#the-phaselab-gui"><span class="std std-ref">The GUI of PhaseLAB</span></a> section for details.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>flipud</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Flips the images of the object about the horizontal axis. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">flipud</span><span class="p">();</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">flipud</span><span class="p">();</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">flipud</span><span class="p">();</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">Methods that flips all the images of the object about the horizontal axis (flips upside-down). </em></span></p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><em>ImageEM</em> object vectors can also be used with this method. The transformation applies then to all the objects of the vector.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">If an output <code class="docutils literal notranslate"><span class="pre">obj2</span></code> is used, then the object is not modified, and duplicated.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>fliplr</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Flips the images of the object about the vertical axis. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">fliplr</span><span class="p">();</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">fliplr</span><span class="p">();</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">fliplr</span><span class="p">();</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">Methods that flips all the images of the object about the vertical axis (flips left-right). </em></span></p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><em>ImageEM</em> objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">If an output <code class="docutils literal notranslate"><span class="pre">obj2</span></code> is used, then the object is not modified, and duplicated.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>FT</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Return the Fourier transform of the E field. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">I</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">FT</span><span class="p">();</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">=</span> <span class="pre">obj.FT()</span></code> returns the square of the norm <code class="docutils literal notranslate"><span class="pre">I</span></code> of the Fourier transform of the <span class="math notranslate nohighlight">\(E\)</span> field:</p>
+<div class="math notranslate nohighlight">
+\[I = \vert \mathcal{F}[Ex]\vert^2 + \vert\mathcal{F}[Ey]\vert^2\]</div>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>imageHSV</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> display a mix of the T an OPD images according to a HSV colorscale pattern. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">imageHSV</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">The <code class="docutils literal notranslate"><span class="pre">imageHSV</span></code> method displays a mix of the intensity an <abbr title="optical path difference">OPD</abbr> images according to a abbr:<cite>HSV (hue, saturation, value)</cite> pattern. Just like the RVB coding, HSV coding codes any color with 3 numbers:</p>
+<ul class="simple">
+<li><p class="card-text"><em>H</em> means <em>Hue</em> and represents the color on a chromatic circle</p></li>
+<li><p class="card-text"><em>S</em> means <em>Saturation</em>  and tells if the colors are vivid or pale.</p></li>
+<li><p class="card-text"><em>V</em> means <em>Value</em> and tells if the color is bright or dark.</p></li>
+</ul>
+<p class="card-text">Here is a picture that explains the abbr:<cite>HSV (hue, saturation, value)</cite> color coding:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/HSV.jpeg"><img alt="../_images/HSV.jpeg" src="../_images/HSV.jpeg" style="width: 500px;" /></a>
+</figure>
+<p class="title">Example</p><p class="card-text">The <code class="docutils literal notranslate"><span class="pre">imageHSV</span></code> method  assigns the <abbr title="optical path difference">OPD</abbr> image to the Hue (the colorscale), and the intensity image to the Saturation (this way, areas with low intensity appear dark), and keeping the Value to 1.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>Jones</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> apply Jones matrices to the E field of the images. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% general forms</span>
+<span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj0</span><span class="p">.</span><span class="n">Jones</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">]);</span>
+<span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj0</span><span class="p">.</span><span class="n">crop</span><span class="p">(</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Value</span><span class="p">);</span>
+
+<span class="c">% examples</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">Jones</span><span class="p">([</span><span class="mi">1</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">0</span><span class="w"> </span><span class="s">0])</span><span class="p">;</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">Jones</span><span class="p">(</span><span class="s">&#39;P&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;HWP&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;QWP&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">45</span><span class="p">);</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">The Jones function models the application of polarizers and wave plates to the image, with a Jones matrix formalism. For a given electric field <span class="math notranslate nohighlight">\(E = (E_x, E_y)\)</span>, the new field <span class="math notranslate nohighlight">\(E'\)</span> reads</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{bmatrix}
+E_x' \\
+E_y'
+\end{bmatrix}
+=
+\begin{bmatrix}
+a &amp; b \\
+c &amp; d
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+E_x \\
+E_y
+\end{bmatrix}\end{split}\]</div>
+<p class="card-text"><span class="math notranslate nohighlight">\([a, b; c, d]\)</span> is the Jones matrix. For instance, for a polarizer along the <em>x</em> axis, it reads</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}P =
+\begin{bmatrix}
+1 &amp; 0 \\
+0 &amp; 0
+\end{bmatrix}\end{split}\]</div>
+<p class="card-text">For a half wave plate with fast axis along <em>x</em>, it reads</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}H =
+\begin{bmatrix}
+1 &amp; 0 \\
+0 &amp; -1
+\end{bmatrix}\end{split}\]</div>
+<p class="card-text">And for a half wave plate rotated by an angle <span class="math notranslate nohighlight">\(\theta\)</span>, it reads</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}H(\theta) =
+\begin{bmatrix}
+cos 2\theta &amp;  sin 2\theta \\
+sin 2\theta &amp; -cos 2\theta
+\end{bmatrix}\end{split}\]</div>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span> <span class="pre">=</span> <span class="pre">obj0.Jones([a,</span> <span class="pre">b;</span> <span class="pre">c,</span> <span class="pre">d]);</span></code> applies the Jones matrix to every pixel of the E field, and incident E field of the <em>ImageEM</em> object.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj</span> <span class="pre">=</span> <span class="pre">obj0.Jones(Name,</span> <span class="pre">Value);</span></code> applies the optical component <code class="docutils literal notranslate"><span class="pre">Name</span></code> placed at an angle <code class="docutils literal notranslate"><span class="pre">Value</span></code>. Several name-value pairs can be used: <code class="docutils literal notranslate"><span class="pre">Name1</span> <span class="pre">=</span> <span class="pre">Value1,</span> <span class="pre">...,</span> <span class="pre">NameN</span> <span class="pre">=</span> <span class="pre">ValueN</span></code>. They will be applied to the images in the order they are specified.</p>
+<p class="card-text">Here are the possible <code class="docutils literal notranslate"><span class="pre">'Name'</span></code>:</p>
+<ul>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;P&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">Models the application of a linear polarizer. The associated value is the angle of the polarizer.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;HWP&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">Models the application of a half wave plate. The associated value is the angle of the fast axis of the wave plate.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;QWP&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">Models the application of a quarter wave plate. The associated value is the angle of the fast axis of the wave plate.</p>
+</div></blockquote>
+</li>
+</ul>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>lambda</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Return the wavelength of the illumination. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">lambda</span><span class="p">();</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">This method returns the wavelength of the illumination used to acquire the image, <code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">=</span> <span class="pre">obj.Illumination.lambda;</span></code>.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>MakeMoviedx</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Make a movie from a series of image objects </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% prototypes</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">makeMoviedx</span><span class="p">(</span><span class="n">videoName</span><span class="p">)</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">makeMoviedx</span><span class="p">(</span><span class="n">videoName</span><span class="p">,</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Value</span><span class="p">)</span>
+
+<span class="c">% examples</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">makeMoviedx</span><span class="p">(</span><span class="s">&#39;movie/bacteria.avi&#39;</span><span class="p">)</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">makeMoviedx</span><span class="p">(</span><span class="s">&#39;movie/bacteria.avi&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">)</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">makeMoviedx</span><span class="p">(</span><span class="s">&#39;movie/bacteria.avi&#39;</span><span class="p">,</span><span class="s">&#39;theta&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">&#39;phi&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">&#39;rate&#39;</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="s">&#39;zrange&#39;</span><span class="p">,[</span><span class="o">-</span><span class="mi">10</span><span class="w"> </span><span class="mi">10</span><span class="p">])</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">The <code class="docutils literal notranslate"><span class="pre">MakeMoviedx</span></code> method creates an .avi movie from an <a class="reference internal" href="#the-imageem-class"><span class="std std-ref">ImageEM</span></a> or <a class="reference internal" href="ImageQLSI.html#the-imageqlsi-class"><span class="std std-ref">ImageQLSI</span></a> object array. Two inputs are required, the image object array <code class="docutils literal notranslate"><span class="pre">IM</span></code> and the path/name of the movie file to be created <code class="docutils literal notranslate"><span class="pre">videoname</span></code>. It calls the method <a class="reference internal" href="ImageMethods/methodsPages/opendx.html#the-opendx-method"><span class="std std-ref">opendx (ImageEM &amp; ImageQLSI classes method)    opendx </span></a>, from the same class.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">Many Name-value options can be specified to change the rendering.</p>
+<ul>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;persp&#39;</span></code>  (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p>
+<blockquote>
+<div><p class="card-text">With <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;persp&#39;</span></code> set to <code class="docutils literal notranslate"><span class="pre">1</span></code>, the video uses the <code class="docutils literal notranslate"><span class="pre">opendx</span></code> method to create a nnince 3D rendering of the image. Set this option to <code class="docutils literal notranslate"><span class="pre">0</span></code> to cancel this effect.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;phi&#39;</span></code>  (default: <code class="docutils literal notranslate"><span class="pre">45</span></code>) and <code class="docutils literal notranslate"><span class="pre">'theta'</span></code>  (default: 45)</p>
+<blockquote>
+<div><p class="card-text">Position of the camera in <code class="code highlight matlab docutils literal highlight-matlab"><span class="p">(</span><span class="n">theta</span><span class="p">,</span><span class="w"> </span><span class="n">phi</span><span class="p">)</span></code></p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;ampl&#39;</span></code>  (default: <code class="docutils literal notranslate"><span class="pre">45</span></code>) and <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;theta&#39;</span></code>  (default: 3)</p>
+<blockquote>
+<div><p class="card-text">sets the magnitude of the 3D relief</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;zrange&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">2-vector setting the limits of the <em>z</em> axis.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;colorMap&#39;</span></code> (default: <code class="docutils literal notranslate"><span class="pre">Parula</span></code>)</p>
+<blockquote>
+<div><p class="card-text">Color map.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;title&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">Title to display on the movie, if any.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;factor&#39;</span></code> (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p>
+<blockquote>
+<div><p class="card-text">Correction factor to the <abbr title="optical path difference">OPD</abbr>, for instance 5.55e-3 to convert the <abbr title="optical path difference">OPD</abbr> into <abbr title="dry mass">DM</abbr>.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;label&#39;</span></code> (default: <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Optical path difference (nm)&#39;</span></code>)</p>
+<blockquote>
+<div><p class="card-text">Label to put on the color scale.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;imType&#39;</span></code> (default: <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;OPD&#39;</span></code>)</p>
+<blockquote>
+<div><p class="card-text">Cell array of the properties of the object to be displayed: <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;OPD&#39;</span></code>, <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;T&#39;</span></code>, <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;DWx&#39;</span></code>, <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;DWy&#39;</span></code>, <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Ph&#39;</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;axisDisplay&#39;</span></code> (default: <code class="docutils literal notranslate"><span class="pre">true</span></code>)</p>
+<blockquote>
+<div><p class="card-text">Display the axes or not.</p>
+</div></blockquote>
+</li>
+</ul>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>opendx</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Display a 3D rendering of the image </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% prototypes</span>
+<span class="n">opendx</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+<span class="n">opendx</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Value</span><span class="p">)</span>
+
+<span class="c">% examples</span>
+<span class="n">opendx</span><span class="p">(</span><span class="n">IM</span><span class="p">)</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">makeMoviedx</span><span class="p">(</span><span class="n">IM</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;theta&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;phi&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;zrange&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="w"> </span><span class="mi">120</span><span class="p">]</span><span class="o">*</span><span class="mf">1e-9</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;ampl&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">The <code class="docutils literal notranslate"><span class="pre">opendx</span></code> method diplay images from <a class="reference internal" href="#the-imageem-class"><span class="std std-ref">ImageEM</span></a> or <a class="reference internal" href="ImageQLSI.html#the-imageqlsi-class"><span class="std std-ref">ImageQLSI</span></a> objects.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">Many Name-value options can be specified to change the rendering.</p>
+<ul>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'rate'</span></code> (default: <code class="docutils literal notranslate"><span class="pre">25</span></code>)</p>
+<blockquote>
+<div><p class="card-text">Frame rate of the avi file in <abbr title="frame per second">fps</abbr>.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'persp'</span></code>  (default: 1)</p>
+<blockquote>
+<div><p class="card-text">With <code class="docutils literal notranslate"><span class="pre">'persp'</span></code> set to <code class="docutils literal notranslate"><span class="pre">1</span></code>, the video uses the <code class="docutils literal notranslate"><span class="pre">opendx</span></code> method to create a nnince 3D rendering of the image. Set this option to <code class="docutils literal notranslate"><span class="pre">0</span></code> to cancel this effect.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'phi'</span></code>  (default: 45) and <code class="docutils literal notranslate"><span class="pre">'theta'</span></code>  (default: 45)</p>
+<blockquote>
+<div><p class="card-text">Position of the camera in <span class="math notranslate nohighlight">\((\theta, \phi)\)</span></p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'ampl'</span></code>  (default: 45) and <code class="docutils literal notranslate"><span class="pre">'theta'</span></code>  (default: 3)</p>
+<blockquote>
+<div><p class="card-text">sets the magnitude of the 3D relief</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'zrange'</span></code></p>
+<blockquote>
+<div><p class="card-text">2-vector setting the limits of the <em>z</em> axis.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'colorMap'</span></code> (default: Parula)</p>
+<blockquote>
+<div><p class="card-text">Color map.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'title'</span></code></p>
+<blockquote>
+<div><p class="card-text">Title to display on the movie, if any.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'factor'</span></code> (default: 1)</p>
+<blockquote>
+<div><p class="card-text">Correction factor to the <abbr title="optical path difference">OPD</abbr>, for instance 5.55e-3 to convert the <abbr title="optical path difference">OPD</abbr> into <abbr title="dry mass">DM</abbr>.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'label'</span></code> (default: ‘Optical path difference (nm)’)</p>
+<blockquote>
+<div><p class="card-text">Label to put on the color scale.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'imType'</span></code> (default: ‘OPD’)</p>
+<blockquote>
+<div><p class="card-text">Cell array of the properties of the object to be displayed: <code class="docutils literal notranslate"><span class="pre">'OPD'</span></code>, <code class="docutils literal notranslate"><span class="pre">'T'</span></code>, <code class="docutils literal notranslate"><span class="pre">'DWx'</span></code>, <code class="docutils literal notranslate"><span class="pre">'DWy'</span></code>, <code class="docutils literal notranslate"><span class="pre">'Ph'</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'axisDisplay'</span></code> (default: true)</p>
+<blockquote>
+<div><p class="card-text">Display the axes or not.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'frameTime'</span></code></p>
+<blockquote>
+<div><p class="card-text">Equals the exposure time. Should be specified for the time to appear on the movie. If empty, no time indication is displayed on the movie.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'timeUnit'</span></code> {mustBeMember(opt.timeUnit,{‘s’,’min’,’h’})}= ‘s’</p>
+<blockquote>
+<div><p class="card-text">If <code class="docutils literal notranslate"><span class="pre">'frameTime'</span></code> is indicated, then one can also indicate the preferred time unit to be displayed with the option <code class="docutils literal notranslate"><span class="pre">'timeUnit'</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="docutils literal notranslate"><span class="pre">'timeFontSize'</span></code></p>
+<blockquote>
+<div><p class="card-text">If the font size of the time time indication on the movie is not appropriate, it can be set with the <code class="docutils literal notranslate"><span class="pre">'timeFontSize'</span></code> option.</p>
+</div></blockquote>
+</li>
+</ul>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>overview</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Display all the images of an object array in a single figure </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">objList</span><span class="p">.</span><span class="n">overview</span><span class="p">();</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">overview</span><span class="p">(</span><span class="s">&#39;types&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">typeList</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">This method displays all the images of an object array in a single figure. Here is an example of what it gives with an array of 15 objects:</p>
+<figure class="align-default">
+<img alt="../_images/overview.png" src="../_images/overview.png" />
+</figure>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>pxSize</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Return the image pixel size at the sample plane. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">pxSize</span><span class="p">();</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">Returns the pixel size at the sample plane.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>rot90</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Rotate the images of the object by multiples of 90°. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">rot90</span><span class="p">();</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">k</span><span class="p">);</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
+<span class="n">obj2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">___</span><span class="p">);</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.rot90()</span></code> rotates the images of the object by 90°, counterclockwise.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><code class="docutils literal notranslate"><span class="pre">obj.rot90(k)</span></code> rotates the images of the object by <span class="math notranslate nohighlight">\(k\times90°\)</span>, counterclockwise. <code class="docutils literal notranslate"><span class="pre">k</span></code> must be an integer and can be negative.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text"><em>ImageEM</em> object vectors can also be used with this method. The transformation applies then to all the objects of the vector.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">If an output <code class="docutils literal notranslate"><span class="pre">obj2</span></code> is used, then the object is not modified, and duplicated.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>Rytov</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Return the Rytov image. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">Rytov</span><span class="p">();</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">Method that returns the Rytov image, defined by <a class="footnote-reference brackets" href="#acsp10-322" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p>
+<div class="math notranslate nohighlight">
+\[I_\mathrm{Rytov} = \left\vert\frac{\lambda n}{\pi}\left[\frac{ln(T)}{2}+i\varphi\right]\right\vert^2\]</div>
+<p class="card-text">where <span class="math notranslate nohighlight">\(\lambda\)</span> is the wavelength, <span class="math notranslate nohighlight">\(n\)</span> the refractive index of the surrounding medium, <span class="math notranslate nohighlight">\(T\)</span> the intensity image and <span class="math notranslate nohighlight">\(\varphi\)</span> the phase image.</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="acsp10-322" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
+<p class="card-text"><em>Label-Free Single Nanoparticle Identification and Characterization in Demanding Environment, Including Infectious Emergent Virus</em>, Nguyen et al., <strong>Small</strong> 2304564 (2023)</p>
+</aside>
+</aside>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>save</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Export the T and OPD images as jpg and txt files. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% general patterns</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="w"> </span><span class="n">Names</span><span class="p">)</span>
+
+<span class="c">% Examples,</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;savedData&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;T&#39;</span><span class="p">)</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;savedData&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;OPD&#39;</span><span class="p">)</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;savedData&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;T&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;OPD&#39;</span><span class="p">)</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;savedData&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;T&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;OPD&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Ex&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Ey&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">Export the intensity, wavefront, phase, and/or E fields of the <em>ImageEM</em> object into a folder, as .txt and .jpg files. To indicate which images are saved, a list a <em>Names</em> has to be indicated as separated arguments, corresponding to the names of the properties, e.g., <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;T&#39;</span></code>, <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;OPD&#39;</span></code>, <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Ex&#39;</span></code>, <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Ey&#39;</span></code>.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>sizeof</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> sizeof </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="card-text">Returns the size of the object in Kb.</p>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">sizeof</span><span class="p">()</span>
+<span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">sizeof</span><span class="p">();</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">Returns or display the size of the object (list) occupied on the hard drive. If not output is specified, it displays the size, in Mb, or Kb, in the command window. Otherwise, it returns the size in bytes.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>sum</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Coherent sum of the fields. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">sum</span><span class="p">(</span><span class="n">objList</span><span class="p">);</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">The method uses the overloaded operator <code class="docutils literal notranslate"><span class="pre">+</span></code> to sum all the E fields of list of <em>ImageEM</em> E fields in <code class="docutils literal notranslate"><span class="pre">objList</span></code>. It simply sums the electromagnetic fields associated to all 2 <em>ImageEM</em> objects. Note that it also sums the incident fields.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p class="card-text">This method is relevant the different images correspond to the same sample, illuminated with various plane waves with different incidence angles at the same time, for instance.</p>
+<p class="card-text">When the list of images does not correspond to the same sample, for instance when it consists of different nanoparticles at different locations, one should not use this method to get the image of all the nanoparticles at the same time. There will be no self-consistent optical coupling between these objects, and the incident E fields should be be sumed in this case. Prefer summing dipoles (<code class="docutils literal notranslate"><span class="pre">DIlist=DI1+DI2</span></code>) and then imaging the dipole array(<code class="docutils literal notranslate"><span class="pre">DIlist.imaging()</span></code>), which will run a DDA self consistent calculation of the dipolar moments.</p>
+</div>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>write</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> copy the properties of an <em>ImageEM</em> object into another. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">write</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="w"> </span><span class="n">obj_in</span><span class="p">)</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">obj_in</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">The method copies all the properties of <code class="docutils literal notranslate"><span class="pre">obj_in</span></code> into the prexisting object <code class="docutils literal notranslate"><span class="pre">obj</span></code>, without creating a new handle.</p>
+</div>
+</details><details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>+</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Defines the addition between two <em>ImageEM</em> objects: <code class="docutils literal notranslate"><span class="pre">IM1</span> <span class="pre">+</span> <span class="pre">IM2</span></code>. </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">plus</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="w"> </span><span class="n">obj2</span><span class="p">);</span>
+<span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">obj2</span><span class="p">;</span>
+<span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">obj2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="k">...</span><span class="c"> + objN;</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">The method overloads the operator <code class="docutils literal notranslate"><span class="pre">+</span></code> by defining the method <code class="docutils literal notranslate"><span class="pre">plus</span></code>. It simply sums the electromagnetic field associated to the 2 <em>ImageEM</em> objects. Note that it also sums the incident fields. It is relevant to use when the sample is illuminated at the same time with different plane waves at different angles for instance.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p class="card-text">By summing images of different particles/dipoles, there is no self-consistent optical coupling between these objects. Prefer summing dipoles and then imaging the dipole array, which will run a DDA self consistent calculation of the dipolar moments.</p>
+</div>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">The method also work with several additions at a time: <code class="docutils literal notranslate"><span class="pre">obj</span> <span class="pre">=</span> <span class="pre">obj1</span> <span class="pre">+</span> <span class="pre">obj2</span> <span class="pre">+</span> <span class="pre">...</span> <span class="pre">+</span> <span class="pre">objN;</span></code>. When all these images are in a <em>ImageEM</em> array, one can write <code class="docutils literal notranslate"><span class="pre">obj</span> <span class="pre">=</span> <span class="pre">sum(objList)</span></code>.</p>
+</div>
+</details></section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Illumination.html" class="btn btn-neutral float-left" title="The Illumination class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ImageQLSI.html" class="btn btn-neutral float-right" title="The ImageQLSI class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Guillaume Baffou.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
