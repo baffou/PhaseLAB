@@ -514,7 +514,6 @@ classdef ImageQLSI   <   ImageMethods
 
         end
 
-
         function [obj2, mask] = flatten(obj,method,opt)
         arguments
             obj (1,:) ImageMethods
@@ -623,8 +622,6 @@ classdef ImageQLSI   <   ImageMethods
         end
         
         end
-
-
 
         function [obj, params] = level0(obj0,opt)
             arguments
@@ -832,7 +829,6 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
-
         function val = DWnorm(obj)
             if isempty(obj.DWx)
                 error('The gradients have not been calculated upon using QLSIprocess. Please use the option saveGradients=1')
@@ -938,7 +934,6 @@ classdef ImageQLSI   <   ImageMethods
 
         end
 
-
         function write(obj,obj_in)
             % makes obj2 = obj, but without giving a new handle
             propList = ["T0","OPD0","DWx0","DWy0","ItfFileName",...
@@ -954,7 +949,6 @@ classdef ImageQLSI   <   ImageMethods
                 end
             end
         end
-
 
 
     end

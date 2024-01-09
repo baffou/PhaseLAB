@@ -33,6 +33,14 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             end
         end
         
+        function app = figure2(IM)
+            if nargout
+                app=PhaseLABgui_multiCanal(IM);
+            else
+                PhaseLABgui_multiCanal(IM);
+            end
+        end
+        
         function val=lambda(obj)
             val=obj.Illumination.lambda;
         end
@@ -697,8 +705,156 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             bool = logical(val);
         end
 
-        
+        function IM = adjustPolarOffsets(IM0)
+            
+            [Nim, Nch] = size(IM0);
+            if Nch ~= 4
+                error('this method assumes that the input is an N*4 array of objects, where the 4 columns are the 4 polarisation measurements')
+            end
 
+            if nargout
+                IM = copy(IM0);
+            else
+                IM = IM0;
+            end
+
+            for ii = 1:Nim
+
+                T1 = IM(ii,1).T;
+                T2 = IM(ii,2).T;
+                T3 = IM(ii,3).T;
+                T4 = IM(ii,4).T;
+                
+                E1 = sqrt(T1);
+                %E2 = sqrt(T2);
+                E3 = sqrt(T3);
+                %E4 = sqrt(T4);
+                
+                Phi1 = IM(ii,1).Ph;
+                Phi2 = IM(ii,2).Ph;
+                Phi3 = IM(ii,3).Ph;
+                Phi4 = IM(ii,4).Ph;
+                
+                C = 0.5*(T2-T4)./sqrt(T1.*T3);
+                
+                % C almost equal zero.
+                % since C = cos(phi_x - ph_y), it means that phi_x and phi_y are in
+                % quadratude, which is true because of the circular polarization !
+                
+                %figure,imagegb(Phi3-Phi1+acos(C));
+                %clim([-1.57 0])
+                
+                dPhi3 = mean(mean(Phi3-Phi1+acos(C)));
+                
+                phi1 = IM(ii,1).Ph;
+                phi3 = IM(ii,3).Ph - dPhi3;
+                
+                %% setting the right offset to the first image to make sure the background is zero in OPD
+                phi1 = phi1 - mean(mean(phi1(1,1:end-1)+phi1(1:end-1,end)+phi1(2:end,1)+phi1(end,2:end)))/4;
+                
+                %% other polars 2 & 4
+                
+                dPhi2 = mean(mean(Phi2-angle(E1.*exp(1i*phi1)+E3.*exp(1i*phi3))));
+                dPhi4 = mean(mean(Phi4-angle(-E1.*exp(1i*phi1)+E3.*exp(1i*phi3))));
+                
+                phi2 = Phi2-dPhi2;
+                phi4 = Phi4-dPhi4;
+                
+                %% normalized phase maps
+                
+                tphi1=phi1;
+                tphi2=phi2+pi/4;
+                tphi3=phi3+pi/2;
+                tphi4=phi4+3*pi/4;
+                
+                %% final plot
+                
+                figure
+                subplot(2,4,1)
+                imagegb(T1)
+                set(gca,'colormap',gray)
+                subplot(2,4,2)
+                imagegb(T2)
+                set(gca,'colormap',gray)
+                subplot(2,4,3)
+                imagegb(T3)
+                set(gca,'colormap',gray)
+                subplot(2,4,4)
+                imagegb(T4)
+                set(gca,'colormap',gray)
+                
+                subplot(2,4,5)
+                imageph(tphi1)
+                subplot(2,4,6)
+                imageph(tphi2)
+                subplot(2,4,7)
+                imageph(tphi3)
+                subplot(2,4,8)
+                imageph(tphi4)
+                
+                fullscreen
+                linkAxes
+
+    
+                %% New OPD images, with the right shift
+                lambda = IM(ii, 1).Illumination.lambda;
+                IM(ii, 1).OPD = IM(ii, 1).OPD;
+                IM(ii, 2).OPD = IM(ii, 2).OPD - dPhi2*lambda/(2*pi);
+                IM(ii, 3).OPD = IM(ii, 3).OPD - dPhi3*lambda/(2*pi);
+                IM(ii, 4).OPD = IM(ii, 4).OPD - dPhi4*lambda/(2*pi);
+
+            end
+
+        end
+
+        function polarImages = extractPolarImages(IM)
+
+            [Nim, Nch] = size(IM);
+            if Nch ~= 4
+                error('this method assumes that the input is an N*4 array of objects, where the 4 columns are the 4 polarisation measurements')
+            end
+    
+            % Preallocate the structure array
+            polarImages(Nim).phibar = [];
+            polarImages(Nim).theta0 = [];
+            polarImages(Nim).dphi = [];
+            polarImages(Nim).Illumination = [];
+            polarImages(Nim).Microscope = [];
+            polarImages(Nim).rgbImage = [];
+            
+            for ii = 1:Nim
+                tphi1 = IM(ii,1).Ph;
+                tphi2 = IM(ii,2).Ph + pi/4;
+                tphi3 = IM(ii,3).Ph + pi/2;
+                tphi4 = IM(ii,4).Ph + 3*pi/4;
+    
+                polarImages(ii).theta0 = angle((tphi1-tphi3)+1i*(tphi2-tphi4));
+    
+                polarImages(ii).phibar = (tphi1+tphi2+tphi3+tphi4)/4;
+                
+                %deltaphi = sqrt(-(tphi4-phibar).*(tphi2-phibar)-(tphi3-phibar).*(tphi1-phibar));
+                polarImages(ii).dphi = sqrt(abs((tphi4-polarImages(ii).phibar).*(tphi2-polarImages(ii).phibar)+(tphi3-polarImages(ii).phibar).*(tphi1-polarImages(ii).phibar)));
+    
+                polarImages(Nim).Illumination = IM(ii,1).Illumination;
+                polarImages(Nim).Microscope = IM(ii,1).Microscope;
+
+                [Ny, Nx] = size(polarImages(ii).dphi);
+                hsvImage = zeros(Ny, Nx, 3);
+                hsvImage(:,:,1) = polarImages(ii).theta0/pi/2+0.5;
+                hsvImage(:,:,2) = 1.2*polarImages(ii).dphi/max(polarImages(ii).dphi(:));
+                hsvImage(:,:,3) = ones(Ny,Nx);
+                
+                polarImages(Nim).rgbImage = hsv2rgb(hsvImage);
+
+
+            end    
+        end
+
+        function  polarImages = CGMpolar(IM)
+            
+            polarImages = extractPolarImages(adjustPolarOffsets(IM));
+            
+        end
     end
 
 end
