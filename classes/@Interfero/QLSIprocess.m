@@ -49,6 +49,12 @@ end
 %% shaping of the crops
 updateRefFcrop = 0;
 
+try
+    Itf(1).Ref.Fcrops(1).Nx
+catch
+    pause(1)
+end
+
 IM = repmat(ImageQLSI(),Nf,1);
 if ~isempty(opt.Fcrops) % If crops are defined within the options
     if numel(opt.Fcrops)~=3
