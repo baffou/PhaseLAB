@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=1e1f2f42" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9820276c" />
 
   
     <link rel="shortcut icon" href="../_static/favicon2.png"/>
@@ -225,7 +225,12 @@
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">val</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">alpha_ImageProfile</span><span class="p">();</span>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% prototype</span>
+<span class="n">params</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">alpha_ImageProfile</span><span class="p">(</span><span class="n">Name</span><span class="p">,</span><span class="n">Value</span><span class="p">);</span>
+
+<span class="c">% examples</span>
+<span class="n">params</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">alpha_ImageProfile</span><span class="p">();</span>
+<span class="n">params</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">alpha_ImageProfile</span><span class="p">(</span><span class="s">&#39;nmax&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;nBkg&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span>
 </pre></div>
 </div>
 <p class="title">Description</p><p class="card-text">This method of the <a class="reference internal" href="#the-imageem-class"><span class="std std-ref">ImageEM</span></a> and <a class="reference internal" href="ImageQLSI.html#the-imageqlsi-class"><span class="std std-ref">ImageQLSI</span></a> classes returns the polarisability, <abbr title="optical volume">OV</abbr> and <abbr title="dry mass">DM</abbr> of small objects, using a radial profile method. The algorithm involves a sum of the pixels on a circular area. The method opens a window with the image. First, click on the OPD image to zoom in on the particle of interest, and press ‘z’ when the zoom is correct. Second, click on the center of the particle. A new figure will show up, plotting the pixel summation as a function of the radius of the circular area, from 0 to 100 px. Finally, click two times on the graph to define the range of value corresponding to a proper convergence of the integration. In practice, the line shape should feature a plateau, and the user should click at the beginning and at the end of the plateau. For instance, in this example, the user could click on <span class="math notranslate nohighlight">\(x=18\)</span> and <span class="math notranslate nohighlight">\(x=40\)</span>:</p>

@@ -7,19 +7,12 @@
     :description: The PhaseLAB Matlab toolbox documentation
     :keywords: QLSI, Matlab, toolbox
 
-
-
-
-
 |PhaseLAB| documentation
 ########################
-
-
 
 |PhaseLAB|  is a Matlab toolbox aimed at dealing with quantitative phase images. It has been developed by Guillaume Baffou, CNRS research scientist at the Fresnel Institute (Marseille, France).
 
 The toolbox is accessible at `github.com/baffou/PhaseLAB <https://github.com/baffou/PhaseLAB>`_.
-
 
 .. panels::
 
@@ -28,11 +21,7 @@ The toolbox is accessible at `github.com/baffou/PhaseLAB <https://github.com/baf
     +++
 
     .. link-button:: https://github.com/baffou/PhaseLAB
-        :classes: stretched-link
         :text:    github.com/baffou/PhaseLAB
-
-
-
 
 .. Indices and tables
 .. ==================
@@ -43,7 +32,6 @@ The toolbox is accessible at `github.com/baffou/PhaseLAB <https://github.com/baf
 .. # = - * " ^ 
 
 **Table of Content**:
-
 
 .. toctree::
     :maxdepth: 2
@@ -67,13 +55,11 @@ The toolbox is accessible at `github.com/baffou/PhaseLAB <https://github.com/baf
 
     codeExamples
 
-
 .. toctree::
     :maxdepth: 2
     :caption: GUI
 
     GUI
-
 
 .. toctree::
     :maxdepth: 3

@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=1e1f2f42" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=f12b7cea" />
 
   
     <link rel="shortcut icon" href="../../../_static/favicon2.png"/>
@@ -138,7 +138,57 @@
 <p class="card-text">Objects vectors can also be used with this method. The transformation applies then to all the objects of the vector.</p>
 <p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
 <p class="card-text">If an output <code class="docutils literal notranslate"><span class="pre">obj2</span></code> is used, <code class="docutils literal notranslate"><span class="pre">obj2</span> <span class="pre">=</span> <span class="pre">obj.propagation(z)</span></code>, then the object is not modified, and is duplicated.</p>
+<p class="title">Examples</p><details class="sphinx-bs dropdown card mb-3" open="open">
+<summary class="summary-title card-header">
+<strong>Numerical refocusing</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em>  Code to numerically modify the focus of the image </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">%% Code that imports an experimental image (of long Geobacillus bacteria), creates a series of im</span>
+
+<span class="n">ME</span><span class="p">=</span><span class="n">Medium</span><span class="p">(</span><span class="s">&#39;water&#39;</span><span class="p">,</span><span class="s">&#39;glass&#39;</span><span class="p">);</span>
+<span class="n">OB</span><span class="p">=</span><span class="n">Objective</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mf">0.7</span><span class="p">,</span><span class="s">&#39;Olympus&#39;</span><span class="p">);</span>
+<span class="n">MI</span><span class="p">=</span><span class="n">Microscope</span><span class="p">(</span><span class="n">OB</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="s">&#39;sC8-944&#39;</span><span class="p">,</span><span class="s">&#39;PhaseLIVE&#39;</span><span class="p">);</span>
+<span class="n">lambda</span><span class="p">=</span><span class="mf">531e-9</span><span class="p">;</span>
+<span class="n">IL</span><span class="p">=</span><span class="n">Illumination</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span><span class="n">ME</span><span class="p">);</span>
+
+<span class="c">%% IMPORT THE IMAGES</span>
+<span class="n">folder</span><span class="p">=</span><span class="s">&#39;GeobLongFilaments&#39;</span><span class="p">;</span>
+<span class="n">Im</span><span class="w"> </span><span class="p">=</span><span class="n">importItfRef</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">MI</span><span class="p">);</span>
+
+<span class="c">%% INTERFEROGRAM PROCESSING</span>
+<span class="n">IM</span><span class="p">=</span><span class="n">Im</span><span class="p">.</span><span class="n">QLSIprocess</span><span class="p">(</span><span class="n">IL</span><span class="p">);</span>
+
+<span class="c">%% list of defocus values in µm</span>
+<span class="n">zList</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="o">-</span><span class="mi">20</span><span class="p">:</span><span class="mi">10</span><span class="p">;</span>
+<span class="n">No</span><span class="p">=</span><span class="nb">length</span><span class="p">(</span><span class="n">zList</span><span class="p">);</span>
+
+<span class="n">IMlist</span><span class="p">=</span><span class="n">ImageQLSI</span><span class="p">(</span><span class="n">No</span><span class="p">);</span>
+
+<span class="k">for</span><span class="w"> </span><span class="n">io</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span><span class="n">No</span>
+<span class="w">    </span><span class="n">IMlist</span><span class="p">(</span><span class="n">io</span><span class="p">)</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">IM</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
+<span class="w">    </span><span class="n">IMlist</span><span class="p">(</span><span class="n">io</span><span class="p">)</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">IMlist</span><span class="p">(</span><span class="n">io</span><span class="p">).</span><span class="n">propagation</span><span class="p">(</span><span class="n">zList</span><span class="p">(</span><span class="n">io</span><span class="p">)</span><span class="o">*</span><span class="mf">1e-6</span><span class="p">);</span>
+<span class="w">    </span><span class="n">IMlist</span><span class="p">(</span><span class="n">io</span><span class="p">).</span><span class="n">comment</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="nb">num2str</span><span class="p">(</span><span class="n">zList</span><span class="p">(</span><span class="n">io</span><span class="p">))</span><span class="w"> </span><span class="s">&#39; µm&#39;</span><span class="p">];</span>
+<span class="k">end</span>
+
+<span class="c">% select the area supposed to correspond to a zero wavfront value</span>
+<span class="n">IMlist</span><span class="p">.</span><span class="n">level0</span><span class="p">(</span><span class="n">Center</span><span class="p">=</span><span class="s">&quot;Manual&quot;</span><span class="p">,</span><span class="n">Size</span><span class="p">=</span><span class="s">&quot;Manual&quot;</span><span class="p">);</span>
+
+<span class="c">% crop the image</span>
+<span class="n">IMlist</span><span class="p">.</span><span class="n">crop</span><span class="p">(</span><span class="n">Size</span><span class="p">=</span><span class="mi">2000</span><span class="p">);</span>
+
+<span class="c">% build a movie from the series of images:</span>
+<span class="n">IMlist</span><span class="p">.</span><span class="n">makeMoviedx</span><span class="p">(</span><span class="s">&#39;/Users/perseus/Documents/im.avi&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="n">persp</span><span class="p">=</span><span class="mi">0</span><span class="p">,</span><span class="n">theta</span><span class="p">=</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">phi</span><span class="p">=</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="n">zrange</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="o">-</span><span class="mi">80</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">])</span>
+</pre></div>
 </div>
+<video width="448" height="379  " autoplay loop muted>
+    <source src="http://guillaume.baffou.com/movies/GeobRefocus.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video></div>
+</details></div>
 </details></section>
 
 

@@ -113,7 +113,7 @@ elseif isempty(Fcrops.x) || isempty(Fcrops.y) % no center position, but R determ
         [XX, YY]=meshgrid(1:Nx,1:Ny);
         XX=ceil(XX-mean(XX(:)));
         YY=ceil(YY-mean(YY(:)));
-        RR=sqrt(XX.*XX+YY.*YY);
+        RR=sqrt(XX.*XX+YY.*YY*(Fcrops.R(1)/Fcrops.R(2))^2);
         [x1,y1]=maxPix(abs(FItf).*(XX>0).*(YY>=0).*double((RR>1.8*Fcrops.R(1))).*double((RR<2.2*Fcrops.R(1))));
     else
         
