@@ -84,42 +84,44 @@ elseif isempty(Fcrops.R) % The center of the crop is specified, but not the radi
     R(2) = Nx/(2*zeta)/ex;
     h = drawCrop(x1,y1,R,h);
     drawnow
-    
-    button = 0;
-    while button~=1
-        [x2,y2,button] = ginput(1);
-        if button == 1
-            button = 1;
-            R(1) = sqrt((x2-x1)^2+ex^2*(y2-y1)^2);
-            R(2) = R(1)/ex;
-        elseif isempty(button) || button==13 % press carriage return, keep original R=Nx/3
-            button = 1;
+    if ~opt.auto
+        button = 0;
+        while button~=1
+            [x2,y2,button] = ginput(1);
+            if button == 1
+                button = 1;
+                R(1) = sqrt((x2-x1)^2+ex^2*(y2-y1)^2);
+                R(2) = R(1)/ex;
+            elseif isempty(button) || button==13 % press carriage return, keep original R=Nx/3
+                button = 1;
+            end
         end
     end
     h = drawCrop(x1,y1,R,h);
     drawnow
+    pause(0.5)
     close(h)
     cropParamsout = FcropParameters(x1,y1,R,Nx,Ny);
     
     
 elseif isempty(Fcrops.x) || isempty(Fcrops.y) % no center position, but R determined
+    h = figure;
+    set(h,'Visible','on')
+    imagetf(FItf,'log10')
+%    Fs = 8192;t = 0:1/Fs:1;y=sin(2*pi*440*erf(t));soundsc(y)
     if opt.auto % auto selection of the first order
         [XX, YY]=meshgrid(1:Nx,1:Ny);
         XX=ceil(XX-mean(XX(:)));
         YY=ceil(YY-mean(YY(:)));
         RR=sqrt(XX.*XX+YY.*YY);
-        [x1,y1]=maxPix(FItf.*(RR>Fcrops.R));
+        [x1,y1]=maxPix(abs(FItf).*(XX>0).*(YY>=0).*double((RR>1.8*Fcrops.R(1))).*double((RR<2.2*Fcrops.R(1))));
     else
-        h = figure;
-        set(h,'Visible','on')
-        imagetf(FItf,'log10')
-    %    Fs = 8192;t = 0:1/Fs:1;y=sin(2*pi*440*erf(t));soundsc(y)
         
         title('Zoom in on the order of interest, and click enter')
         zoom on
         waitfor(gcf,'CurrentCharacter',char(13))
         title('Click on the order center pixel')
-            [x1,y1] = ginput(1);
+        [x1,y1] = ginput(1);
     end
     R = Fcrops.R;
     h = drawCrop(x1,y1,R,h);

@@ -149,14 +149,14 @@ Summary
 
 .. tabs::
 
-    .. tab:: Simple microscope construction
+    .. tab:: Simple setup construction
 
         .. code-block:: matlab
 
             IL = Illumination(630e-9);                               % define the illumination
             MI = Microscope(100, 'Nikon', 'Silios_mono', 'PhaseLIVE');% define the microscope
 
-    .. tab:: Advanced microscope construction
+    .. tab:: Advanced setup construction
 
         .. code-block:: matlab
 

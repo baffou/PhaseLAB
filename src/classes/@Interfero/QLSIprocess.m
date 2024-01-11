@@ -145,11 +145,6 @@ for ii = 1:Nf
     end
 
 
-
-
-
-
-
     Nx = Itfi.Nx;
     Ny = Itfi.Ny;
     if Nx~=cropParam0.Nx || Ny~=cropParam0.Ny % check if the image size changed compared with the previous one, and reinitialize the parameters in case it did.

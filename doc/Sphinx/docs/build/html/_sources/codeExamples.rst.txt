@@ -15,5 +15,6 @@ Code examples
     
 .. include:: /codeExamples/inSilicoSimu.rst
     
+.. include:: /codeExamples/numericalRefocusing.rst
 
 

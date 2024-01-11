@@ -30,5 +30,11 @@
 
     If an output ``obj2`` is used, ``obj2 = obj.propagation(z)``, then the object is not modified, and is duplicated.
     
+    .. raw:: html
+      
+        <p class="title">Examples</p>
+    
+    .. include:: /codeExamples/numericalRefocusing.rst
+
 
 

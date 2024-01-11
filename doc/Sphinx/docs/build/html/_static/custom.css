@@ -144,15 +144,23 @@ footer a:hover {
     margin: 0;
 }
 
+#make-a-movie h1, #numerical-refocusing h2 {
+    color: #fff;
+    font-size: 0.1em;
+    padding: 0;
+    margin: 0;
+}
+
 
 /* link-button */
 
 .card-text a.btn{
-    background-color: #1e6ca7;
+    background-color: #ffffff;
     font-weight:bold;
-    color: #EEE;
-    border: 2px solid #FFF;    
+    color: #ffffff;
+    border: 2px solid #ffffff;    
 }
+
 
 .card-text a.btn:hover{
     color: var(--hover);
@@ -163,7 +171,6 @@ footer a:hover {
     font-family: "Roboto";
     src: url("./fonts/RobotoCondensed-Medium.ttf");
 }
-
 
 
 .document a.reference{
@@ -181,4 +188,9 @@ footer a:hover {
 /* avoid the horizontal scrollbar in tables*/
 .tight-table td {
     white-space: normal !important
+}
+
+
+a.btn {
+    color: #ff0000; /* Change this to your desired color */
 }
