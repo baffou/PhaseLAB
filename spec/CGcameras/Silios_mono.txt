@@ -1,7 +1,0 @@
-dexel size:	5.5e-6
-Gamma:	33e-6
-Nx:2048
-Ny:2048
-distance:	0.75e-3
-CGdepth: 550e-9
-CGangle: 57.0078

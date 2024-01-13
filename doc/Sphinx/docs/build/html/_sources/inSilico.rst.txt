@@ -1,13 +1,13 @@
 In silico QLSI
 ==============
 
-PhaseLAB enables not only to :ref:`process QLSI interferograms <process_experimental_images>`, it can also simulate the electromagnetic field at the image plane of a microscope, for a given object at the sample plane, and extract from it the theoretical intensity and wavefront images.
+|PhaseLAB| enables not only to :ref:`process QLSI interferograms <process_experimental_images>`, it can also simulate the electromagnetic field at the image plane of a microscope, for a given object at the sample plane, and extract from it the theoretical intensity and wavefront images.
 
 Moreover, it can also model the interferogram of this exact same object, and process this modelled interferogram as it it were a real experimental one.
 
-This modality of PhaseLAB, called *in Silico QLSI*, enables the easy screening of parameters such as the wavelength, the grating pitch, the grating-camera distance, the dexel size, etc, and their effects on the image quality (signal to noise ratio, accuracy, artefacts, etc), without conduting any experiment.
+This modality of |PhaseLAB|, called *in Silico QLSI*, enables the easy screening of parameters such as the wavelength, the grating pitch, the grating-camera distance, the dexel size, etc, and their effects on the image quality (signal to noise ratio, accuracy, artefacts, etc), without conduting any experiment.
 
-This modality of PhaseLAB was introduced in Ref. [#OC521_128577]_ and widely used in Ref. [#QPIcomparison]_.
+This modality of |PhaseLAB| was introduced in Ref. [#OC521_128577]_ and widely used in Ref. [#QPIcomparison]_.
 
 .. [#OC521_128577] *Cross-grating phase microscopy (CGM): In silico experiment (insilex) algorithm, noise and accuracy*, B. Marthy, G. Baffou, **Opt. Commun.** 521, 128577 (2022)  
 
@@ -106,7 +106,7 @@ Here is the displayed figure, comparing the theoretical OPD image, and the OPD i
 Model arbitrary objects
 -----------------------
 
-Objects of arbitrary geometry (big spheres, rods, biological cell, ...) can also be modelled using the *in Silico* algorithm. For this purpose, PhaseLAB should be coupled with the IFDDA toolbox.
+Objects of arbitrary geometry (big spheres, rods, biological cell, ...) can also be modelled using the *in Silico* algorithm. For this purpose, |PhaseLAB| should be coupled with the IFDDA toolbox.
 
 *to be continued...*
 

@@ -1,7 +1,7 @@
 .. _The_dynamicFigure_function:
 
 The |c| dynamicFigure |/c| function
-===================================
+-----------------------------------
 
 :py:func:`dynamicFigure` is a function that can display more than one type of image in one figure (wavefront and intensity for instance). It also enables the navigation thoughout a series of images using the left- and right-arrow keys of the keyboard.
 

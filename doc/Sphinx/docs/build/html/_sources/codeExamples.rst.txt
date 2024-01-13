@@ -17,4 +17,7 @@ Code examples
     
 .. include:: /codeExamples/numericalRefocusing.rst
 
+.. include:: /codeExamples/polarImaging.rst
+
+
 

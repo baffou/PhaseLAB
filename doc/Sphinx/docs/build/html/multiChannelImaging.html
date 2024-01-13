@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multichannel imaging &mdash; PhaseLAB documentation 4.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
+      <link rel="stylesheet" type="text/css" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
+      <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=7b4e891a" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon2.png"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=9f5556dd"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Code examples" href="codeExamples.html" />
+    <link rel="prev" title="In silico QLSI" href="inSilico.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PhaseLAB documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="download.html">Download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="buildMicroscope.html">Build the optical setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="importImages.html">Import experimental interferograms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="processImages.html">Process experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="displayImages.html">Display experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inSilico.html">In silico QLSI</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Multichannel imaging</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#multicolor-imaging">Multicolor imaging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multipolar-imaging">Multipolar imaging</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="codeExamples.html">Code examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="GUI.html">The GUI of <span style="font-family: 'Roboto';">PhaseLAB</span></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classes/Camera.html">Camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/CGcamera.html">CGcamera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/CrossGrating.html">CrossGrating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Dipole.html">Dipole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Illumination.html">Illumination</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/ImageEM.html">ImageEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/ImageQLSI.html">ImageQLSI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Interfero.html">Interfero</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Microscope.html">Microscope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Objective.html">Objective</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="functions/CGMinSilico.html">CGMinSilico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions/imaging.html">imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions/importItfRef.html">importItfRef</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions/dynamicFigure.html">dynamicFigure</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PhaseLAB documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Multichannel imaging</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/multiChannelImaging.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="multichannel-imaging">
+<h1>Multichannel imaging<a class="headerlink" href="#multichannel-imaging" title="Link to this heading"></a></h1>
+<p>Some articles published in 2024 reported the use QLSI with multichannel cameras, in particular with a 2-color camera <a class="footnote-reference brackets" href="#colorcgm" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, and a 4-polarisation camera <a class="footnote-reference brackets" href="#polarcgm" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. For these implementations, 2 to 4 interferograms shall be extracted from the raw camera image.</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="colorcgm" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p><em>Single-shot quantitative phase-fluorescence imaging using cross-grating wavefront microscopy</em>, B. Marthy, M. Benefice, G. Baffou, <strong>Sci. Rep.</strong> (2024)</p>
+</aside>
+<aside class="footnote brackets" id="polarcgm" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p><em>Capturing the Full Electromagnetic Field of Light using Polarization-Resolved Cross-Grating Wavefront Microscopy</em>, B. Marthy, M. Benefice, G. Baffou, <em>submitted</em>  (2024)</p>
+</aside>
+</aside>
+<section id="multicolor-imaging">
+<h2>Multicolor imaging<a class="headerlink" href="#multicolor-imaging" title="Link to this heading"></a></h2>
+<p>If the interferogram arises from a 2-color camera, the two interferograms can be extracted using the <a class="reference internal" href="classes/Interfero/methodsPages/splitColors_method.html#the-splitcolors-method"><span class="std std-ref">splitColors</span></a> method:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">Itf0</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">importItfRef</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">MI</span><span class="p">);</span>
+<span class="n">Itf</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Itf0</span><span class="p">.</span><span class="n">splitColors</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>If the input <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">Itf0</span></code> is a list (an array) or <span class="math notranslate nohighlight">\(N\)</span> <a class="reference internal" href="classes/Interfero.html#the-interfero-class"><span class="std std-ref">Interfero</span></a> objects, then the output <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">Itf</span></code> is a <span class="math notranslate nohighlight">\(N\times2\)</span> array of <a class="reference internal" href="classes/Interfero.html#the-interfero-class"><span class="std std-ref">Interfero</span></a> objects, where each column is one color.</p>
+<p>Then, <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">Itf</span></code> can be processed like a normal <a class="reference internal" href="classes/Interfero.html#the-interfero-class"><span class="std std-ref">Interfero</span></a> object array using the <a class="reference internal" href="classes/Interfero/methodsPages/QLSIprocess_method.html#the-qlsiprocess-method"><span class="std std-ref">QLSIprocess</span></a> method:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">IM</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">QLSIprocess</span><span class="p">(</span><span class="n">Itf</span><span class="p">,</span><span class="w"> </span><span class="n">IL</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>and just like <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">Itf</span></code>, <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">IM</span></code> is a <span class="math notranslate nohighlight">\(N\times2\)</span> <a class="reference internal" href="classes/ImageQLSI.html#the-imageqlsi-class"><span class="std std-ref">ImageQLSI</span></a> object array.</p>
+</section>
+<section id="multipolar-imaging">
+<h2>Multipolar imaging<a class="headerlink" href="#multipolar-imaging" title="Link to this heading"></a></h2>
+<p>If the interferogram arises from a 4-polarisation camera, the 4 interferograms can be extracted using the method <a class="reference internal" href="classes/Interfero/methodsPages/splitPolars_method.html#the-splitpolars-method"><span class="std std-ref">splitPolars</span></a> method:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">Itf0</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">importItfRef</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">MI</span><span class="p">);</span>
+<span class="n">Itf</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Itf0</span><span class="p">.</span><span class="n">splitPolars</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>If the input <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">Itf0</span></code> is a list (an array) or <span class="math notranslate nohighlight">\(N\)</span> <a class="reference internal" href="classes/Interfero.html#the-interfero-class"><span class="std std-ref">Interfero</span></a> objects, then the output <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">Itf</span></code> is a <span class="math notranslate nohighlight">\(N\times4\)</span> array of <a class="reference internal" href="classes/Interfero.html#the-interfero-class"><span class="std std-ref">Interfero</span></a> objects, where each column is one polarisation.</p>
+<p>Then, <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">Itf</span></code> can be processed like a normal <a class="reference internal" href="classes/Interfero.html#the-interfero-class"><span class="std std-ref">Interfero</span></a> object using the <a class="reference internal" href="classes/Interfero/methodsPages/QLSIprocess_method.html#the-qlsiprocess-method"><span class="std std-ref">QLSIprocess</span></a> method:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">IM</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">QLSIprocess</span><span class="p">(</span><span class="n">Itf</span><span class="p">,</span><span class="w"> </span><span class="n">IL</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>and just like <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">Itf</span></code>, <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">IM</span></code> is a <span class="math notranslate nohighlight">\(N\times4\)</span> <a class="reference internal" href="classes/ImageQLSI.html#the-imageqlsi-class"><span class="std std-ref">ImageQLSI</span></a> objects.</p>
+<p>Then, the polarisation maps can be extracted using the <span class="xref std std-ref">The_CGM_polar_Method</span> method:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">polarImages</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">IMmulti</span><span class="p">.</span><span class="n">CGMpolar</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>The output <code class="docutils literal notranslate"><span class="pre">polarImages</span></code> is a structure containing the fields <code class="docutils literal notranslate"><span class="pre">theta0</span></code>, <code class="docutils literal notranslate"><span class="pre">phibar</span></code>, <code class="docutils literal notranslate"><span class="pre">dphi</span></code>, and <code class="docutils literal notranslate"><span class="pre">rgbImage</span></code>. They can be displayed using:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">figure</span><span class="p">,</span>
+<span class="nb">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">imagegb</span><span class="p">(</span><span class="n">polarImages</span><span class="p">.</span><span class="n">theta0</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="nb">gca</span><span class="p">,</span><span class="s">&#39;Colormap&#39;</span><span class="p">,</span><span class="nb">hsv</span><span class="p">)</span>
+<span class="nb">title</span><span class="p">(</span><span class="s">&quot;\theta_0&quot;</span><span class="p">)</span>
+<span class="nb">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">imagegb</span><span class="p">(</span><span class="n">polarImages</span><span class="p">.</span><span class="n">phibar</span><span class="p">)</span>
+<span class="nb">title</span><span class="p">(</span><span class="s">&quot;\bar\phi&quot;</span><span class="p">)</span>
+<span class="nb">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">imageph</span><span class="p">(</span><span class="n">polarImages</span><span class="p">.</span><span class="n">dphi</span><span class="p">)</span>
+<span class="nb">title</span><span class="p">(</span><span class="s">&quot;\delta\phi&quot;</span><span class="p">)</span>
+<span class="nb">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">imagegb</span><span class="p">(</span><span class="n">polarImages</span><span class="p">.</span><span class="n">rgbImage</span><span class="p">)</span>
+<span class="nb">colormap</span><span class="p">(</span><span class="nb">gca</span><span class="p">,</span><span class="nb">hsv</span><span class="p">)</span>
+<span class="n">fullscreen</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="inSilico.html" class="btn btn-neutral float-left" title="In silico QLSI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="codeExamples.html" class="btn btn-neutral float-right" title="Code examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Guillaume Baffou.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

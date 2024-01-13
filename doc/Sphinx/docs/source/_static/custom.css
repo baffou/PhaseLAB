@@ -151,6 +151,13 @@ footer a:hover {
     margin: 0;
 }
 
+#make-a-movie h1, #polarisation-imaging h2 {
+    color: #fff;
+    font-size: 0.1em;
+    padding: 0;
+    margin: 0;
+}
+
 
 /* link-button */
 

@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="../../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=f12b7cea" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=7b4e891a" />
 
   
     <link rel="shortcut icon" href="../../../_static/favicon2.png"/>
@@ -24,6 +24,7 @@
         <script src="../../../_static/documentation_options.js?v=9f5556dd"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -58,8 +59,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../importImages.html">Import experimental interferograms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../processImages.html">Process experimental images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../displayImages.html">Display experimental images</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../displayImages.html#the-c-dynamicfigure-c-function">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../inSilico.html">In silico QLSI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multiChannelImaging.html">Multichannel imaging</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
 <ul>
@@ -115,7 +116,7 @@
            <div itemprop="articleBody">
              
   <section id="splitpolars-interfero-class-method-subtitle-extract-the-4-interferograms-corresponding-to-the-4-polarizations-of-a-polarized-camera-subtitle">
-<h1><strong>splitPolars</strong> (Interfero class method) <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Extract the 4 interferograms corresponding to the 4 polarizations of a polarized camera. </em></span><a class="headerlink" href="#splitpolars-interfero-class-method-subtitle-extract-the-4-interferograms-corresponding-to-the-4-polarizations-of-a-polarized-camera-subtitle" title="Link to this heading"></a></h1>
+<span id="the-splitpolars-method"></span><h1><strong>splitPolars</strong> (Interfero class method) <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Extract the 4 interferograms corresponding to the 4 polarizations of a polarized camera. </em></span><a class="headerlink" href="#splitpolars-interfero-class-method-subtitle-extract-the-4-interferograms-corresponding-to-the-4-polarizations-of-a-polarized-camera-subtitle" title="Link to this heading"></a></h1>
 <details class="sphinx-bs dropdown card mb-3">
 <summary class="summary-title card-header">
 splitPolars <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Extract the 4 interferograms corresponding to the 4 polarizations of a polarized camera. </em></span><div class="summary-down docutils">
@@ -123,10 +124,10 @@ splitPolars <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;
 <div class="summary-up docutils">
 <svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="summary-content card-body docutils">
-<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">obj00</span><span class="p">,</span><span class="n">obj45</span><span class="p">,</span><span class="n">obj90</span><span class="p">,</span><span class="n">obj135</span><span class="p">]=</span><span class="n">splitPolars</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">Itf_multi</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">splitPolars</span><span class="p">(</span><span class="n">Itf</span><span class="p">);</span>
 </pre></div>
 </div>
-<p class="title">Description</p><p class="card-text">This method creates 4 <em>Interfero</em> objects <code class="docutils literal notranslate"><span class="pre">obj00</span></code>, <code class="docutils literal notranslate"><span class="pre">obj45</span></code>, <code class="docutils literal notranslate"><span class="pre">obj90</span></code> and <code class="docutils literal notranslate"><span class="pre">obj135</span></code>, corresponding respectively to the 0, 45, 90 and 135° polarizations of a polarized camera.</p>
+<p class="title">Description</p><p class="card-text">This method extracts the different polarisation channels of an <em>Interfero</em> object, into an array of <em>Interfero</em> objects <code class="docutils literal notranslate"><span class="pre">Itf_multi</span></code>. If <code class="docutils literal notranslate"><span class="pre">Itf</span></code> is an array of <span class="math notranslate nohighlight">\(N\)</span> <a class="reference internal" href="../../Interfero.html#the-interfero-class"><span class="std std-ref">Interfero</span></a> objects, then <code class="docutils literal notranslate"><span class="pre">Itf_multi</span></code> is an array of <span class="math notranslate nohighlight">\(N\times4\)</span> <a class="reference internal" href="../../Interfero.html#the-interfero-class"><span class="std std-ref">Interfero</span></a> objects, where each column is associated to one of the 4 polarisation 0, 45, 90, and 135°.</p>
 </div>
 </details></section>
 

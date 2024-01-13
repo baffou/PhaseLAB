@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
       <link rel="stylesheet" type="text/css" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
       <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
-      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f12b7cea" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=9820276c" />
 
   
     <link rel="shortcut icon" href="_static/favicon2.png"/>
@@ -62,9 +62,7 @@
 <li class="toctree-l1"><a class="reference internal" href="processImages.html">Process experimental images</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Display experimental images</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-functions-c-imagesc-c-c-imageph-c-c-imagebw-c-c-imagegb-c-c-imagejet-c">The functions: <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> imagesc </span>, <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> imageph </span>, <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> imagebw </span> , <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> imagegb </span>, <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> imagejet </span></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="#the-c-dynamicfigure-c-function">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-c-dynamicfigure-c-function">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-c-figure-c-method">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> figure </span> method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-c-opendx-c-method">The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> opendx </span> method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#color-scales">Color scales</a></li>
@@ -172,9 +170,8 @@
 </tbody>
 </table>
 </section>
-</section>
 <section id="the-c-dynamicfigure-c-function">
-<span id="the-dynamicfigure-function"></span><h1>The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function<a class="headerlink" href="#the-c-dynamicfigure-c-function" title="Link to this heading"></a></h1>
+<span id="the-dynamicfigure-function"></span><h2>The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> dynamicFigure </span> function<a class="headerlink" href="#the-c-dynamicfigure-c-function" title="Link to this heading"></a></h2>
 <p><code class="xref py py-func docutils literal notranslate"><span class="pre">dynamicFigure()</span></code> is a function that can display more than one type of image in one figure (wavefront and intensity for instance). It also enables the navigation thoughout a series of images using the left- and right-arrow keys of the keyboard.</p>
 <p>For instance:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">dynamicFigure</span><span class="p">(</span><span class="s">&#39;ph&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">IMlist</span><span class="p">)</span>
@@ -213,6 +210,7 @@
 </pre></div>
 </div>
 <p>This function also work if <code class="docutils literal notranslate"><span class="pre">IM</span></code> of <code class="docutils literal notranslate"><span class="pre">Itf</span></code> in an object array. In this, case the first object of the series is primarily displayed, and then, by pressing the right-arrow or left-arrow keys, one can navigate to the next or previous images.</p>
+</section>
 <section id="the-c-figure-c-method">
 <h2>The <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> figure </span> method<a class="headerlink" href="#the-c-figure-c-method" title="Link to this heading"></a></h2>
 <p>The classes <a class="reference internal" href="classes/ImageQLSI.html#the-imageqlsi-class"><span class="std std-ref">ImageQLSI</span></a> and <a class="reference internal" href="classes/ImageEM.html#the-imageem-class"><span class="std std-ref">ImageEM</span></a> have a common method called <code class="docutils literal notranslate"><span class="pre">figure</span></code>, aimed to display the wavefront and intensity images of an ImageQLSI object, or object array, on a GUI. The possible synthaxes are:</p>

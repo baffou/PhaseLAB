@@ -15,12 +15,12 @@ CGcam.setDistance(0.8e-3);
 lambda=680e-9;
 IL=Illumination(lambda,ME);
 
-folder = [pwd '/GeobColor'];
+folder = 'GeobColor';
 
 %% Importaing straight away the red and green images from the interferograms
 
-ItfR = importItfRef(folder,MI,"color","R");
-ItfG = importItfRef(folder,MI,"color","G");
+ItfR = importItfRef(folder,MI,"channel","R");
+ItfG = importItfRef(folder,MI,"channel","G");
 
 %% Images list
 
@@ -31,12 +31,12 @@ nList{3} = 12:16;  % OPF-fluo
 
 %% method 1/ Importing a remote selection, and defining the reference images
 
-RefR = importItfRef(folder,MI,"nickname",'geobSyto9',"remote",1,"color","R","selection",nList{1});
-RefG = importItfRef(folder,MI,"nickname",'geobSyto9',"remote",1,"color","G","selection",nList{1});
-BkgR = importItfRef(folder,MI,"nickname",'geobSyto9',"remote",1,"color","R","selection",nList{2});
-BkgG = importItfRef(folder,MI,"nickname",'geobSyto9',"remote",1,"color","G","selection",nList{2});
-ItfR = importItfRef(folder,MI,"nickname",'geobSyto9',"remote",1,"color","R","selection",(nList{3}(1):nList{end}(end)));
-ItfG = importItfRef(folder,MI,"nickname",'geobSyto9',"nickname",'geobSyto9',"remote",1,"color","G","selection",(nList{3}(1):nList{end}(end)));
+RefR = importItfRef(folder,MI,"nickname",'geobSyto9',"remote",1,"channel","R","selection",nList{1});
+RefG = importItfRef(folder,MI,"nickname",'geobSyto9',"remote",1,"channel","G","selection",nList{1});
+BkgR = importItfRef(folder,MI,"nickname",'geobSyto9',"remote",1,"channel","R","selection",nList{2});
+BkgG = importItfRef(folder,MI,"nickname",'geobSyto9',"remote",1,"channel","G","selection",nList{2});
+ItfR = importItfRef(folder,MI,"nickname",'geobSyto9',"remote",1,"channel","R","selection",(nList{3}(1):nList{end}(end)));
+ItfG = importItfRef(folder,MI,"nickname",'geobSyto9',"nickname",'geobSyto9',"remote",1,"channel","G","selection",(nList{3}(1):nList{end}(end)));
 
 %% method 2/ Importing the interferos as a whole,
 % and separate the red and green afterwards with splitColors applied to Itf
@@ -77,3 +77,7 @@ IMG=QLSIprocess(ItfGcc,IL,"Tnormalisation",false);
 IMG2=QLSIprocess(ItfGcc,IL,"Tnormalisation",'subtraction');
 
 figure, imagegb(IMG(1).T), colormap(invertedGreen())
+figure, imagegb(IMR(1).OPD), colormap(Sepia)
+
+dynamicFigure('ph',{IMG.T}, 'ph', {IMR.T})
+

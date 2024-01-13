@@ -48,6 +48,7 @@ The toolbox is accessible at `github.com/baffou/PhaseLAB <https://github.com/baf
     processImages
     displayImages
     inSilico
+    multiChannelImaging
 
 .. toctree::
     :maxdepth: 2

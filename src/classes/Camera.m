@@ -1,8 +1,6 @@
 classdef Camera  <  handle & matlab.mixin.Copyable
-    properties(SetAccess = {?ImageEM,?ImageEM}) % to enable modif of the dxSize due to binning
+    properties(SetAccess = {?ImageEM,?ImageQLSI,?JS}) % to enable modif of the dxSize due to binning or by json2obj
         dxSize (1,1) {mustBeNumeric} = 6.5e-6
-    end
-    properties(SetAccess = private)        
         Nx (1,1) {mustBeInteger,mustBePositive} = 600
         Ny (1,1) {mustBeInteger,mustBePositive} = 600
         fullWellCapacity (1,1) {mustBeInteger} = 25000
@@ -43,7 +41,7 @@ classdef Camera  <  handle & matlab.mixin.Copyable
             end     
             
             function obj = jsonImport(jsonFile)
-                obj = json2obj(jsonFile);
+                obj = JS.json2obj(jsonFile);
             end
         end
 
