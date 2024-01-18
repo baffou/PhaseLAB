@@ -6,7 +6,7 @@ arguments
     IM
     opt.CGdistance =IM(1).Microscope.CGcam.distance
     opt.shotNoise = false
-    opt.resolution = 'low'
+    opt.definition = 'low'
     opt.auto = true
     opt.Nim = 1
     opt.NimRef = []
@@ -24,13 +24,13 @@ end
 
 Itf_CGM = Itf.mean();
 
-IMis=QLSIprocess(Itf_CGM,IL,"resolution",opt.resolution,'auto',opt.auto);
-%        IMis=QLSIprocess(Itf_CGM,Illumination(lambda),"resolution","low");
+IMis=QLSIprocess(Itf_CGM,IL,"definition",opt.definition,'auto',opt.auto);
+%        IMis=QLSIprocess(Itf_CGM,Illumination(lambda),"definition","low");
 IMis.level0("method","boundary")
 OPDsimu=IMis.OPD;
 Tsimu = IMis.T;
 IMout = ImageQLSI(IM);
-if strcmpi(opt.resolution,'low')
+if strcmpi(opt.definition,'low')
     IMout.binning(IM.Microscope.CGcam.zeta);
 end
 

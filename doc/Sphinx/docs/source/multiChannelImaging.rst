@@ -56,7 +56,7 @@ Then, :matlab:`Itf` can be processed like a normal |Interfero| object using the 
 
 and just like :matlab:`Itf`, :matlab:`IM` is a :math:`N\times4` |ImageQLSI| objects.
 
-Then, the polarisation maps can be extracted using the :ref:`The_CGM_polar_Method <CGMpolar>` method:
+Then, the polarisation maps can be extracted using the :ref:`CGMpolar <The_CGMpolar_Method>` method:
 
 .. code-block:: matlab
 

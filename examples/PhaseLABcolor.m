@@ -1,5 +1,5 @@
 %% IMPORTS
-clear all
+clear
 addpath(genpath('/Users/perseus/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
 
 %% MICROSCOPE
@@ -79,5 +79,5 @@ IMG2=QLSIprocess(ItfGcc,IL,"Tnormalisation",'subtraction');
 figure, imagegb(IMG(1).T), colormap(invertedGreen())
 figure, imagegb(IMR(1).OPD), colormap(Sepia)
 
-dynamicFigure('ph',{IMG.T}, 'ph', {IMR.T})
+dynamicFigure('fl',{IMG.T}, 'ph', {IMR.OPD})
 

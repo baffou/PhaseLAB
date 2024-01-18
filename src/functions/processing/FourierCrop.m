@@ -13,7 +13,7 @@ zeta (1,1) double = 3
 opt.Fcrops FcropParameters
 opt.Method char = 'Tikhonov'
 opt.FcropShape = 'disc'
-opt.resolution = 'high'
+opt.definition = 'high'
 opt.auto = false
 end
 
@@ -29,7 +29,7 @@ ex = Nx/Ny; % the ellipse excentricity
 %    cropParams=FcropParameters(0,0,0,size(Itf(1).Itf,2),size(Itf(1).Itf,1));
 %end
 Fcrops = opt.Fcrops;
-resolution = opt.resolution;
+definition = opt.definition;
 FcropShape = opt.FcropShape;
 if strcmp(FcropShape,'disc')
     drawCrop = @drawCircle;
@@ -145,7 +145,7 @@ else % The center and the radius are specified, so we just plot the crop and tha
     cropParamsout = FcropParameters(x1,y1,R,Nx,Ny);
 end
 
-if strcmp(resolution,'high')  % High resolution (full image size)
+if strcmp(definition,'high')  % High definition (full image size)
     %% Center of the image on zero order of the Fourier space, recentered (demodulated, hence the circshift)
 
     if length(R)==1
@@ -180,7 +180,7 @@ if strcmp(resolution,'high')  % High resolution (full image size)
     SImout = circshift(Imout,[-cropParamsout.shifty -cropParamsout.shiftx]);
     SRfout = circshift(Rfout,[-cropParamsout.shifty -cropParamsout.shiftx]);
 
-elseif strcmp(resolution,'low')
+elseif strcmp(definition,'low')
     if length(R)==1
         rx = R;
         ry = R;

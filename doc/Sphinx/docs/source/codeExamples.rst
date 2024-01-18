@@ -19,5 +19,7 @@ Code examples
 
 .. include:: /codeExamples/polarImaging.rst
 
+.. include:: /codeExamples/colorImaging.rst
+
 
 

@@ -75,6 +75,10 @@ rst_prolog = """
 
     <span style="color:#888;font-size:0.85em;font-weight: normal;">
 
+.. |/gr| raw:: html
+
+    </span>
+
 .. |st| replace:: :sup:`st`
     
 .. |nd| replace:: :sup:`nd`

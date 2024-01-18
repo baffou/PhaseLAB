@@ -19,6 +19,14 @@ If the interferogram arises from a 2-color camera, the two interferograms can be
 
 If the input :matlab:`Itf0` is a list (an array) or :math:`N` |Interfero| objects, then the output :matlab:`Itf` is a :math:`N\times2` array of |Interfero| objects, where each column is one color.
 
+Some color cameras suffer from crosstalk between neighboring dexels of different colors. To correct for this crosstalk, use the |Interfero| method :ref:`crosstalkCorrection <The_crosstalkCorrection_method>`:
+
+.. code-block:: matlab
+
+    Itf0 = importItfRef(folder,MI);
+    Itf = Itf0.splitColors();
+
+
 Then, :matlab:`Itf` can be processed like a normal |Interfero| object array using the :ref:`QLSIprocess <The_QLSIprocess_method>` method:
 
 .. code-block:: matlab
@@ -48,7 +56,7 @@ Then, :matlab:`Itf` can be processed like a normal |Interfero| object using the 
 
 and just like :matlab:`Itf`, :matlab:`IM` is a :math:`N\times4` |ImageQLSI| objects.
 
-Then, the polarisation maps can be extracted using the :ref:`The_CGM_polar_Method <CGMpolar>` method:
+Then, the polarisation maps can be extracted using the :ref:`CGMpolar <The_CGMpolar_Method>` method:
 
 .. code-block:: matlab
 

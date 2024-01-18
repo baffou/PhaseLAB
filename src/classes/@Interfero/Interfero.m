@@ -656,7 +656,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             obj2.Reference(copy(obj.Ref));
         end
 
-        function [ImG,ImR]=splitColors(Im)
+        function [ImG,ImR] = splitColors(Im)
             % Im comes from a 2-color camera
             % This function creates 2 Interfero objects, for each colors
             % Uses interpolation to keep the same number of pixels
@@ -689,6 +689,9 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 ImR.Reference(RefR(refPosList));
             end
 
+            if nargout == 1
+                ImG = [ImG(:),ImR(:)];
+            end
         end
 
         function [Im00,Im45,Im90,Im135] = splitPolars(Im)
@@ -738,7 +741,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             end
 
             if nargout == 1
-                Im00 = [Im00,Im45,Im90,Im135];
+                Im00 = [Im00(:),Im45(:),Im90(:),Im135(:)];
             end
 
         end
@@ -746,7 +749,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         function [objG, objR] = crosstalkCorrection(obj1List, obj2List)
             arguments
                 obj1List Interfero
-                obj2List Interfero
+                obj2List Interfero = Interfero.empty()
             end
             
             if nargin ==1 % crosstalkCorrection(objList)  with a N*2 input
@@ -794,16 +797,6 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     objR(im) = obj2List(im);
                 end
 
-                if nargout == 2
-                    objG(im) = copy(objG(im)); % copy and not duplicate to keep the same Microscope
-                    objR(im) = copy(objR(im));
-                elseif nargout == 0
-                    objG(im) = objG(im);
-                    objR(im) = objR(im);
-                else
-                    error('not the proper number of outputs. Should be 0 or 2')
-                end
-
                 % correcting crosstalk of the images
                 correctedRimage = (1+betar)*objR(im).Itf -     betag*objG(im).Itf;
                 correctedGimage =   - betar*objR(im).Itf + (1+betag)*objG(im).Itf;
@@ -818,7 +811,11 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 if nListR ~= nListG
                     error('There is an inconsistency between the Refs or G and R images')
                 end
-                crosstalkCorrection(RefListG,RefListR);
+                % duplicate the Refs, to break the handle and make sure they are not
+                % crosstalkcorrected elsewhere in the code, another time:
+                [RefListG,RefListR] = crosstalkCorrection(RefListG,RefListR);
+                objG.Reference(RefListG(nListG))
+                objR.Reference(RefListR(nListR))
             end
 
             if nargout == 1

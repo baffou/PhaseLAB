@@ -20,7 +20,7 @@ Polarisation imaging
         IL=Illumination(lambda,ME);
 
         %% Import files
-        folder = "data/polarImages";
+        folder = "polarImages";
 
         Itf = importItfRef(folder,MI);
         Itf.crop("Size",2048);
