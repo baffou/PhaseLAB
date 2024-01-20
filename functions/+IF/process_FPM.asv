@@ -3,7 +3,7 @@ arguments
     IM
     shotNoise
     opt.Nim = 1
-    opt.maskNA = 0.02
+    opt.maskNA = 0.06
 end
 
 Nphi = numel(IM); % number of theta incidences involved in the calculations.

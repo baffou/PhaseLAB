@@ -115,10 +115,11 @@ classdef PCmask < handle & matlab.mixin.Copyable
                 M = abs(MI.M);
             end
 
-            Rpx = tan(asin(obj.NA0))/M*k0/dk;
+            n_glass=1.5;
+            Rpx = tan(asin(obj.NA0/n_glass))/M*k0/dk;
             %fprintf('Rpx = %.1f\n',Rpx)
 
-            dRpx = tan(asin(obj.dNA))/M*k0/dk;
+            dRpx = tan(asin(obj.dNA/n_glass))/M*k0/dk;
             %fprintf('dRpx= %.1f\n',dRpx)
 
             if strcmp(obj.type,'disc')
@@ -126,11 +127,11 @@ classdef PCmask < handle & matlab.mixin.Copyable
                 X=X0-Rpx*cos(obj.theta);
                 Y=Y0-Rpx*sin(obj.theta);
                 R=sqrt(X.*X+Y.*Y);
-                pattern = R<=dRpx;
+                pattern = R<=dRpx/2;
             else
                 [X, Y] = meshgrid(-Nx/2:Nx/2-1,-Ny/2:Ny/2-1);
                 R=sqrt(X.*X+Y.*Y);
-                pattern = (R>=(Rpx-dRpx)).*(R<=(Rpx+dRpx));
+                pattern = (R>=(Rpx-dRpx/2)).*(R<=(Rpx+dRpx/2));
             end
             val = (1-pattern + sqrt(obj.A)*pattern) .* exp(1i*obj.phi*pattern);
             if obj.inverted

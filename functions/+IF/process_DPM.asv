@@ -50,9 +50,8 @@ for io = 1:Nim % in case NAill ~= 0, and multiple illuminations are used, ie. mu
     R02=X0.*X0+Y0.*Y0;
     mask0=R02<r0^2;
     
-    sumTF = sumTF + log(abs(FExg)+abs(FEyg));
-
     h=figure;
+    sumTF = sumTF + log(abs(FExg)+abs(FEyg));
     imagegb(log(abs(FExg)+abs(FEyg)))
     fullscreen
     if opt.auto
