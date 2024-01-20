@@ -1,0 +1,8 @@
+{"class":"CrossGrating",
+"Gamma": 39e-6,
+"name": "P2",
+"depth": 720e-9,
+"RI": 1.46,
+"lambda0": 662.4e-9,
+"angle": 0
+}

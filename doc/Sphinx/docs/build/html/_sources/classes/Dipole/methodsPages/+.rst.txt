@@ -1,0 +1,4 @@
+\+ (Dipole class method) |subTitle| Defines the addition between two *Interfero* objects: ``DI1 + DI2``. |/subTitle|
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+.. include:: /classes/Dipole/methods/+.rst

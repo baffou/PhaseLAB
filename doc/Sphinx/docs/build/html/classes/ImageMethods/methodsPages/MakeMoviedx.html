@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MakeMoviedx (ImageEM &amp; ImageQLSI classes method) MakeMoviedx &mdash; PhaseLAB documentation 4.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=af01947c" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/favicon2.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=9f5556dd"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PhaseLAB documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../download.html">Download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introduction</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../buildMicroscope.html">Build the optical setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../importImages.html">Import experimental interferograms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../processImages.html">Process experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../displayImages.html">Display experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../inSilico.html">In silico QLSI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multiChannelImaging.html">Multichannel imaging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../codeExamples.html">Code examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../GUI.html">The GUI of <span style="font-family: 'Roboto';">PhaseLAB</span></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Camera.html">Camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CGcamera.html">CGcamera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CrossGrating.html">CrossGrating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Dipole.html">Dipole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Illumination.html">Illumination</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ImageEM.html">ImageEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ImageQLSI.html">ImageQLSI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Interfero.html">Interfero</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Microscope.html">Microscope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Objective.html">Objective</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/CGMinSilico.html">CGMinSilico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/imaging.html">imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/importItfRef.html">importItfRef</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions/dynamicFigure.html">dynamicFigure</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PhaseLAB documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><strong>MakeMoviedx</strong> (ImageEM &amp; ImageQLSI classes method) <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> MakeMoviedx </em></span></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/classes/ImageMethods/methodsPages/MakeMoviedx.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="makemoviedx-imageem-imageqlsi-classes-method-subtitle-makemoviedx-subtitle">
+<span id="makemoviedx-method"></span><h1><strong>MakeMoviedx</strong> (ImageEM &amp; ImageQLSI classes method) <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> MakeMoviedx </em></span><a class="headerlink" href="#makemoviedx-imageem-imageqlsi-classes-method-subtitle-makemoviedx-subtitle" title="Link to this heading"></a></h1>
+<details class="sphinx-bs dropdown card mb-3">
+<summary class="summary-title card-header">
+<strong>MakeMoviedx</strong> <br /> <span style="color:#888;font-size:0.85em;font-weight: normal;"> <em> Make a movie from a series of image objects </em></span><div class="summary-down docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="summary-up docutils">
+<svg version="1.1" width="24" height="24" class="octicon octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="summary-content card-body docutils">
+<p class="title">Synthax</p><div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% prototypes</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">makeMoviedx</span><span class="p">(</span><span class="n">videoName</span><span class="p">)</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">makeMoviedx</span><span class="p">(</span><span class="n">videoName</span><span class="p">,</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Value</span><span class="p">)</span>
+
+<span class="c">% examples</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">makeMoviedx</span><span class="p">(</span><span class="s">&#39;movie/bacteria.avi&#39;</span><span class="p">)</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">makeMoviedx</span><span class="p">(</span><span class="s">&#39;movie/bacteria.avi&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">)</span>
+<span class="n">objList</span><span class="p">.</span><span class="n">makeMoviedx</span><span class="p">(</span><span class="s">&#39;movie/bacteria.avi&#39;</span><span class="p">,</span><span class="s">&#39;theta&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">&#39;phi&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">&#39;rate&#39;</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="s">&#39;zrange&#39;</span><span class="p">,[</span><span class="o">-</span><span class="mi">10</span><span class="w"> </span><span class="mi">10</span><span class="p">])</span>
+</pre></div>
+</div>
+<p class="title">Description</p><p class="card-text">The <code class="docutils literal notranslate"><span class="pre">MakeMoviedx</span></code> method creates an .avi movie from an <a class="reference internal" href="../../ImageEM.html#the-imageem-class"><span class="std std-ref">ImageEM</span></a> or <a class="reference internal" href="../../ImageQLSI.html#the-imageqlsi-class"><span class="std std-ref">ImageQLSI</span></a> object array. Two inputs are required, the image object array <code class="docutils literal notranslate"><span class="pre">IM</span></code> and the path/name of the movie file to be created <code class="docutils literal notranslate"><span class="pre">videoname</span></code>. It calls the method <a class="reference internal" href="opendx.html#the-opendx-method"><span class="std std-ref">opendx (ImageEM &amp; ImageQLSI classes method)    opendx </span></a>, from the same class.</p>
+<p class="card-text"><hr style="height: 2px; width: 99%; background-color: #777; margin-top: 0;" /></p>
+<p class="card-text">Many Name-value options can be specified to change the rendering.</p>
+<ul>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;persp&#39;</span></code>  (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p>
+<blockquote>
+<div><p class="card-text">With <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;persp&#39;</span></code> set to <code class="docutils literal notranslate"><span class="pre">1</span></code>, the video uses the <code class="docutils literal notranslate"><span class="pre">opendx</span></code> method to create a nnince 3D rendering of the image. Set this option to <code class="docutils literal notranslate"><span class="pre">0</span></code> to cancel this effect.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;phi&#39;</span></code>  (default: <code class="docutils literal notranslate"><span class="pre">45</span></code>) and <code class="docutils literal notranslate"><span class="pre">'theta'</span></code>  (default: 45)</p>
+<blockquote>
+<div><p class="card-text">Position of the camera in <code class="code highlight matlab docutils literal highlight-matlab"><span class="p">(</span><span class="n">theta</span><span class="p">,</span><span class="w"> </span><span class="n">phi</span><span class="p">)</span></code></p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;ampl&#39;</span></code>  (default: <code class="docutils literal notranslate"><span class="pre">45</span></code>) and <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;theta&#39;</span></code>  (default: 3)</p>
+<blockquote>
+<div><p class="card-text">sets the magnitude of the 3D relief</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;zrange&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">2-vector setting the limits of the <em>z</em> axis.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;colorMap&#39;</span></code> (default: <code class="docutils literal notranslate"><span class="pre">Parula</span></code>)</p>
+<blockquote>
+<div><p class="card-text">Color map.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;title&#39;</span></code></p>
+<blockquote>
+<div><p class="card-text">Title to display on the movie, if any.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;factor&#39;</span></code> (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p>
+<blockquote>
+<div><p class="card-text">Correction factor to the <abbr title="optical path difference">OPD</abbr>, for instance 5.55e-3 to convert the <abbr title="optical path difference">OPD</abbr> into <abbr title="dry mass">DM</abbr>.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;label&#39;</span></code> (default: <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Optical path difference (nm)&#39;</span></code>)</p>
+<blockquote>
+<div><p class="card-text">Label to put on the color scale.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;imType&#39;</span></code> (default: <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;OPD&#39;</span></code>)</p>
+<blockquote>
+<div><p class="card-text">Cell array of the properties of the object to be displayed: <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;OPD&#39;</span></code>, <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;T&#39;</span></code>, <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;DWx&#39;</span></code>, <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;DWy&#39;</span></code>, <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;Ph&#39;</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p class="card-text"><code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;axisDisplay&#39;</span></code> (default: <code class="docutils literal notranslate"><span class="pre">true</span></code>)</p>
+<blockquote>
+<div><p class="card-text">Display the axes or not.</p>
+</div></blockquote>
+</li>
+</ul>
+</div>
+</details></section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Guillaume Baffou.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

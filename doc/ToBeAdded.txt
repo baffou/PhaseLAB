@@ -1,0 +1,7 @@
+To be added in the doc :
+
+Tnormalization of the QLSIprocess method
+
+splitPolar and splitColor, regarding the inputs and outputs
+
+The CGMpolar method

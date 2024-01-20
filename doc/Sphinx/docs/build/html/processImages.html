@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Process experimental images &mdash; PhaseLAB documentation 4.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css?v=2a6c4383" />
+      <link rel="stylesheet" type="text/css" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css?v=45cf7dbc" />
+      <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css?v=d290406d" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=af01947c" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon2.png"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=9f5556dd"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Display experimental images" href="displayImages.html" />
+    <link rel="prev" title="Import experimental interferograms" href="importImages.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PhaseLAB documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="download.html">Download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="buildMicroscope.html">Build the optical setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="importImages.html">Import experimental interferograms</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Process experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="displayImages.html">Display experimental images</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inSilico.html">In silico QLSI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiChannelImaging.html">Multichannel imaging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Code examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="codeExamples.html">Code examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">GUI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="GUI.html">The GUI of <span style="font-family: 'Roboto';">PhaseLAB</span></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classes/Camera.html">Camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/CGcamera.html">CGcamera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/CrossGrating.html">CrossGrating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Dipole.html">Dipole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Illumination.html">Illumination</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/ImageEM.html">ImageEM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/ImageQLSI.html">ImageQLSI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Interfero.html">Interfero</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Microscope.html">Microscope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes/Objective.html">Objective</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="functions/CGMinSilico.html">CGMinSilico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions/imaging.html">imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions/importItfRef.html">importItfRef</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions/dynamicFigure.html">dynamicFigure</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PhaseLAB documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Process experimental images</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/processImages.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="process-experimental-images">
+<span id="id1"></span><h1>Process experimental images<a class="headerlink" href="#process-experimental-images" title="Link to this heading"></a></h1>
+<p>Once the <a class="reference internal" href="classes/Interfero.html#the-interfero-class"><span class="std std-ref">Interfero</span></a> object (array) is created, the interferogram(s) can be converted into intensity and wavefront images using the <span style="font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;font-size:0.9em;"> <a class="reference internal" href="classes/Interfero/methodsPages/QLSIprocess_method.html#the-qlsiprocess-method"><span class="std std-ref">QLSIprocess</span></a> </span> method of the class <a class="reference internal" href="classes/Interfero.html#the-interfero-class"><span class="std std-ref">Interfero</span></a>. Here is the synthax:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">IM</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">QLSIprocess</span><span class="p">(</span><span class="n">Itf</span><span class="p">,</span><span class="n">IL</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><code class="code highlight matlab docutils literal highlight-matlab"><span class="n">IM</span></code> is an <a class="reference internal" href="classes/ImageQLSI.html#the-imageqlsi-class"><span class="std std-ref">ImageQLSI</span></a> object (see <a class="reference internal" href="classes/ImageQLSI.html#the-imageqlsi-class"><span class="std std-ref">The ImageQLSI class</span></a> section)</p>
+<p>A large number of keywords can be specified in the QLSIprocess method. The comprehensive list is provided in <a class="reference internal" href="classes/Interfero/methodsPages/QLSIprocess_method.html#the-qlsiprocess-method"><span class="std std-ref">The QLSIprocess method</span></a> section. To name just a few, one can use the keyword <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;saveGradients&#39;</span></code> to make sure the gradients are saved, and embedded within <code class="code highlight matlab docutils literal highlight-matlab"><span class="n">IM</span></code>:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">IM</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">QLSIprocess</span><span class="p">(</span><span class="n">Itf</span><span class="p">,</span><span class="n">IL</span><span class="p">,</span><span class="s">&#39;saveGradients&#39;</span><span class="p">,</span><span class="nb">true</span><span class="p">);</span>
+<span class="linenos">2</span><span class="n">dynamicFigure</span><span class="p">(</span><span class="s">&#39;ph&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">IM</span><span class="p">.</span><span class="n">DWx</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;ph&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">IM</span><span class="p">.</span><span class="n">DWy</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>One can also choose between high-definition or low-definition image processing, using the keyword <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;resolution&#39;</span></code>:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">IM_high</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">QLSIprocess</span><span class="p">(</span><span class="n">Itf</span><span class="p">,</span><span class="n">IL</span><span class="p">,</span><span class="s">&#39;resolution&#39;</span><span class="p">,</span><span class="s">&#39;high&#39;</span><span class="p">);</span>
+<span class="linenos">2</span><span class="n">IM_low</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">QLSIprocess</span><span class="p">(</span><span class="n">Itf</span><span class="p">,</span><span class="n">IL</span><span class="p">,</span><span class="s">&#39;resolution&#39;</span><span class="p">,</span><span class="s">&#39;low&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The QLSI algorithm involves a crop in the Fourier space, centered on the 1<sup>st</sup>  diffraction orders. The crop is made automatically. However, one may want to click oneself on the 1<sup>st</sup> diffraction order in the Fourier space. In that case, one has to use the keyword <code class="code highlight matlab docutils literal highlight-matlab"><span class="s">&#39;auto&#39;</span></code> and set it to <code class="docutils literal notranslate"><span class="pre">false</span></code>:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">IM</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">QLSIprocess</span><span class="p">(</span><span class="n">Itf</span><span class="p">,</span><span class="n">IL</span><span class="p">,</span><span class="s">&#39;auto&#39;</span><span class="p">,</span><span class="nb">false</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>In this case, a figure is displayed, waiting for the user to click, several times:</p>
+<ol class="arabic simple">
+<li><p>The first figure displays the circular crop around the zero order. If the radius is ok, press enter, if not, click on a point of the image to define a more appropriate radius.</p></li>
+<li><p>The zoom mode is turned on, and the user must zoom in to help clicking on a 1st order spot. When the zoom is ok, press enter.</p></li>
+<li><p>Click on a first order pixel.</p></li>
+</ol>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="_images/QLSIprocessFigure_1.jpg"><img alt="_images/QLSIprocessFigure_1.jpg" src="_images/QLSIprocessFigure_1.jpg" style="width: 400px;" /></a>
+<figcaption>
+<p><span class="caption-text">Click to define the radius of the crop, or press enter to leave the default value.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="_images/QLSIprocessFigure_2.jpg"><img alt="_images/QLSIprocessFigure_2.jpg" src="_images/QLSIprocessFigure_2.jpg" style="width: 400px;" /></a>
+<figcaption>
+<p><span class="caption-text">Click on a first order spot.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>When a computation has been done for a given interferogram, the crop parameters in the Fourier space are saved within the <a class="reference internal" href="classes/Interfero.html#the-interfero-class"><span class="std std-ref">Interfero</span></a> object, and any other <a class="reference internal" href="classes/Interfero.html#the-interfero-class"><span class="std std-ref">Interfero</span></a> image associated with the same reference will use these predefined crop parameters.</p>
+<p>For more information on how to process <a class="reference internal" href="classes/Interfero.html#the-interfero-class"><span class="std std-ref">Interfero</span></a> objects, refer to <a class="reference internal" href="classes/Interfero/methodsPages/QLSIprocess_method.html#the-qlsiprocess-method"><span class="std std-ref">The QLSIprocess method</span></a> section.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="importImages.html" class="btn btn-neutral float-left" title="Import experimental interferograms" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="displayImages.html" class="btn btn-neutral float-right" title="Display experimental images" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Guillaume Baffou.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
