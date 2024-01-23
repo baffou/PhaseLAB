@@ -16,7 +16,7 @@
 
     .. warning::
 
-        This method is relevant the different images correspond to the same sample, illuminated with various plane waves with different incidence angles at the same time, for instance.
+        This method is relevant if the different images correspond to the same sample, for instance an object illuminated with various plane waves with different incidence angles at the same time.
 
         When the list of images does not correspond to the same sample, for instance when it consists of different nanoparticles at different locations, one should not use this method to get the image of all the nanoparticles at the same time. There will be no self-consistent optical coupling between these objects, and the incident E fields should be be sumed in this case. Prefer summing dipoles (``DIlist=DI1+DI2``) and then imaging the dipole array(``DIlist.imaging()``), which will run a DDA self consistent calculation of the dipolar moments.
 
