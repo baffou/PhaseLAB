@@ -21,7 +21,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         channel (1,:) char {mustBeMember(channel,{'R','G','0','45','90','135','none'})} = 'none'
     end
 
-    properties(SetAccess = private, Hidden)
+    properties(Hidden)
         Itf0     % interferogram (matrix or path)
     end
     properties

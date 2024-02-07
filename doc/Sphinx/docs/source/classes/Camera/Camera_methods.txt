@@ -1,5 +1,0 @@
-
-Camera methods
---------------
-
-.. include:: /classes/Camera/methods/crop.rst
