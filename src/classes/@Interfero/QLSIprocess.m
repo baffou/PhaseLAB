@@ -62,7 +62,7 @@ if ~isempty(opt.Fcrops) % If crops are defined within the options
         opt.Fcrops(1)
         error('not FcropParameters objects')
     end
-elseif ~isempty(Itf(1).Ref.Fcrops(1).Nx) % if the ref already has crops
+elseif ~isempty(Itf(1).Ref) && ~isempty(Itf(1).Ref.Fcrops(1).Nx) % if the ref already has crops
     cropParam0 = Itf(1).Ref.Fcrops(1);
     cropParam1 = Itf(1).Ref.Fcrops(2);
     cropParam2 = Itf(1).Ref.Fcrops(3);
@@ -129,7 +129,7 @@ for ii = 1:Nf
         error(['the interferogram number ' num2str(ii) ' is empty'])
     end
     if isempty(Itfi.Ref)
-        error(['the reference of the interferogram number ' num2str(ii) ' is empty'])
+        warning(['the reference of the interferogram number ' num2str(ii) ' is empty'])
     end
     
     MI = Itfi.Microscope;
