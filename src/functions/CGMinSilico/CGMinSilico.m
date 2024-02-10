@@ -1,15 +1,15 @@
 function [Itf, Grating, EE] = CGMinSilico(Image,opt)
 % Function that creates a simulated interferogram from a given T/OPD set of
-% images, including the image noise
+% images, including the image noise.
 % For this purpose, it uses all the data of the Microscope object contained
 % in the ImageMethods object.
 % CGMinSilico(Image, 'Nimages'=Nim, 'Shotnoise'='on')
 arguments
     Image ImageMethods
     opt.Nimages (1,1) {mustBeInteger,mustBePositive} = 1
-    opt.NimagesRef (1,1) {mustBeNumeric} = -1  % = 0 or Inf to avoid noise on the ref interfero
+    opt.NimagesRef (1,1) {mustBeNumeric} = -1  % = 0, or Inf to avoid noise on the ref interfero
     opt.ShotNoise (1,1) {mustBeNumericOrLogical} = false
-    opt.Grating char ='QLSI'
+    opt.Grating char = 'QLSI'
     opt.NAill double = 0
     opt.setI0 (1,:) char {mustBeMember(opt.setI0,{'max','mean'})} = 'max'
     opt.cut (1,1) double = 0
