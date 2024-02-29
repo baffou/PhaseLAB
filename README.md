@@ -2,7 +2,7 @@
 
 Welcome to the PhaseLAB toolbox, created to help you deal with wavefront and phase images acquired using QLSI.
 
-
+PhaseLAB is licensed under the Creative Commons Attribution-NonCommercial (CC BY-NC) license. This means you are free to use, share, and modify the software, but only for non-commercial purposes
 
 ## Toolbox Documentation
 
