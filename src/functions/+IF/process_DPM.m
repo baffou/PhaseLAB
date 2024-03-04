@@ -197,7 +197,7 @@ FEygrefm0=FEygref.*(mask0);
 Excref0=ifft2(ifftshift(FExgrefm0));
 Eycref0=ifft2(ifftshift(FEygrefm0));
 
-Itf0ref0=(abs(Excref0).^2+abs(Eycref0).^2)*fwc/(4*I0);
+Itf0ref0=(abs(Excref0).^2+abs(Eycref0).^2)*(fwc/2)/(Icam);
 
 
 

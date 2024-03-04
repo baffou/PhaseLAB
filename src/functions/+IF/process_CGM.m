@@ -26,7 +26,7 @@ Itf_CGM = Itf.mean();
 
 IMis=QLSIprocess(Itf_CGM,IL,"definition",opt.definition,'auto',opt.auto);
 %        IMis=QLSIprocess(Itf_CGM,Illumination(lambda),"definition","low");
-IMis.level0("method","boundary")
+IMis.level0("method","boundaryMedian")
 OPDsimu=IMis.OPD;
 Tsimu = IMis.T;
 IMout = ImageQLSI(IM);

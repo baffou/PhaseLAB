@@ -40,7 +40,7 @@ for io = 1:Nphi
     FEincm = FEincm + FEincxm + FEincym;
 end
 
-figure
+hh = figure;
 subplot(1,2,1)
 imagesc(log10(abs(FEincm)))
 axis image
@@ -115,7 +115,7 @@ for ii=1:numel(IM)
 end
 IMout = ImageQLSI(avgTtheo,avgPhiTheo*lambda/(2*pi),IM(1).Microscope,IM(1).Illumination);
 
-
+close(hh)
 
 % OPDtheo=angle(IM.Ey)*lambda/(2*pi);
 % figure

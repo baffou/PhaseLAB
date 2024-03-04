@@ -196,15 +196,10 @@ linkAxes
 lambda=IMq(1).Illumination.lambda;
 avgPhiTheo = 0;
 if numel(IMq) == 192
-    for ii = [41 49 104 192]
-        avgPhiTheo = avgPhiTheo + IMq(ii).Ph/4;
-    end
-else
-    warning('normal average of the OPD images ,not supposed to give a consistent image')
-    for ii=1:numel(IMq)
-        avgPhiTheo = avgPhiTheo + IMq(ii).Ph/numel(IMq);
-    end
+for ii = [41 49 104 192]
+    avgPhiTheo = avgPhiTheo + IMq(ii).Ph/numel(IMq);
 end
+
 
 IMout = ImageQLSI(Tsimu,avgPhiTheo*lambda/(2*pi),IMq(1).Microscope,IMq(1).Illumination);
 

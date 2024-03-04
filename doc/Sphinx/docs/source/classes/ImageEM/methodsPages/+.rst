@@ -1,4 +1,0 @@
-\+ (ImageEM class method) |subTitle| Defines the addition between two *ImageEM* objects: ``IM1 + IM2``. |/subTitle|
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-.. include:: /classes/ImageEM/methods/+.rst
