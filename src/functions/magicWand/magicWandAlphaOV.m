@@ -11,8 +11,8 @@
 %Maëlle Bénéfice - 18 Jan 2021
 %Guillaume Baffou - 30 Apr 2021
 
+function [alpha,OV,maskMeas,roiIN,roiOUT,masking] = magicWandAlphaOV(IM,opt)
 
-function [alpha,OV,maskMeas,roiIN,roiOUT] = magicWandAlphaOV(IM,opt)
 % This code is meant to replace magicWandAlphaOV2, and to be used with the
 % new gui interface PhaseLABgui
 
@@ -28,6 +28,7 @@ arguments
     opt.nmax = 200
     opt.roiIN = {}
     opt.roiOUT = {}
+    opt.masking = []             % to keep the same mask as another crop
 end
 
 roiIN = opt.roiIN;
@@ -51,17 +52,18 @@ for io = 1:Nim  % loop on the list of images
     
     for iNP = 1:NNP  % loop on the list of particles
         
-        fail = 1;
-        while fail==1 % until space bar or c are pressed
-            
-            OPDcrop = OPD;
-            Tcrop = T;
-            Phcrop = Ph;
-            
-            [mask,maskRemove,fail,roiIN,roiOUT] = magicWand_scrollbar(OPD,roiIN,roiOUT);
+        if isempty(opt.masking)
+            fail = 1;
+            while fail==1 % until space bar or c are pressed
+                                
+                [mask,maskRemove,fail,roiIN,roiOUT] = magicWand_scrollbar(OPD,roiIN,roiOUT);
+    
+            end %end while fail==1
+        else
+            mask = opt.masking.mask;
+            maskRemove = opt.masking.maskRemove;
+        end
 
-        end %end while fail==1
-        
         maskRef = mask;
         
         %% alpha calculation
@@ -81,17 +83,17 @@ for io = 1:Nim  % loop on the list of images
             masks = double((Ws==1).*maskRemove);
             ringB = maskb-mask;
             
-            backring = ringB.*Phcrop;
+            backring = ringB.*Ph;
             background = sum(backring(:))/sum(ringB(:));
-            Phn = Phcrop - background;
+            Phn = Ph - background;
             
-            backring = ringB.*Tcrop;
+            backring = ringB.*T;
             background = sum(backring(:))/(sum(ringB(:))); %mean backgound over the ring
-            Tn = Tcrop/background;
+            Tn = T/background;
             
-            backring = ringB.*OPDcrop;
+            backring = ringB.*OPD;
             background = sum(backring(:))/(sum(ringB(:))); %mean backgound over the ring
-            OPDn = OPDcrop-background;
+            OPDn = OPD-background;
             
             sqrtT = sqrt(Tn);
             expPh = exp(1i*Phn);
@@ -110,19 +112,19 @@ for io = 1:Nim  % loop on the list of images
             Ws = wiener2(mask,[2*step+1,2*step+1]);
             maskb = double((Wb>0).*maskRemove);
             masks = double((Ws>0).*maskRemove);
-            ringB = maskb-mask;
+            ringB = maskb - mask;
             
-            backring = ringB.*Phcrop;
+            backring = ringB.*Ph;
             background = sum(backring(:))/sum(ringB(:));
-            Phn = Phcrop - background;
+            Phn = Ph - background;
             
-            backring = ringB.*Tcrop;
+            backring = ringB.*T;
             background = sum(backring(:))/(sum(ringB(:))); %mean backgound over the ring
-            Tn = Tcrop/background;
+            Tn = T/background;
             
-            backring = ringB.*OPDcrop;
+            backring = ringB.*OPD;
             background = sum(backring(:))/sum(ringB(:));
-            OPDn = OPDcrop - background;
+            OPDn = OPD - background;
             
             sqrtT = sqrt(Tn);
             expPh = exp(1i*Phn);
@@ -138,64 +140,73 @@ for io = 1:Nim  % loop on the list of images
         %LOOP TO BE REMOVED
         %for ij=1:10
         
-        hfig2 = figure;
-        hfig2.UserData.goon = 0;
-        hfig2.UserData.p1 = [];
-        fullwidth
-        ha1 = subplot(1,2,1);
-        hold on
-        plot(xcoord,real(alpha0))
-        plot(xcoord,imag(alpha0))
-        plot(xcoord,OV0)
-        legend({'real(\alpha)','imag(\alpha)','OV'})
-        ha2 = subplot(1,2,2);
-        A = zeros([size(OPDn) 3]);
-        
-        maxval = max(max(imgaussfilt(OPDn,10)));
-        minval = min(max(imgaussfilt(OPDn,10)));
-         
-        A(:,:,1) = (OPDn-minval)/(maxval-minval);
-        A(:,:,2) = (OPDn-minval)/(maxval-minval);
-        A(:,:,3) = (OPDn-minval)/(maxval-minval);
-
-        A(:,:,1) = (mask~=0); % pixel corresponding to the mask set to 1 in red channel
-        image(A)
-        set(gca,'YDir','Reverse')
-        drawnow
-        hfig2.UserData.ha1 = ha1;
-        hfig2.UserData.ha2 = ha2;
-        set(ha1,'ButtonDownFcn',@(src,evt)setp1p2(ha1));
-        set(ha1.Children,'PickableParts','none');
-        %set(hfig2,'WindowButtonMotionFcn','disp(get (gca, ''CurrentPoint''))')
-        set(hfig2,'WindowButtonMotionFcn',@(src,evt)LiveMaskDisplay(ha1,ha2,maskList,N))
-        %[xp,~] = ginput(2);
-
-        
-
-        pause(0.1)
-        while(hfig2.UserData.goon==0)
-        pause(0.1)
+        if isempty(opt.masking)
+            hfig2 = figure;
+            hfig2.UserData.goon = 0;
+            hfig2.UserData.p1 = [];
+            fullwidth
+            ha1 = subplot(1,2,1);
+            hold on
+            plot(xcoord,real(alpha0))
+            plot(xcoord,imag(alpha0))
+            plot(xcoord,OV0)
+            legend({'real(\alpha)','imag(\alpha)','OV'})
+            ha2 = subplot(1,2,2);
+            A = zeros([size(OPDn) 3]);
+            
+            maxval = max(max(imgaussfilt(OPDn,10)));
+            minval = min(max(imgaussfilt(OPDn,10)));
+             
+            A(:,:,1) = (OPDn-minval)/(maxval-minval);
+            A(:,:,2) = (OPDn-minval)/(maxval-minval);
+            A(:,:,3) = (OPDn-minval)/(maxval-minval);
+    
+            A(:,:,1) = (mask~=0); % pixel corresponding to the mask set to 1 in red channel
+            image(A)
+            set(gca,'YDir','Reverse')
+            drawnow
+            hfig2.UserData.ha1 = ha1;
+            hfig2.UserData.ha2 = ha2;
+            set(ha1,'ButtonDownFcn',@(src,evt)setp1p2(ha1));
+            set(ha1.Children,'PickableParts','none');
+            %set(hfig2,'WindowButtonMotionFcn','disp(get (gca, ''CurrentPoint''))')
+            set(hfig2,'WindowButtonMotionFcn',@(src,evt)LiveMaskDisplay(ha1,ha2,maskList,N))
+            %[xp,~] = ginput(2);
+    
+            
+    
+            pause(0.1)
+            while(hfig2.UserData.goon==0)
+            pause(0.1)
+            end
+            
+            xp(1) = hfig2.UserData.p1;
+            xp(2) = hfig2.UserData.p2;
+    
+    %         warning('pmin and pmax forced to 1')
+    %         xp(1)=1;
+    %         xp(2)=1;
+            
+            close(hfig2)
+            pxmin = round(min(N*xp));
+            pxmax = min(round(max(N*xp)),length(alpha0)); % in case the user clicks too far in x
+            if pxmax<pxmin
+                error('The second click must correspond to a higher x value.')
+            end
+        else
+            pxmin = opt.masking.p(1);
+            pxmax = opt.masking.p(2);
         end
-        
-        xp(1) = hfig2.UserData.p1;
-        xp(2) = hfig2.UserData.p2;
 
-%         warning('pmin and pmax forced to 1')
-%         xp(1)=1;
-%         xp(2)=1;
-        
-        close(hfig2)
-      
-        pxmin = round(min(N*xp));
-        pxmax = min(round(max(N*xp)),length(alpha0)); % in case the user clicks too far in x
-        if pxmax<pxmin
-            error('The second click must correspond to a higher x value.')
-        end
+        masking.p = [pxmin, pxmax];
+
         alpha(iNP,io) = mean(alpha0(pxmin:pxmax));
         maskMeas = maskList{round(mean([pxmin pxmax]))};
-        
+
         OV(iNP,io) = mean(OV0(pxmin:pxmax));
 
+        masking.mask = maskRef;
+        masking.maskRemove = maskRemove;
 
     end
 end
