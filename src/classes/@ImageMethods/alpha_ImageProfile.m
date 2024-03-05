@@ -33,7 +33,8 @@ arguments
     opt.NNP = 1
     opt.zoom = 1
     opt.step = 1
-    opt.keepPoint = false  % keep the same clicking point from one image to another
+    opt.keepPoint = false  % keep the same clicking center point from one image to another
+    opt.keeppminmax = false  % keep the same clicking pmin and pmax from one image to another
     opt.display = false
 end
 
@@ -51,7 +52,6 @@ else
 end
 
 
-zoom(opt.zoom)
 
 %hand = hfigInit.UserData{8};
 NNP=opt.NNP;
@@ -93,25 +93,27 @@ for io = 1:Nim
 
         fprintf(['Nanoparticle #' num2str(iNP) '/' num2str(NNP) '\n'])
 
-        if  isempty(app) % if using the old gui version
-            hfigInit = figure;
-            imagesc(imT),colormap(gray),colorbar
-            set(gca,'Ydir','normal')
-            %% zoom on the particle of interest
-            zoom on
-            set(app.UIFigure,'currentch',char(1))
-            get(gcf,'CurrentCharacter')
-            waitfor(gcf,'CurrentCharacter',char(13))
-            zoom reset
-        else
-            axes(app.AxesLeft)
-            set(app.UIFigure,'currentch',char(1))
-            get(app.UIFigure,'CurrentCharacter')
-            zoom on
-            app.displayMessage('zoom and then press ''z'' key')
-            waitfor(app.UIFigure,'CurrentCharacter',char(122))  % char 'z'
-            app.clearMessageArea()
-            zoom reset
+        if ~opt.keepPoint || io==1
+            if  isempty(app) % if using the old gui version
+                hfigInit = figure;
+                imagesc(imT),colormap(gray),colorbar
+                set(gca,'Ydir','normal')
+                %% zoom on the particle of interest
+                zoom on
+                set(gcf,'currentch',char(1))
+                get(gcf,'CurrentCharacter')
+                waitfor(gcf,'CurrentCharacter',char(122))
+                zoom reset
+            else
+                axes(app.AxesLeft)
+                set(app.UIFigure,'currentch',char(1))
+                get(app.UIFigure,'CurrentCharacter')
+                zoom on
+                app.displayMessage('zoom and then press ''z'' key')
+                waitfor(app.UIFigure,'CurrentCharacter',char(122))  % char 'z'
+                app.clearMessageArea()
+                zoom reset
+            end
         end
         % press the central pixel of the particle
 
@@ -122,10 +124,14 @@ for io = 1:Nim
             realphamean = real(alphaNP(iNP));
             imalphamean = imag(alphaNP(iNP));
         else
-            while(button~=1) % i.e. as long as pmax is not a mouse click it is not a mouse click
+            while(button~=1)
                 if ~opt.keepPoint || (opt.keepPoint && io==1)
-                    [x_px,y_px] = app.ginputUI(1,'outUnit','px');
-                    app.disableHandleVisibility()
+                    if isempty(app)
+                        [x_px,y_px] =ginput(1);
+                    else                        
+                        [x_px,y_px] = app.ginputUI(1,'outUnit','px');
+                        app.disableHandleVisibility()
+                    end
                     fprintf('x=%d, y=%d\n',x_px, y_px)
                     xList(iNP) = x_px;
                     yList(iNP) = y_px;
@@ -229,11 +235,17 @@ for io = 1:Nim
                 %% mean value of alpha and error bares
                 %pxmin = input('valeur de pxmin'); %faire la moyene de alpha entre pxmin et pxmax
                 %pxmax = input('valeur de pxmax');
-                figure(hfig2)
-                fullwidth
-                [xp,~,button] = ginput(2);  % click twice on any key to restart the loop. Other, click twice with the mouse to keep on going.
-                close(hfig2)
-                hfigInit.Visible="on";
+                if ~opt.keeppminmax || io == 1
+                    figure(hfig2)
+                    fullwidth
+                    [xp,~,button] = ginput(2);  % click twice on any key to restart the loop. Other, click twice with the mouse to keep on going.
+                    close(hfig2)
+                    hfigInit.Visible="on";
+                else
+                    button = 1;
+                end
+
+
 
             end
 
@@ -271,11 +283,13 @@ for io = 1:Nim
         if isempty(app)
             hfigInit.UserData{10} = alphaNP;
             hfigInit.UserData{11} = [xList,yList];
-            if get(hfigInit.UserData{8}.autosave,'value')
-                if NNP>1
-                    saveData(hfigInit,hc)
-                else
-                    saveData(hfigInit)
+            if ~isempty(get(hfigInit.UserData{8}))
+                if get(hfigInit.UserData{8}.autosave,'value')
+                    if NNP>1
+                        saveData(hfigInit,hc)
+                    else
+                        saveData(hfigInit)
+                    end
                 end
             end
         else
@@ -289,8 +303,10 @@ for io = 1:Nim
         hc = cplot(alphaNP(:,io));
     end
 
-    if io~=Nim
-        figure_callback(hfigInit,IMlist(1+str2double(get(hfigInit.UserData{8}.UIk,'String'))),hfigInit.UserData{2},hfigInit.UserData{3},hfigInit.UserData{4},str2double(get(hfigInit.UserData{8}.UIk,'String'))+1)
+    if ~isempty(hfigInit.UserData{8})
+        if io~=Nim
+            figure_callback(hfigInit,IMlist(1+str2double(get(hfigInit.UserData{8}.UIk,'String'))),hfigInit.UserData{2},hfigInit.UserData{3},hfigInit.UserData{4},str2double(get(hfigInit.UserData{8}.UIk,'String'))+1)
+        end
     end
 end
 
