@@ -179,6 +179,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.displayedTime = string.empty()
                 opt.timeUnit char {mustBeMember(opt.timeUnit,{'s','min','h'})}= 's'
                 opt.timeFontSize = []
+                opt.timeFontColor = []
             end
             % zrange in nm
             EL_camera=90-opt.theta;
@@ -357,7 +358,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                             case 's'
                                 timeFac = 1;
                             case 'min'
-                                timeFac = 60
+                                timeFac = 60;
                             case {'h', 'hour'}
                                 timeFac = 3600;
                         end
@@ -367,161 +368,15 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                             timeFontSize = opt.timeFontSize;
                         end
                         text(Nmax/10, Nmax/10, ...
-                        sprintf("%.2d",round(opt.displayedTime/timeFac,2))+" "+opt.timeUnit, ...
+                        sprintf("%.2f",round(opt.displayedTime/timeFac,2))+" "+opt.timeUnit, ...
                         'Units','pixels', ...
-                        'FontSize',timeFontSize, 'Color', [1 1 1])
+                        'FontSize',timeFontSize, 'Color', opt.timeFontColor)
                     end
                     drawnow
                 end
             end
         end
 
-        function makeMovie(IM,videoName,rate)
-            %makeMovie(IM,videoName,rate)
-
-            if 1 % fixed scale
-                minPhL=zeros(numel(IM),1);
-                maxPhL=zeros(numel(IM),1);
-                for u=1:numel(IM)
-                    phaseImage=IM(u).Ph-mean(IM(u).Ph(:));
-                    IMg=imgaussfilt(phaseImage,2);
-                    minPhL(u)=min(IMg(:));
-                    maxPhL(u)=max(IMg(:));
-                end
-                minPh=min(minPhL);
-                maxPh=max(maxPhL);
-            end
-
-            if nargin==2
-                rate=1;
-            elseif nargin==3
-            else
-                error('Number of input must be 1 or 2')
-            end
-
-            % create the video writer with 1 fps
-            writerObj = VideoWriter(videoName);
-            writerObj.FrameRate = rate;
-            % open the video writer
-            open(writerObj);
-            % write the frames to the video
-            AxesColor=[0 0 0];
-            unit='µm';
-            for u=1:numel(IM)
-                % convert the image to a frame
-                factorX=IM(u).pxSize*1e6;
-                factorY=IM(u).pxSize*1e6;
-
-                hfig=figure;
-                hfig.Position=[1 1 1000 500];
-                %% 1st image
-
-                ha(1)=subplot(1,2,1);
-                ha(1).XColor='w';
-                xx=[0 IM(u).Nx*factorX];
-                yy=[0 IM(u).Ny*factorY];
-                imagesc(xx,yy,IM(u).T);
-                axis equal
-                colormap(gca,gray(1024))
-                cb.T=colorbar;
-                cb.T.Color=AxesColor;
-
-
-                minT=min(IM(u).T(:));
-                maxT=max(IM(u).T(:));
-
-                if minT<1 && maxT>1
-                    cb.T.Ticks = [minT,1,maxT];
-                else
-                    cb.T.Ticks = [minT,maxT];
-                end
-
-                if isa(IM(u),'ImageEM')
-                    if norm(IM(u).EE0)==0
-                        cb.T.Label.String = 'Intensity';
-                    else
-                        cb.T.Label.String = 'Normalized intensity';
-                    end
-                else
-                    cb.T.Label.String = 'Normalized intensity';
-                end
-
-                cb.T.Label.FontSize = 14;
-                axis([0 IM(u).Nx*factorX 0 IM(u).Ny*factorY])
-                if isa(IM(u),'ImageQLSI')
-                    title(IM(u).TfileName, 'Interpreter', 'none','FontSize',12)
-                else
-                    title('Norm. tranmission image','FontSize',12)
-                end
-
-
-                xlabel(unit,'FontSize',14);
-                set(gca,'FontSize',14)
-                set(ha(1),'XColor',AxesColor);
-                set(ha(1),'YColor',AxesColor);
-                ha(1).YDir = 'normal';
-
-                %% 2nd image
-                ha(2)=subplot(1,2,2);
-
-                ha(1).Position(3)=ha(2).Position(3);
-                ha(1).Position(1)=ha(1).Position(1)*1.2;
-                phaseImage=IM(u).Ph-mean(IM(u).Ph(:));
-                imagesc(xx,yy,phaseImage);
-                axis equal
-                colormap(gca,phase1024());
-                cb.Ph=colorbar;
-                ax = gca;
-                ax.YDir = 'normal';
-                cb.Ph.Color=AxesColor;
-
-                % to avoid bright pixels distorting the colorscale
-                %vec=sort(IM.Ph(:));
-                %Nv=numel(vec);
-                %caxis([vec(500) vec(Nv-500) ]);
-
-                caxis([minPh maxPh]);
-
-
-
-
-                cb.Ph.Label.String = 'Phase (rad)';
-                cb.Ph.Label.FontSize = 14;
-                cb.OPD=colorbar('westoutside');
-                cb.OPD.Label.String = 'OPD (nm)';
-                cb.OPD.Label.FontSize = 14;
-                cb.OPD.Color=AxesColor;
-                camlight(90,180,'infinite')
-                axis([0 IM(u).Nx*factorX 0 IM(u).Ny*factorY])
-                if isa(IM(u),'ImageQLSI')
-                    title(IM(u).OPDfileName, 'Interpreter', 'none','FontSize',12)
-                else
-                    title('OPD/Phase image','FontSize',14)
-                end
-                xlabel(unit,'FontSize',14);
-                set(gca,'FontSize',14);
-                cb.OPD.TickLabels=round(100*cb.Ph.Ticks*IM(u).lambda/(2*pi)*1e9)/100;
-
-
-                linkaxes(ha, 'xy');
-                set(ha(2),'XColor',AxesColor);
-                set(ha(2),'YColor',AxesColor);
-
-
-                ha(1).Position(3)=ha(2).Position(3);
-
-
-                frame=getframe(hfig);
-                pause(0.5)
-                writeVideo(writerObj, frame);
-                close(hfig)
-
-
-            end
-            % close the writer object
-            close(writerObj);
-
-        end
 
         function makeMoviedx(IM,videoName,opt)
             arguments
@@ -540,8 +395,9 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.imType  = 'OPD'
                 opt.axisDisplay  (1,1) logical = true
                 opt.frameTime = []  % if empty, nothing is displayed, if numeric value, the time is displayed on each frame
-                opt.timeUnit char {mustBeMember(opt.timeUnit,{'s','min','h'})}= 's'
+                opt.timeUnit char {mustBeMember(opt.timeUnit,{'s','min','h'})} = 's'
                 opt.timeFontSize = []            
+                opt.timeFontColor = [0, 0, 0]            
             end
 
             % create the video writer with 1 fps
@@ -556,19 +412,13 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 hfig=figure;
                 fullscreen
                 %                hfig.Position=[1 1 1800 800];
-                if isempty(opt.zrange)
-                    opendx(IM(u),'persp',opt.persp,'phi',opt.phi,'theta',opt.theta,...
-                        'ampl',opt.ampl,'colorMap',opt.colorMap,'title',opt.title, ...
-                        'factor',opt.factor,'label',opt.label,'imType',opt.imType, ...
-                        'axisDisplay',opt.axisDisplay,'displayedTime',opt.frameTime*u, ...
-                        'timeUnit',opt.timeUnit,'timeFontSize',opt.timeFontSize)
-                else
-                    opendx(IM(u),'persp',opt.persp,'phi',opt.phi,'theta',opt.theta,...
-                        'ampl',opt.ampl,'zrange',opt.zrange,'colorMap',opt.colorMap, ...
-                        'title',opt.title,'factor',opt.factor,'label',opt.label,'imType',opt.imType, ...
-                        'axisDisplay',opt.axisDisplay,'displayedTime',opt.frameTime*u, ...
-                        'timeUnit',opt.timeUnit,'timeFontSize',opt.timeFontSize)
-                end
+
+                opendx(IM(u),'persp',opt.persp,'phi',opt.phi,'theta',opt.theta,...
+                    'ampl',opt.ampl,'zrange',opt.zrange,'colorMap',opt.colorMap, ...
+                    'title',opt.title,'factor',opt.factor,'label',opt.label,'imType',opt.imType, ...
+                    'axisDisplay',opt.axisDisplay,'displayedTime',opt.frameTime*u, ...
+                    'timeUnit',opt.timeUnit,'timeFontSize',opt.timeFontSize, 'timeFontColor', opt.timeFontColor)
+
                 frame=getframe(hfig);
                 drawnow
                 writeVideo(writerObj, frame);

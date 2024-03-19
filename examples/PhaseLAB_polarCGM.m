@@ -39,7 +39,7 @@ polarImages = IMmulti2.extractPolarImages();
 polarImages = IMmulti.CGMpolar();
 
 %% display final figure
-n=1;
+n=3;
 
 figure,
 subplot(2,2,1)

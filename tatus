@@ -1,0 +1,1210 @@
+[33mcommit 4273e40bf8f0e7a4e9a1e21d6540ae5ef912db89[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Merge: 0054402 cf48138
+Author: Guillaume Baffou <65804408+baffou@users.noreply.github.com>
+Date:   Thu Jan 11 17:35:46 2024 -0500
+
+    Merge branch 'main' of https://github.com/baffou/PhaseLAB
+
+[33mcommit cf481380710dd9605ced0e82a22214d4ab7f8276[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu Jan 11 15:11:20 2024 -0500
+
+    correct a bug for elongated images in QLSIprocess
+
+[33mcommit 0054402788ac3c85835112d930f839b1ba9a06e1[m
+Merge: e11fc8a 32def69
+Author: Guillaume Baffou <65804408+baffou@users.noreply.github.com>
+Date:   Tue Jan 9 11:57:04 2024 -0500
+
+    Merge branch 'main' of https://github.com/baffou/PhaseLAB
+
+[33mcommit 32def69f31a3e80728f879d962d0cbca30a2fc7d[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Jan 9 11:53:29 2024 -0500
+
+    new example file on polar
+
+[33mcommit e11fc8a3397606ba83bebcc09017ed9c1f0bb7b3[m
+Merge: 6168d84 a30508c
+Author: Guillaume Baffou <65804408+baffou@users.noreply.github.com>
+Date:   Tue Jan 9 10:26:38 2024 -0500
+
+    update Hydrus
+
+[33mcommit 6168d8462bb18a0fed86487511da1a82c829bfd9[m
+Author: Guillaume Baffou <65804408+baffou@users.noreply.github.com>
+Date:   Tue Jan 9 10:15:11 2024 -0500
+
+    update Hydrus
+
+[33mcommit a30508ca42982a644ded80019c1ba25c0e58a466[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Jan 8 21:56:04 2024 -0500
+
+    implementation of the CGMpolar method
+
+[33mcommit 187327b7904c2da0b789c480956d6a3f185ce6b9[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Jan 8 16:42:44 2024 -0500
+
+    major update of the GUI, for channel imaging
+
+[33mcommit c761d8032f3b4a7e3a4c83032e927269f87ad263[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu Jan 4 06:53:42 2024 -0500
+
+    first complete version of the Sphinx documentation
+
+[33mcommit f384dd90592e4a84130f45fca7c93dd00c06fb84[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Jan 1 08:26:37 2024 -0500
+
+    update of the Sphinx documentation
+
+[33mcommit b16aa519f12a2e6f8decdf9119f82d85038a10b9[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Dec 27 17:34:58 2023 -0500
+
+    update of Sphinx
+
+[33mcommit e5967e609d063b508be409d0e0d65d79865644c3[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sat Dec 23 07:11:09 2023 -0500
+
+    update of Sphinx doc
+
+[33mcommit 83864b4eac4f82a4e47e9a4515eac6989785d55f[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Dec 20 18:04:02 2023 -0500
+
+    update of Sphinx
+
+[33mcommit ea27c5f888db47bf2d473c5589aa977bdca8586a[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sat Dec 16 15:26:32 2023 -0500
+
+    update of the sphinx documentation
+
+[33mcommit 0bbbdb3ea40e82187705b73f08f9e51b40b10950[m
+Merge: b82ce91 7bc1682
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri Dec 15 09:54:00 2023 -0500
+
+    Merge branch 'main' of https://github.com/baffou/PhaseLAB
+
+[33mcommit b82ce91d1d41903d61fa72c1e39d7651a627b539[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri Dec 15 09:53:33 2023 -0500
+
+    Sphinx doc update
+
+[33mcommit 7bc16821d9b139c13174897eb031a01bacee748d[m
+Merge: b85ca54 ebba6fa
+Author: Guillaume Baffou <65804408+baffou@users.noreply.github.com>
+Date:   Fri Dec 15 09:52:16 2023 -0500
+
+    new trial
+
+[33mcommit b85ca54d00c5e5b5568771693823611b1ce98d34[m
+Author: unknown <guillaume.baffou@fresnel.fr>
+Date:   Thu Dec 14 14:37:19 2023 -0400
+
+    minor
+
+[33mcommit 124cb74a8d27d6373dfccaca824d5e764aae350e[m
+Author: unknown <guillaume.baffou@fresnel.fr>
+Date:   Thu Dec 14 14:34:57 2023 -0400
+
+    minor modifs
+
+[33mcommit ebba6fa6a0a8b68c73426d6c810f3afa7e696552[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Dec 12 14:12:17 2023 -0500
+
+    adding the sphinx documentation
+
+[33mcommit 060e72b5808bf352dd8ff296896497349353137a[m
+Merge: 0ccd62d a8cb99b
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Dec 4 20:53:27 2023 -0500
+
+    Merge branch 'main' of https://github.com/baffou/PhaseLAB
+
+[33mcommit 0ccd62d70e7b9178199ccd21f7d2ef828f618b99[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Dec 4 20:52:47 2023 -0500
+
+    some modifs
+
+[33mcommit a192a2959069c906caf95a43c45cfaa1935a7918[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Nov 27 16:29:09 2023 -0500
+
+    minor modifs
+
+[33mcommit a8cb99b07b8a67c08043535373d95f42a7508d8f[m
+Merge: c5a8d41 a192a29
+Author: unknown <guillaume.baffou@fresnel.fr>
+Date:   Mon Nov 27 16:32:24 2023 -0400
+
+    Merge branch 'main' of https://github.com/baffou/PhaseLAB
+
+[33mcommit c5a8d419ef7d1a5d860e1f7c6d5ca0096ac0a6a0[m
+Author: unknown <guillaume.baffou@fresnel.fr>
+Date:   Mon Nov 27 16:32:16 2023 -0400
+
+    modifs on Hydrus
+
+[33mcommit 78bbb6bb3c2ba2d9ae2ad43f1147c3de21d3fcb6[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Nov 27 13:42:56 2023 -0500
+
+    update of the export function
+
+[33mcommit 1b717c63ad5520bad30af32d64b834277959d39b[m
+Merge: d112832 5bc757a
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Nov 27 13:38:09 2023 -0500
+
+    Merge branch 'main' of https://github.com/baffou/PhaseLAB
+
+[33mcommit d112832e73ba963c0dfaa7a4ad7c23598d4687fa[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Nov 27 13:33:59 2023 -0500
+
+    fixing the error in the flatten function. Now it is working properly
+
+[33mcommit 5bc757a8b758580ac559f87dc75e39e9706b9b1d[m
+Author: unknown <guillaume.baffou@fresnel.fr>
+Date:   Mon Nov 27 11:35:46 2023 -0400
+
+    some modif in the makeMoviedx
+
+[33mcommit f20dba52f947973d68ae81530c56992c156f0fa2[m
+Author: unknown <guillaume.baffou@fresnel.fr>
+Date:   Mon Nov 27 10:22:54 2023 -0400
+
+    new QLSI unit cells
+
+[33mcommit 2a9a186785a7ffa810e5b6cbc27cf97858bc7467[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sat Nov 25 07:42:02 2023 -0500
+
+    update of the makeMoviedx method again
+
+[33mcommit 373ec535e16d1a847feeda44a18174b6425d2429[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sat Nov 25 06:49:34 2023 -0500
+
+    update of the makeMoviedx method
+
+[33mcommit 1de099dc3ce9c9029d5013acfe36e6bc012096fe[m
+Merge: 2ff8177 fa2c799
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Nov 15 12:13:30 2023 -0500
+
+    Merge remote-tracking branch 'refs/remotes/origin/main'
+
+[33mcommit 2ff8177d9b99b33ec79fe7369a400142fe6dc0a2[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Nov 15 12:12:59 2023 -0500
+
+    update of dynamicFigure function
+
+[33mcommit fa2c7997679d3ba12450d8410c96a8fc2628c75a[m
+Merge: 294bb23 683fee4
+Author: unknown <guillaume.baffou@fresnel.fr>
+Date:   Wed Nov 8 17:29:43 2023 -0400
+
+    Merge branch 'main' of https://github.com/baffou/PhaseLAB
+
+[33mcommit 294bb23f661bac75fdaf09bfb225ddd82919b7ff[m
+Author: unknown <guillaume.baffou@fresnel.fr>
+Date:   Wed Nov 8 17:29:12 2023 -0400
+
+    minor change in Hydrus
+
+[33mcommit 683fee480a37af6bb080fc7cf5af5495c8e3356e[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Nov 1 14:03:35 2023 -0400
+
+    better handling of the grating angle, and implementation of the dynamicFigure.m function
+
+[33mcommit 23d90f5d47c79953de9881ec976d6695a2781b96[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Oct 31 10:43:57 2023 -0400
+
+    new Sepia colorScale, and new colorScale generator function colorScaleGenerator.m and addition of the hex2rgb and rgb2hex functions
+
+[33mcommit b86c43985b08506fbe6972d713294e9320aa61ba[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Oct 31 06:57:05 2023 -0400
+
+    file Silios_mono corrected
+
+[33mcommit a72c459d560051818e599c40217c76d04907847c[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Oct 31 06:55:36 2023 -0400
+
+    add displayASerieOfImagesQLSI function
+
+[33mcommit 9ed1315efcfe1fd47fdff8e5bcc5904b857cc728[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Oct 31 06:51:56 2023 -0400
+
+    minor modifs
+
+[33mcommit bfee58050cff9666c8243b686b11d2c34a6859b2[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sat Oct 28 06:53:15 2023 -0400
+
+    implementation of the use of polar images +  minor modifications here and there
+
+[33mcommit bf90c0ab97a0546623c3e1fc5a34d6fd5822dac6[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Oct 25 08:35:42 2023 -0400
+
+    add the Silios_mono.txt file and change the integration method in low resolution
+
+[33mcommit b7cba2ed75060b9631dd8012a65381d80d888011[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu Sep 14 17:16:08 2023 -0400
+
+    minor modification, along with the creation of the colorCGM repo
+
+[33mcommit 035989ac77d987b887a82240964971f429ed2695[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu Aug 17 06:49:14 2023 +0200
+
+    minor modifs for the color imaging
+
+[33mcommit 8120de98ed6e01511eaf3261b00a1e342479c1f3[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Aug 15 07:31:11 2023 +0200
+
+    various small modifications
+
+[33mcommit fd629582d4abee30f4dfc51c1567851af58c4dce[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri Jul 28 12:29:41 2023 +0200
+
+    minor modifications IF
+
+[33mcommit faf18d8720a5208f18b8be95ed640d89e03f2e4f[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri Jul 28 12:27:49 2023 +0200
+
+    minor modifs
+
+[33mcommit 82214d60edc1b42ace2d92c7fc259d70be4d5bcc[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu Jul 20 16:53:49 2023 +0200
+
+    correction of the set.Itf method of the interfero class
+
+[33mcommit 085e198edb35b4a861421c6b8c473bd74a9314c2[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu Jul 20 14:15:19 2023 +0200
+
+    minor modif
+
+[33mcommit 4cbbf24871402f959cdf7ef56cfe056ba3739371[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu Jul 20 14:14:18 2023 +0200
+
+    small changes IFDDAA
+
+[33mcommit 2c8ad917e349eb0d774d423f28ca0afcbff7df4f[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu Jul 20 14:12:07 2023 +0200
+
+    small change in color
+
+[33mcommit 507c5130b47db526f711f22d012ee7aef43631ce[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Jul 19 18:52:18 2023 +0200
+
+    correction of the methods interfero and mean of the class interfero
+
+[33mcommit a44a603661781157f6b14b62bb98579509c7df46[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Jul 19 12:27:38 2023 +0200
+
+    correction of errors in splitcolors
+
+[33mcommit 7a7fcc2dfeac9b1c70264cf567abee2e430beff8[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Jul 18 18:57:36 2023 +0200
+
+    small changes
+
+[33mcommit 3e7e81f25854085dc21b037ebdc75468cc920bf2[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu Jul 13 14:34:17 2023 +0200
+
+    adding color examples
+
+[33mcommit d7a22013a8a319e64e5cee2b61d899ab0cf60674[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu Jul 13 13:35:10 2023 +0200
+
+    new stable version of the color toolbox
+
+[33mcommit 43f20ef312478a68ce2432ef2e4aa2ff9d20b3b4[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Jul 12 07:04:36 2023 +0200
+
+    implementing color imaging, running version
+
+[33mcommit faa9e896b8c51df06b2843b0b0e3701164544c00[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Jul 11 19:02:33 2023 +0200
+
+    implementing color imaging
+
+[33mcommit 697a3944331c4d8e5a4a7b7adb43c977b0a2d248[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Jul 11 12:06:58 2023 +0200
+
+    incorporation of the IFFDDA module in phaseLAB
+
+[33mcommit 745dadefadd48b6ccc844048fa25f0ceacf69603[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Jun 26 12:52:24 2023 +0200
+
+    possibility to specifify Inf for the value of NimRef
+
+[33mcommit 91763fa63c0d925865e2a0343c4f1b2e648b360f[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Jun 26 12:37:36 2023 +0200
+
+    possibility to avoid adding noise of the ref image in CGMinSilico
+
+[33mcommit 926e19fd088c3a84f5861f116d8de6c0801ab1bc[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Jun 21 06:11:24 2023 +0200
+
+    minor modif
+
+[33mcommit 993e43bce1a30b06b5727cbe06ee16b701abe90d[m
+Merge: f2efda6 c0c41ae
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu Jun 8 07:06:54 2023 -0700
+
+    Merge branch 'main' of https://github.com/baffou/PhaseLAB
+
+[33mcommit f2efda69956e8e0dfac6be7fde81a31e4e1e6cdc[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu Jun 8 07:04:43 2023 -0700
+
+    minor modif
+
+[33mcommit c0c41aeee41c7eaa0007ab7c0e08c762ae8b9a6f[m
+Merge: 0be718e 911f8d1
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu Jun 8 16:04:06 2023 +0200
+
+    minor modif
+
+[33mcommit 0be718e3ffaefdd1f526faa17fb35646173e61b0[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Jun 6 05:28:01 2023 +0200
+
+    minor modif
+
+[33mcommit 911f8d13b452acea4e3d5d38c336d47ae2b41d42[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Jun 5 18:13:20 2023 +0200
+
+    adding of the untilt function in PhaseLABgui
+
+[33mcommit 3fada9e244bc0ce9e73110b8262a555f4eda0976[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sun Jun 4 09:53:03 2023 +0200
+
+    fix problem with the binning function
+
+[33mcommit 53da77d8cf6f63d6662c395e86ee49adb89f2076[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sat Jun 3 07:11:41 2023 +0200
+
+    minor changes
+
+[33mcommit a940477324e6d00a44296ae9a0637d6e53f824d9[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed May 31 07:14:30 2023 +0200
+
+    some minor modifications of the GUI
+
+[33mcommit f07a90cae82b6575675840f1b89ee2f6d1c1fb36[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue May 23 08:59:05 2023 +0200
+
+    automatic spot location in Fourier space in QLSIprocess
+
+[33mcommit 97406edc5b47a40df0297085c8d4f3d96232f4d9[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sat May 20 07:29:25 2023 +0200
+
+    gitpush_implementation
+
+[33mcommit 12ee45b98430f420c7b2780a5ca1a7fac31963e0[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu May 18 09:57:42 2023 +0200
+
+    fix the problem of colorscale with the intensity image of the gui
+
+[33mcommit f2f74e68b089b25b2161b50e4a02f326304cc9f2[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu May 18 06:12:28 2023 +0200
+
+    new graphene file
+
+[33mcommit b2b7cb1a132b24ed886c63d2d97f0afa5e417f13[m
+Merge: e721296 75ee0aa
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu May 18 06:10:33 2023 +0200
+
+    removed graphene file
+
+[33mcommit e721296a42f83610a78a428f1d9ea71d74336d58[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu May 18 06:09:23 2023 +0200
+
+    modification of the graphene file
+
+[33mcommit 75ee0aa57800bf9bf019a7d2a1ad080733293830[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu May 18 06:05:32 2023 +0200
+
+    modification of the gui to enable graphene visualisation
+
+[33mcommit 0bd245db8d91f1c59c0771c847a7e00ab9056668[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu May 18 05:44:02 2023 +0200
+
+    add graphene material file
+
+[33mcommit 7b5e945ffbe3d919d2b88972ab8fa6bcdb7e01d0[m
+Merge: 2a9e66e 5ca9d22
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed May 17 07:19:55 2023 +0200
+
+    Merge branch 'main' of http://github.com/baffou/PhaseLAB into main
+
+[33mcommit 2a9e66ea4c050491cd53e9a67a32c3946448dfe6[m
+Author: baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed May 17 06:47:38 2023 +0200
+
+    automatic Fourier crop in QLSI process via the new function maxPix
+
+[33mcommit 5ca9d22c6b7df11bcba413ef71c0f1affb19bc40[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon May 15 10:48:22 2023 +0200
+
+    some modifications of CGMinSilico
+
+[33mcommit 0eaa44f8cd13c9033b07345bf3c8b531fe9963dc[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon May 8 08:50:17 2023 +0200
+
+    implementation of the propagation method for the ImageEM class
+
+[33mcommit 7da09515cf85178c0c43bce169be995fdf0ccefb[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sat May 6 06:26:48 2023 +0200
+
+    updated boxSelection function
+
+[33mcommit a50375dd76cfa5e558178ed193bf8ecf7a122c82[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri May 5 06:53:12 2023 +0200
+
+    propagation method of ImageQLSI class, and in figure, implemented
+
+[33mcommit 956c97c723c77d244907c25b0aeb7ed2b33d4416[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu May 4 09:46:39 2023 +0200
+
+    imProp now working properly
+
+[33mcommit 3be1bdf759d046197665d3f8ef98be0bea69e5a5[m[33m ([m[1;31morigin/temporary2[m[33m)[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Thu May 4 07:06:38 2023 +0200
+
+    modifiction of the imProp function to implement refocus algorithm. Not perfectly working yet.
+
+[33mcommit efdf84bb18b3fb6f6399088f1083aa0d4844c279[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Sat Apr 29 08:02:56 2023 +0200
+
+    modifications for Baptiste
+
+[33mcommit f17b3ef61fd827018903a90e639a623793ee07a9[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Thu Apr 13 17:33:36 2023 +0200
+
+    minor changes
+
+[33mcommit 9cd36d36463ece72688e383d658064afc0da8e2e[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Fri Apr 7 17:00:04 2023 +0200
+
+    minor modif
+
+[33mcommit 25e20d64c984dea16c87d0b48a54e846c739feaf[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Fri Apr 7 15:47:24 2023 +0200
+
+    modification of the duplicate() function. I removed the noncopyable properties that were messing up ifdda
+
+[33mcommit 3a4cb2eb88b4cf22a2a616ea976ed9eb24a3a882[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Fri Apr 7 14:19:15 2023 +0200
+
+    minor corrections
+
+[33mcommit e45b5fcfa69f9c33551e0ee73c76700baa20ae5e[m
+Merge: c11a324 a7c0ea0
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Fri Apr 7 09:59:46 2023 +0200
+
+    Merge branch 'main' of https://github.com/baffou/PhaseLAB
+
+[33mcommit c11a3248c8b8da5435eaa3d5cdc061876f2e90a0[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Fri Apr 7 09:59:29 2023 +0200
+
+    minor modif
+
+[33mcommit a7c0ea01e80f45c810ea1d10b53a8e2f368f3245[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Fri Apr 7 09:05:06 2023 +0200
+
+    minor corrections
+
+[33mcommit 28b2f2a776da93eba949649cb59448d735569397[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Wed Apr 5 16:20:33 2023 +0200
+
+    minor corrections
+
+[33mcommit 4ae2d5eee494053f6c9c703bdf4df8f739c318a7[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Tue Apr 4 16:07:51 2023 +0200
+
+    minor corrections
+
+[33mcommit 01241403ed4e516a872d0712642ef75783e33391[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Tue Apr 4 06:45:57 2023 +0200
+
+    makes the new GUI work for the ImageEM object, in particular, I added the duplicate and fieldnamesNonDependent functions
+
+[33mcommit 84fe699bd1fc234754d110dc9547793386a3af5d[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Mon Apr 3 15:49:43 2023 +0200
+
+    minor corrections
+
+[33mcommit 2fb51d8eab337e85dfe1ddb4ad0c25a8eb7ecca8[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Sun Apr 2 21:39:10 2023 +0200
+
+    update of the export panel
+
+[33mcommit 1e1ce06a2555ba25eca95e0e54bd5c947d7f90f2[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Sun Apr 2 09:17:31 2023 +0200
+
+    minor corrections
+
+[33mcommit 4415145f3e94f4f145ccc3709206979ccc3f61c1[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Sun Apr 2 09:14:38 2023 +0200
+
+    minor corrections
+
+[33mcommit b0471f892d740d331f59cc8b1522a84ba66d503d[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Sun Apr 2 09:00:35 2023 +0200
+
+    major update of the new appgui
+
+[33mcommit fca58dc66020a55b57f4b2de887c7341e5ac3aae[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Fri Mar 24 17:06:31 2023 +0100
+
+    IMPLEMENTATION OF THE UIFIGURE
+
+[33mcommit 3fa0364c1825688395e0e9806c6a9ab315021a0d[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri Mar 10 12:41:56 2023 +0100
+
+    fix some bugs
+
+[33mcommit e605083cab9bb70a54afa0baff9888a3552a101d[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Mar 1 22:30:57 2023 +0100
+
+    minor modifications
+
+[33mcommit a00a9d1f08cf8d6de02f0f7acb5910d3823c03f4[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Thu Feb 23 06:09:23 2023 +0100
+
+    minor modif
+
+[33mcommit cf39bf73787d670ca1949f34bfc19eec75feeea1[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Thu Feb 23 05:35:27 2023 +0100
+
+    minor modifs
+
+[33mcommit 554737d739de7fc7af6345e5e6da034e83239a78[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Tue Feb 21 14:53:56 2023 +0100
+
+    implementation of the cellGenerator files
+
+[33mcommit 57ccc1cc7f3c4709c7fabc0d88e9d905b1e3c49d[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Tue Feb 21 14:50:59 2023 +0100
+
+    implementation of the IFDDAmeshGenerator files
+
+[33mcommit 9c6817d7a1b8200beb892c00a5ee07654b61795d[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Sun Feb 19 05:48:50 2023 +0100
+
+    minor modifications of IFDDA
+
+[33mcommit db2e2b2c78ae0ac25f25485656f4ef1e83e79402[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sun Feb 19 05:45:51 2023 +0100
+
+    minor modifs
+
+[33mcommit ef6284437896e1883320c794fb65c2433d5548d5[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Sun Feb 12 22:38:55 2023 +0100
+
+    a better coding of the binning functions.
+
+[33mcommit d067d21f5696a3f2113c9256bb6c755d0fbd7d52[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sun Feb 12 22:05:44 2023 +0100
+
+    add some binning functions
+
+[33mcommit 794ebf7edabbb85f7b4e19deb0345183ed81879d[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sun Feb 12 22:03:27 2023 +0100
+
+    minor corrections
+
+[33mcommit 25ff6d426d7217d775781f1e3b0e0b7621229bef[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Sun Feb 12 20:54:02 2023 +0100
+
+    some implentation in IFDDA and renaming of the function epsRead and indexRead
+
+[33mcommit ca3a44e861c1fbe839b6867a1b4b45f2064c4bba[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Fri Feb 10 13:58:58 2023 +0100
+
+    reorganisation of the IFDDA files, and writing of an example file PhaseLAB_IFDDA2.m
+
+[33mcommit dd8f288ff46abe16cf5cfaf214bfbb11bd6b59a2[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Fri Feb 10 12:52:53 2023 +0100
+
+    Add the mesh generators folder in the +IF folder
+
+[33mcommit 93310f851bdf7a1b568dea418ffdddb01ac2cf72[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Fri Feb 10 12:47:52 2023 +0100
+
+    IMPLEMENTATION OF THE IFDDAobject CLASS AND COUPLING WITH IFDDA.
+
+[33mcommit b1c0bda67a2d6322aeb0725a7d538b10fb15e9d6[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sun Jan 29 17:03:32 2023 -0800
+
+    update the example file related to Nanoparticle
+
+[33mcommit a6c9c5bb13cb1925b64eb72386c27d3254954ea0[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sun Jan 29 16:19:50 2023 -0800
+
+    some minor changes related to ifdda
+
+[33mcommit 1697811c42c186aec63731848b1278730e95acd7[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Jan 23 16:55:54 2023 +0100
+
+    implementation of the flatten3 method of the class ImageMethods
+
+[33mcommit 9a35818e0d6d225e0a8d6a978037172da4326136[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Jan 23 12:23:34 2023 +0100
+
+    minor issues regarding makeMoviedx
+
+[33mcommit 01c186981ec4a0f68923d2f71ebc578cfce4f755[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Sun Jan 22 06:07:37 2023 +0100
+
+    fullscreen modif
+
+[33mcommit b85ce5073f411910ca573c70131067672128582d[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sat Jan 21 06:59:03 2023 +0100
+
+    fix remaining errors in the flatten function
+
+[33mcommit eccb99f44a4d0c8a4c35e8d42d869acb75831de6[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri Jan 20 16:27:32 2023 +0100
+
+    fix remaining errors in the flatten function
+
+[33mcommit e4ec0fbab0cb7e2dc053fc1b0d069adc3b1904fb[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri Jan 20 12:21:29 2023 +0100
+
+    Improved flatten() method of the ImageMethods class
+
+[33mcommit 7900eff9e6b7be5938ac17b2cd7351326e6753aa[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu Jan 19 10:59:33 2023 +0100
+
+    remove the bug 'pmin and pmax forced to 1' in the magicWandAlphaOV2 function
+
+[33mcommit 8f0810174f5c89b23de87fa34a068860e0ace1b8[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Jan 11 05:01:17 2023 +0100
+
+    make class Illumination handle and copyable
+
+[33mcommit b965a376e27b53a8339dcf3e60b1a1271fc5da4f[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Jan 11 04:52:50 2023 +0100
+
+    Modification of the Medium class
+    
+    class Medium: implement the Dependent property lambda and the Hidden property Illumination, and the possibility to call any material from the library of material, such as TiO2 for instance as a medium material
+
+[33mcommit 6389a236ed1b0547303d5e38c0cbb0ba17884e49[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Jan 10 17:11:09 2023 +0100
+
+    nothing special
+
+[33mcommit 58e92261b632bb43fb94b9d89d75cc56a17fb8b1[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Jan 10 15:45:01 2023 +0100
+
+    nothing special
+
+[33mcommit 7d826d31789c7e4187eac12a31521aaae5ea38f3[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Tue Jan 10 07:07:42 2023 +0100
+
+    modification of the definition of the norm of the incident field for an ImageEM object
+
+[33mcommit 666e132482fff50016c517e9de1ec55e3c1415b6[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Sun Jan 8 09:16:52 2023 +0100
+
+    update of the method alpha_ImageProfile
+
+[33mcommit 823705fb17aa2dbb8798b5d6dae7d5e79fb2e169[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sun Jan 8 05:27:49 2023 +0100
+
+    nothing special
+
+[33mcommit fc31d0954c0d864af7855d5f3b4fa5d0257203f8[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sun Jan 8 05:25:50 2023 +0100
+
+    makes Nx and Ny dependent variables in ImageQLSI class
+
+[33mcommit d1685742ec955c25204a3b6c263743a26753f924[m
+Merge: 77c60a3 bc9abc0
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu Jan 5 09:43:01 2023 +0100
+
+    Merge branch 'main' of https://github.com/baffou/PhaseLAB into main
+
+[33mcommit 77c60a32c9e3b78b471e24270774d5a180b16e3a[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Jan 4 17:30:41 2023 +0100
+
+    nothing special
+
+[33mcommit bc9abc06b968b5e98b52183967aa7b6f35642580[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Mon Jan 2 18:22:27 2023 +0100
+
+    minor changes on IF
+
+[33mcommit 895da3f25af5ab81b8cc60720e35ce9aa6247d45[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Mon Jan 2 17:22:54 2023 +0100
+
+    minor changes on IF
+
+[33mcommit a827ac0571a987b2616de7673fc1ce4fd8d0bba6[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Mon Jan 2 16:05:34 2023 +0100
+
+    minor corrections
+
+[33mcommit 5eb30a9a669acbefc0a7f906c9867dff51feec70[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Jan 2 14:32:29 2023 +0100
+
+    Implementation of CGMinSIlico with vectorial images
+
+[33mcommit 039d9eb439cf9c5320209f210bcd1072fe493b6a[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Jan 2 13:41:24 2023 +0100
+
+    nothing special
+
+[33mcommit 5ba3e086113f090b1e0afc251613da20eab8fb81[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sun Jan 1 11:07:54 2023 +0100
+
+    nothing special
+
+[33mcommit 640f41e5d76f008a3970b75b750aed9203398c52[m
+Author: Monoceros <guillaume.baffou@fresnel.fr>
+Date:   Sun Jan 1 09:42:04 2023 +0100
+
+    Modifications of IF functions, creation of the crop0 function and modification of the crop methods of the classes ImageMethods and Interfero
+
+[33mcommit e16cdad6820321270bf2cdda54ad476dbb3ed32f[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Dec 28 07:19:37 2022 +0100
+
+    new method save for ImageQLSI
+
+[33mcommit 4481cdd7c41b9616db6bab17c213a7a9ab425ad4[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Dec 13 20:06:34 2022 -0500
+
+    Major modification: The IFDDA import module has been added.
+
+[33mcommit 2e6053aa55803261dcc495ae298c4cd5cb865404[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Nov 21 06:03:19 2022 +0100
+
+    some modifs
+
+[33mcommit cd08d45be92e70b7fa2c76ec63af7c021e87f157[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri Nov 11 11:22:27 2022 +0100
+
+    Modification of the makeMoviedx method
+
+[33mcommit c85959a9a5138858cc690be3c5d70392b02d9179[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Nov 8 09:04:31 2022 +0100
+
+    implementation of an apodization of the interfero
+
+[33mcommit 5b846f356ad750f28b2a554f316a4bcfea3b52cc[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri Sep 30 06:56:36 2022 +0200
+
+    implementation of Legendre polynomial subtraction
+
+[33mcommit 240159acb36a76a5dac1e02eeb21db509959a43f[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri Sep 23 12:47:14 2022 +0200
+
+    new functionalies on background subtraction bis
+
+[33mcommit ac8aa8ec03b3d4450e604a3ccdd4f9ec3b2b40f6[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri Sep 23 12:45:57 2022 +0200
+
+    new functionalies on background subtraction
+
+[33mcommit 2146f59ce0319284b01a09bcfcf3a3d237f075f0[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri Sep 16 13:19:47 2022 +0200
+
+    small update of the flatten method
+
+[33mcommit 763d11325db3537a6711b4efcd593be7fb18f889[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri Sep 16 13:17:12 2022 +0200
+
+    update of the flatten function of the class ImageMethods with the Waves methods that remove sines function moments to flatten the background
+
+[33mcommit b721a626db2a4418d7353aa940a822d0bedaf8cc[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sun Sep 11 08:22:07 2022 +0200
+
+    some improvements
+
+[33mcommit c9b6bdcc91155fb119b039f577cc45496d7206b1[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Sep 5 13:35:37 2022 +0200
+
+    add the function noisyImage.m
+
+[33mcommit cae6f24ac5ea154dbcadc644076f0e9edcfd4464[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Aug 31 14:41:19 2022 -0700
+
+    creation of the symMoment function
+
+[33mcommit c2bf51808b5095736a571ba5fcf16defe9a1ef29[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri Aug 26 15:34:54 2022 +0200
+
+    Correction but pxSize of ImageQLSI object in low res mode, and display of the measured zeta factor during QLSI process
+
+[33mcommit 88672ebba302e848d93f670e28cc025ce63aef56[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Aug 10 09:24:24 2022 +0200
+
+    Implement Interfero(3)
+
+[33mcommit 13aad2be9367d8d63f8f3f9f2f83a655a1410058[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Aug 3 22:29:01 2022 +0200
+
+    modification of the axes of the figure method, and correction of the DM method
+
+[33mcommit 2f663b843088f5003e1abfa7465e17ea7f9a3f13[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Aug 3 09:56:17 2022 +0200
+
+    minor changes
+
+[33mcommit 912c3dd592c9b095a0e2eced65312eac19f4f0e4[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Aug 2 08:12:56 2022 +0200
+
+    implementation of the redblue colorscale
+
+[33mcommit 56b32eba7339bb4c5d8f64a26d3a75cd90ef233e[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Aug 2 08:07:59 2022 +0200
+
+    some modification in makemoviedx and in the crop() methods of ImageMethod
+
+[33mcommit 2954fddb27df1bae805667fa71f6a207780ada4f[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Aug 1 18:41:08 2022 +0200
+
+    redefinition of the ImageQLSI methods to properly include the obj2 outputs
+
+[33mcommit da8df03aa5ff9d1f494df23227c5c2e20b905e91[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Jul 25 18:32:25 2022 +0200
+
+    minor corrections
+
+[33mcommit 928b132cfd74e857d76de7105252d73cd9c39c63[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu Jul 21 09:53:19 2022 +0200
+
+    little correction in Interfero class
+
+[33mcommit 9b0345ce3e64976c0682955b632d560e9c56647d[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Jul 18 07:46:34 2022 +0200
+
+    update makemoviedx and opendx methods
+
+[33mcommit 9479cfc8cdf3d4b6e70bab324bb4c11c53edfd94[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri Jul 15 17:29:46 2022 +0200
+
+    corrections of imgaussfilt in magicWand
+
+[33mcommit d42724d332a9641c6e519abd17aa3fd7002e4f5c[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri Jul 15 14:56:50 2022 +0200
+
+    correction of an error in DispWandSelection
+
+[33mcommit 30da43e2e493853d219e481deb5397f48231829c[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri Jul 15 14:40:47 2022 +0200
+
+    new folder for all the Magic Wand functions
+
+[33mcommit 4761068190ae6f370f54e20f85a450fe9418f18c[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Jul 13 16:08:24 2022 +0200
+
+    implementation of the option 'Tnormation' in QLSIprocess.m
+
+[33mcommit 01606c7f11ed98f7930d0d8cec79abf6e15e423c[m[33m ([m[1;31morigin/Monoceros[m[33m)[m
+Merge: 1714410 aef0ddf
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Mon Jul 11 11:57:27 2022 +0200
+
+    Merge branch 'main' of https://github.com/baffou/PhaseLAB
+
+[33mcommit aef0ddf1da07934a66cad64b8394e3f9e4ae959b[m
+Merge: 0aa5294 2b4d017
+Author: Guillaume Baffou <65804408+baffou@users.noreply.github.com>
+Date:   Mon Jul 11 11:50:10 2022 +0200
+
+    Merge pull request #3 from baffou/MacBookPro
+    
+    Initial MacBookPro branch
+
+[33mcommit 2b4d017838a6bcb36a02b6804ae6fc179d1e16ec[m[33m ([m[1;31morigin/MacBookPro[m[33m)[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Jul 11 11:49:27 2022 +0200
+
+    remove asv files
+
+[33mcommit 0aa52944976bf675674b78401cffa0fa27a870cf[m
+Merge: 81a5f8d 642d544
+Author: Guillaume Baffou <65804408+baffou@users.noreply.github.com>
+Date:   Mon Jul 11 11:46:37 2022 +0200
+
+    Merge pull request #2 from baffou/Perseus
+    
+    new Perseus Branch
+
+[33mcommit 81a5f8dfd2c47bbd8ce1df2f824fd55cd2adc785[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Jul 11 11:45:07 2022 +0200
+
+    remove asv files
+
+[33mcommit 1714410ab4e30dfc03d847b1b837fbc8de23936f[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Mon Jul 11 11:42:42 2022 +0200
+
+    resolve a conflict
+
+[33mcommit 642d54413d0d2d76aa0f057b8c9d9bf9867e35be[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Mon Jul 11 09:30:54 2022 +0200
+
+    resolve a conflict with an asv file
+
+[33mcommit 4a2bf87e161dee5c24103f68506f12ac4c2acebf[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon Jul 11 09:25:59 2022 +0200
+
+    Initial MacBookPro branch
+
+[33mcommit 40a92a79d6c8d9fad2594b2ffb1ac13a014437dc[m
+Author: Perseus <perseus@MacBook-Pro-2.local>
+Date:   Mon Jul 11 09:21:46 2022 +0200
+
+    new Perseus Branch
+
+[33mcommit 13ebbdc5c4dc70f21db32be16fbfbfc87ff47437[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed Jun 29 07:41:23 2022 +0200
+
+    ImageQLSI class made handle class
+
+[33mcommit 61808cb4978a5f346160f2fb38073a419f3cd00b[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Tue Jun 28 12:25:26 2022 +0200
+
+    update importItfRef and ImageMethods/makeMovies
+
+[33mcommit 3dea1558a647a77c2739eb1a922824cb195159b0[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Mon May 16 14:41:45 2022 +0200
+
+    error corrected with the CPM formula
+
+[33mcommit 8b0b13f473eea0f324ec6e389974e93f688ddc24[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sat May 14 22:24:01 2022 +0200
+
+    This version seems to be working and polished
+
+[33mcommit 276b09e3bd6c016f43463c149bde151a4d214fd3[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Sat May 14 06:46:19 2022 +0200
+
+    modifications of names, like pxSize to dxSize and modification of the zoom parameters to fit the p'=p/Z description
+
+[33mcommit c23bd8a16125154a8faf2be92806916da1b74cf4[m
+Merge: 7c6528d aff6d3c
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri May 13 15:36:31 2022 +0200
+
+    Merge branch 'main' of https://github.com/baffou/PhaseLAB into main
+
+[33mcommit 7c6528d325e7d1a8c83049389db405a52fa7c568[m
+Merge: cf42047 07ef099
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri May 13 15:31:55 2022 +0200
+
+    Merge branch 'main' of https://github.com/baffou/PhaseLAB into main
+
+[33mcommit aff6d3c0e05cdf8cd8d9ce73c89c6b357b3549cd[m
+Merge: cf42047 07ef099
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri May 13 15:31:55 2022 +0200
+
+    Merge branch 'main' of https://github.com/baffou/PhaseLAB into main
+
+[33mcommit cf420471bcaf62e871e8ef60188cd27fb09401ad[m
+Merge: 293285c cc99b80
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri May 13 15:29:59 2022 +0200
+
+    Merge branch 'branch1' into main
+
+[33mcommit 293285c325a63d7fc45d2e781d89eb25012db651[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri May 13 15:08:42 2022 +0200
+
+    I cleaned all the =
+
+[33mcommit cc99b80299d19ddf52e726e464e87582f4874254[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri May 13 15:08:42 2022 +0200
+
+    I cleaned all the =
+
+[33mcommit 07ef099a13ea3304876684856877a41f2790f79c[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri May 13 15:08:42 2022 +0200
+
+    I cleaned all the =
+
+[33mcommit a3abf04ec975b08bd14f9a96da898afc0aa8eb83[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Fri May 13 12:47:39 2022 +0200
+
+    Commit just before polishing all the file of the package one by one.
+
+[33mcommit 6428cf499f6588eb9a563c0fbdfcb80918adae50[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu May 12 18:16:47 2022 +0200
+
+    Fix this problem of compatibility between CGMinSilico and PhaseLab, which, i think, comes from the fact that the image coordinate is in the focal plane and not in the image plane
+
+[33mcommit 9167c6543326f72149d46c4b6a2a7200cbee5f95[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Thu May 12 17:48:36 2022 +0200
+
+    some example files modified
+
+[33mcommit edc84900a6d774be171f65e5e58137ba238c4e8e[m
+Author: Guillaume Baffou <guillaume.baffou@fresnel.fr>
+Date:   Wed May 11 17:15:03 2022 +0200
+
+    Initial version
