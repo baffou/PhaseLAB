@@ -8,7 +8,7 @@ arguments
     opt.remote = 0
     opt.channel (1,:) char {mustBeMember(opt.channel,{'R','G','0','45','90','135','none'})} = 'none'
 end
-
+opt.nickname = convertStringsToChars(opt.nickname);
 manual = 0;
 
 IL = []; %If metadatas == false, IL will stay blank !

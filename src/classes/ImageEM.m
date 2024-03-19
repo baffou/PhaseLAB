@@ -27,7 +27,6 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         E2
         E
         Ph
-        Ph0 % Ph image, not normalized by the phase of the reference image
         OPD
         OPDnm
         T
@@ -187,14 +186,10 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 val = [];
             else
                 if norm(obj.EE0)==0 % happens when using crossed polarizers that kill E0 on the image plane.
-                    nor = 1;
+                    val = obj.E2; % Transmittance
                 else
-                    nor = obj.EE0n();
+                    val = obj.E2 ./ obj.Einc.E2; % Transmittance
                 end
-                norExtot = obj.Ex/nor;
-                norEytot = obj.Ey/nor;
-                norEztot = obj.Ez/nor;
-                val = abs(norExtot).^2+abs(norEytot).^2+abs(norEztot).^2; % Transmittance
             end
         end
 
@@ -363,7 +358,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         function val = EE0n(obj)
             % norm of the incident field
             if isempty(obj.Einc) % if the object if already an incident field
-                val=mean(mean(sqrt(abs(obj.Ex).^2+abs(obj.Ey).^2+abs(obj.Ez).^2)));
+                val=sqrt(mean(mean(abs(obj.Ex).^2+abs(obj.Ey).^2+abs(obj.Ez).^2)));
             else % take the EE0 of the Einc
                 val = obj.Einc.EE0n();
             end

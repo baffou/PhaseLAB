@@ -7,10 +7,10 @@ arguments
     opt.Fcrops = []
     opt.crop = []
     opt.method char {mustBeMember(opt.method,{'Tikhonov','Errico','CPM'})} = 'Tikhonov'
-    opt.resolution char {mustBeMember(opt.resolution,{'high','low'})} = 'high'
+    opt.definition char {mustBeMember(opt.definition,{'high','low'})} = 'high'
     opt.Fcropshape char {mustBeMember(opt.Fcropshape,{'disc','square'})} = 'disc'
     opt.Smatrix = []
-    opt.apodization = []        % true, 1, or the width of the apodization in px
+    opt.apodization = false        % true, 1, or the width of the apodization in px
     opt.saveGradients = false
     opt.remotePath = []
     opt.Tnormalisation = true % or false or 'subtraction'
@@ -68,7 +68,7 @@ if ~isempty(opt.Fcrops) % If crops are defined within the options
         opt.Fcrops(1)
         error('not FcropParameters objects')
     end
-elseif ~isempty(Itf(1).Ref.Fcrops(1).Nx) % if the ref already has crops
+elseif ~isempty(Itf(1).Ref) && ~isempty(Itf(1).Ref.Fcrops(1).Nx) % if the ref already has crops
     cropParam0 = Itf(1).Ref.Fcrops(1);
     cropParam1 = Itf(1).Ref.Fcrops(2);
     cropParam2 = Itf(1).Ref.Fcrops(3);
@@ -135,7 +135,7 @@ for ii = 1:Nf
         error(['the interferogram number ' num2str(ii) ' is empty'])
     end
     if isempty(Itfi.Ref)
-        error(['the reference of the interferogram number ' num2str(ii) ' is empty'])
+        warning(['the reference of the interferogram number ' num2str(ii) ' is empty'])
     end
     
     MI = Itfi.Microscope;
@@ -168,14 +168,14 @@ for ii = 1:Nf
     
 
 
-    if ~isempty(opt.apodization) % if apodization required
+    if opt.apodization % if apodization required
         fprintf("apodization \n")
         if opt.apodization == 1 % if apo value not specified, then equals 20
-            apoNpx=20;
+            apoNpx = 20;
         else
-            apoNpx=opt.apodization;
+            apoNpx = opt.apodization;
         end
-        [~,mask]=apodization(Itfi.Itf,apoNpx);
+        [~,mask] = apodization(Itfi.Itf,apoNpx);
 
         FIm = fftshift(fft2(Itfi.Itf.*mask));
         if Itfi.Ref.TFapo == apoNpx  % if the apo TF has already been calculated for Ref and matches the one of the Itf
@@ -203,7 +203,7 @@ for ii = 1:Nf
         pause(1)
     end
 
-    [FImc,FRfc,cropParam0] = FourierCrop(FIm,FRf,zeta,Fcrops=cropParam0,resolution=opt.resolution,FcropShape=opt.Fcropshape,auto=opt.auto);
+    [FImc,FRfc,cropParam0] = FourierCrop(FIm,FRf,zeta,Fcrops=cropParam0,definition=opt.definition,FcropShape=opt.Fcropshape,auto=opt.auto);
 
     Im_int = ifft2(ifftshift(FImc));
     Rf_int = ifft2(ifftshift(FRfc));
@@ -211,7 +211,7 @@ for ii = 1:Nf
     %    fprintf('FIRST ORDER ALONG XD\n')
     cropParam1.R = cropParam0.R;
     cropParam2.R = cropParam0.R;
-    [FImc,FRfc,cropParam1] = FourierCrop(FIm,FRf,Fcrops=cropParam1,resolution=opt.resolution,FcropShape=opt.Fcropshape,auto=opt.auto);
+    [FImc,FRfc,cropParam1] = FourierCrop(FIm,FRf,Fcrops=cropParam1,definition=opt.definition,FcropShape=opt.Fcropshape,auto=opt.auto);
     
 
     %figure('Name','QLSIprocess.m/ TF Fourier crop 1st order'),imagetf(FImc)
@@ -221,7 +221,7 @@ for ii = 1:Nf
 
     % fprintf('FIRST ORDER ALONG YD\n')
     cropParam2 = cropParam1.rotate90();
-    [FImc,FRfc,cropParam2] = FourierCrop(FIm,FRf,Fcrops=cropParam2,resolution=opt.resolution,FcropShape=opt.Fcropshape);
+    [FImc,FRfc,cropParam2] = FourierCrop(FIm,FRf,Fcrops=cropParam2,definition=opt.definition,FcropShape=opt.Fcropshape);
     
     Im_DW2 = ifft2(ifftshift(FImc));
     Rf_DW2 = ifft2(ifftshift(FRfc));
@@ -268,7 +268,7 @@ for ii = 1:Nf
         W = intgrad2(DWx,DWy);
     elseif strcmpi(opt.method,'Tikhonov')
 
-        if strcmpi(opt.resolution,'low')
+        if strcmpi(opt.definition,'low')
             N = 13;
             Tikh = 1e-5;
         else
@@ -290,7 +290,7 @@ for ii = 1:Nf
         waitbar(ii/Nf,fwb,sprintf('Image processing duration: %.3f s',toc))
     end
     
-    if strcmpi(opt.resolution,'low') % compute the correction factor in case the image is small (fast mode)
+    if strcmpi(opt.definition,'low') % compute the correction factor in case the image is small (fast mode)
         rx = cropParam2.R(1);
         corr = Nx/length(round((-rx:rx-1)));
     else
@@ -305,7 +305,7 @@ for ii = 1:Nf
 
     IM(ii).Microscope = duplicate(MI); % copy of MI because, as an handle object, MI may change for some reason after the computation of the image.
 
-    if strcmpi(opt.resolution,'low')
+    if strcmpi(opt.definition,'low')
         IM(ii).pxSizeCorrection=corr;
     end
     

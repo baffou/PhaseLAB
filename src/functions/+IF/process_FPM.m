@@ -3,18 +3,54 @@ arguments
     IM
     shotNoise
     opt.Nim = 1
+    opt.maskNA = 0.02
 end
 
+Nphi = numel(IM); % number of theta incidences involved in the calculations.
 P=repmat(PCmask(),4,1);
 A = 1;
 for ii=1:4
-    P(ii)=PCmask(0,0.06,phi=(ii-1)*pi/2,A=A,type='disc');
+    P(ii)=PCmask(0,opt.maskNA,phi=(ii-1)*pi/2,A=A,type='disc');
 end
 
 IM_FPM=cell(4,1);
 for ii=1:4 % somme sur les 4 déphasages SLIM
     IM_FPM{ii} = applyPCmask(IM,P(ii));
 end
+
+
+Is=cell(4,1);  % sommation sur tous les angles d'illumination 1 à Nphi
+for ii=1:4 % somme sur les 4 déphasages SLIM
+    IM_FPM = applyPCmask(IM,P(ii));
+    Is{ii}=0;
+    for jj = 1:Nphi
+        Is{ii}=Is{ii}+IM_FPM(jj).E2;
+    end
+    clear IM_FPM
+end
+
+
+%% display crop
+FEincm = 0;
+for io = 1:Nphi
+    FEincx = fftshift(fft2(IM(io).Einc.Ex));
+    FEincy = fftshift(fft2(IM(io).Einc.Ey));
+    FEincxm =  FEincx .* P(1).mask(IM(io));
+    FEincym =  FEincy .* P(1).mask(IM(io));
+    FEincm = FEincm + FEincxm + FEincym;
+end
+
+hh = figure;
+subplot(1,2,1)
+imagesc(log10(abs(FEincm)))
+axis image
+subplot(1,2,2)
+imagesc(angle(P(2).mask(IM(io))))
+axis image
+linkAxes
+zoom(10)
+
+%%
 
 % definition of the darkfield mask (to get U1)
 %P_DF = copy(P(1));
@@ -33,16 +69,16 @@ else
     noiseFunction = @identity;
 end
 
-EE0=IM.Einc.EE0;
+EE0=IM(1).Einc.EE0;
 I0=abs(EE0(1))^2+abs(EE0(2))^2;
 
-fwc=IM.Microscope.CGcam.Camera.fullWellCapacity*opt.Nim;
+fwc=IM(1).Microscope.CGcam.Camera.fullWellCapacity*opt.Nim;
 
-corr = (fwc/2)/mean(IM_FPM{1}.E2(:));
-I{1}=noiseFunction(IM_FPM{1}.E2*corr);
-I{2}=noiseFunction(IM_FPM{2}.E2*corr);
-I{3}=noiseFunction(IM_FPM{3}.E2*corr);
-I{4}=noiseFunction(IM_FPM{4}.E2*corr);
+corr = (fwc/2)/mean(Is{1}(:));
+I{1}=noiseFunction(Is{1}*corr);
+I{2}=noiseFunction(Is{2}*corr);
+I{3}=noiseFunction(Is{3}*corr);
+I{4}=noiseFunction(Is{4}*corr);
 
 %I_BF=noiseFunction(IM_BF.E2*fwc/(max(IM.E2(:))));
 %I_DF=noiseFunction(IM_DF.E2*fwc/(max(IM.E2(:))));
@@ -66,7 +102,20 @@ OPDsimu=Unwrap_TIE_DCT_Iter(PHIsimu)*lambda/(2*pi);
 % calculation of Tsimu
 Tsimu = abs(1+beta.*exp(-1i*DeltaPhi)).^2;
 
-IMout = ImageQLSI(IM);
+
+%% Theoretical images
+
+avgPhiTheo = 0;
+for ii=1:numel(IM)
+    avgPhiTheo = avgPhiTheo + IM(ii).Ph/numel(IM);
+end
+avgTtheo = 0;
+for ii=1:numel(IM)
+    avgTtheo = avgTtheo + IM(ii).T/numel(IM);
+end
+IMout = ImageQLSI(avgTtheo,avgPhiTheo*lambda/(2*pi),IM(1).Microscope,IM(1).Illumination);
+
+close(hh)
 
 % OPDtheo=angle(IM.Ey)*lambda/(2*pi);
 % figure

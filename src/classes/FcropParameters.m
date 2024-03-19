@@ -6,7 +6,7 @@ classdef FcropParameters  %parameters of the crop in the Fourier plane
         R           double
         Nx          {mustBeInteger,mustBePositive}
         Ny          {mustBeInteger,mustBePositive}
-        resolution  char {mustBeMember(resolution,{'high', 'low'})}    = 'high'
+        definition  char {mustBeMember(definition,{'high', 'low'})}    = 'high'
         FcropShape  char {mustBeMember(FcropShape,{'disc', 'square'})} = 'disc'
     end
     properties(Dependent)
@@ -25,7 +25,7 @@ classdef FcropParameters  %parameters of the crop in the Fourier plane
                 R = []
                 Nx = []
                 Ny = []
-                opt.resolution ='high'
+                opt.definition ='high'
                 opt.FcropShape ='disc'
             end
             obj.Nx = Nx;
@@ -33,7 +33,7 @@ classdef FcropParameters  %parameters of the crop in the Fourier plane
             obj.x = x;
             obj.y = y;
             obj.R = R;
-            obj.resolution = opt.resolution;
+            obj.definition = opt.definition;
             obj.FcropShape = opt.FcropShape;
         end
         
@@ -90,7 +90,7 @@ classdef FcropParameters  %parameters of the crop in the Fourier plane
             
             x2 = x2/Nratio;
            
-            obj2 = FcropParameters(x2, y2, obj.R, obj.Nx, obj.Ny, resolution = obj.resolution, FcropShape = obj.FcropShape);
+            obj2 = FcropParameters(x2, y2, obj.R, obj.Nx, obj.Ny, definition = obj.definition, FcropShape = obj.FcropShape);
         end
         
         function obj2 = rotate180(obj)
@@ -102,7 +102,7 @@ classdef FcropParameters  %parameters of the crop in the Fourier plane
             x2 = x0 - dx;
             y2 = y0 - dy;
             
-            obj2 = FcropParameters(x2, y2, obj.R, obj.Nx, obj.Ny, resolution = obj.resolution, FcropShape = obj.FcropShape);
+            obj2 = FcropParameters(x2, y2, obj.R, obj.Nx, obj.Ny, definition = obj.definition, FcropShape = obj.FcropShape);
         end
         
         function val = get.zeta(obj)

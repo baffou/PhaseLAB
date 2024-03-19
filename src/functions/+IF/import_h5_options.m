@@ -20,6 +20,8 @@ opts.ndipole=h5read(fileh5,'/Option/ndipole');         % wave vector
 opts.pxSize=h5read(fileh5,'/Option/aretecube');         % wave vector
 opts.epsmax=h5read(fileh5,'/Option/epsmax');         % wave vector
 opts.epsmin=h5read(fileh5,'/Option/epsmin');         % wave vector
+opts.n=h5read(fileh5,'/Option/n');         % wave vector
+opts.nS=h5read(fileh5,'/Option/nS');         % wave vector
 opts.Mobj=h5read(fileh5,'/Option/M');         % wave vector
 opts.NA=h5read(fileh5,'/Option/NA');         % wave vector
 

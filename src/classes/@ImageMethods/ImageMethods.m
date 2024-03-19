@@ -619,31 +619,31 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
                 %% final plot
                 
-                figure
-                subplot(2,4,1)
-                imagegb(T1)
-                set(gca,'colormap',gray)
-                subplot(2,4,2)
-                imagegb(T2)
-                set(gca,'colormap',gray)
-                subplot(2,4,3)
-                imagegb(T3)
-                set(gca,'colormap',gray)
-                subplot(2,4,4)
-                imagegb(T4)
-                set(gca,'colormap',gray)
-                
-                subplot(2,4,5)
-                imageph(tphi1)
-                subplot(2,4,6)
-                imageph(tphi2)
-                subplot(2,4,7)
-                imageph(tphi3)
-                subplot(2,4,8)
-                imageph(tphi4)
-                
-                fullscreen
-                linkAxes
+                % figure
+                % subplot(2,4,1)
+                % imagegb(T1)
+                % set(gca,'colormap',gray)
+                % subplot(2,4,2)
+                % imagegb(T2)
+                % set(gca,'colormap',gray)
+                % subplot(2,4,3)
+                % imagegb(T3)
+                % set(gca,'colormap',gray)
+                % subplot(2,4,4)
+                % imagegb(T4)
+                % set(gca,'colormap',gray)
+                % 
+                % subplot(2,4,5)
+                % imageph(tphi1)
+                % subplot(2,4,6)
+                % imageph(tphi2)
+                % subplot(2,4,7)
+                % imageph(tphi3)
+                % subplot(2,4,8)
+                % imageph(tphi4)
+                % 
+                % fullscreen
+                % linkAxes
 
     
                 %% New OPD images, with the right shift

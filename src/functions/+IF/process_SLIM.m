@@ -10,7 +10,7 @@ Nphi = numel(IMr); % number of theta incidences involved in the calculations.
 P=repmat(PCmask(),4,1);
 for ii=1:4
     %    P(ii)=PCmask(0.3,0.02,phi=(ii-1)*pi/2,A=1,type='disc');
-    P(ii)=PCmask(0,0.06,'phi',(ii-1)*pi/2,'A',opt.A);
+    P(ii)=PCmask(0,0.02,'phi',(ii-1)*pi/2,'A',opt.A);
 end
 
 P(1).setRadius(IMr(1));
@@ -29,7 +29,7 @@ end
 im1 = imgaussfilt(abs(FTtot),2);
 im2 = angle(P(2).mask(IMr(1)));
 im3 = FTtot*0+1;
-figure
+hh = figure;
 subplot(1,3,1)
 imagegb(im1)
 subplot(1,3,2)
@@ -144,5 +144,5 @@ end
 IMout = ImageQLSI(avgTtheo,avgPhiTheo*lambda/(2*pi),IMr(1).Microscope,IMr(1).Illumination);
 
 
-
+close(hh)
 

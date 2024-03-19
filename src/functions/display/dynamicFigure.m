@@ -59,6 +59,10 @@ for ii = 1:Np
             h.UserData.fun{ii} = @imagejet;
         case {'bk','gr','bw'}
             h.UserData.fun{ii} = @imagebk;
+        case {'fl'}
+            h.UserData.fun{ii} = @imagefl;
+        case {'hsv'}
+            h.UserData.fun{ii} = @imagehsv;
     end
 end
 

@@ -23,7 +23,7 @@ opts = IF.import_h5_options(fileh5);
 
 opts.dxSize = opts.pxSize*opts.Mobj;
 
-ME = Medium(opts.epsmin,opts.epsmax);
+ME = Medium(opts.n,opts.nS);
 %IF.disp_h5(fileh5)
 
 IL=Illumination(opts.lambda,ME);

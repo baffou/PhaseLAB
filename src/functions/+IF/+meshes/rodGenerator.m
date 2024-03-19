@@ -42,7 +42,7 @@ nx=ceil(Rrod/pxSize);
 ny=ceil(Hrod/(2*pxSize));
 nz=floor(Rrod/pxSize);
 
-nz=6;
+%nz=6;
 
 
 

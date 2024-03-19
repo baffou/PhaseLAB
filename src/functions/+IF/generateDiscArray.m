@@ -19,6 +19,14 @@ switch opt.quadrant
         cond =@(ix,iy) ix<0 && iy<0;
     case {'topleft','TopLeft',4}
         cond =@(ix,iy) ix<0 && iy>0;
+    case {'left','Left'}
+        cond =@(ix,iy) ix<0;
+    case {'right','Right'}
+        cond =@(ix,iy) ix>0;
+    case {'bottom','Bottom','down','Down'}
+        cond =@(ix,iy) iy<0;
+    case {'top','Top'}
+        cond =@(ix,iy) iy>0;
 end
 
 X = linspace(-radius, radius, N);
@@ -34,6 +42,8 @@ for ix = X
         end
     end
 end
+x = x(:);
+y = y(:);
 
 r=sqrt(x.^2+y.^2);
 phi = angle(x+1i*y)*180/pi;

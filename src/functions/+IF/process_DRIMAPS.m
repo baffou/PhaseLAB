@@ -40,6 +40,8 @@ Phi = atan2(I{2}-I{4},I{1}-I{3}); % order inversion because the phase is applied
 T = (I{1}+I{2}+I{3}+I{4})/2; % Intensity image of ref+signal images. Why a factor of 2 and not 4?
 Tsimu = (T-fwc/2)/(fwc/2); % Removal of the intensity of the ref, and normalisation by the intensity of a signal illumination
 
+Tsimu = I{1};
+
 OPDsimu = Phi*IM.Illumination.lambda/2/pi;
 IMout = ImageQLSI(IM);
 

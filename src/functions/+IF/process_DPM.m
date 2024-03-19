@@ -25,6 +25,7 @@ G=0.5+0.5*sin(2*pi*(XX*sind(thetaGrating)+YY*cosd(thetaGrating))/freq);
 Nim = numel(IM);
 Itf0 = 0;
 Itf0ref = 0;
+sumTF = 0;
 for io = 1:Nim % in case NAill ~= 0, and multiple illuminations are used, ie. multiple images. 
     % mutliplication of the Efield by the grating
     Exg=IM(io).Ex.*G;
@@ -49,6 +50,8 @@ for io = 1:Nim % in case NAill ~= 0, and multiple illuminations are used, ie. mu
     R02=X0.*X0+Y0.*Y0;
     mask0=R02<r0^2;
     
+    sumTF = sumTF + log(abs(FExg)+abs(FEyg));
+
     h=figure;
     imagegb(log(abs(FExg)+abs(FEyg)))
     fullscreen
@@ -92,6 +95,19 @@ for io = 1:Nim % in case NAill ~= 0, and multiple illuminations are used, ie. mu
     Itf0ref = Itf0ref + abs(Excref).^2+abs(Eycref).^2;
 
 end
+
+h=figure;
+imagegb(sumTF)
+fullscreen
+[x1,y1]=maxPix(abs(fftshift(fft2(G))).*double((R02>r1^2)));
+h = drawCircle(x1,y1,r1,h);
+h = drawCircle(Ny/2+1,Nx/2+1,r0,h);
+zoom(10)
+pause(1)
+close(h)
+
+
+
 Itf0=Itf0/Nim;
 Itf0ref=Itf0ref/Nim;
 
@@ -162,8 +178,8 @@ PHIdpm=IMdpm0u-Xn*mx-Yn*my;
 OPDdpm=PHIdpm*IM(1).Illumination.lambda/(2*pi);
 OPDdpm=OPDdpm-median(OPDdpm(:));
 
-OPDsimu = zeros(IM.Ny, IM.Nx);
-OPDsimu(nc+1:IM.Ny-nc,nc+1:IM.Nx-nc)=OPDdpm;
+OPDsimu = zeros(IM(1).Ny, IM(1).Nx);
+OPDsimu(nc+1:IM(1).Ny-nc,nc+1:IM(1).Nx-nc)=OPDdpm;
 
 %IMout = ImageQLSI(IM(1).crop(Size=IM(1).Nx-2*nc));
 IMout = ImageQLSI(IM(1));
@@ -181,7 +197,7 @@ FEygrefm0=FEygref.*(mask0);
 Excref0=ifft2(ifftshift(FExgrefm0));
 Eycref0=ifft2(ifftshift(FEygrefm0));
 
-Itf0ref0=(abs(Excref0).^2+abs(Eycref0).^2)*fwc/(4*I0);
+Itf0ref0=(abs(Excref0).^2+abs(Eycref0).^2)*(fwc/2)/(Icam);
 
 
 

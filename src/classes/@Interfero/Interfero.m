@@ -21,7 +21,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         channel (1,:) char {mustBeMember(channel,{'R','G','0','45','90','135','none'})} = 'none'
     end
 
-    properties(SetAccess = private, Hidden)
+    properties(Hidden)
         Itf0     % interferogram (matrix or path)
     end
     properties
@@ -114,9 +114,10 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
                         obj.Itf0 = double(fileName);
                     end
-                elseif ~isa(fileName,'char')
+                elseif ~istext(fileName)
                     error('The first input, the file name of the interferogram, must be a string')
                 else
+                    fileName = convertStringsToChars(fileName);
                     if ~strcmp(fileName(end-2:end),'tif') && ~strcmp(fileName(end-3:end),'tiff') && ~strcmp(fileName(end-2:end),'txt')
                         warning('Be carful. Interferogram image considered as a tif image')
                         fileName = [fileName '.tif'];
@@ -133,9 +134,11 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
                     if obj.remote==0
                         if strcmp(fileName(end-2:end),'txt')
-                            Itf0 = dlmread(fileName);
+                            Itf0 = readmatrix(fileName);
                         elseif strcmp(fileName(end-2:end),'tif') || strcmp(fileName(end-3:end),'tiff')
                             Itf0 = double(imread(fileName));
+                            w = warning('query','last');
+                            warning('off',w.identifier)
                         else
                             error('An interferogram image must be a txt of tif file')
                         end
@@ -199,7 +202,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         end
 
         function val = get.Itf(obj)
-            if ischar(obj.Itf0) % remote mode
+            if istext(obj.Itf0) % remote mode
                 if strcmp(obj.fileName(end-2:end),'txt')
                     val = dlmread([obj.path obj.fileName]);
                     [obj.Ny,obj.Nx] = size(val);
@@ -653,7 +656,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             obj2.Reference(copy(obj.Ref));
         end
 
-        function [ImG,ImR]=splitColors(Im)
+        function [ImG,ImR] = splitColors(Im)
             % Im comes from a 2-color camera
             % This function creates 2 Interfero objects, for each colors
             % Uses interpolation to keep the same number of pixels
@@ -686,6 +689,9 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 ImR.Reference(RefR(refPosList));
             end
 
+            if nargout == 1
+                ImG = [ImG(:),ImR(:)];
+            end
         end
 
         function [Im00,Im45,Im90,Im135] = splitPolars(Im)
@@ -735,24 +741,32 @@ classdef Interfero < handle & matlab.mixin.Copyable
             end
 
             if nargout == 1
-                Im00 = [Im00,Im45,Im90,Im135];
+                Im00 = [Im00(:),Im45(:),Im90(:),Im135(:)];
             end
 
         end
 
-        function [objG2, objR2] = crosstalkCorrection(obj1List, obj2List)
+        function [objG, objR] = crosstalkCorrection(obj1List, obj2List)
             arguments
                 obj1List Interfero
-                obj2List Interfero
+                obj2List Interfero = Interfero.empty()
             end
-
+            
+            if nargin ==1 % crosstalkCorrection(objList)  with a N*2 input
+                if size(obj1List,2)~=2
+                    error('When specifying only 1 input, the input is supposed to be a 2-column array of Interfero objects;')
+                end
+                obj2List = obj1List(:,2);
+                obj1List = obj1List(:,1);
+            end 
+                
             Nim = numel(obj1List);
             if numel(obj2List)~=Nim % if not the same number of elements
                 error('The two image lists must have the same number of images')
             end
 
-            objG2 = Interfero(Nim);
-            objR2 = Interfero(Nim);
+            objG = Interfero(Nim);
+            objR = Interfero(Nim);
 
             for im = 1:Nim
 
@@ -773,31 +787,21 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     if ~strcmpi(obj2List(im).channel(1),'g')
                         error('the second image should be green')
                     end
-                    objR = obj1List(im);
-                    objG = obj2List(im);
+                    objR(im) = obj1List(im);
+                    objG(im) = obj2List(im);
                 elseif strcmpi(obj1List(im).channel(1),'g')
                     if ~strcmpi(obj2List(im).channel(1),'r')
                         error('the second image should be red')
                     end
-                    objG = obj1List(im);
-                    objR = obj2List(im);
-                end
-
-                if nargout == 2
-                    objG2(im) = copy(objG); % copy and not duplicate to keep the same Microscope
-                    objR2(im) = copy(objR);
-                elseif nargout == 0
-                    objG2(im) = objG;
-                    objR2(im) = objR;
-                else
-                    error('not the proper number of outputs. Should be 0 or 2')
+                    objG(im) = obj1List(im);
+                    objR(im) = obj2List(im);
                 end
 
                 % correcting crosstalk of the images
-                correctedRimage = (1+betar)*objR2(im).Itf -     betag*objG2(im).Itf;
-                correctedGimage =   - betar*objR2(im).Itf + (1+betag)*objG2(im).Itf;
-                objR2(im).Itf0 = correctedRimage;
-                objG2(im).Itf0 = correctedGimage;
+                correctedRimage = (1+betar)*objR(im).Itf -     betag*objG(im).Itf;
+                correctedGimage =   - betar*objR(im).Itf + (1+betag)*objG(im).Itf;
+                objR(im).Itf0 = correctedRimage;
+                objG(im).Itf0 = correctedGimage;
 
             end
 
@@ -807,7 +811,15 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 if nListR ~= nListG
                     error('There is an inconsistency between the Refs or G and R images')
                 end
-                crosstalkCorrection(RefListG,RefListR);
+                % duplicate the Refs, to break the handle and make sure they are not
+                % crosstalkcorrected elsewhere in the code, another time:
+                [RefListG,RefListR] = crosstalkCorrection(RefListG,RefListR);
+                objG.Reference(RefListG(nListG))
+                objR.Reference(RefListR(nListR))
+            end
+
+            if nargout == 1
+                objG = [objG(:) objR(:)];
             end
 
         end
@@ -838,7 +850,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
             if ~isempty(obj(1).Ref)
                 RefList = independentObjects([obj.Ref]);
-                RefList.backgroundCorrection(val)
+                RefList.removeOffset(val)
             end
         end
 
