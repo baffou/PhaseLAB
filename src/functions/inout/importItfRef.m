@@ -7,9 +7,11 @@ arguments
     opt.selection = []
     opt.remote = 0
     opt.channel (1,:) char {mustBeMember(opt.channel,{'R','G','0','45','90','135','none'})} = 'none'
+    opt.gpu     (1,1) logical = false % import interferos as gpuArrays
 end
 opt.nickname = convertStringsToChars(opt.nickname);
 manual = 0;
+
 
 IL = []; %If metadatas == false, IL will stay blank !
 
@@ -142,13 +144,13 @@ INT = repmat(Interfero(),Nif,1);
 
 if strcmpi(acquisitionSoftware,'phast') || strcmpi(acquisitionSoftware,'Sid4Bio')
     for rr = 1:Nrf
-        REF(rr) = Interfero([folder RefFileNames{rr}],MI,'remote',opt.remote,'channel',opt.channel);
+        REF(rr) = Interfero([folder RefFileNames{rr}],MI,'remote',opt.remote,'channel',opt.channel,'gpu',opt.gpu);
     end
     
     
     for ii = 1:Nif
         fprintf([ItfFileNames{ii} '\n'])
-        INT(ii) = Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote,'channel',opt.channel);
+        INT(ii) = Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote,'channel',opt.channel,'gpu',opt.gpu);
         INT(ii).Microscope = MI;
         fid = fopen([folder ItfFileNames{ii}(1:end-4) ' REF.txt'],'r');
         if fid==-1
@@ -181,14 +183,14 @@ if strcmpi(acquisitionSoftware,'phast') || strcmpi(acquisitionSoftware,'Sid4Bio'
 elseif strcmpi(acquisitionSoftware,'phaselive')
     if isa(MI,'Microscope') % and not a char
         for rr = 1:Nrf
-            REF(rr) = Interfero([folder RefFileNames{rr}],MI,'remote',opt.remote,'channel',opt.channel);
+            REF(rr) = Interfero([folder RefFileNames{rr}],MI,'remote',opt.remote,'channel',opt.channel,'gpu',opt.gpu);
         end
         
         for ii = 1:Nif
             fprintf([ItfFileNames{ii} '\n'])
             TIFF = Tiff([folder ItfFileNames{ii}]);
 %            fprintf([folder ItfFileNames{ii} '\n'])
-            INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote,'imageNumber',opt.selection(ii),'channel',opt.channel);
+            INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote,'imageNumber',opt.selection(ii),'channel',opt.channel,'gpu',opt.gpu);
             INT(ii).Microscope = MI;
             if Nrf ~= 0
                 currentRefFileName  =  [getTag(TIFF,270)];
@@ -205,12 +207,12 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
         IL = repmat(Illumination(),Nif,1);
         for rr = 1:Nrf
             S_Ref = readTiffTag([folder RefFileNames{rr}], "PhaseLAB");
-            REF(rr) = Interfero([folder RefFileNames{rr}],S_Ref.Microscope,'remote',opt.remote,'channel',opt.channel);
+            REF(rr) = Interfero([folder RefFileNames{rr}],S_Ref.Microscope,'remote',opt.remote,'channel',opt.channel,'gpu',opt.gpu);
         end
         for ii = 1:Nif
             fprintf([ItfFileNames{ii} '\n'])
             S_Itf = readTiffTag([folder ItfFileNames{ii}], "PhaseLAB");
-            INT(ii) = Interfero([folder ItfFileNames{ii}],S_Itf.Microscope,'remote',opt.remote,'channel',opt.channel);
+            INT(ii) = Interfero([folder ItfFileNames{ii}],S_Itf.Microscope,'remote',opt.remote,'channel',opt.channel,'gpu',opt.gpu);
             RefIndice = strcmp(RefFileNames,S_Itf.Reference);
             if Nrf ~= 0 
                 INT(ii).Reference(REF(RefIndice));
@@ -221,7 +223,5 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
     end
     
 end
-
-
 
 end

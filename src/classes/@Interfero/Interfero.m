@@ -64,8 +64,9 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 MI = Microscope.empty()
                 opt.N (1,1) {mustBeInteger} = 0
                 opt.imageNumber =[]
-                opt.remote (1,1) {mustBeInteger,mustBeGreaterThanOrEqual(opt.remote,0),mustBeLessThanOrEqual(opt.remote,1)} = 0
+                opt.remote  (1,1) {mustBeInteger,mustBeGreaterThanOrEqual(opt.remote,0),mustBeLessThanOrEqual(opt.remote,1)} = 0
                 opt.channel (1,:) char {mustBeMember(opt.channel,{'R','G','0','45','90','135','none'})} = 'none'
+                opt.gpu     (1,1) logical = false
             end
 
             obj.remote = opt.remote;
@@ -80,6 +81,11 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 warning('You are trying to extract a color channel while the microscope does not include a color camera.')
             end
 
+            if opt.gpu
+                convGPU = @(x) gpuArray(x);
+            else
+                convGPU = @(x) x;
+            end
 
 
             %% Interfero(3)  Interfero(fileName,MI).
@@ -107,12 +113,12 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     end
                     [obj.Ny,obj.Nx] = size(fileName);
                     if strcmp(MI.software,'PHAST') || strcmp(MI.software,'Sid4Bio')
-                        obj.Itf0 = double(fileName)-2^15-100;% Removes the offset of Phasics, and removes the offset of the camera
+                        obj.Itf0 = convGPU(double(fileName)-2^15-100);% Removes the offset of Phasics, and removes the offset of the camera
                         %obj.Itf0 = double(fileName)-2^15;% Removes the offset of Phasics, and removes the offset of the camera
 
                     else
 
-                        obj.Itf0 = double(fileName);
+                        obj.Itf0 = convGPU(double(fileName));
                     end
                 elseif ~istext(fileName)
                     error('The first input, the file name of the interferogram, must be a string')
@@ -134,9 +140,9 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
                     if obj.remote==0
                         if strcmp(fileName(end-2:end),'txt')
-                            Itf0 = readmatrix(fileName);
+                            Itf0 = convGPU(readmatrix(fileName));
                         elseif strcmp(fileName(end-2:end),'tif') || strcmp(fileName(end-3:end),'tiff')
-                            Itf0 = double(imread(fileName));
+                            Itf0 = convGPU(double(imread(fileName)));
                             w = warning('query','last');
                             warning('off',w.identifier)
                         else
@@ -144,20 +150,20 @@ classdef Interfero < handle & matlab.mixin.Copyable
                         end
                         [obj.Ny,obj.Nx] = size(Itf0);
                         if strcmp(MI.software,'PHAST') || strcmp(MI.software,'Sid4Bio')
-                            Itf0 = Itf0-2^15-100;% Removes the offset of Phasics, and removes the offset of the camera
+                            Itf0 = convGPU(Itf0-2^15-100);% Removes the offset of Phasics, and removes the offset of the camera
                         end
                         if ~strcmpi(opt.channel,'none')
                             obj.channel = opt.channel;
                             switch opt.channel
                                 case {'G','R'}
-                                    obj.Itf0=colorInterpolation(Itf0,opt.channel);
+                                    obj.Itf0 = colorInterpolation(Itf0,opt.channel);
                                 case 'GR'
                                     obj.Itf0 = Itf0;
                             end
                         else
                             obj.Itf0 = Itf0;
                         end
-                    elseif obj.remote==1
+                    elseif obj.remote == 1
                         obj.Itf0 = 'remote';
                         if ~strcmpi(opt.channel,'none')
                             obj.channel = opt.channel;
@@ -332,11 +338,23 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         end
 
-        function obj = Reference(obj,val)
+        function obj = Reference(obj,val,opt)
+            arguments
+                obj
+                val
+                opt.gpu (1,1) logical = false
+            end
+
+            if opt.gpu
+                convGPU = @(x) gpuArray(x);
+            else
+                convGPU = @(x) x;
+            end
+
             if isnumeric(val)
                 No = numel(obj);
                 for io = 1:No
-                    obj(io).Ref = Interfero(val,obj(io).Microscope);
+                    obj(io).Ref = Interfero(val,obj(io).Microscope,"gpu",optgpu);
                 end
             elseif numel(val)==numel(obj)
                 No = numel(obj);
@@ -350,7 +368,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     end
                     obj(io).Ref = val(io);
                 end
-            elseif numel(val)==1
+            elseif numel(val)==1 % A single reference object
                 No = numel(obj);
                 for io = 1:No
                     if ~strcmp(val.software,obj(io).software)
