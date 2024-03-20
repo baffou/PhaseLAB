@@ -48,7 +48,9 @@ classdef Interfero < handle & matlab.mixin.Copyable
         Microscope Microscope
         Fcrops  FcropParameters = FcropParameters.empty(3,0)
         crops
-        remote {mustBeInteger,mustBeLessThanOrEqual(remote,1),mustBeGreaterThanOrEqual(remote,0)}  % 1 if images are not stored (only path/fileName), 0 if images are stored
+        remote {mustBeInteger,mustBeLessThanOrEqual(remote,2),mustBeGreaterThanOrEqual(remote,0)}  % 0 if images are stored 
+                                                                                                   % 1 if images are not stored (only path/fileName), 
+                                                                                                   % 2 if images are not stored (only path/fileName), and to be used as a gpuArray once imported
     end
 
     methods
@@ -68,8 +70,12 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 opt.channel (1,:) char {mustBeMember(opt.channel,{'R','G','0','45','90','135','none'})} = 'none'
                 opt.gpu     (1,1) logical = false
             end
-
-            obj.remote = opt.remote;
+            
+            if opt.gpu && opt.remote
+                obj.remote = 2;
+            else
+                obj.remote = opt.remote;
+            end
             obj.imageNumber=opt.imageNumber;
 
             if opt.N~=0 % Interfero(N=3) : create 3 blanck interferos
@@ -108,7 +114,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
                 obj.Microscope = MI;
                 if isnumeric(fileName)  % directly enter a matrix
-                    if obj.remote==1
+                    if obj.remote>=1 % 1 or 2, ie remote or remoteGPU
                         error('Does not make sense to use the remote option if not specifying a file location but a matrix.')
                     end
                     [obj.Ny,obj.Nx] = size(fileName);
@@ -163,7 +169,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                         else
                             obj.Itf0 = Itf0;
                         end
-                    elseif obj.remote == 1
+                    elseif obj.remote >= 1 % 1 or 2
                         obj.Itf0 = 'remote';
                         if ~strcmpi(opt.channel,'none')
                             obj.channel = opt.channel;
@@ -210,12 +216,20 @@ classdef Interfero < handle & matlab.mixin.Copyable
         function val = get.Itf(obj)
             if istext(obj.Itf0) % remote mode
                 if strcmp(obj.fileName(end-2:end),'txt')
-                    val = dlmread([obj.path obj.fileName]);
+                    if obj.remote == 1
+                        val = dlmread([obj.path obj.fileName]);
+                    elseif obj.remote == 2 % remote but must be gpu treated
+                        val = gpuArray( dlmread([obj.path obj.fileName]) );
+                    end
                     [obj.Ny,obj.Nx] = size(val);
-
                 elseif strcmp(obj.fileName(end-2:end),'tif') || strcmp(obj.fileName(end-3:end),'tiff')
-                    val = double(imread([obj.path obj.fileName]));
-                    [obj.Ny,obj.Nx] = size(val);
+                    if obj.remote == 1
+                        val = double(imread([obj.path obj.fileName]));
+                        [obj.Ny,obj.Nx] = size(val);
+                    elseif obj.remote == 2 % remote but must be gpu treated
+                        val = gpuArray( double(imread([obj.path obj.fileName])) );
+                        [obj.Ny,obj.Nx] = size(val);
+                    end
                 end
                 if strcmp(obj.software,'PHAST') || strcmp(obj.software,'Sid4Bio')
                     val = val-2^15-100;% Removes the offset of Phasics, and removes the offset of the camera
