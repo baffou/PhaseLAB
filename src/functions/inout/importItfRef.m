@@ -194,9 +194,10 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
                 currentRefFileName  =  [getTag(TIFF,270)];
                 RefIndice  =  strcmp(RefFileNames,currentRefFileName);
                 try
-                INT(ii).Reference(REF(RefIndice));
+                    INT(ii).Reference(REF(RefIndice));
                 catch
-                    pause(1)
+                    warning('ref file of the tif file does not correspond to the folder content')
+                    INT(ii).Reference(REF(1));
                 end
             end
         end
