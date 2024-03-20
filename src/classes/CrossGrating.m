@@ -1,7 +1,7 @@
 classdef CrossGrating  <  handle & matlab.mixin.Copyable
     % class that define a cross-grating used in CGM
 
-    properties (SetAccess = private)
+    properties (SetAccess = {?JS})
         name    char = 'undefined' % name
         Gamma   (1,1) % Period
         depth   (1,1) double % Etching depth. Only used and usefull for CGMinSilico simulations
@@ -47,7 +47,7 @@ classdef CrossGrating  <  handle & matlab.mixin.Copyable
             end
 
             function obj = jsonImport(jsonFile)
-                obj = json2obj(jsonFile);
+                obj = JS.json2obj(jsonFile);
             end
         end
 

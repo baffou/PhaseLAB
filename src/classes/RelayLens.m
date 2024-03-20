@@ -1,5 +1,5 @@
 classdef RelayLens  <  handle & matlab.mixin.Copyable
-    properties
+    properties(SetAccess = {?JS,?CGcamera})
         model 
         zoom (1,1) {mustBeNumeric}
         chromatic  logical = false
@@ -25,7 +25,7 @@ classdef RelayLens  <  handle & matlab.mixin.Copyable
             end
 
             function obj = jsonImport(jsonFile)
-                obj = json2obj(jsonFile);
+                obj = JS.json2obj(jsonFile);
             end
         end
 
