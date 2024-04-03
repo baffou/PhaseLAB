@@ -26,7 +26,6 @@ end
 pxSize = MI.pxSize;
 ImSize = Npx*pxSize;
 
-
 if isa(DIs(1),'Nanoparticle')
     NP = DIs;
     if NP.Illumination.identity~=IL.identity

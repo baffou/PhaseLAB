@@ -19,33 +19,14 @@ lambda=625e-9;
 IL=Illumination(lambda,ME);
 
 %% IMPORT THE IMAGES -- Images=importItfRef(folder,MI,nickname);
-folder='/Volumes/NanoBio/_Maelle/Experimental data/20220204/exp1';
+folder='GeobLongFilaments';
 
 %[Im,Rf]=importItfRef(folder,MI,'remote',1,'selection',1/5);
-[Im,Rf]=importItfRef(folder,MI,'remote',1,'selection',[1:100]);
-
-%ImA=Im.mean();
-
-%%
-%Itf=imread('/Volumes/NanoBio/_Guillaume/LIVE/210923-neurons3/defaultAcquisitionName2_0001.tif');
-%Ref=imread('/Volumes/NanoBio/_Guillaume/LIVE/210923-neurons3/REF_20210923_12h_18min_386sec.tif');
-%Im=Interfero(Itf,MI);
-%Im0=Interfero(Ref,MI);
-%Im.Reference(Im0);
+[Im,Rf]=importItfRef(folder,MI,'remote',1);
 
 %% INTERFEROGRAM PROCESSING -- Im.QLSIprocess(IL);
+IMlow = Im.QLSIprocess(IL,'definition','low');  % low definition
 
-IMlow = Im.QLSIprocess(IL,'resolution','low');
-%IMhigh=Im.QLSIprocess(IL);
+%IMhigh=Im.QLSIprocess(IL);  % high definition
 
-IMlowf = IMlow.gauss(20);
-%IM.phaseLevel0('manual')
-
-IMlowf.figure
-
-%% makeMoviedx(IM,videoName,rate,persp,phi,theta,ampl,zrange)
-% with perspective
-%makeMoviedx(IMlowf,'bacteria1.avi',5,1,45,45,1)
-% without perspective
-%makeMoviedx(IMlowf,'bacteria2.avi',5,0,0,0,1)
-
+IMlow.figure

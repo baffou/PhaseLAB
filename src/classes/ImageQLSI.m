@@ -200,11 +200,19 @@ classdef ImageQLSI   <   ImageMethods
         end
 
         function val = get.DWx(obj)
-            val = obj.DWx0;
+            if isempty(obj.DWx0)
+                val = imgradientxy(obj.OPD);
+            else
+                val = obj.DWx0;
+            end
         end
 
         function val = get.DWy(obj)
-            val = obj.DWy0;
+            if isempty(obj.DWy0)
+                [~, val] = imgradientxy(obj.OPD);
+            else
+                val = obj.DWy0;
+            end
         end
 
         function set.OPD(obj,val)
@@ -871,6 +879,30 @@ classdef ImageQLSI   <   ImageMethods
             maxval = max(PDCM(:));
             caxis(hfig.UserData{7}(1),[minval maxval])
 
+        end
+
+        function [objList2,mask0] = spotRemoval(objList,mask)
+            No = numel(objList);
+            if nargout
+                objList2 = copy(objList);
+            else
+                objList2 = objList;
+            end
+
+            io = 1;
+            obj = objList(io);
+
+            if nargin == 1
+                [objList2(io).OPD0, mask0] = spotRemoval0(obj.OPD);
+            else % mask specified
+                objList2(io).OPD0 = spotRemoval0(obj.OPD,mask);
+                mask0 = mask;
+            end
+
+            for io = 2:No
+                obj = objList(io);
+                objList2(io).OPD0 = spotRemoval0(obj.OPD,mask0);
+            end
         end
 
         function obj2List = download(objList)

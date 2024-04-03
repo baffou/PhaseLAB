@@ -19,6 +19,7 @@ arguments
     opt.noRef = false % Do not consider the Ref interferogram to compute the DW and OPD images
     opt.CGdistanceList = []  % the grating distance was varied during the acquisition of the images list
     opt.resetCrops logical = false % reset crops between each image calculation, to make sure the algorithm enable the user to click for each image, or force the detection of the spot for each image in the auto mode.
+    opt.unwrap (1,1) logical = false % use unwrapping. Slows down a bit the processing.
 end
 Nf = numel(Itf);
 %% Shaping of the Illumination object(s)
@@ -27,6 +28,12 @@ elseif isnumeric(IL) % if IL is a wavelength
     IL = Illumination(IL);
 else
     error('error with the thrid input must be an Illumination object or a wavelength')
+end
+
+if opt.unwrap % if unwrapping is selecting, redefine the angle function
+    anglefun = @(x) Unwrap_TIE_DCT_Iter(angle(x));
+else
+    anglefun = @angle;
 end
 
 if numel(IL)==1
@@ -48,12 +55,6 @@ end
 
 %% shaping of the crops
 updateRefFcrop = 0;
-
-try
-    Itf(1).Ref.Fcrops(1).Nx
-catch
-    pause(1)
-end
 
 IM = repmat(ImageQLSI(),Nf,1);
 if ~isempty(opt.Fcrops) % If crops are defined within the options
@@ -187,14 +188,21 @@ for ii = 1:Nf
 
     else
         FIm = fftshift(fft2(Itfi.Itf));
-        FRf = Itfi.Ref.TF;
+        if ~opt.noRef
+            FRf = Itfi.Ref.TF;
+        else
+            FRf = FIm*0;
+        end
     end
 
-    if isempty(FRf)
+    if isempty(FRf) && ~opt.noRef
         computeTF(Itfi.Ref);
-        FRf = Itfi.Ref.TF;
+        if ~opt.noRef
+            FRf = Itfi.Ref.TF;
+        else
+            FRf = FIm*0;
+        end
     end
-
 
     %    fprintf('ZERO ORDER\n')
     zeta = Itfi.Microscope.CGcam.zeta;
@@ -240,11 +248,11 @@ for ii = 1:Nf
 %    DW1 = sign(MI.CGcam.zoom)*angle(Im_DW1.*conj(Rf_DW1))* MI.CGcam.alpha(IL(ii).lambda);
 %    DW2 = sign(MI.CGcam.zoom)*angle(Im_DW2.*conj(Rf_DW2))* MI.CGcam.alpha(IL(ii).lambda);
     if opt.noRef
-        DW1 = -angle(Im_DW1)* MI.CGcam.alpha(IL(ii).lambda);
-        DW2 = -angle(Im_DW2)* MI.CGcam.alpha(IL(ii).lambda);
+        DW1 = -anglefun(Im_DW1)* MI.CGcam.alpha(IL(ii).lambda);
+        DW2 = -anglefun(Im_DW2)* MI.CGcam.alpha(IL(ii).lambda);
     else
-        DW1 = -angle(Im_DW1.*conj(Rf_DW1))* MI.CGcam.alpha(IL(ii).lambda);
-        DW2 = -angle(Im_DW2.*conj(Rf_DW2))* MI.CGcam.alpha(IL(ii).lambda);
+        DW1 = -anglefun(Im_DW1.*conj(Rf_DW1))* MI.CGcam.alpha(IL(ii).lambda);
+        DW2 = -anglefun(Im_DW2.*conj(Rf_DW2))* MI.CGcam.alpha(IL(ii).lambda);
     end
     DWx = cropParam1.angle.cos*DW1-cropParam1.angle.sin*DW2;
     DWy = cropParam1.angle.sin*DW1+cropParam1.angle.cos*DW2;
@@ -318,7 +326,9 @@ for ii = 1:Nf
     end
     
 %    if updateRefFcrop==1
-        Itfi.Ref.Fcrops = [cropParam0; cropParam1; cropParam2];
+        if ~opt.noRef
+            Itfi.Ref.Fcrops = [cropParam0; cropParam1; cropParam2];
+        end
         if cropParam1.zeta-MI.CGcam.zeta>0.05
             warning('the zeta measured and theoretical values are much different\n')
         fprintf(['Measured zeta factor: ' num2str(cropParam1.zeta) '\n'])

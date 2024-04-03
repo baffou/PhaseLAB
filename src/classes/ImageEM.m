@@ -148,8 +148,8 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
             function val = get.Ph(obj)
 
-            Ex_norm = abs(obj.Ex).^2;%enables the phase subtraction of E0x
-            Ey_norm = abs(obj.Ey).^2;%enables the phase subtraction of E0y
+            Ex_norm = abs(obj.Ex);% remove the .^2 empirically. Works better on a corral!
+            Ey_norm = abs(obj.Ey);% remove the .^2 empirically. Works better on a corral!
 
             if isempty(obj.Einc) % if already an indicent field
                 pha_x = angle(obj.Ex);% phase image of the x-polarized wavefront
@@ -159,8 +159,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 pha_y = angle(obj.Ey.*conj(obj.Einc.Ey));% phase image of the y-polarized wavefront
             end
 
-            val0 = pha_x.*Ex_norm+pha_y.*Ey_norm;% weighted average of the phase images
-            val = val0./(Ex_norm+Ey_norm);
+            val = (pha_x.*Ex_norm + pha_y.*Ey_norm) ./ (Ex_norm+Ey_norm);% weighted average of the phase images
         end
 
         function val = get.OPD(obj)
