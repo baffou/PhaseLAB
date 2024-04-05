@@ -146,7 +146,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             val = sqrt(abs(obj.Ex).^2+abs(obj.Ey).^2+abs(obj.Ez).^2);
         end
 
-            function val = get.Ph(obj)
+        function val = get.Ph(obj)
 
             Ex_norm = abs(obj.Ex);% remove the .^2 empirically. Works better on a corral!
             Ey_norm = abs(obj.Ey);% remove the .^2 empirically. Works better on a corral!

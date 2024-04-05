@@ -15,19 +15,25 @@ classdef NPprop
 
     methods
         function obj = NPprop(alpha,Cext,Csca,Cabs)
-            if nargin==4
+            if nargin == 4
                 No = length(alpha);
-                if No~=length(Cext) ||...
-                   No~=length(Csca) ||...
+                if No == 3 && numel(Cext) == 1 && numel(Cabs) == 1 && numel(Csca) == 1
+                    obj.alpha = alpha;
+                    obj.Cext  = sum(Cext);
+                    obj.Csca  = sum(Csca);
+                    obj.Cabs  = sum(Cabs);
+                elseif No~=length(Cext) ||...
+                   No~=length(Csca)     ||...
                    No~=length(Cabs)
                    error('input vectors must have the same length')
-                end
-                obj = repmat(NPprop(),No,1);
-                for io = 1:No
-                    obj(io).alpha = alpha(io);
-                    obj(io).Cext = Cext(io);
-                    obj(io).Csca = Csca(io);
-                    obj(io).Cabs = Cabs(io);
+                else
+                    obj = repmat(NPprop(),No,1);
+                    for io = 1:No
+                        obj(io).alpha = alpha(io);
+                        obj(io).Cext  = Cext(io);
+                        obj(io).Csca  = Csca(io);
+                        obj(io).Cabs  = Cabs(io);
+                    end
                 end
             end
         end
