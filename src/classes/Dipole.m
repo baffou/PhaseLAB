@@ -20,7 +20,7 @@ classdef Dipole
     properties(Access = public)
         x = 0           % x position of the dipole [m]
         y = 0           % y position of the dipole [m]
-        z               % z position of the dipole [m]
+        z = 0           % z position of the dipole [m]
         n_ext           % refractive index of the surroundings
     end
 
@@ -40,40 +40,34 @@ classdef Dipole
     properties(Access = private)
         eps0 = 8.8541878128e-12     % vacuum permittivity
         c = 299792458               % speed of light
-        epsHidden
-        alphaHidden
+        epsHidden = []
+        alphaHidden = []
     end
     
     methods
 
-        function obj = Dipole(mat,radius,z,opt)
+        function obj = Dipole(mat,radius,z)
             arguments
                 mat = 'none'
-                radius = 0
-                z = 0
-                opt.alpha
+                radius (1, 1) double = 0
+                z (1, 1) double = 0
             end
             %Dipole(mat,radius,[z]). By default, z = radius.
             if nargin~=0
-                if ~isnumeric(radius)
-                    error('The 2nd input (radius) must be a real number')
-                elseif radius<0
-                    error('The 2nd input must be positive')
-                end   
 
                 obj.r = radius;
 
-                if ischar(mat)
+                if ischar(mat) % 'Au', 'BK7', ...
                     obj.mat = mat;
-                elseif isnumeric(mat)
+                elseif isnumeric(mat) % permittivity
                     if abs(mat)>1e-6 % specify an epsilon value
                         disp('The code understands that you specify directly the permittivity value instead of the material')
                         obj.epsHidden = mat;
-                        obj.mat = 'user defined';
+                        obj.mat = 'user defined - permittivity';
                     else
                         disp('The code understands that you specify directly the polarisability value instead of the material')
                         obj.alphaHidden = mat;
-                        obj.mat = 'user defined';
+                        obj.mat = 'user defined - polarisability';
                     end
                 end
 
@@ -90,11 +84,12 @@ classdef Dipole
             if ~nargout
                 warning('an output argument must be specified, otherwise the DI object won''t be modified.')
             end
-            obj = DDA(obj,IL);
+%            obj = DDA(obj,IL);
+            obj = DDA_aniso(obj,IL);
         end
 
         function val = get.eps(obj)
-            if strcmp(obj.mat,'user defined')
+            if ~isempty(obj.epsHidden)
                 val = obj.epsHidden;
             else
                 val = epsReadDDA(obj.lambda,obj.mat);   % dielectric function of the nanoparticle 
@@ -102,7 +97,7 @@ classdef Dipole
         end
         
         function val = get.n(obj)
-            if strcmp(obj.mat,'user defined')
+            if ~isempty(obj.epsHidden)
                 val = sqrt(obj.epsHidden);
             else
                 val = indexRead(obj.lambda,obj.mat);   % dielectric function of the nanoparticle 
@@ -112,6 +107,14 @@ classdef Dipole
         function val = get.alphaMie(obj)
             prop = MieTheory(obj);
             val = prop.alpha;
+        end
+
+        function val = alpha(obj)
+            if isempty(obj.alphaHidden)
+                val = obj.alphaMie;
+            else
+                val = obj.alphaHidden;
+            end
         end
 
         function val = get.CextMie(obj)
@@ -296,53 +299,63 @@ classdef Dipole
             
             N = numel(DIlist); % number of dipoles
             
-            prop = repmat(NPprop(),N,1);
+            Nn = length(DIlist(1).n);
+            prop = repmat(NPprop(),N);
             
             for io = 1:N
                 DI = DIlist(io);
                 r0 = DI.r;
-                n_DI = DI.n;
-                m = n_DI/DI.n_ext;
-                k = 2*pi*DI.n_ext/DI.lambda;
-                x = k*r0;
-                z = m*x;
-                N = round(2+x+4*x.^(1/3));
-            
-                % computation
-            
-                j = (1:N);
-            
-                sqr = sqrt(pi*x/2);
-                sqrm = sqrt(pi*z/2);
-            
-                phi = sqr.*besselj(j+0.5,x);
-                xi = sqr.*(besselj(j+0.5,x)+1i*bessely(j+0.5,x));
-                phim = sqrm.*besselj(j+0.5,z);
-            
-                phi1 = [sin(x), phi(1:N-1)];
-            
-                phi1m = [sin(z), phim(1:N-1)];
-                y = sqr*bessely(j+0.5,x);
-            
-                y1 = [-cos(x), y(1:N-1)];
-            
-                phip = (phi1-j/x.*phi);
-                phimp = (phi1m-j/z.*phim);
-                xip = (phi1+1i*y1)-j/x.*(phi+1i*y);
-            
-                aj = (m*phim.*phip-phi.*phimp)./(m*phim.*xip-xi.*phimp);
-                bj = (phim.*phip-m*phi.*phimp)./(phim.*xip-m*xi.*phimp);
-            
-                Csca = sum( (2*j+1).*(abs(aj).*abs(aj)+abs(bj).*abs(bj)) );
-                Cext = sum( (2*j+1).*real(aj+bj) );    
-            
-                Cext = Cext*2*pi/(k*k);
-                Csca = Csca*2*pi/(k*k);
-                Cabs = Cext-Csca;
-            
-                alpha = 1i*6*pi*DI.n_ext*DI.n_ext*aj(1)/(k*k*k);
-            
-                prop(io) = NPprop(alpha,Cext,Csca,Cabs);
+
+                alpha = zeros(Nn, 1);
+                Cabs = zeros(Nn, 1);
+                Cext = zeros(Nn, 1);
+                Csca = zeros(Nn, 1);
+                for ii = 1:Nn
+
+                    n_DI = DI.n(ii);
+                    m = n_DI/DI.n_ext;
+                    k = 2*pi*DI.n_ext/DI.lambda;
+                    x = k*r0;
+                    z = m*x;
+                    N = round(2+x+4*x.^(1/3));
+                
+                    % computation
+                
+                    j = (1:N);
+                
+                    sqr = sqrt(pi*x/2);
+                    sqrm = sqrt(pi*z/2);
+                
+                    phi = sqr.*besselj(j+0.5,x);
+                    xi = sqr.*(besselj(j+0.5,x)+1i*bessely(j+0.5,x));
+                    phim = sqrm.*besselj(j+0.5,z);
+                
+                    phi1 = [sin(x), phi(1:N-1)];
+                
+                    phi1m = [sin(z), phim(1:N-1)];
+                    y = sqr*bessely(j+0.5,x);
+                
+                    y1 = [-cos(x), y(1:N-1)];
+                
+                    phip = (phi1-j/x.*phi);
+                    phimp = (phi1m-j/z.*phim);
+                    xip = (phi1+1i*y1)-j/x.*(phi+1i*y);
+                
+                    aj = (m*phim.*phip-phi.*phimp)./(m*phim.*xip-xi.*phimp);
+                    bj = (phim.*phip-m*phi.*phimp)./(phim.*xip-m*xi.*phimp);
+                
+                    Csca(ii) = sum( (2*j+1).*(abs(aj).*abs(aj)+abs(bj).*abs(bj)) );
+                    Cext(ii) = sum( (2*j+1).*real(aj+bj) );    
+                
+                    Cext(ii) = Cext(ii)*2*pi/(k*k);
+                    Csca(ii) = Csca(ii)*2*pi/(k*k);
+                    Cabs(ii) = Cext(ii)-Csca(ii);
+                
+                    alpha(ii) = 1i*6*pi*DI.n_ext*DI.n_ext*aj(1)/(k*k*k);
+                
+
+                end
+                prop(io) = NPprop(alpha,sum(Cext),sum(Csca),sum(Cabs));
             
             end
 

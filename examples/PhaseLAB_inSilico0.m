@@ -38,7 +38,7 @@ Itf = CGMinSilico(IM0,shotNoise=1,Nimages=15,NAill=IL.NA);
 
 %% Postprocessing of the insilico data
 
-IM = QLSIprocess(Itf,IL,'resolution','low');
+IM = QLSIprocess(Itf,IL,'definition','low');
 
 
 dynamicFigure("gb",IM);

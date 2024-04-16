@@ -368,7 +368,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             if isnumeric(val)
                 No = numel(obj);
                 for io = 1:No
-                    obj(io).Ref = Interfero(val,obj(io).Microscope,"gpu",optgpu);
+                    obj(io).Ref = Interfero(val,obj(io).Microscope,"gpu",opt.gpu);
                 end
             elseif numel(val)==numel(obj)
                 No = numel(obj);
@@ -483,79 +483,19 @@ classdef Interfero < handle & matlab.mixin.Copyable
             obj = objList(1);
 
             if nargin==1 % no predefined mask
-
-
-                h = figure;
-                %% zoom on the spot of interest
-                button = 1;
-                mask = ones(obj.Ny,obj.Nx);
-                Zlim = 0;
-                while(button==1)
-                    TF = fftshift(fft2(obj.Itf));
-                    TFref = fftshift(fft2(obj.Ref.Itf));
-                    imagegb(log(abs(TF)))
-                    if Zlim==0
-                        Zlim = get(gca,'CLim');
-                    else
-                        set(gca,'CLim',Zlim);
-                    end
-                    title('Click on the center of the spot to be removed')
-
-                    [x1,y1,button] = ginput(1);
-                    if button==1
-                        set(gcf,'CurrentCharacter',char(0))
-                        zoom out
-                        title('Click further away to define a crop radius around this spot')
-                        [x2,y2] = ginput(1);
-
-                        % radius
-                        ex = obj.Nx/obj.Ny; % the ellipse excentricity
-                        R(1) = sqrt((x2-x1)^2+ex^2*(y2-y1)^2);
-                        R(2) = R(1)/ex;
-
-
-                        h = drawCircle(x1,y1,R,h);
-                        pause (1.6)
-                        cropParamsout = FcropParameters(x1,y1,R,obj.Nx,obj.Ny);
-
-                        if length(R)==1
-                            rx = R;
-                            ry = R;
-                        else
-                            rx = R(1);
-                            ry = R(2);
-                        end
-
-                        [xx,yy] = meshgrid(1:obj.Nx, 1:obj.Ny);
-
-                        R2C = (xx  -obj.Nx/2-1-cropParamsout.shiftx).^2/rx^2 + (yy - obj.Ny/2-1-cropParamsout.shifty).^2/ry^2;
-                        circle1 = (R2C >= 1); %mask circle for each iteration
-                        R2C = (xx  -obj.Nx/2-1+cropParamsout.shiftx).^2/rx^2 + (yy - obj.Ny/2-1+cropParamsout.shifty).^2/ry^2;
-                        circle2 = (R2C >= 1); %mask circle for each iteration
-                        % demodulation in the Fourier space
-                        mask = mask.*double(circle1.*circle2);
-                        imagegb(log(abs(TF.*mask)))
-                        drawnow
-                        obj.Itf0 = ifft2(ifftshift(TF.*circle1.*circle2));
-                        obj.Ref.Itf0 = ifft2(ifftshift(TFref.*circle1.*circle2));
-                    end
-                end
-                if nargout
-                    mask0 = mask;
-                end
-                close(h)
-            elseif nargin==2
-                TF = fftshift(fft2(obj.Itf));
-                TFref = fftshift(fft2(obj.Ref.Itf));
-                obj.Itf0 = ifft2(ifftshift(TF.*mask));
-                obj.Ref.Itf0 = ifft2(ifftshift(TFref.*mask));
+                [objList(1).Itf0, mask0] = spotRemoval0(objList0(1).Itf);
+                objList(1).Ref.Itf0 = spotRemoval0(objList0(1).Ref.Itf,mask0);
+                
+            elseif nargin==2 % predefined mask
+                [obj.Itf0, mask0] = spotRemoval0(obj.Itf,mask);
+                obj.Ref.Itf0 = spotRemoval0(obj.Ref.Itf,mask);
             else
                 error('not the proper number of inputs')
             end
 
             % applies the mask on the other Interfero objects of the list.
             for io = 2:numel(objList)
-                objList(io).spotRemoval(mask)
+                objList(io).spotRemoval(mask0)
             end
 
         end

@@ -46,7 +46,7 @@ folder='../../Examples/200626-NeuronsLjiljana';
 
 %IM=Im.QLSIprocess(IL,'Crop','manual');
 IMhigh=Im.QLSIprocess(IL);
-IMlow=Im.QLSIprocess(IL, method='CPM',resolution='low');
+IMlow=Im.QLSIprocess(IL, method='CPM',definition='low');
 %IMf=IM.flatten(2);
 %IM.phaseLevel0('manual')
 %IMf.opendx(1,0,0)
