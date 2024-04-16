@@ -517,7 +517,7 @@ classdef ImageQLSI   <   ImageMethods
         function [obj2, mask] = flatten(obj,method,opt)
         arguments
             obj (1,:) ImageMethods
-            method (1,:) char {mustBeMember(method,{'Waves','Zernike','Chebyshev','Hermite','Legendre','Gaussian'})} = 'Gaussian'
+            method (1,:) char {mustBeMember(method,{'Waves','Sine','Zernike','Chebyshev','Hermite','Legendre','Gaussian'})} = 'Gaussian'
             opt.nmax (1,1) {mustBeInteger(opt.nmax)} = 2
             opt.threshold double = 0 % if not zero, segment the cells and create a mask
             opt.kind  (1,1) {mustBeInteger(opt.kind)} = 1 % for Chebychev
@@ -547,21 +547,24 @@ classdef ImageQLSI   <   ImageMethods
         for io = 1:No
         
             if opt.threshold~=0 && ~strcmp(method,'Zernike') % then create a mask
-                im20=imgaussfilt(stdfilt(obj(io).D2Wnorm,true(9)),10);
-                %        imP=imgaussfilt(stdfilt(obj(io).PDCM,true(9)),10);
-                %        hi=histogram(2*imP);
-                if opt.display
-                    figure,subplot(2,2,1)
-                end
-                hi=histogram(im20);
-                posM=find(hi.Values==max(hi.Values));
-                x=hi.BinEdges(posM);
-                threshold=opt.threshold*x;
-                xline(threshold,"LineWidth",2,"Color",[0.9, 0.3, 0.2])
-                %        hold on
-                %        histogram(2*im20,'facecolor',[0.3, 0.2, 0.9],'facealpha',.5,'edgecolor','none');
-                %mask=obj(io).OPD~=max(max(obj(io).OPD));
-                mask=im20<threshold;
+
+                mask = abs(obj(io).DWx) > opt.threshold*1e-9;
+                IMxm = obj(io).DWx.*mask;
+                
+                mask = abs(obj(io).DWy) > opt.threshold*1e-9;
+                IMym = obj(io).DWy.*mask;
+                
+                N = 3;
+                Tikh = 1e-5;
+                
+                x = (1:size(IMxm,2))';
+                y = (1:size(IMym,1))';
+                opt.Smatrix = g2sTikhonovRTalpha(x,y,N);
+                W = g2sTikhonovRT(IMxm,IMym,opt.Smatrix,Tikh);
+                mask = W<opt.threshold*10*1e-9;
+                dynamicFigure('ph',obj(io).OPD,'ph',W,'bw',double(mask))
+                fullscreen
+                
             else
                 mask = ones(obj(io).Ny, obj(io).Nx)==1;
             end
@@ -579,7 +582,7 @@ classdef ImageQLSI   <   ImageMethods
                     end
                 end
                 obj2(io).OPD=temp;
-            elseif strcmp(method,'Waves')
+            elseif strcmp(method,'Waves') || strcmp(method,'Sine')
                 temp=obj(io).OPD;
                 for n = 1:opt.nmax
                     temp = SineRemoval(temp,n,mask);
@@ -618,9 +621,9 @@ classdef ImageQLSI   <   ImageMethods
             end
             
             
-            
+        close all            
         end
-        
+
         end
 
         function [obj, params] = level0(obj0,opt)
