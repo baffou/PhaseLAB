@@ -612,16 +612,21 @@ classdef ImageQLSI   <   ImageMethods
             
             if opt.threshold~=0 && ~strcmp(method,'Zernike')
                 if opt.display
-                    subplot(2,2,2)
+                    subplot(2,2,4)
                     imageph(temp)
                     title('final image')
+                    colormap(Pradeep)
+                    %climSym
                     subplot(2,2,3)
-                    imageph(temp.*(1-mask)+mask.*max(temp(:)))
-                    title('masked area')
-                    subplot(2,2,4)
+                    imageph(obj(io).OPD)
+                    title('initial image')
+                    colormap(Pradeep)
+                    %climSym
+                    subplot(2,2,2)
                     imageph(temp.*mask+(1-mask).*max(temp(:)))
                     title('considered area')
                     fullscreen
+                    drawnow
                 end
             end
             
