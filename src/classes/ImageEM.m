@@ -215,6 +215,8 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 binfun=@(x) binning2x2(binning2x2(x));
             elseif n==6
                 binfun=@(x) binning3x3(binning2x2(x));
+            elseif n==12
+                binfun=@(x) binning3x3(binning2x2(binning2x2(x)));
             elseif n==1
                 binfun=@(x) x; % identity
             else
