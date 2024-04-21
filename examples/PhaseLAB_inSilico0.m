@@ -35,7 +35,7 @@ IM0 = imaging(DI,IL,MI,Npx);
 %% Creation of the inSilico Interfero
 
 Itf = CGMinSilico(IM0,shotNoise=1,Nimages=15,NAill=IL.NA);
-
+sdfg
 %% Postprocessing of the insilico data
 
 IM = QLSIprocess(Itf,IL,'definition','low');

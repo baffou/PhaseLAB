@@ -494,6 +494,19 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             I = abs(FEx).^2 + abs(FEy).^2;
         end
 
+        function IM = polarMask(IM0)
+            IM = copy(IM0);
+            IM.Ey(1:2:end,1:2:end) = 0;
+            IM.Ex(2:2:end,2:2:end) = 0;
+            IM.Ex(1:2:end,2:2:end) = ( IM0.Ex(2:2:end,1:2:end)+IM0.Ey(2:2:end,1:2:end))/2;
+            IM.Ey(1:2:end,2:2:end) = ( IM0.Ex(2:2:end,1:2:end)+IM0.Ey(2:2:end,1:2:end))/2;
+            IM.Ex(2:2:end,1:2:end) = (-IM0.Ex(1:2:end,2:2:end)+IM0.Ey(1:2:end,2:2:end))/2;
+            IM.Ey(2:2:end,1:2:end) = (+IM0.Ex(1:2:end,2:2:end)-IM0.Ey(1:2:end,2:2:end))/2;
+            if ~isempty(IM.Einc)
+                IM.Einc = IM.Einc.polarMask;
+            end
+        end
+
         function IMout = propagation(IM, z, opt)
             % numerical propagation over the distance z
             arguments

@@ -28,8 +28,12 @@ classdef CrossGrating  <  handle & matlab.mixin.Copyable
                 opt.RI (1,1) double = 1.46 % Quartz by default
             end
 
-            if ~strcmpi(name,'undefined') % ('P2')
-                CG = jsonImport(strcat(name,'.json'));
+            if ~strcmpi(name,'undefined') % ex: ('P2')
+                try
+                    CG = jsonImport(strcat(name,'.json'));
+                catch
+                    error("This grating name, "+name+", does not exist")
+                end
             else
                 CG.Gamma = opt.Gamma;
                 CG.RI = opt.RI;

@@ -1,0 +1,9 @@
+{"class":"Camera",
+"model": "PHX050S-PC",
+"dxSize": 3.45e-6,
+"Nx": 2448,
+"Ny": 2048,
+"fullWellCapacity": 9800,
+"offset":0,
+"colorChannels":4
+}

@@ -8,9 +8,7 @@ function [profile, w, cx, cy] = radialAverage0(IMG, center, Rmax)
         hh = figure();
         imagesc(IMG);
         set(gca,'dataAspectRatio',[1 1 1])
-        hc = drawcircle();
-        cx = hc.Center(1);
-        cy = hc.Center(2);
+        [cx, cy] = ginput(1);
         w = 1:floor(0.9*sqrt(Nx*Nx+Ny*Ny)/2);
         
         while isvalid(hh)
@@ -39,7 +37,7 @@ function [profile, w, cx, cy] = radialAverage0(IMG, center, Rmax)
         values = IMG(mask); % without smooth
         profile(ii) = mean( values(:) );
     end
-    profile(1) = IMG(round(cy),round(cx));
+    profile(1) = mean(mean(IMG(cy-1:cy+1,cx-1:cx+1)));
 end
 
 

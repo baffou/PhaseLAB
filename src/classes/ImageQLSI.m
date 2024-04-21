@@ -27,12 +27,12 @@ classdef ImageQLSI   <   ImageMethods
         % comment
     end
 
-    properties(SetAccess={?Interfero})
+    properties(SetAccess={?Interfero,?ImageT})
         ItfFileName
         channel (1,:) char {mustBeMember(channel,{'R','G','0','45','90','135','none'})} = 'none'
     end
 
-    properties(GetAccess = public, SetAccess={?ImageMethods})
+    properties(GetAccess = public, SetAccess={?ImageMethods,?ImageT})
         TfileName
         OPDfileName
         imageNumber
@@ -327,6 +327,7 @@ classdef ImageQLSI   <   ImageMethods
                 opt.params double = double.empty() % = [x1, x2, y1, y2]
                 opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
                 opt.app matlab.apps.AppBase = PhaseLABgui.empty()
+                opt.all (1,1) = false % apply the same crop to all the images
             end
 
             if nargout
@@ -363,13 +364,17 @@ classdef ImageQLSI   <   ImageMethods
                         y2 = opt.params(4);
                         params=opt.params;
                     end
+                    if opt.all
+                        opt.params = [x1, x2, y1, y2];
+                    end
+
                 end
 
                 %sizeIm = size(obj(io).OPD);
 
                 %obj(io).OPD = obj(io).OPD-offsetFunction(obj(io).OPD(y1:y2,x1:x2));
 
-                OPDc = objList.OPD(y1:y2,x1:x2);
+                OPDc = objList(io).OPD(y1:y2,x1:x2);
                 mc = mean(OPDc(:));
                 [Nyc,Nxc] = size(OPDc);
                 [X,Y] = meshgrid(1:Nxc,1:Nyc);
@@ -910,6 +915,48 @@ classdef ImageQLSI   <   ImageMethods
             for io = 2:No
                 obj = objList(io);
                 objList2(io).OPD0 = spotRemoval0(obj.OPD,mask0);
+            end
+        end
+
+        function objList2 = makeEvenNpx(objList)
+            No = numel(objList);
+            if nargout
+                objList2 = copy(objList);
+            else
+                objList2 = objList;
+            end
+
+            for io = 1:No
+                objList2(io).OPD0 = makeEvenNpx0(objList(io).OPD);
+                objList2(io).T0 = makeEvenNpx0(objList(io).T);
+                if ~isempty(objList(io).DWx0)
+                    objList2(io).DWx0 = makeEvenNpx0(objList(io).DWx);
+                    objList2(io).DWy0 = makeEvenNpx0(objList(io).DWy);
+                end
+            end
+        end
+
+        function objT = TMPprocess(obj,Med,opt)
+            arguments
+                obj ImageQLSI
+                Med MediumT
+                opt.g (1,1) double = 1
+                opt.nLoop (1,1) double = 1
+                opt.alpha (1,1) double = 1e-5
+                opt.smoothing (1,1) double = 0
+                opt.imExpander (1,1) logical = false
+                opt.T0 (1,1) double = 22
+                opt.zT (1,1) double = 0
+            end
+            No = numel(obj);
+            objT = repmat(ImageT,No,1);
+            for io = 1:No
+                [tmp, hsd] = opd2tmp0(obj(io).OPD,obj(io).Microscope,Med,'g',opt.g,'nLoop',...
+                    opt.nLoop,'alpha',opt.alpha,'smoothing',opt.smoothing,...
+                    'imExpander',opt.imExpander,'T0',opt.T0,'zT',opt.zT);
+                objT(io) = ImageT(obj(io).OPD, tmp, hsd);
+                objT(io).Microscope = obj(io).Microscope;
+                objT(io).Illumination = obj(io).Illumination;
             end
         end
 
