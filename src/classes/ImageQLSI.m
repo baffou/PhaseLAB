@@ -27,12 +27,12 @@ classdef ImageQLSI   <   ImageMethods
         % comment
     end
 
-    properties(SetAccess={?Interfero})
+    properties(SetAccess={?Interfero,?ImageT})
         ItfFileName
         channel (1,:) char {mustBeMember(channel,{'R','G','0','45','90','135','none'})} = 'none'
     end
 
-    properties(GetAccess = public, SetAccess={?ImageMethods})
+    properties(GetAccess = public, SetAccess={?ImageMethods,?ImageT})
         TfileName
         OPDfileName
         imageNumber
@@ -327,6 +327,7 @@ classdef ImageQLSI   <   ImageMethods
                 opt.params double = double.empty() % = [x1, x2, y1, y2]
                 opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
                 opt.app matlab.apps.AppBase = PhaseLABgui.empty()
+                opt.all (1,1) = false % apply the same crop to all the images
             end
 
             if nargout
@@ -363,13 +364,17 @@ classdef ImageQLSI   <   ImageMethods
                         y2 = opt.params(4);
                         params=opt.params;
                     end
+                    if opt.all
+                        opt.params = [x1, x2, y1, y2];
+                    end
+
                 end
 
                 %sizeIm = size(obj(io).OPD);
 
                 %obj(io).OPD = obj(io).OPD-offsetFunction(obj(io).OPD(y1:y2,x1:x2));
 
-                OPDc = objList.OPD(y1:y2,x1:x2);
+                OPDc = objList(io).OPD(y1:y2,x1:x2);
                 mc = mean(OPDc(:));
                 [Nyc,Nxc] = size(OPDc);
                 [X,Y] = meshgrid(1:Nxc,1:Nyc);
@@ -525,7 +530,7 @@ classdef ImageQLSI   <   ImageMethods
         function [obj2, mask] = flatten(obj,method,opt)
         arguments
             obj (1,:) ImageMethods
-            method (1,:) char {mustBeMember(method,{'Waves','Zernike','Chebyshev','Hermite','Legendre','Gaussian'})} = 'Gaussian'
+            method (1,:) char {mustBeMember(method,{'Waves','Sine','Zernike','Chebyshev','Hermite','Legendre','Gaussian'})} = 'Gaussian'
             opt.nmax (1,1) {mustBeInteger(opt.nmax)} = 2
             opt.threshold double = 0 % if not zero, segment the cells and create a mask
             opt.kind  (1,1) {mustBeInteger(opt.kind)} = 1 % for Chebychev
@@ -555,21 +560,24 @@ classdef ImageQLSI   <   ImageMethods
         for io = 1:No
         
             if opt.threshold~=0 && ~strcmp(method,'Zernike') % then create a mask
-                im20=imgaussfilt(stdfilt(obj(io).D2Wnorm,true(9)),10);
-                %        imP=imgaussfilt(stdfilt(obj(io).PDCM,true(9)),10);
-                %        hi=histogram(2*imP);
-                if opt.display
-                    figure,subplot(2,2,1)
-                end
-                hi=histogram(im20);
-                posM=find(hi.Values==max(hi.Values));
-                x=hi.BinEdges(posM);
-                threshold=opt.threshold*x;
-                xline(threshold,"LineWidth",2,"Color",[0.9, 0.3, 0.2])
-                %        hold on
-                %        histogram(2*im20,'facecolor',[0.3, 0.2, 0.9],'facealpha',.5,'edgecolor','none');
-                %mask=obj(io).OPD~=max(max(obj(io).OPD));
-                mask=im20<threshold;
+
+                mask = abs(obj(io).DWx) > opt.threshold*1e-9;
+                IMxm = obj(io).DWx.*mask;
+                
+                mask = abs(obj(io).DWy) > opt.threshold*1e-9;
+                IMym = obj(io).DWy.*mask;
+                
+                N = 3;
+                Tikh = 1e-5;
+                
+                x = (1:size(IMxm,2))';
+                y = (1:size(IMym,1))';
+                opt.Smatrix = g2sTikhonovRTalpha(x,y,N);
+                W = g2sTikhonovRT(IMxm,IMym,opt.Smatrix,Tikh);
+                mask = W<opt.threshold*10*1e-9;
+                dynamicFigure('ph',obj(io).OPD,'ph',W,'bw',double(mask))
+                fullscreen
+                
             else
                 mask = ones(obj(io).Ny, obj(io).Nx)==1;
             end
@@ -587,7 +595,7 @@ classdef ImageQLSI   <   ImageMethods
                     end
                 end
                 obj2(io).OPD=temp;
-            elseif strcmp(method,'Waves')
+            elseif strcmp(method,'Waves') || strcmp(method,'Sine')
                 temp=obj(io).OPD;
                 for n = 1:opt.nmax
                     temp = SineRemoval(temp,n,mask);
@@ -612,23 +620,28 @@ classdef ImageQLSI   <   ImageMethods
             
             if opt.threshold~=0 && ~strcmp(method,'Zernike')
                 if opt.display
-                    subplot(2,2,2)
+                    subplot(2,2,4)
                     imageph(temp)
                     title('final image')
+                    colormap(Pradeep)
+                    %climSym
                     subplot(2,2,3)
-                    imageph(temp.*(1-mask)+mask.*max(temp(:)))
-                    title('masked area')
-                    subplot(2,2,4)
+                    imageph(obj(io).OPD)
+                    title('initial image')
+                    colormap(Pradeep)
+                    %climSym
+                    subplot(2,2,2)
                     imageph(temp.*mask+(1-mask).*max(temp(:)))
                     title('considered area')
                     fullscreen
+                    drawnow
                 end
             end
             
             
-            
+        close all            
         end
-        
+
         end
 
         function [obj, params] = level0(obj0,opt)
@@ -902,6 +915,48 @@ classdef ImageQLSI   <   ImageMethods
             for io = 2:No
                 obj = objList(io);
                 objList2(io).OPD0 = spotRemoval0(obj.OPD,mask0);
+            end
+        end
+
+        function objList2 = makeEvenNpx(objList)
+            No = numel(objList);
+            if nargout
+                objList2 = copy(objList);
+            else
+                objList2 = objList;
+            end
+
+            for io = 1:No
+                objList2(io).OPD0 = makeEvenNpx0(objList(io).OPD);
+                objList2(io).T0 = makeEvenNpx0(objList(io).T);
+                if ~isempty(objList(io).DWx0)
+                    objList2(io).DWx0 = makeEvenNpx0(objList(io).DWx);
+                    objList2(io).DWy0 = makeEvenNpx0(objList(io).DWy);
+                end
+            end
+        end
+
+        function objT = TMPprocess(obj,Med,opt)
+            arguments
+                obj ImageQLSI
+                Med MediumT
+                opt.g (1,1) double = 1
+                opt.nLoop (1,1) double = 1
+                opt.alpha (1,1) double = 1e-5
+                opt.smoothing (1,1) double = 0
+                opt.imExpander (1,1) logical = false
+                opt.T0 (1,1) double = 22
+                opt.zT (1,1) double = 0
+            end
+            No = numel(obj);
+            objT = repmat(ImageT,No,1);
+            for io = 1:No
+                [tmp, hsd] = opd2tmp0(obj(io).OPD,obj(io).Microscope,Med,'g',opt.g,'nLoop',...
+                    opt.nLoop,'alpha',opt.alpha,'smoothing',opt.smoothing,...
+                    'imExpander',opt.imExpander,'T0',opt.T0,'zT',opt.zT);
+                objT(io) = ImageT(obj(io).OPD, tmp, hsd);
+                objT(io).Microscope = obj(io).Microscope;
+                objT(io).Illumination = obj(io).Illumination;
             end
         end
 

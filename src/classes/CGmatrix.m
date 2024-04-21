@@ -119,6 +119,9 @@ classdef CGmatrix
             % Takes into account IL.NA ≠ 0
             lambda = IL.lambda;
             L = MI.CGcam.distance(lambda);
+            if L==0
+                error('the grating distance is set to zero')
+            end
             
             if IL.NA==0
                 Fdb2 = M;

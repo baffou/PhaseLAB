@@ -78,9 +78,9 @@ Itf=CGMinSilico(IM0,shotNoise=shotNoise,Nimages=Nim,NAill=IL.NA,cut=0);
 
 %% Postprocessing of the insilico data
 
-% IM = QLSIprocess(Itf,IL,'method','CPM','resolution','low');
+% IM = QLSIprocess(Itf,IL,'method','CPM','definition','low');
  IM = QLSIprocess(Itf,IL);
-%IM = QLSIprocess(Itf,IL,'Fcrops',crop,'resolution','low');
+%IM = QLSIprocess(Itf,IL,'Fcrops',crop,'definition','low');
 % IM = QLSIprocess(Itf,IL,'Fcrops',IM.crops);
 %
 % IM=IM.phaseLevel0([1 1 200 200]);
