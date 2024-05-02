@@ -936,7 +936,7 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
-        function objT = TMPprocess(obj,Med,opt)
+        function [objT, GreenFunction, GreenT_z0] = TMPprocess(obj,Med,opt)
             arguments
                 obj ImageQLSI
                 Med MediumT
@@ -947,14 +947,20 @@ classdef ImageQLSI   <   ImageMethods
                 opt.imExpander (1,1) logical = false
                 opt.T0 (1,1) double = 22
                 opt.zT (1,1) double = 0
+                opt.GreenOPD (:,:) double
+                opt.GreenT_z0  (:,:) double
+                opt.GreenT_3D  (:,:,:) double
             end
             No = numel(obj);
             objT = repmat(ImageT,No,1);
             for io = 1:No
-                [tmp, hsd] = opd2tmp0(obj(io).OPD,obj(io).Microscope,Med,'g',opt.g,'nLoop',...
+                [tmp, hsd, GreenFunction,GreenT_z0] = opd2tmp0(obj(io).OPD,obj(io).Microscope,Med,'g',opt.g,'nLoop',...
                     opt.nLoop,'alpha',opt.alpha,'smoothing',opt.smoothing,...
-                    'imExpander',opt.imExpander,'T0',opt.T0,'zT',opt.zT);
-                objT(io) = ImageT(obj(io).OPD, tmp, hsd);
+                    'imExpander',opt.imExpander,'T0',opt.T0,'zT',opt.zT, ...
+                    'GreenFunction',opt.GreenOPD, ...
+                    'GreenT_z0', opt.GreenT_z0, ...
+                    'GreenT_3D', opt.GreenT_3D);
+                objT(io) = ImageT(obj(io).OPD, tmp, hsd,obj(io).T);
                 objT(io).Microscope = obj(io).Microscope;
                 objT(io).Illumination = obj(io).Illumination;
             end

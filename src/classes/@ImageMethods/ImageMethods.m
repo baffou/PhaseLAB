@@ -531,6 +531,11 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     obj(io).Einc.Ex = obj0(io).Einc.Ex(y1:y2,x1:x2);
                     obj(io).Einc.Ey = obj0(io).Einc.Ey(y1:y2,x1:x2);
                     obj(io).Einc.Ez = obj0(io).Einc.Ez(y1:y2,x1:x2);
+                elseif isa (obj,'ImageT')
+                    obj(io).T = obj0(io).T(y1:y2,x1:x2);
+                    obj(io).OPD = obj0(io).OPD(y1:y2,x1:x2);
+                    obj(io).HSD = obj0(io).HSD(y1:y2,x1:x2);
+                    obj(io).TMP = obj0(io).TMP(y1:y2,x1:x2);
                 end
             end
 
