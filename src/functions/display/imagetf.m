@@ -7,7 +7,11 @@ end
 if isreal(itf)
     convFun=@(x) fftshift(fft2(x));
 else
-    convFun=@(x) x;
+    if isreal(itf(1))
+        convFun=@(x) fftshift(x);
+    else
+        convFun=@(x) x;
+    end        
 end
 
 if strcmpi(funct,'log10') || strcmpi(funct,'log')
