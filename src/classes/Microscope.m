@@ -39,6 +39,7 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
     properties(Access = public)
         zo (1,1) {mustBeNumeric} = 0              % Position in z of the imaged plane. Only useful for numerical simulation, not for processing exp data.
         T0                  % Microscope temperature
+        refl (1,1) logical = false    % boolean. 1 if used in reflection. used for temperature imaging
     end
 
     properties (Access = private, Constant)

@@ -57,7 +57,9 @@ for io = 1:No
     Gamma = MI.CGcam.CG.Gamma;       % size [m] of the unit cell of the grating
 
     %% construction of the interferograms (Itf & Ref) according to Fig 2.
-
+    if eD == 0
+        error('eD = 0, wrong grating design')
+    end
     switch opt.method
         case "tiling"
     % (Fig 2a) Build the unit cell :
@@ -131,7 +133,7 @@ for io = 1:No
     [E20y, E0y]    =    Emodely.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
     [E2Ref0y, ERef0y] = EmodelRefy.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
     
-    EE = ImageEM(E0x, E0y, E0y*0, ERef0x, ERef0y, ERef0y*0);
+    EE = ImageEM(E0x, E0y, E0y*0, ERef0x, ERef0y, ERef0y*0,"Illumination",IL,"Microscope",MI);
    
     E20 = E20x+E20y;
     E2Ref0 = E2Ref0x+E2Ref0y;

@@ -166,8 +166,8 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             arguments
                 obj
                 opt.persp = 1
-                opt.phi = 45
-                opt.theta = 45
+                opt.phi = 0
+                opt.theta = 0
                 opt.ampl = 10
                 opt.zrange = []
                 opt.colorMap =  []
@@ -531,6 +531,11 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     obj(io).Einc.Ex = obj0(io).Einc.Ex(y1:y2,x1:x2);
                     obj(io).Einc.Ey = obj0(io).Einc.Ey(y1:y2,x1:x2);
                     obj(io).Einc.Ez = obj0(io).Einc.Ez(y1:y2,x1:x2);
+                elseif isa (obj,'ImageT')
+                    obj(io).T = obj0(io).T(y1:y2,x1:x2);
+                    obj(io).OPD = obj0(io).OPD(y1:y2,x1:x2);
+                    obj(io).HSD = obj0(io).HSD(y1:y2,x1:x2);
+                    obj(io).TMP = obj0(io).TMP(y1:y2,x1:x2);
                 end
             end
 
@@ -574,78 +579,43 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 T2 = IM(ii,2).T;
                 T3 = IM(ii,3).T;
                 T4 = IM(ii,4).T;
-                
-                E1 = sqrt(T1);
-                %E2 = sqrt(T2);
-                E3 = sqrt(T3);
-                %E4 = sqrt(T4);
-                
+
                 Phi1 = IM(ii,1).Ph;
                 Phi2 = IM(ii,2).Ph;
                 Phi3 = IM(ii,3).Ph;
                 Phi4 = IM(ii,4).Ph;
-                
+
                 C = 0.5*(T2-T4)./sqrt(T1.*T3);
-                
+
+                while any(abs(C(:)) > 1)
+                    warning('some pixels feature a C>1')
+                    list = find(abs(C(:))>1);
+                    for io = 1:numel(list) % take the average of the neighfor pixels, because these problematic pixels are isolated in general
+                        C(list(io)) = (C(list(io)-1)+C(list(io)+1))/2;
+                    end
+                end
                 % C almost equal zero.
                 % since C = cos(phi_x - ph_y), it means that phi_x and phi_y are in
                 % quadratude, which is true because of the circular polarization !
                 
                 %figure,imagegb(Phi3-Phi1+acos(C));
                 %clim([-1.57 0])
-                
-                dPhi3 = mean(mean(Phi3-Phi1+acos(C)));
+                dPhi3map = Phi3-Phi1+acos(C);
+                dPhi3 = mean(dPhi3map(:));
+                %dPhi3 = Phi3-Phi1+acos(C);
                 
                 phi1 = IM(ii,1).Ph;
                 phi3 = IM(ii,3).Ph - dPhi3;
                 
                 %% setting the right offset to the first image to make sure the background is zero in OPD
-                phi1 = phi1 - mean(mean(phi1(1,1:end-1)+phi1(1:end-1,end)+phi1(2:end,1)+phi1(end,2:end)))/4;
+                %phi1 = phi1 - mean(mean(phi1(1,1:end-1)+phi1(1:end-1,end)+phi1(2:end,1)+phi1(end,2:end)))/4;
                 
                 %% other polars 2 & 4
+                E1 = sqrt(T1);
+                E3 = sqrt(T3);
+                dPhi2 = mean(mean(Phi2-unwrap(angle(E1.*exp(1i*phi1)+E3.*exp(1i*phi3)))));
+                dPhi4 = mean(mean(Phi4-unwrap(angle(-E1.*exp(1i*phi1)+E3.*exp(1i*phi3)))));
                 
-                dPhi2 = mean(mean(Phi2-angle(E1.*exp(1i*phi1)+E3.*exp(1i*phi3))));
-                dPhi4 = mean(mean(Phi4-angle(-E1.*exp(1i*phi1)+E3.*exp(1i*phi3))));
-                
-                phi2 = Phi2-dPhi2;
-                phi4 = Phi4-dPhi4;
-                
-                %% normalized phase maps
-                
-                tphi1=phi1;
-                tphi2=phi2+pi/4;
-                tphi3=phi3+pi/2;
-                tphi4=phi4+3*pi/4;
-
-                %% final plot
-                
-                % figure
-                % subplot(2,4,1)
-                % imagegb(T1)
-                % set(gca,'colormap',gray)
-                % subplot(2,4,2)
-                % imagegb(T2)
-                % set(gca,'colormap',gray)
-                % subplot(2,4,3)
-                % imagegb(T3)
-                % set(gca,'colormap',gray)
-                % subplot(2,4,4)
-                % imagegb(T4)
-                % set(gca,'colormap',gray)
-                % 
-                % subplot(2,4,5)
-                % imageph(tphi1)
-                % subplot(2,4,6)
-                % imageph(tphi2)
-                % subplot(2,4,7)
-                % imageph(tphi3)
-                % subplot(2,4,8)
-                % imageph(tphi4)
-                % 
-                % fullscreen
-                % linkAxes
-
-    
                 %% New OPD images, with the right shift
                 lambda = IM(ii, 1).Illumination.lambda;
                 IM(ii, 1).OPD = phi1*lambda/(2*pi);
@@ -701,9 +671,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
         end
 
         function  polarImages = CGMpolar(IM)
-            
-            polarImages = extractPolarImages(adjustPolarOffsets(IM));
-            
+            polarImages = extractPolarImages( adjustPolarOffsets(IM) );
         end
     end
 
