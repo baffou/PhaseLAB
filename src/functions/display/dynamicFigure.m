@@ -22,6 +22,7 @@ h.UserData.titleList = cell(1,1);
 
 % defining the list of display functions
 notAdisplay = 0; % Number of keywords that are not a display, such a 'titles'
+h.UserData.nm = []; % n*m is the image pattern (n times m subplot images)
 for ii = 1:Np
     h.UserData.ax(ii)=subplot(1,Np,ii);
     switch varargin{2*ii-1}
@@ -39,12 +40,21 @@ for ii = 1:Np
             h.UserData.fun{ii} = @imagefl;
         case {'hsv'}
             h.UserData.fun{ii} = @imagehsv;
+%        case 'dx'  % does not work
+%            h.UserData.fun{ii} = @(x) opendx(x,"theta",0,"phi",0,"persp",1,"colorMap",jet);
         case 'titles'
             h.UserData.titleList = varargin{2*ii};
+            notAdisplay = 1;
+        case {'pattern','nm'}
+            h.UserData.nm = varargin{2*ii};
             notAdisplay = 1;
         otherwise
             error("This keyword is not recognized: "+varargin{2*ii-1})
     end
+end
+
+if isempty(h.UserData.nm)
+    h.UserData.nm = [1, Np];
 end
 
 Np = Np - notAdisplay; % reduced Np by 1, just in case there is the 'titles' keyword
@@ -116,8 +126,10 @@ end
 function updateImages(h)
     Np = h.UserData.Np;
     nIm = h.UserData.nIm;
+    nx = h.UserData.nm(2);
+    ny = h.UserData.nm(1);
     for ip = 1:Np
-        subplot(1,Np,ip);
+        subplot(ny,nx,ip);
         h.UserData.fun{ip}(h.UserData.imageList{ip}{nIm}) % imagesc(...
         title(h.UserData.titleList{ip})
     end

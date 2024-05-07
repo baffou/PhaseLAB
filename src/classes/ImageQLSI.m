@@ -561,11 +561,12 @@ classdef ImageQLSI   <   ImageMethods
         
             if opt.threshold~=0 && ~strcmp(method,'Zernike') % then create a mask
 
-                mask = abs(obj(io).DWx) > opt.threshold*1e-9;
-                IMxm = obj(io).DWx.*mask;
+                mask0 = abs(obj(io).DWx) > opt.threshold*1e-9;
+                IMxm = obj(io).DWx.*mask0;
                 
-                mask = abs(obj(io).DWy) > opt.threshold*1e-9;
-                IMym = obj(io).DWy.*mask;
+                mask0 = abs(obj(io).DWy) > opt.threshold*1e-9;
+                IMym = obj(io).DWy.*mask0;
+
                 
                 N = 3;
                 Tikh = 1e-5;
@@ -574,6 +575,8 @@ classdef ImageQLSI   <   ImageMethods
                 y = (1:size(IMym,1))';
                 opt.Smatrix = g2sTikhonovRTalpha(x,y,N);
                 W = g2sTikhonovRT(IMxm,IMym,opt.Smatrix,Tikh);
+                avgBG = mean(mean(W(~mask0)));
+                W = W-avgBG;
                 mask = W<opt.threshold*10*1e-9;
                 dynamicFigure('ph',obj(io).OPD,'ph',W,'bw',double(mask))
                 fullscreen
