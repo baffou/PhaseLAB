@@ -56,7 +56,7 @@ classdef ImageT   <   ImageMethods
         end
 
         function figureT(obj)
-            dynamicFigure("gb",{obj.OPD},"gb",{obj.HSD},"gb",{obj.TMP},"titles",{"OPD","HSD","TMP"})
+            dynamicFigure("ph",{obj.OPD},"gb",{obj.HSD},"hot",{obj.TMP},"titles",{"OPD","HSD","TMP"})
             fullwidth
             linkAxes
         end

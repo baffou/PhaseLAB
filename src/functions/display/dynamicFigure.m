@@ -34,6 +34,8 @@ for ii = 1:Np
             h.UserData.fun{ii} = @imagetf;
         case 'jet'
             h.UserData.fun{ii} = @imagejet;
+        case 'hot'
+            h.UserData.fun{ii} = @imagehot;
         case {'bk','gr','bw'}
             h.UserData.fun{ii} = @imagebk;
         case {'fl'}
@@ -44,10 +46,10 @@ for ii = 1:Np
 %            h.UserData.fun{ii} = @(x) opendx(x,"theta",0,"phi",0,"persp",1,"colorMap",jet);
         case 'titles'
             h.UserData.titleList = varargin{2*ii};
-            notAdisplay = 1;
+            notAdisplay = notAdisplay+1;
         case {'pattern','nm'}
             h.UserData.nm = varargin{2*ii};
-            notAdisplay = 1;
+            notAdisplay = notAdisplay+1;
         otherwise
             error("This keyword is not recognized: "+varargin{2*ii-1})
     end

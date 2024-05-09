@@ -575,10 +575,15 @@ classdef ImageQLSI   <   ImageMethods
                 y = (1:size(IMym,1))';
                 opt.Smatrix = g2sTikhonovRTalpha(x,y,N);
                 W = g2sTikhonovRT(IMxm,IMym,opt.Smatrix,Tikh);
-                avgBG = mean(mean(W(~mask0)));
-                W = W-avgBG;
-                mask = W<opt.threshold*10*1e-9;
-                dynamicFigure('ph',obj(io).OPD,'ph',W,'bw',double(mask))
+
+                %avgBG = mean(mean(W(~mask0)));
+                %W = W-avgBG;
+                %mask = W<opt.threshold*10*1e-9;
+
+                %mask = ~mask0;
+                mask = conv2(mask0,ones(10),"same")<1;
+
+                dynamicFigure('ph',obj(io).OPD,'ph',W,'bw',double(mask0),'bw',double(mask),'nm',[2,2],'titles',{'original W','thresholded W','mask0','mask'})
                 fullscreen
                 
             else
@@ -640,11 +645,17 @@ classdef ImageQLSI   <   ImageMethods
                     drawnow
                 end
             end
-            
-            
-        close all            
+            % cancel the gradients DWx and DWy, in case they exist,
+            %  because they are not true anymore
+            obj2(io).cancelGradients();
+            close all            
         end
 
+        end
+
+        function obj = cancelGradients(obj)
+            obj.DWx0 = [];
+            obj.DWy0 = [];
         end
 
         function [obj, params] = level0(obj0,opt)
@@ -950,9 +961,9 @@ classdef ImageQLSI   <   ImageMethods
                 opt.imExpander (1,1) logical = false
                 opt.T0 (1,1) double = 22
                 opt.zT (1,1) double = 0
-                opt.GreenOPD (:,:) double
-                opt.GreenT_z0  (:,:) double
-                opt.GreenT_3D  (:,:,:) double
+                opt.GreenOPD (:,:) double = []
+                opt.GreenT_z0  (:,:) double = []
+                opt.GreenT_3D  (:,:,:) double = []
             end
             No = numel(obj);
             objT = repmat(ImageT,No,1);
@@ -960,7 +971,7 @@ classdef ImageQLSI   <   ImageMethods
                 [tmp, hsd, GreenFunction,GreenT_z0] = opd2tmp0(obj(io).OPD,obj(io).Microscope,Med,'g',opt.g,'nLoop',...
                     opt.nLoop,'alpha',opt.alpha,'smoothing',opt.smoothing,...
                     'imExpander',opt.imExpander,'T0',opt.T0,'zT',opt.zT, ...
-                    'GreenFunction',opt.GreenOPD, ...
+                    'GreenOPD',opt.GreenOPD, ...
                     'GreenT_z0', opt.GreenT_z0, ...
                     'GreenT_3D', opt.GreenT_3D);
                 objT(io) = ImageT(obj(io).OPD, tmp, hsd,obj(io).T);

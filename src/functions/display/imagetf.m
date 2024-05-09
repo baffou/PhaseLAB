@@ -4,10 +4,10 @@ if nargin==1
     funct='sqrtsqrt';
 end
 
-if isreal(itf)
+if isreal(itf(2)) % if the second pixel of the image is imaginy, then it is certainly a Fourier transform
     convFun=@(x) fftshift(fft2(x));
 else
-    if isreal(itf(1))
+    if isreal(itf(2))
         convFun=@(x) fftshift(x);
     else
         convFun=@(x) x;

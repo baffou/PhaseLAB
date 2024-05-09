@@ -15,9 +15,11 @@ manual = 0;
 
 IL = []; %If metadatas == false, IL will stay blank !
 
-if isa(MI,'Microscope') %Microscope already built
+
+
+if isa(MI(1),'Microscope') %Microscope already built
     acquisitionSoftware = MI.software;
-elseif isa(MI,'char')
+elseif isa(MI(1),'char')
     if max(strcmpi(MI,{'metadatas','metadata','tags','tag'})) %loading MI from tiff tags
         acquisitionSoftware = 'PhaseLIVE'; %Tags must be written by phaseLIVE
     else
@@ -118,6 +120,17 @@ else
     end
     
 end
+
+if isa(MI(1),'Microscope') %Microscope already built
+    acquisitionSoftware = MI.software;
+    if numel(MI)>1
+        nimMI = 1:Nif;
+    else
+        nimMI = ones(Nif,1);
+    end
+end
+
+
 %% determine all the reference images' names in the folder
 
 RefFileList = dir([folder 'REF_*.tif']);
@@ -150,8 +163,8 @@ if strcmpi(acquisitionSoftware,'phast') || strcmpi(acquisitionSoftware,'Sid4Bio'
     
     for ii = 1:Nif
         fprintf([ItfFileNames{ii} '\n'])
-        INT(ii) = Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote,'channel',opt.channel,'gpu',opt.gpu);
-        INT(ii).Microscope = MI;
+        INT(ii) = Interfero([folder ItfFileNames{ii}],MI(nimMI(ii)),'remote',opt.remote,'channel',opt.channel,'gpu',opt.gpu);
+        INT(ii).Microscope = MI(nimMI(ii));
         fid = fopen([folder ItfFileNames{ii}(1:end-4) ' REF.txt'],'r');
         if fid==-1
             error(['wrong filename: ' ItfFileNames{ii}(1:end-4) ' REF.txt'])
@@ -181,17 +194,17 @@ if strcmpi(acquisitionSoftware,'phast') || strcmpi(acquisitionSoftware,'Sid4Bio'
     end
     
 elseif strcmpi(acquisitionSoftware,'phaselive')
-    if isa(MI,'Microscope') % and not a char
+    if isa(MI(1),'Microscope') % and not a char
         for rr = 1:Nrf
-            REF(rr) = Interfero([folder RefFileNames{rr}],MI,'remote',opt.remote,'channel',opt.channel,'gpu',opt.gpu);
+            REF(rr) = Interfero([folder RefFileNames{rr}],MI(1),'remote',opt.remote,'channel',opt.channel,'gpu',opt.gpu);
         end
         
         for ii = 1:Nif
             fprintf([ItfFileNames{ii} '\n'])
             TIFF = Tiff([folder ItfFileNames{ii}]);
 %            fprintf([folder ItfFileNames{ii} '\n'])
-            INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI,'remote',opt.remote,'imageNumber',opt.selection(ii),'channel',opt.channel,'gpu',opt.gpu);
-            INT(ii).Microscope = MI;
+            INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI(nimMI(ii)),'remote',opt.remote,'imageNumber',opt.selection(ii),'channel',opt.channel,'gpu',opt.gpu);
+            INT(ii).Microscope = MI(nimMI(ii));
             if Nrf ~= 0
                 currentRefFileName  =  [getTag(TIFF,270)];
                 RefIndice  =  strcmp(RefFileNames,currentRefFileName);

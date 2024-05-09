@@ -32,7 +32,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 PhaseLABgui(IM);
             end
         end
-        
+
         function app = figure2(IM)
             if nargout
                 app=PhaseLABgui_multiCanal(IM);
@@ -40,7 +40,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 PhaseLABgui_multiCanal(IM);
             end
         end
-        
+
         function val=lambda(obj)
             val=obj.Illumination.lambda;
         end
@@ -264,14 +264,14 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     end
                     subplot(nRow,nCol,ii)
                     if opt.persp == 1
-                    surf(X,Y,img*fac,coloringMap,'FaceColor','interp',...
-                        'EdgeColor','none',...
-                        'FaceLighting','phong')
+                        surf(X,Y,img*fac,coloringMap,'FaceColor','interp',...
+                            'EdgeColor','none',...
+                            'FaceLighting','phong')
                     else
                         imagesc(X(1,:),Y(:,1),img)
                         set(gca,'DataAspectRatio',[1, 1, 1])
                     end
- 
+
 
                     if ~isempty(opt.title{ii})
                         figTitle=opt.title{ii};
@@ -300,9 +300,9 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                             opt.colorMap{ii}=phase1024;
                         else
                             opt.colorMap{ii}=gray;
-                        end            
+                        end
                         colormap(gca,opt.colorMap{ii});
-                    
+
                     end
                     %axis tight
                     %view(0,90)
@@ -342,10 +342,10 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                         for ic = 1:Nc
                             hf.Children(ic).Visible = "off";
                         end
-                        
+
                         Nmax = max([obj.Nx, obj.Ny]);
                         axisDimensions = [0 0 obj.Nx/Nmax obj.Ny/Nmax];
-                        A=get(gcf,'Position');      
+                        A=get(gcf,'Position');
                         Mmax = max(A(3:4));
                         set(gcf,'Position',Mmax*axisDimensions);
                         set(gca, 'Position', [0 0 1 1]);
@@ -368,9 +368,9 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                             timeFontSize = opt.timeFontSize;
                         end
                         text(Nmax/10, Nmax/10, ...
-                        sprintf("%.2f",round(opt.displayedTime/timeFac,2))+" "+opt.timeUnit, ...
-                        'Units','pixels', ...
-                        'FontSize',timeFontSize, 'Color', opt.timeFontColor)
+                            sprintf("%.2f",round(opt.displayedTime/timeFac,2))+" "+opt.timeUnit, ...
+                            'Units','pixels', ...
+                            'FontSize',timeFontSize, 'Color', opt.timeFontColor)
                     end
                     drawnow
                 end
@@ -396,8 +396,8 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.axisDisplay  (1,1) logical = true
                 opt.frameTime = []  % if empty, nothing is displayed, if numeric value, the time is displayed on each frame
                 opt.timeUnit char {mustBeMember(opt.timeUnit,{'s','min','h'})} = 's'
-                opt.timeFontSize = []            
-                opt.timeFontColor = [0, 0, 0]            
+                opt.timeFontSize = []
+                opt.timeFontColor = [0, 0, 0]
             end
 
             % create the video writer with 1 fps
@@ -483,25 +483,25 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 obj=obj0;
             end
 
-            sizeIm = [0 0]; 
+            sizeIm = [0 0];
             for io = 1:numel(obj)
                 if sum(sizeIm ~= size(obj(io).OPD)) % if the size of the image is not the same as the previous one
                     if isempty(opt.params)
                         if ~isempty(opt.app)
                             boxObj = opt.app;
                         else
-                            boxObj = obj;
+                            boxObj = obj(io);
                         end
 
                         [x1, x2, y1, y2] = boxSelection(boxObj,'xy1',opt.xy1, ...
-                                                            'xy2',opt.xy2, ...
-                                                            'Center',opt.Center, ...
-                                                            'Size',opt.Size, ...
-                                                            'twoPoints',opt.twoPoints, ...
-                                                            'params',opt.params, ...
-                                                            'shape',opt.shape, ...
-                                                            'displayT',opt.displayT, ...
-                                                            'colormap',opt.colormap);
+                            'xy2',opt.xy2, ...
+                            'Center',opt.Center, ...
+                            'Size',opt.Size, ...
+                            'twoPoints',opt.twoPoints, ...
+                            'params',opt.params, ...
+                            'shape',opt.shape, ...
+                            'displayT',opt.displayT, ...
+                            'colormap',opt.colormap);
                         params=[x1, x2, y1, y2];
                     else
                         x1 = opt.params(1);
@@ -561,7 +561,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
         end
 
         function IM = adjustPolarOffsets(IM0)
-            
+
             [Nim, Nch] = size(IM0);
             if Nch ~= 4
                 error('this method assumes that the input is an N*4 array of objects, where the 4 columns are the 4 polarisation measurements')
@@ -597,25 +597,25 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 % C almost equal zero.
                 % since C = cos(phi_x - ph_y), it means that phi_x and phi_y are in
                 % quadratude, which is true because of the circular polarization !
-                
+
                 %figure,imagegb(Phi3-Phi1+acos(C));
                 %clim([-1.57 0])
                 dPhi3map = Phi3-Phi1+acos(C);
                 dPhi3 = mean(dPhi3map(:));
                 %dPhi3 = Phi3-Phi1+acos(C);
-                
+
                 phi1 = IM(ii,1).Ph;
                 phi3 = IM(ii,3).Ph - dPhi3;
-                
+
                 %% setting the right offset to the first image to make sure the background is zero in OPD
                 %phi1 = phi1 - mean(mean(phi1(1,1:end-1)+phi1(1:end-1,end)+phi1(2:end,1)+phi1(end,2:end)))/4;
-                
+
                 %% other polars 2 & 4
                 E1 = sqrt(T1);
                 E3 = sqrt(T3);
                 dPhi2 = mean(mean(Phi2-unwrap(angle(E1.*exp(1i*phi1)+E3.*exp(1i*phi3)))));
                 dPhi4 = mean(mean(Phi4-unwrap(angle(-E1.*exp(1i*phi1)+E3.*exp(1i*phi3)))));
-                
+
                 %% New OPD images, with the right shift
                 lambda = IM(ii, 1).Illumination.lambda;
                 IM(ii, 1).OPD = phi1*lambda/(2*pi);
@@ -633,7 +633,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             if Nch ~= 4
                 error('this method assumes that the input is an N*4 array of objects, where the 4 columns are the 4 polarisation measurements')
             end
-    
+
             % Preallocate the structure array
             polarImages(Nim).phibar = [];
             polarImages(Nim).theta0 = [];
@@ -641,20 +641,20 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             polarImages(Nim).Illumination = [];
             polarImages(Nim).Microscope = [];
             polarImages(Nim).rgbImage = [];
-            
+
             for ii = 1:Nim
                 tphi1 = IM(ii,1).Ph;
                 tphi2 = IM(ii,2).Ph + pi/4;
                 tphi3 = IM(ii,3).Ph + pi/2;
                 tphi4 = IM(ii,4).Ph + 3*pi/4;
-    
+
                 polarImages(ii).theta0 = angle((tphi1-tphi3)+1i*(tphi2-tphi4));
-    
+
                 polarImages(ii).phibar = (tphi1+tphi2+tphi3+tphi4)/4;
-                
+
                 %deltaphi = sqrt(-(tphi4-phibar).*(tphi2-phibar)-(tphi3-phibar).*(tphi1-phibar));
                 polarImages(ii).dphi = sqrt(abs((tphi4-polarImages(ii).phibar).*(tphi2-polarImages(ii).phibar)+(tphi3-polarImages(ii).phibar).*(tphi1-polarImages(ii).phibar)));
-    
+
                 polarImages(Nim).Illumination = IM(ii,1).Illumination;
                 polarImages(Nim).Microscope = IM(ii,1).Microscope;
 
@@ -663,11 +663,11 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 hsvImage(:,:,1) = polarImages(ii).theta0/pi/2+0.5;
                 hsvImage(:,:,2) = 1.2*polarImages(ii).dphi/max(polarImages(ii).dphi(:));
                 hsvImage(:,:,3) = ones(Ny,Nx);
-                
+
                 polarImages(ii).rgbImage = hsv2rgb(hsvImage);
 
 
-            end    
+            end
         end
 
         function  polarImages = CGMpolar(IM)
