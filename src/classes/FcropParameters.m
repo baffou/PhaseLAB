@@ -104,6 +104,17 @@ classdef FcropParameters  %parameters of the crop in the Fourier plane
             
             obj2 = FcropParameters(x2, y2, obj.R, obj.Nx, obj.Ny, definition = obj.definition, FcropShape = obj.FcropShape);
         end
+
+        function obj2 = zero2first(obj,theta)
+            % compute the position of the first order from the data of the
+            % 0 order, knowing the angle of the grating
+            if obj.shiftx ~= 0 || obj.shifty ~= 0
+                warning('This FcropParameters does not seem to be a zero order')
+            end
+            obj2 = obj;
+            obj2.x = obj.x + 2*obj.R(1)*cosd(theta);
+            obj2.y = obj.y + 2*obj.R(2)*sind(theta);
+        end
         
         function val = get.zeta(obj)
             val=obj.Ny/sqrt( (obj.shiftx*obj.Ny/obj.Nx)^2 + (obj.shifty)^2 );
