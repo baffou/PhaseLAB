@@ -331,8 +331,8 @@ for ii = 1:Nf
         end
         if cropParam1.zeta-MI.CGcam.zeta>0.05
             warning('the zeta measured and theoretical values are much different\n')
-        fprintf(['Measured zeta factor: ' num2str(cropParam1.zeta) '\n'])
-        fprintf(['Theo. zeta factor   : ' num2str(MI.CGcam.zeta) '\n'])
+            fprintf(['Measured zeta factor: ' num2str(cropParam1.zeta) '\n'])
+            fprintf(['Theo. zeta factor   : ' num2str(MI.CGcam.zeta) '\n'])
         end
 %    end
 
@@ -340,12 +340,13 @@ for ii = 1:Nf
     IM(ii).comment = Itf(ii).comment;
     IM(ii).channel = Itf(ii).channel;
 
-   if Nf>1
-       fprintf('\n')
-   end
+    if Nf > 1
+        fprintf('\n')
+    end
+
 end
 
-if Nf>=2 % delete waitbar
+if Nf >= 2 % delete waitbar
     delete(fwb)
 end
 

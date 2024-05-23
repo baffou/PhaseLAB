@@ -4,14 +4,12 @@ function [SImout, SRfout, cropParamsout] = FourierCrop(FItf,FRef,zeta,opt)
 % cropParams: the parameters of the crop
 % possible flags are
     % 'cropParams'
-    % 'Method'      : 'normal', 'fast' 
     % 'cropShape'   : 'disc' or 'square'
 arguments
 FItf (:,:) {mustBeNumeric} 
 FRef (:,:) {mustBeNumeric, mustBeEqualSize(FItf,FRef)} 
 zeta (1,1) double = 3
 opt.Fcrops FcropParameters
-opt.Method char = 'Tikhonov'
 opt.FcropShape = 'disc'
 opt.definition = 'high'
 opt.auto = false
@@ -189,9 +187,13 @@ elseif strcmp(definition,'low')
         ry = R(2);
     end
 
+    rxn = round(rx);
+    ryn = round(ry);
+%    SImout = FItf(round(Ny/2+cropParamsout.shifty + (-ryn:ryn-1)),round(Nx/2+cropParamsout.shiftx + (-rxn:rxn-1)));
+%    SRfout = FRef(round(Ny/2+cropParamsout.shifty + (-ryn:ryn-1)),round(Nx/2+cropParamsout.shiftx + (-rxn:rxn-1)));
 
-    SImout = FItf(round(Ny/2+cropParamsout.shifty + (-ry:ry-1)),round(Nx/2+cropParamsout.shiftx + (-rx:rx-1)));
-    SRfout = FRef(round(Ny/2+cropParamsout.shifty + (-ry:ry-1)),round(Nx/2+cropParamsout.shiftx + (-rx:rx-1)));
+    SImout = FItf(round(cropParamsout.y-ryn : cropParamsout.y+ryn-1) , round(cropParamsout.x-rxn : cropParamsout.x+rxn-1));
+    SRfout = FRef(round(cropParamsout.y-ryn : cropParamsout.y+ryn-1) , round(cropParamsout.x-rxn : cropParamsout.x+rxn-1));
 
     if strcmpi(FcropShape,'disc')
 
@@ -203,17 +205,17 @@ elseif strcmp(definition,'low')
         % demodulation in the Fourier space
         SImout = SImout.*circle;
         SRfout = SRfout.*circle;  
-        
+
     end
 % de-griding (not necessary anymore if one use the
 % FourierSpaceMultiplication formula
-   [xx,yy] = meshgrid(1:size(SImout,2), 1:size(SImout,1));
-
-   R2C = (xx  -size(SImout,2)/2-1).^2/rx^2 + (yy - size(SImout,1)/2-1).^2/ry^2;
-   circle = (R2C < 0.05); %mask circle for each iteration
-   mask = (1-circshift(circle,round(size(SImout,2)/2),2)).*(1-circshift(circle,round(size(SImout,1)/2),1));
-   SImout = SImout.*mask;
-   SRfout = SRfout.*mask;
+    [xx,yy] = meshgrid(1:size(SImout,2), 1:size(SImout,1));
+    
+    R2C = (xx  -size(SImout,2)/2-1).^2/rx^2 + (yy - size(SImout,1)/2-1).^2/ry^2;
+    circle = (R2C < 0.05); %mask circle for each iteration
+    mask = (1-circshift(circle,round(size(SImout,2)/2),2)).*(1-circshift(circle,round(size(SImout,1)/2),1));
+    SImout = SImout.*mask;
+    SRfout = SRfout.*mask;
 
 end 
     
