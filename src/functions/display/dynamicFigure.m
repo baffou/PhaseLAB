@@ -19,6 +19,7 @@ Np = Np2/2; % number of panels
 
 h = figure(WindowKeyPressFcn=@figureCallback);
 h.UserData.titleList = cell(1,1);
+h.UserData.range = cell.empty();
 
 % defining the list of display functions
 notAdisplay = 0; % Number of keywords that are not a display, such a 'titles'
@@ -46,17 +47,20 @@ for ii = 1:Np
 %            h.UserData.fun{ii} = @(x) opendx(x,"theta",0,"phi",0,"persp",1,"colorMap",jet);
         case 'titles'
             h.UserData.titleList = varargin{2*ii};
-            notAdisplay = notAdisplay+1;
+            notAdisplay = notAdisplay + 1;
         case {'pattern','nm'}
             h.UserData.nm = varargin{2*ii};
-            notAdisplay = notAdisplay+1;
+            notAdisplay = notAdisplay + 1;
+        case {'range'}
+            h.UserData.range = varargin{2*ii};
+            notAdisplay = notAdisplay + 1;
         otherwise
             error("This keyword is not recognized: "+varargin{2*ii-1})
     end
 end
 
 if isempty(h.UserData.nm)
-    h.UserData.nm = [1, Np];
+    h.UserData.nm = [1, Np];  % n*m panels
 end
 
 Np = Np - notAdisplay; % reduced Np by 1, just in case there is the 'titles' keyword
@@ -134,6 +138,9 @@ function updateImages(h)
         subplot(ny,nx,ip);
         h.UserData.fun{ip}(h.UserData.imageList{ip}{nIm}) % imagesc(...
         title(h.UserData.titleList{ip})
+        if ~isempty(h.UserData.range)
+            clim(h.UserData.range{ip})
+        end
     end
     h.Name = num2str(nIm);
 
