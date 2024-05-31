@@ -25,7 +25,6 @@ h.UserData.range = cell.empty();
 notAdisplay = 0; % Number of keywords that are not a display, such a 'titles'
 h.UserData.nm = []; % n*m is the image pattern (n times m subplot images)
 for ii = 1:Np
-    h.UserData.ax(ii)=subplot(1,Np,ii);
     switch varargin{2*ii-1}
         case 'ph'
             h.UserData.fun{ii} = @imageph;
@@ -59,11 +58,12 @@ for ii = 1:Np
     end
 end
 
+Np = Np - notAdisplay; % reduced Np by 1, just in case there is the 'titles' keyword
+
 if isempty(h.UserData.nm)
     h.UserData.nm = [1, Np];  % n*m panels
 end
 
-Np = Np - notAdisplay; % reduced Np by 1, just in case there is the 'titles' keyword
 
 % extraction of the images from the objects
 h.UserData.imageList = cell(Np,1);
@@ -72,6 +72,7 @@ if isempty(h.UserData.titleList{1})
 end
 
 for ii = 1:Np
+    h.UserData.ax(ii)=subplot(1,Np,ii);
     switch class(varargin{2*ii})
         case 'Interfero'
             h.UserData.imageList{ii} = {varargin{2*ii}.Itf};
@@ -135,7 +136,7 @@ function updateImages(h)
     nx = h.UserData.nm(2);
     ny = h.UserData.nm(1);
     for ip = 1:Np
-        subplot(ny,nx,ip);
+        subplot(ny,nx,Np);
         h.UserData.fun{ip}(h.UserData.imageList{ip}{nIm}) % imagesc(...
         title(h.UserData.titleList{ip})
         if ~isempty(h.UserData.range)
