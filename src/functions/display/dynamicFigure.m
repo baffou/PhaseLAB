@@ -84,7 +84,7 @@ for ii = 1:Np
         %     for jj = 1:size(varargin{2*ii},3)
         %         h.UserData.imageList{ii}{jj} = varargin{2*ii}(:,:,jj);
         %     end
-        case 'double'
+        case {'double','gpuArray'}
             h.UserData.imageList{ii} = varargin(2*ii);
             
     end
@@ -136,8 +136,8 @@ function updateImages(h)
     nx = h.UserData.nm(2);
     ny = h.UserData.nm(1);
     for ip = 1:Np
-        subplot(ny,nx,Np);
-        h.UserData.fun{ip}(h.UserData.imageList{ip}{nIm}) % imagesc(...
+        subplot(ny,nx,ip);
+         h.UserData.fun{ip}(h.UserData.imageList{ip}{nIm}) % imagesc(...
         title(h.UserData.titleList{ip})
         if ~isempty(h.UserData.range)
             clim(h.UserData.range{ip})
