@@ -19,12 +19,12 @@ Np = Np2/2; % number of panels
 
 h = figure(WindowKeyPressFcn=@figureCallback);
 h.UserData.titleList = cell(1,1);
+h.UserData.range = cell.empty();
 
 % defining the list of display functions
 notAdisplay = 0; % Number of keywords that are not a display, such a 'titles'
 h.UserData.nm = []; % n*m is the image pattern (n times m subplot images)
 for ii = 1:Np
-    h.UserData.ax(ii)=subplot(1,Np,ii);
     switch varargin{2*ii-1}
         case 'ph'
             h.UserData.fun{ii} = @imageph;
@@ -46,20 +46,24 @@ for ii = 1:Np
 %            h.UserData.fun{ii} = @(x) opendx(x,"theta",0,"phi",0,"persp",1,"colorMap",jet);
         case 'titles'
             h.UserData.titleList = varargin{2*ii};
-            notAdisplay = notAdisplay+1;
+            notAdisplay = notAdisplay + 1;
         case {'pattern','nm'}
             h.UserData.nm = varargin{2*ii};
-            notAdisplay = notAdisplay+1;
+            notAdisplay = notAdisplay + 1;
+        case {'range'}
+            h.UserData.range = varargin{2*ii};
+            notAdisplay = notAdisplay + 1;
         otherwise
             error("This keyword is not recognized: "+varargin{2*ii-1})
     end
 end
 
+Np = Np - notAdisplay; % reduced Np by 1, just in case there is the 'titles' keyword
+
 if isempty(h.UserData.nm)
-    h.UserData.nm = [1, Np];
+    h.UserData.nm = [1, Np];  % n*m panels
 end
 
-Np = Np - notAdisplay; % reduced Np by 1, just in case there is the 'titles' keyword
 
 % extraction of the images from the objects
 h.UserData.imageList = cell(Np,1);
@@ -68,6 +72,7 @@ if isempty(h.UserData.titleList{1})
 end
 
 for ii = 1:Np
+    h.UserData.ax(ii)=subplot(1,Np,ii);
     switch class(varargin{2*ii})
         case 'Interfero'
             h.UserData.imageList{ii} = {varargin{2*ii}.Itf};
@@ -79,7 +84,8 @@ for ii = 1:Np
         %     for jj = 1:size(varargin{2*ii},3)
         %         h.UserData.imageList{ii}{jj} = varargin{2*ii}(:,:,jj);
         %     end
-        case 'double'
+
+        case {'double','gpuArray'}
             Nim = size(varargin{2*ii},3);
             if Nim == 1  % 2D image
                 h.UserData.imageList{ii} = varargin{2*ii};
@@ -89,6 +95,7 @@ for ii = 1:Np
                     h.UserData.imageList{ii}{im} = varargin{2*ii}(:,:,im);
                 end
             end
+
     end
 end
 
@@ -139,8 +146,11 @@ function updateImages(h)
     ny = h.UserData.nm(1);
     for ip = 1:Np
         subplot(ny,nx,ip);
-        h.UserData.fun{ip}(h.UserData.imageList{ip}{nIm}) % imagesc(...
+         h.UserData.fun{ip}(h.UserData.imageList{ip}{nIm}) % imagesc(...
         title(h.UserData.titleList{ip})
+        if ~isempty(h.UserData.range)
+            clim(h.UserData.range{ip})
+        end
     end
     h.Name = num2str(nIm);
 
