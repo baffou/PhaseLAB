@@ -187,13 +187,11 @@ elseif strcmp(definition,'low')
         ry = R(2);
     end
 
-    rxn = round(rx);
-    ryn = round(ry);
 %    SImout = FItf(round(Ny/2+cropParamsout.shifty + (-ryn:ryn-1)),round(Nx/2+cropParamsout.shiftx + (-rxn:rxn-1)));
 %    SRfout = FRef(round(Ny/2+cropParamsout.shifty + (-ryn:ryn-1)),round(Nx/2+cropParamsout.shiftx + (-rxn:rxn-1)));
 
-    SImout = FItf(round(cropParamsout.y-ryn : cropParamsout.y+ryn-1) , round(cropParamsout.x-rxn : cropParamsout.x+rxn-1));
-    SRfout = FRef(round(cropParamsout.y-ryn : cropParamsout.y+ryn-1) , round(cropParamsout.x-rxn : cropParamsout.x+rxn-1));
+    SImout = FItf(cropParamsout.yrange , cropParamsout.xrange);
+    SRfout = FRef(cropParamsout.yrange , cropParamsout.xrange);
 
     if strcmpi(FcropShape,'disc')
 

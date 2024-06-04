@@ -80,8 +80,15 @@ for ii = 1:Np
         %         h.UserData.imageList{ii}{jj} = varargin{2*ii}(:,:,jj);
         %     end
         case 'double'
-            h.UserData.imageList{ii} = varargin(2*ii);
-            
+            Nim = size(varargin{2*ii},3);
+            if Nim == 1  % 2D image
+                h.UserData.imageList{ii} = varargin{2*ii};
+            else   % stack of 2D image
+                h.UserData.imageList{ii} = cell(Nim,1);
+                for im = 1:Nim
+                    h.UserData.imageList{ii}{im} = varargin{2*ii}(:,:,im);
+                end
+            end
     end
 end
 
