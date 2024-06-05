@@ -681,6 +681,7 @@ classdef ImageQLSI   <   ImageMethods
 
             sizeIm = [0 0]; 
             for io = 1:numel(obj)
+                printLoop(io,numel(obj))
                 if sum(sizeIm ~= size(obj(io).OPD)) % if the size of the image is not the same as the previous one
                     if isempty(opt.params)
                         if numel(obj)>1
