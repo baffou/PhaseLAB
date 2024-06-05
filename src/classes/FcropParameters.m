@@ -120,5 +120,45 @@ classdef FcropParameters  %parameters of the crop in the Fourier plane
             val=obj.Ny/sqrt( (obj.shiftx*obj.Ny/obj.Nx)^2 + (obj.shifty)^2 );
 
         end
+
+        function xx = xrange(obj,index)
+            % x values of the image are kept in the case of loz definition
+            if length(obj.R)==1
+                rx = obj.R;
+            else
+                rx = obj.R(1);
+            end
+        
+            rxn = round(rx);
+            xx = round(obj.x-rxn : obj.x+rxn-1);
+            if nargin == 2
+                xx = xx(index);
+            end
+        end
+
+        function yy = yrange(obj,index)
+            % y values of the image are kept in the case of loz definition
+            if length(obj.R)==1
+                ry = obj.R;
+            else
+                ry = obj.R(2);
+            end
+            ryn = round(ry);
+            yy = round(obj.y-ryn : obj.y+ryn-1);
+            if nargin == 2
+                yy = yy(index);
+            end
+        end
+
+        function val = NxLow(obj)
+            % Number of x pixel in the cropped image
+                val = obj.xrange(end)-obj.xrange(1)+1;
+        end
+        
+        function val = NyLow(obj)
+            % Number of y pixel in the cropped image
+                val = obj.yrange(end)-obj.yrange(1)+1;
+        end
+
     end
 end

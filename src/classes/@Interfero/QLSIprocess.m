@@ -6,9 +6,9 @@ arguments
     IL % Illumination object or wavelength
     opt.Fcrops = []
     opt.crop = []
-    opt.method char {mustBeMember(opt.method,{'Tikhonov','Errico','CPM'})} = 'Tikhonov'
-    opt.definition char {mustBeMember(opt.definition,{'high','low'})} = 'high'
-    opt.Fcropshape char {mustBeMember(opt.Fcropshape,{'disc','square'})} = 'disc'
+    opt.method     char {mustBeMember(opt.method,     {'Tikhonov','Errico','CPM'})} = 'Tikhonov'
+    opt.definition char {mustBeMember(opt.definition, {'high','low'})} = 'high'
+    opt.Fcropshape char {mustBeMember(opt.Fcropshape, {'disc','square'})} = 'disc'
     opt.Smatrix = []
     opt.apodization = false        % true, 1, or the width of the apodization in px
     opt.saveGradients = false
@@ -18,7 +18,7 @@ arguments
     opt.auto = true % Find automatically the spot of highest intensity
     opt.noRef = false % Do not consider the Ref interferogram to compute the DW and OPD images
     opt.CGdistanceList = []  % the grating distance was varied during the acquisition of the images list
-    opt.resetCrops logical = false % reset crops between each image calculation, to make sure the algorithm enable the user to click for each image, or force the detection of the spot for each image in the auto mode.
+    opt.resetCrops   logical = false % reset crops between each image calculation, to make sure the algorithm enable the user to click for each image, or force the detection of the spot for each image in the auto mode.
     opt.unwrap (1,1) logical = false % use unwrapping. Slows down a bit the processing.
 end
 Nf = numel(Itf);
@@ -96,8 +96,6 @@ for ii = 1:Nf
     else
         offset = 0;
     end
-
-
 
 
     if ~isempty(opt.crop)
