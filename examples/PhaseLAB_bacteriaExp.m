@@ -22,7 +22,7 @@ IL=Illumination(lambda,ME);
 folder='GeobLongFilaments';
 
 %[Im,Rf]=importItfRef(folder,MI,'remote',1,'selection',1/5);
-[Im,Rf]=importItfRef(folder,MI,'remote',1);
+[Im,Rf]=importItfRef(folder,MI,'remote',1,'nickname','ITF2');
 
 %% INTERFEROGRAM PROCESSING -- Im.QLSIprocess(IL);
 IMlow = Im.QLSIprocess(IL,'definition','low');  % low definition
