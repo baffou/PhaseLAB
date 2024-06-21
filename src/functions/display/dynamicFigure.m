@@ -50,7 +50,7 @@ for ii = 1:Np
         case {'pattern','nm'}
             h.UserData.nm = varargin{2*ii};
             notAdisplay = notAdisplay + 1;
-        case {'range'}
+        case {'range','zrange'}
             h.UserData.range = varargin{2*ii};
             notAdisplay = notAdisplay + 1;
         otherwise
@@ -146,8 +146,8 @@ function updateImages(h)
     ny = h.UserData.nm(1);
     for ip = 1:Np
         subplot(ny,nx,ip);
-         h.UserData.fun{ip}(h.UserData.imageList{ip}{nIm}) % imagesc(...
-        title(h.UserData.titleList{ip})
+        h.UserData.fun{ip}(h.UserData.imageList{ip}{nIm}) % imagesc(...
+        title(h.UserData.titleList{nIm})
         if ~isempty(h.UserData.range)
             clim(h.UserData.range{ip})
         end
