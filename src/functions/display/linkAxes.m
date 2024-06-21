@@ -1,4 +1,4 @@
-function linkAxes
+function linkAxes(opt)
 childList=get(gcf,'Children');
 if isa(childList(1),'matlab.graphics.layout.TiledChartLayout')
     childList=childList.Children;
@@ -14,6 +14,8 @@ for ic=1:Nc
     end
 end
 
-linkaxes(ax)
-
-
+if nargin == 0
+    linkaxes(ax)
+else
+    linkaxes(ax,opt)
+end
