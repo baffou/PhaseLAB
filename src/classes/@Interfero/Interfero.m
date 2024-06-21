@@ -352,7 +352,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         end
 
-        function obj = Reference(obj,val,opt)
+        function Reference(obj,val,opt)
             arguments
                 obj
                 val
