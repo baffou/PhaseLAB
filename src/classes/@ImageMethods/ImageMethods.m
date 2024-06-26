@@ -25,7 +25,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
     methods
 
-        function app = figure(IM)
+        function app = figure_old(IM)
             if nargout
                 app=PhaseLABgui(IM);
             else
@@ -33,7 +33,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             end
         end
 
-        function app = figure2(IM)
+        function app = figure(IM)
             if nargout
                 app=PhaseLABgui_multiCanal(IM);
             else
