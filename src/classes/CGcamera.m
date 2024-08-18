@@ -60,6 +60,8 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
                                     Gamma = str2double(line(colPos+1:end)); % only for Phasics camera images
                                 elseif strcmp(parameter,'relaylens zoom')
                                     RL_Zoom = str2double(line(colPos+1:end));
+                                elseif strcmp(parameter,'camera brand')
+                                    camBrand = line(colPos+1:end);
                                 elseif strcmp(parameter,'Nx')
                                     Nx = str2double(line(colPos+1:end));
                                 elseif strcmp(parameter,'Ny')
@@ -75,6 +77,7 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
                             end
 
                             cam = Camera(dxSize,Nx,Ny);
+                            cam.brand = camBrand;
                             CrGr = CrossGrating(Gamma=Gamma,depth=CGdepth);
                             obj = CGcamera(cam,CrGr);
                             obj.fileName = fileName;

@@ -15,7 +15,7 @@ if mod(Np2,2)==1
     error('not the proper number of inputs')
 end
 
-Np = Np2/2; % number of panels
+Npanels = Np2/2; % number of panels
 
 h = figure(WindowKeyPressFcn=@figureCallback);
 h.UserData.titleList = cell(1,1);
@@ -24,7 +24,7 @@ h.UserData.range = cell.empty();
 % defining the list of display functions
 notAdisplay = 0; % Number of keywords that are not a display, such a 'titles'
 h.UserData.nm = []; % n*m is the image pattern (n times m subplot images)
-for ii = 1:Np
+for ii = 1:Npanels
     switch varargin{2*ii-1}
         case 'ph'
             h.UserData.fun{ii} = @imageph;
@@ -58,21 +58,21 @@ for ii = 1:Np
     end
 end
 
-Np = Np - notAdisplay; % reduced Np by 1, just in case there is the 'titles' keyword
+Npanels = Npanels - notAdisplay; % reduced Np by 1, just in case there is the 'titles' keyword
 
 if isempty(h.UserData.nm)
-    h.UserData.nm = [1, Np];  % n*m panels
+    h.UserData.nm = [1, Npanels];  % n*m panels
 end
 
 
 % extraction of the images from the objects
-h.UserData.imageList = cell(Np,1);
+h.UserData.imageList = cell(Npanels,1);
 if isempty(h.UserData.titleList{1})
-    h.UserData.titleList = cell(Np, 1);
+    h.UserData.titleList = cell(Npanels, 1);
 end
 
-for ii = 1:Np
-    h.UserData.ax(ii)=subplot(1,Np,ii);
+for ii = 1:Npanels
+    h.UserData.ax(ii)=subplot(1,Npanels,ii);
     switch class(varargin{2*ii})
         case 'Interfero'
             h.UserData.imageList{ii} = {varargin{2*ii}.Itf};
@@ -101,7 +101,7 @@ end
 
 h.UserData.Nim = numel(h.UserData.imageList{ii}); % # of stored images
 h.UserData.nIm = 1; % # of the displayed image
-h.UserData.Np = Np; % # of panels
+h.UserData.Npanels = Npanels; % # of panels
 updateImages(h)
 
 if nargout
@@ -140,14 +140,14 @@ end
 
 %%%%%%
 function updateImages(h)
-    Np = h.UserData.Np;
+    Npanels = h.UserData.Npanels;
     nIm = h.UserData.nIm;
     nx = h.UserData.nm(2);
     ny = h.UserData.nm(1);
-    for ip = 1:Np
+    for ip = 1:Npanels
         subplot(ny,nx,ip);
         h.UserData.fun{ip}(h.UserData.imageList{ip}{nIm}) % imagesc(...
-        title(h.UserData.titleList{nIm})
+        title(h.UserData.titleList{ip})
         if ~isempty(h.UserData.range)
             clim(h.UserData.range{ip})
         end

@@ -1,3 +1,4 @@
+brand:'Andor'
 dexel size:6.5e-6
 Gamma:39e-6
 Nx:2560

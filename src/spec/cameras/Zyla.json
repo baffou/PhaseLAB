@@ -1,4 +1,5 @@
 {"class":"Camera",
+"brand": "Andor",
 "model": "Zyla",
 "dxSize": 6.5e-6,
 "Nx": 2560,
