@@ -57,7 +57,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                     % do nothing
                 end
             elseif nargin==1 % ImageEM(n)    n empty objects
-                obj = repmat(ImageEM,Ex,0);
+                obj = repmat(ImageEM,Ex,1);
             elseif nargin<=3 % ImageEM(Eincx,Eincy,Eincz) typically when defining an incident field
                 obj.Ex = Ex;
                 obj.Ey = Ey;

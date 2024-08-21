@@ -17,6 +17,7 @@ classdef ImageQLSI   <   ImageMethods
         Ph      % Phase image
         Nx
         Ny
+        E       % sqrt(T)
     end
 
     properties(Access = public, Hidden)
@@ -158,6 +159,10 @@ classdef ImageQLSI   <   ImageMethods
             else
                 error('not a proper input')
             end
+        end
+
+        function val = get.E(obj)
+            val = sqrt(obj.T);
         end
 
         function set.T(obj,val)
@@ -990,6 +995,32 @@ classdef ImageQLSI   <   ImageMethods
                 obj2List(io).OPD0=objList(io).OPD;
                 %obj2List(io).DWx0=objList(io).DWx;
                 %obj2List(io).DWy=objList(io).DWy;
+            end
+        end
+
+        function IMout = ImageEM(IM,IMref)
+            % convert a polarization resolved, experimental set of QLSI
+            % images into a ImageEM object.
+            arguments
+                IM (:,4) ImageQLSI
+                IMref (1,1) ImageEM
+            end
+            Nim = size(IM,1);
+            IMout = ImageEM(Nim);
+
+            % ref field
+                
+            for ii = 1:Nim
+                Ex = IM(ii,1).E.*exp(1i*IM(ii,1).Ph);
+                Ey = IM(ii,3).E.*exp(1i*IM(ii,3).Ph);
+                Ez = Ey*0;
+                if isempty(IMref)
+                    IMout(ii) = ImageEM(Ex, Ey, Ez);
+                else
+                    IMout(ii) = ImageEM(Ex, Ey, Ez, IMref.Ex, IMref.Ey, IMref.Ez);
+                end
+                IMout(ii).Microscope = IM(ii,1).Microscope;
+                IMout(ii).Illumination = IM(ii,1).Illumination;
             end
         end
 
