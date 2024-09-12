@@ -64,6 +64,9 @@ if isempty(h.UserData.nm)
     h.UserData.nm = [1, Npanels];  % n*m panels
 end
 
+if isnumeric(h.UserData.range)
+    h.UserData.range = repmat({h.UserData.range}, Npanels, 1);
+end
 
 % extraction of the images from the objects
 h.UserData.imageList = cell(Npanels,1);
@@ -88,7 +91,7 @@ for ii = 1:Npanels
         case {'double','gpuArray'}
             Nim = size(varargin{2*ii},3);
             if Nim == 1  % 2D image
-                h.UserData.imageList{ii} = varargin{2*ii};
+                h.UserData.imageList{ii} = {varargin{2*ii}};
             else   % stack of 2D image
                 h.UserData.imageList{ii} = cell(Nim,1);
                 for im = 1:Nim

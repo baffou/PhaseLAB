@@ -412,11 +412,15 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 hfig=figure;
                 fullscreen
                 %                hfig.Position=[1 1 1800 800];
-
+                if opt.frameTime ~= 0
+                    time = opt.frameTime*u;
+                else
+                    time = [];
+                end
                 opendx(IM(u),'persp',opt.persp,'phi',opt.phi,'theta',opt.theta,...
                     'ampl',opt.ampl,'zrange',opt.zrange,'colorMap',opt.colorMap, ...
                     'title',opt.title,'factor',opt.factor,'label',opt.label,'imType',opt.imType, ...
-                    'axisDisplay',opt.axisDisplay,'displayedTime',opt.frameTime*u, ...
+                    'axisDisplay',opt.axisDisplay,'displayedTime',time, ...
                     'timeUnit',opt.timeUnit,'timeFontSize',opt.timeFontSize, 'timeFontColor', opt.timeFontColor)
 
                 frame=getframe(hfig);
@@ -475,6 +479,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.app = [] % figure uifigure object to be considered in case the image is already open
                 opt.displayT logical = false
                 opt.colormap = parula
+                opt.redo logical = false % in the case of a series of objects, dont apply the same crop for each image, and ask again the crop for each image
             end
 
             if nargout
@@ -485,7 +490,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
             sizeIm = [0 0];
             for io = 1:numel(obj)
-                if sum(sizeIm ~= size(obj(io).OPD)) % if the size of the image is not the same as the previous one
+                if sum(sizeIm ~= size(obj(io).OPD)) || opt.redo % redo the crop, if the size of the image is not the same as the previous one, or if the redo option is specified
                     if isempty(opt.params)
                         if ~isempty(opt.app)
                             boxObj = opt.app;
@@ -674,7 +679,11 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
 
 
-        function IM = adjustPolarOffsets(IM0)
+        function IM = adjustPolarOffsets(IM0,method)
+            arguments
+                IM0
+                method {mustBeMember(method,{'manual','auto','Manual','Auto'})} = 'Auto'
+            end
 
             [Nim, Nch] = size(IM0);
             if Nch ~= 4
@@ -686,62 +695,72 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             else
                 IM = IM0;
             end
-
-            for ii = 1:Nim
-
-                T1 = IM(ii,1).T;
-                T2 = IM(ii,2).T;
-                T3 = IM(ii,3).T;
-                T4 = IM(ii,4).T;
-
-                Phi1 = IM(ii,1).Ph;
-                Phi2 = IM(ii,2).Ph;
-                Phi3 = IM(ii,3).Ph;
-                Phi4 = IM(ii,4).Ph;
-
-                C = 0.5*(T2-T4)./sqrt(T1.*T3);
-
-                while any(abs(C(:)) > 1)
-                    warning('some pixels feature a C>1')
-                    list = find(abs(C(:))>1);
-                    for io = 1:numel(list) % take the average of the neighfor pixels, because these problematic pixels are isolated in general
-                        C(list(io)) = (C(list(io)-1)+C(list(io)+1))/2;
+            if strcmpi(method,'Auto')
+                for ii = 1:Nim
+                
+    
+                    T1 = IM(ii,1).T;
+                    T2 = IM(ii,2).T;
+                    T3 = IM(ii,3).T;
+                    T4 = IM(ii,4).T;
+    
+                    Phi1 = IM(ii,1).Ph;
+                    Phi2 = IM(ii,2).Ph;
+                    Phi3 = IM(ii,3).Ph;
+                    Phi4 = IM(ii,4).Ph;
+    
+                    C = 0.5*(T2-T4)./sqrt(T1.*T3);
+    
+                    while any(abs(C(:)) > 1)
+                        warning('some pixels feature a C>1')
+                        list = find(abs(C(:))>1);
+                        for io = 1:numel(list) % take the average of the neighfor pixels, because these problematic pixels are isolated in general
+                            C(list(io)) = (C(list(io)-1)+C(list(io)+1))/2;
+                        end
                     end
+                    % C almost equal zero.
+                    % since C = cos(phi_x - ph_y), it means that phi_x and phi_y are in
+                    % quadratude, which is true because of the circular polarization !
+    
+                    %figure,imagegb(Phi3-Phi1+acos(C));
+                    %clim([-1.57 0])
+                    dPhi3map = Phi3-Phi1+asin(C);
+                    dPhi3 = mean(dPhi3map(:));
+                    %dPhi3 = Phi3-Phi1+acos(C);
+    
+                    phi1 = IM(ii,1).Ph;
+                    phi3 = IM(ii,3).Ph - dPhi3;
+    
+                    %% setting the right offset to the first image to make sure the background is zero in OPD
+                    %phi1 = phi1 - mean(mean(phi1(1,1:end-1)+phi1(1:end-1,end)+phi1(2:end,1)+phi1(end,2:end)))/4;
+    
+                    %% other polars 2 & 4
+                    E1 = sqrt(T1);
+                    E3 = sqrt(T3);
+                    dPhi2 = mean(mean(Phi2+unwrap(  pi/4-angle( E1.*exp(1i*phi1)+1i*E3.*exp(1i*phi3)))));
+                    dPhi4 = mean(mean(Phi4+unwrap(3*pi/4-angle(-E1.*exp(1i*phi1)+1i*E3.*exp(1i*phi3)))));
+    
+                    %% New OPD images, with the right shift
+                    lambda = IM(ii, 1).Illumination.lambda;
+                    % IM(ii, 1).OPD = phi1*lambda/(2*pi); % useless
+                    IM(ii, 2).OPD = IM(ii, 2).OPD - dPhi2*lambda/(2*pi);
+                    IM(ii, 3).OPD = IM(ii, 3).OPD - dPhi3*lambda/(2*pi);
+                    IM(ii, 4).OPD = IM(ii, 4).OPD - dPhi4*lambda/(2*pi);
+
                 end
-                % C almost equal zero.
-                % since C = cos(phi_x - ph_y), it means that phi_x and phi_y are in
-                % quadratude, which is true because of the circular polarization !
-
-                %figure,imagegb(Phi3-Phi1+acos(C));
-                %clim([-1.57 0])
-                dPhi3map = Phi3-Phi1+asin(C);
-                dPhi3 = mean(dPhi3map(:));
-                %dPhi3 = Phi3-Phi1+acos(C);
-
-                phi1 = IM(ii,1).Ph;
-                phi3 = IM(ii,3).Ph - dPhi3;
-
-                %% setting the right offset to the first image to make sure the background is zero in OPD
-                %phi1 = phi1 - mean(mean(phi1(1,1:end-1)+phi1(1:end-1,end)+phi1(2:end,1)+phi1(end,2:end)))/4;
-
-                %% other polars 2 & 4
-                E1 = sqrt(T1);
-                E3 = sqrt(T3);
-                dPhi2 = mean(mean(Phi2+unwrap(  pi/4-angle( E1.*exp(1i*phi1)+1i*E3.*exp(1i*phi3)))));
-                dPhi4 = mean(mean(Phi4+unwrap(3*pi/4-angle(-E1.*exp(1i*phi1)+1i*E3.*exp(1i*phi3)))));
-
-                %% New OPD images, with the right shift
-                lambda = IM(ii, 1).Illumination.lambda;
-                % IM(ii, 1).OPD = phi1*lambda/(2*pi); % useless
-                IM(ii, 2).OPD = IM(ii, 2).OPD - dPhi2*lambda/(2*pi);
-                IM(ii, 3).OPD = IM(ii, 3).OPD - dPhi3*lambda/(2*pi);
-                IM(ii, 4).OPD = IM(ii, 4).OPD - dPhi4*lambda/(2*pi);
-
+            else % manual set of the area of the image that should be zero on each image
+                figure,imageph(IM(1, 1).OPD)
+                [x, y] = ginput(2);
+                IM.level0("params", [min(x), max(x), min(y), max(y)])
             end
 
         end
 
-        function polarImages = extractPolarImages(IM)
+        function polarImages = extractPolarImages(IM,fac)
+            arguments
+                IM
+                fac = 0.8
+            end
 
             [Nim, Nch] = size(IM);
             if Nch ~= 4
@@ -780,7 +799,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 [Ny, Nx] = size(polarImages(ii).dphi);
                 hsvImage = zeros(Ny, Nx, 3);
                 hsvImage(:,:,1) = polarImages(ii).theta0/pi/2+0.5;
-                hsvImage(:,:,2) = 1.2*polarImages(ii).dphi/max(polarImages(ii).dphi(:));
+                hsvImage(:,:,2) = 1/fac*polarImages(ii).dphi/max(polarImages(ii).dphi(:));
                 hsvImage(:,:,3) = ones(Ny,Nx);
 
                 polarImages(ii).rgbImage = hsv2rgb(hsvImage);

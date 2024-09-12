@@ -14,6 +14,7 @@ arguments
     opt.setI0 (1,:) char {mustBeMember(opt.setI0,{'max','mean'})} = 'max'
     opt.cut (1,1) double = 0
     opt.method {mustBeMember(opt.method,{'tiling','rotation'})} = 'tiling'
+    opt.beta (1,1) double = acos(3/5)
 end
 
 if opt.NimagesRef == -1 % not defined by the user
@@ -50,7 +51,7 @@ for io = 1:No
     Ny=Image(io).Ny;
     Nx=Image(io).Nx;
     zoom0 = MI.CGcam.zoom;        % Relay lens zoom
-    beta = acos(3/5);% tilt of the cross-grating [rad]. Possible values to maintain periodicity: 0 or acos(3/5)
+    beta = opt.beta;% tilt of the cross-grating [rad]. Possible values to maintain periodicity: 0 or acos(3/5)
     IL = Image.Illumination;
     %% Definition of some parameters
     nCell = 20;     % Initial overdimensioned size[px] of the grating unit cell: 6*nCellx6*nCell

@@ -32,6 +32,23 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         T
     end
 
+    properties(Dependent) % Stokes parameters
+        S0
+        S1
+        S2
+        S3
+        I   % S0
+        Q   % S1
+        U   % S2
+        V   % S3
+        L   % Q + 1i*U
+        A   % long radius of the ellipse
+        B   % short radius of the ellipse
+        theta   % tilt of the ellipse
+        h   % handedness sign(V)
+        e   % excentricity
+    end
+
     methods
         function obj = ImageEM(Ex,Ey,Ez,Eincx,Eincy,Eincz,opt)
             arguments
@@ -190,6 +207,71 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                     val = obj.E2 ./ obj.Einc.E2; % Transmittance
                 end
             end
+        end
+
+        function val = get.S0(obj)
+            % 1st Stokes component
+            val = abs(obj.Ex).^2 + abs(obj.Ey).^2;
+        end
+
+        function val = get.S1(obj)
+            % 2nd Stokes component
+            val = abs(obj.Ex).^2 - abs(obj.Ey).^2;
+        end
+
+        function val = get.S2(obj)
+            % 3nd Stokes component
+            val = 2*real(obj.Ex.*conj(obj.Ey));
+        end
+
+        function val = get.S3(obj)
+            % 4th Stokes component
+            val = -2*imag(obj.Ex.*conj(obj.Ey));
+        end
+
+        function val = get.I(obj)
+            % 1st Stokes component
+            val = abs(obj.Ex).^2 + abs(obj.Ey).^2;
+        end
+
+        function val = get.Q(obj)
+            % 2nd Stokes component
+            val = abs(obj.Ex).^2 - abs(obj.Ey).^2;
+        end
+
+        function val = get.U(obj)
+            % 3nd Stokes component
+            val = 2*real(obj.Ex.*conj(obj.Ey));
+        end
+
+        function val = get.V(obj)
+            % 4th Stokes component
+            val = -2*imag(obj.Ex.*conj(obj.Ey));
+        end
+
+        function val = get.L(obj)
+            val = obj.Q + 1i*obj.U;
+        end
+
+        function val = get.A(obj)
+            val = sqrt(0.5*(obj.I+abs(obj.L)));
+        end
+
+        function val = get.B(obj)
+            val = sqrt(0.5*(obj.I-abs(obj.L)));
+        end
+
+        function val = get.theta(obj)
+            val = 0.5*angle(obj.L);
+        end
+
+        function val = get.h(obj)
+            val = sign(obj.V);
+        end
+
+        function val = get.e(obj)
+            % excentricity
+            val = sqrt(abs(1-obj.B.^2./obj.A.^2));
         end
 
         function val = zoom(obj)
@@ -498,16 +580,30 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
         function IM = polarMask(IM0)
             IM = copy(IM0);
-            IM.Ey(1:2:end,1:2:end) = 0;
-            IM.Ex(2:2:end,2:2:end) = 0;
-            IM.Ex(1:2:end,2:2:end) = ( IM0.Ex(2:2:end,1:2:end)+IM0.Ey(2:2:end,1:2:end))/2;
-            IM.Ey(1:2:end,2:2:end) = ( IM0.Ex(2:2:end,1:2:end)+IM0.Ey(2:2:end,1:2:end))/2;
-            IM.Ex(2:2:end,1:2:end) = (-IM0.Ex(1:2:end,2:2:end)+IM0.Ey(1:2:end,2:2:end))/2;
-            IM.Ey(2:2:end,1:2:end) = (+IM0.Ex(1:2:end,2:2:end)-IM0.Ey(1:2:end,2:2:end))/2;
+            IM.Ex(1:2:end,1:2:end) = 0;
+            IM.Ey(2:2:end,2:2:end) = 0;
+            IM.Ex(2:2:end,1:2:end) = ( IM0.Ex(2:2:end,1:2:end)+IM0.Ey(2:2:end,1:2:end))/2;
+            IM.Ey(2:2:end,1:2:end) = ( IM0.Ex(2:2:end,1:2:end)+IM0.Ey(2:2:end,1:2:end))/2;
+            IM.Ex(1:2:end,2:2:end) = (+IM0.Ex(1:2:end,2:2:end)-IM0.Ey(1:2:end,2:2:end))/2;
+            IM.Ey(1:2:end,2:2:end) = (-IM0.Ex(1:2:end,2:2:end)+IM0.Ey(1:2:end,2:2:end))/2;
             if ~isempty(IM.Einc)
-                IM.Einc = IM.Einc.polarMask;
+                IM.Einc = IM.Einc.polarMask();
             end
         end
+
+        function IM = polarMask2(IM0)
+            IM = copy(IM0);
+            IM.Ey(1:2:end,1:2:end) = 0;
+            IM.Ex(2:2:end,2:2:end) = 0;
+            IM.Ex(2:2:end,1:2:end) = (+IM0.Ex(2:2:end,1:2:end)-IM0.Ey(2:2:end,1:2:end))/2;
+            IM.Ey(2:2:end,1:2:end) = (-IM0.Ex(2:2:end,1:2:end)+IM0.Ey(2:2:end,1:2:end))/2;
+            IM.Ex(1:2:end,2:2:end) = ( IM0.Ex(1:2:end,2:2:end)+IM0.Ey(1:2:end,2:2:end))/2;
+            IM.Ey(1:2:end,2:2:end) = ( IM0.Ex(1:2:end,2:2:end)+IM0.Ey(1:2:end,2:2:end))/2;
+            if ~isempty(IM.Einc)
+                IM.Einc = IM.Einc.polarMask2();
+            end
+        end
+
 
         function IMout = propagation(IM, z, opt)
             % numerical propagation over the distance z

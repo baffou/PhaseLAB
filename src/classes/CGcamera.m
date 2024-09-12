@@ -60,7 +60,7 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
                                     Gamma = str2double(line(colPos+1:end)); % only for Phasics camera images
                                 elseif strcmp(parameter,'relaylens zoom')
                                     RL_Zoom = str2double(line(colPos+1:end));
-                                elseif strcmp(parameter,'camera brand')
+                                elseif strcmp(parameter,'brand')
                                     camBrand = line(colPos+1:end);
                                 elseif strcmp(parameter,'Nx')
                                     Nx = str2double(line(colPos+1:end));
@@ -172,9 +172,9 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
                     lambda = lambda*1e-9;
                 end
                 camPath = fileparts(which('CGcamera.m'));
-                fid = fopen([camPath '/../CGcameras/' obj.fileName '.txt']);
+                fid = fopen([camPath '/../spec/CGcameras/' obj.fileName '.txt']);
                 if fid==-1
-                    error(['The file' [camPath '/../CGcameras/' obj.fileName '.txt'] 'does not exist, certainly because the CG+camera association has been done manually, not by calling a CGcamera file. In that case, the distance has to be set manually.'])
+                    error(['The file' [camPath '/../spec/CGcameras/' obj.fileName '.txt'] 'does not exist, certainly because the CG+camera association has been done manually, not by calling a CGcamera file. In that case, the distance has to be set manually.'])
                 end
                 line = fgetl(fid);
                 while ~isnumeric(line)

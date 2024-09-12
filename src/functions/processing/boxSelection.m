@@ -26,20 +26,23 @@ if isnumeric(im)
     h=figure;imagegb(im,opt.colormap)
     [Ny, Nx]= size(im);
     h.UserData.Axes = gca;
+    fullscreen
 elseif isa(im,'ImageMethods')
     if opt.displayT
         h=figure;imagegb(im(1).T,opt.colormap)
     else
         h=figure;imagegb(im(1).OPD,opt.colormap)
     end
+    fullscreen
     Nx = im(1).Nx;
     Ny = im(1).Ny;
     h.UserData.Axes = gca;
 elseif isa(im,'Interfero')
-    h=figure;imagegb(im(1).Itf,opt.colormap)
+    h=figure;imagegb(imgaussfilt(im(1).Itf,4),opt.colormap) % imgaussfilt to remove the fringe and better see
     Nx = im(1).Nx;
     Ny = im(1).Ny;
     h.UserData.Axes = gca;
+    fullscreen
 elseif isa(im,'matlab.apps.AppBase') % is im an app, PhaseLABgui, or PhaseLABgui_multiCanal
     isapp = 1;
     app = im;
