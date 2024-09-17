@@ -17,6 +17,10 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
         comment char = char.empty()   % any comment regarding the image
     end
 
+    properties(Dependent)
+        Rytov
+    end
+
     properties(Hidden)
         processingSoft
         pxSizeCorrection = 1
@@ -547,7 +551,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
         end
 
-        function im = Rytov(obj)
+        function im = get.Rytov(obj)
             im = obj.lambda*obj.Illumination.n/pi*abs( log(obj.T)/2+1i*obj.Ph ).^2;
         end
 

@@ -124,7 +124,7 @@ for io = 1:No
     % cancel the gradients DWx and DWy, in case they exist,
     %  because they are not true anymore
     obj2(io).cancelGradients();
-    close all
+
 end
 
 end

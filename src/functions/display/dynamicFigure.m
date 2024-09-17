@@ -50,7 +50,7 @@ for ii = 1:Npanels
         case {'pattern','nm'}
             h.UserData.nm = varargin{2*ii};
             notAdisplay = notAdisplay + 1;
-        case {'range','zrange'}
+        case {'range','zrange','clim'}
             h.UserData.range = varargin{2*ii};
             notAdisplay = notAdisplay + 1;
         otherwise

@@ -3,9 +3,12 @@ arguments
     h
     videoName
     opt.rate = 1.5
+    opt.period = []
 end
 
-
+if ~isempty(opt.period)
+    opt.rate = 1/opt.period;
+end
 
 % create the video writer with 1 fps
 writerObj = VideoWriter(videoName);
