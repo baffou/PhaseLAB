@@ -1,4 +1,4 @@
-function CG=CGgeneration(MI,IL,beta)
+function CG = CGgeneration(MI,IL,beta)
 arguments
     MI Microscope
     IL Illumination

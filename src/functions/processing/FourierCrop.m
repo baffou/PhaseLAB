@@ -6,14 +6,20 @@ function [SImout, SRfout, cropParamsout] = FourierCrop(FItf,FRef,zeta,opt)
     % 'cropParams'
     % 'cropShape'   : 'disc' or 'square'
 arguments
-FItf (:,:) {mustBeNumeric} 
-FRef (:,:) {mustBeNumeric, mustBeEqualSize(FItf,FRef)} 
-zeta (1,1) double = 3
-opt.Fcrops FcropParameters
-opt.FcropShape = 'disc'
-opt.definition = 'high'
-opt.auto = false
+    FItf (:,:) {mustBeNumeric} 
+    FRef (:,:) {mustBeNumeric, mustBeEqualSize(FItf,FRef)} 
+    zeta (1,1) double = 3
+    opt.Fcrops FcropParameters
+    opt.FcropShape = 'disc'
+    opt.definition = 'high'
+    opt.auto = false
+    opt.display (1,1) logical = true
+    opt.Rfactor (1,1) double = 1 % multiplies the distance of the crop from the center of the image by Rfactor. Useful to crop the spots at 45°, by just setting R=sqrt(2)
 end
+
+
+
+dispFig = opt.display || ~opt.auto;
 
 if size(FItf)~=size(FRef)
     size(FItf)
@@ -68,9 +74,11 @@ if isempty(Fcrops.R) && (isempty(Fcrops.x) || isempty(Fcrops.y)) % No parameter 
     close(h)
     cropParamsout = FcropParameters(x1,y1,R,Nx,Ny);
 elseif isempty(Fcrops.R) % The center of the crop is specified, but not the radius.
-    h = figure;
-    set(h,'Visible','on')
-    imagetf(FItf,'log10')
+    if dispFig
+        h = figure;
+        set(h,'Visible','on')
+        imagetf(FItf,'log10')
+    end
 %    Fs = 8192;t = 0:1/Fs:1;y=sin(2*pi*440*erf(t));soundsc(y)
     
     x0 = Fcrops.x;
@@ -80,8 +88,9 @@ elseif isempty(Fcrops.R) % The center of the crop is specified, but not the radi
     y1 = y0;
     R(1) = Nx/(2*zeta);
     R(2) = Nx/(2*zeta)/ex;
-    h = drawCrop(x1,y1,R,h);
-    drawnow
+    
+    if dispFig, h = drawCrop(x1,y1,R,h);drawnow,end
+
     if ~opt.auto
         button = 0;
         while button~=1
@@ -95,42 +104,49 @@ elseif isempty(Fcrops.R) % The center of the crop is specified, but not the radi
             end
         end
     end
-    h = drawCrop(x1,y1,R,h);
-    drawnow
-    pause(0.5)
-    close(h)
+
+    if dispFig
+        h = drawCrop(x1,y1,R,h);
+        drawnow
+        pause(0.5)
+        close(h)
+    end
+
     cropParamsout = FcropParameters(x1,y1,R,Nx,Ny);
     
     
 elseif isempty(Fcrops.x) || isempty(Fcrops.y) % no center position, but R determined
-    h = figure;
-    set(h,'Visible','on')
-    imagetf(FItf,'log10')
+    if dispFig
+        h = figure;
+        set(h,'Visible','on')
+        imagetf(FItf,'log10')
+    end
 %    Fs = 8192;t = 0:1/Fs:1;y=sin(2*pi*440*erf(t));soundsc(y)
     if opt.auto % auto selection of the first order
         [XX, YY]=meshgrid(1:Nx,1:Ny);
         XX=ceil(XX-mean(XX(:)));
         YY=ceil(YY-mean(YY(:)));
-        RR=sqrt(XX.*XX+YY.*YY*(Fcrops.R(1)/Fcrops.R(2))^2);
+        RR=opt.Rfactor*sqrt(XX.*XX+YY.*YY*(Fcrops.R(1)/Fcrops.R(2))^2);
         [x1,y1]=maxPix(abs(FItf).*(XX>0).*(YY>=0).*double((RR>1.8*Fcrops.R(1))).*double((RR<2.2*Fcrops.R(1))));
     else
-        
         title('Zoom in on the order of interest, and click enter')
         zoom on
         waitfor(gcf,'CurrentCharacter',char(13))
         title('Click on the order center pixel')
         [x1,y1] = ginput(1);
     end
+
     R = Fcrops.R;
-    h = drawCrop(x1,y1,R,h);
-    h = drawCrop(size(FItf,2)/2,size(FItf,1)/2,R,h);
+    if dispFig
+        h = drawCrop(x1,y1,R,h);
+        h = drawCrop(size(FItf,2)/2,size(FItf,1)/2,R,h);
+        zoom out
+        drawnow
+        pause(1)
+        close(h)
+    end    
     
-    zoom out
-    drawnow
     
-    pause(1)
-    
-    close(h)
     cropParamsout = FcropParameters(x1,y1,R,Nx,Ny);
     
 else % The center and the radius are specified, so we just plot the crop and thats it.

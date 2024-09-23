@@ -63,27 +63,27 @@ for io = 1:No
     end
     switch opt.method
         case "tiling"
-    % (Fig 2a) Build the unit cell :
-    if strcmpi(opt.Grating,'QLSI')
-        grexel = QLSIunitCell(nCell,pi*wl/eD,Gamma);
-    elseif strcmpi(opt.Grating,'QLSI0')
-        grexel = QLSIunitCell0(nCell,pi*wl/eD,Gamma);
-    elseif strcmpi(opt.Grating,'QLSI2')
-        grexel = QLSIunitCell2(nCell,pi*wl/eD,Gamma);
-    elseif strcmpi(opt.Grating,'QLSI3')
-        grexel = QLSIunitCell3(nCell,Gamma);
-    elseif strcmpi(opt.Grating,'QLSI4')
-        grexel = QLSIunitCell4(nCell,Gamma);
-    end
-    % (Fig 2b) 5x5-tile and rotate by acos(4/5) the unit cell to form the superunit cell
-    % image, enabling periodicity when further tiling :
-    superUnit = grexel.TileRot5(beta);
-    % (Fig 2c) Resizing of the superunit cell by imresize to match the pixel size of the camera :
-    superUnitPixelized = superUnit.redimension(camPxSize/zoom0,zeta/(3*nCell));
+            % (Fig 2a) Build the unit cell :
+            if strcmpi(opt.Grating,'QLSI')
+                grexel = QLSIunitCell(nCell,pi*wl/eD,Gamma);
+            elseif strcmpi(opt.Grating,'QLSI0')
+                grexel = QLSIunitCell0(nCell,pi*wl/eD,Gamma);
+            elseif strcmpi(opt.Grating,'QLSI2')
+                grexel = QLSIunitCell2(nCell,pi*wl/eD,Gamma);
+            elseif strcmpi(opt.Grating,'QLSI3')
+                grexel = QLSIunitCell3(nCell,Gamma);
+            elseif strcmpi(opt.Grating,'QLSI4')
+                grexel = QLSIunitCell4(nCell,Gamma);
+            end
+            % (Fig 2b) 5x5-tile and rotate by acos(4/5) the unit cell to form the superunit cell
+            % image, enabling periodicity when further tiling :
+            superUnit = grexel.TileRot5(beta);
+            % (Fig 2c) Resizing of the superunit cell by imresize to match the pixel size of the camera :
+            superUnitPixelized = superUnit.redimension(camPxSize/zoom0,zeta/(3*nCell));
 
-    % (Fig2d) generation of the final E field by tiling until reaching the desired Npx
-    % px number of the image :
-    Grating = superUnitPixelized.tile(Nx,Ny);
+            % (Fig2d) generation of the final E field by tiling until reaching the desired Npx
+            % px number of the image :
+            Grating = superUnitPixelized.tile(Nx,Ny);
 
         case "rotation"
             Grating = CGgeneration(MI,IL);
@@ -128,14 +128,14 @@ for io = 1:No
     %Eref = ErefGrating.propagation(wl,d0);
     %E    = Egrating.propagation2(MI,IL,dir='forward');
     %Eref = ErefGrating.propagation2(MI,IL,dir='forward');
-    
+
     [E20x, E0x]    =    Emodelx.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
     [E2Ref0x, ERef0x] = EmodelRefx.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
     [E20y, E0y]    =    Emodely.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
     [E2Ref0y, ERef0y] = EmodelRefy.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
-    
+
     EE = ImageEM(E0x, E0y, E0y*0, ERef0x, ERef0y, ERef0y*0,"Illumination",IL,"Microscope",MI);
-   
+
     E20 = E20x+E20y;
     E2Ref0 = E2Ref0x+E2Ref0y;
     % (Fig 2h,i) compute the intensity images:

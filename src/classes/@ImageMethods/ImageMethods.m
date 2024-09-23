@@ -357,7 +357,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
                     if ~isempty(opt.displayedTime)
                         dims = get(gcf,'Position');
-                        Nmax = dims(4);
+                        Nmax = min(dims(3:4));
                         switch opt.timeUnit
                             case 's'
                                 timeFac = 1;
@@ -371,9 +371,9 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                         else
                             timeFontSize = opt.timeFontSize;
                         end
-                        text(Nmax/10, Nmax/10, ...
+                        text(10, 10, ...
                             sprintf("%.2f",round(opt.displayedTime/timeFac,2))+" "+opt.timeUnit, ...
-                            'Units','pixels', ...
+                            'Units','points', ...
                             'FontSize',timeFontSize, 'Color', opt.timeFontColor)
                     end
                     drawnow
@@ -402,6 +402,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.timeUnit char {mustBeMember(opt.timeUnit,{'s','min','h'})} = 's'
                 opt.timeFontSize = []
                 opt.timeFontColor = [0, 0, 0]
+                opt.timeSize
             end
 
             % create the video writer with 1 fps
@@ -425,7 +426,8 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     'ampl',opt.ampl,'zrange',opt.zrange,'colorMap',opt.colorMap, ...
                     'title',opt.title,'factor',opt.factor,'label',opt.label,'imType',opt.imType, ...
                     'axisDisplay',opt.axisDisplay,'displayedTime',time, ...
-                    'timeUnit',opt.timeUnit,'timeFontSize',opt.timeFontSize, 'timeFontColor', opt.timeFontColor)
+                    'timeUnit',opt.timeUnit,'timeFontSize',opt.timeFontSize, ...
+                    'timeFontSize',opt.timeFontSize,'timeFontColor', opt.timeFontColor)
 
                 frame=getframe(hfig);
                 drawnow
