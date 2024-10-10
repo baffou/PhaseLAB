@@ -762,7 +762,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
         end
 
-        function polarImages = extractPolarImages(IM,fac)
+        function [polarImages, polarImageGradients] = extractPolarImages(IM,fac)
             arguments
                 IM
                 fac = 0.8
@@ -780,6 +780,15 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             polarImages(Nim).Illumination = [];
             polarImages(Nim).Microscope = [];
             polarImages(Nim).rgbImage = [];
+
+            if nargout == 2
+                polarImageGradients(Nim,2).phibar = [];
+                polarImageGradients(Nim,2).theta0 = [];
+                polarImageGradients(Nim,2).dphi = [];
+                polarImageGradients(Nim,2).Illumination = [];
+                polarImageGradients(Nim,2).Microscope = [];
+                polarImageGradients(Nim,2).rgbImage = [];
+            end
 
             for ii = 1:Nim
                 % tphi1 = IM(ii,1).Ph;
@@ -810,13 +819,48 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
                 polarImages(ii).rgbImage = hsv2rgb(hsvImage);
 
+                if nargout == 2
 
+                    tphix1 = IM(ii,1).DWx;
+                    tphix2 = IM(ii,2).DWx;
+                    tphix3 = IM(ii,3).DWx;
+                    tphix4 = IM(ii,4).DWx;
+                    tphiy1 = IM(ii,1).DWy;
+                    tphiy2 = IM(ii,2).DWy;
+                    tphiy3 = IM(ii,3).DWy;
+                    tphiy4 = IM(ii,4).DWy;
+
+                    polarImageGradients(ii,1).theta0 = angle((tphix1-tphix3)+1i*(tphix2-tphix4));
+                    polarImageGradients(ii,1).phibar = (tphix1+tphix2+tphix3+tphix4)/4;
+                    polarImageGradients(ii,1).dphi = sqrt(abs((tphix4-polarImageGradients(ii,1).phibar).*(tphix2-polarImageGradients(ii,1).phibar)+(tphix3-polarImageGradients(ii,1).phibar).*(tphix1-polarImageGradients(ii,1).phibar)));    
+                    polarImageGradients(Nim,1).Illumination = IM(ii,1).Illumination;
+                    polarImages(Nim).Microscope = IM(ii,1).Microscope;
+                    [Ny, Nx] = size(polarImageGradients(ii,1).dphi);
+                    hsvImage = zeros(Ny, Nx, 3);
+                    hsvImage(:,:,1) = polarImageGradients(ii,1).theta0/pi/2+0.5;
+                    hsvImage(:,:,2) = 1/fac*polarImageGradients(ii,1).dphi/max(polarImageGradients(ii,1).dphi(:));
+                    hsvImage(:,:,3) = ones(Ny,Nx);
+                    polarImageGradients(ii,1).rgbImage = hsv2rgb(hsvImage);
+
+                    polarImageGradients(ii,2).theta0 = angle((tphiy1-tphiy3)+1i*(tphiy2-tphiy4));
+                    polarImageGradients(ii,2).phibar = (tphiy1+tphiy2+tphiy3+tphiy4)/4;
+                    polarImageGradients(ii,2).dphi = sqrt(abs((tphiy4-polarImageGradients(ii,2).phibar).*(tphiy2-polarImageGradients(ii,2).phibar)+(tphiy3-polarImageGradients(ii,2).phibar).*(tphiy1-polarImageGradients(ii,2).phibar)));    
+                    polarImageGradients(Nim,2).Illumination = IM(ii,2).Illumination;
+                    polarImages(Nim).Microscope = IM(ii,1).Microscope;
+                    [Ny, Nx] = size(polarImageGradients(ii,2).dphi);
+                    hsvImage = zeros(Ny, Nx, 3);
+                    hsvImage(:,:,1) = polarImageGradients(ii,2).theta0/pi/2+0.5;
+                    hsvImage(:,:,2) = 1/fac*polarImageGradients(ii,2).dphi/max(polarImageGradients(ii,2).dphi(:));
+                    hsvImage(:,:,3) = ones(Ny,Nx);
+                    polarImageGradients(ii,2).rgbImage = hsv2rgb(hsvImage);
+
+                end
             end
         end
 
 
-        function  polarImages = CGMpolar(IM)
-            polarImages = extractPolarImages( adjustPolarOffsets(IM) );
+        function  [polarImages, polarImageGradients] = CGMpolar(IM)
+            [polarImages, polarImageGradients] = extractPolarImages( adjustPolarOffsets(IM) );
         end
     end
 

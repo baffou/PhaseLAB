@@ -1,9 +1,5 @@
-%% Nanophase Matlab package
-% Most simple program to compute the image of a dipole
-
-%% HEADING 
+%% Example that creates different types of nanoparticles, and computes the images
 clear
-addpath(genpath('/Users/perseus/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
 
 %% BUILDING THE MEDIUM -- ME=Medium(n,nS);
 ME=Medium(1.5,1.5);

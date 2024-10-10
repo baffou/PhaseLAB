@@ -233,7 +233,7 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
             val = abs(obj.CG.Gamma/(2*obj.dxSize)); % Gamma/(2*p')
         end
 
-        function val=get.dxSize(obj)
+        function val = get.dxSize(obj)
             val=obj.Camera.dxSize/abs(obj.zoom);
         end
 

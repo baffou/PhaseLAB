@@ -1,11 +1,11 @@
-%% NPimaging package
-% Class that defines an experimental image acquired by QLSI
-
-% author: Guillaume Baffou
-% affiliation: CNRS, Institut Fresnel
-% date: Jul 31, 2019
 
 classdef ImageQLSI   <   ImageMethods
+
+    % Class that defines an experimental image acquired by QLSI
+
+    % author: Guillaume Baffou
+    % affiliation: CNRS, Institut Fresnel
+    % date: Jul 31, 2019
 
     %    properties(GetAccess = public, SetAccess = private)
     properties(Dependent)
@@ -52,6 +52,8 @@ classdef ImageQLSI   <   ImageMethods
 
     methods
         function obj = ImageQLSI(INT,OPD,MI,IL,opt)
+            % obj = ImageQLSI(INT,OPD,MI,IL,opt)
+
             arguments
                 INT = []     % fileName or Matrix
                 OPD = []     % fileName or Matrix
@@ -834,22 +836,25 @@ classdef ImageQLSI   <   ImageMethods
         end
 
         function [objT, GreenFunction, GreenT_z0] = TMPprocess(obj,Med,opt)
+
             arguments
-                obj ImageQLSI
-                Med MediumT
-                opt.g (1,1) double = 1
-                opt.nLoop (1,1) double = 1
-                opt.alpha (1,1) double = 1e-5
-                opt.smoothing (1,1) double = 0
-                opt.imExpander (1,1) logical = false
-                opt.T0 (1,1) double = 22
-                opt.zT (1,1) double = 0
-                opt.GreenOPD (:,:) double = []
-                opt.GreenT_z0  (:,:) double = []
-                opt.GreenT_3D  (:,:,:) double = []
+                obj             ImageQLSI
+                Med             MediumT
+                opt.g           (1,1) double   = 1
+                opt.nLoop       (1,1) double   = 1
+                opt.alpha       (1,1) double   = 1e-5
+                opt.smoothing   (1,1) double   = 0
+                opt.imExpander  (1,1) logical  = true
+                opt.T0          (1,1) double   = 22
+                opt.zT          (1,1) double   = 0
+                opt.GreenOPD    (:,:) double   = []
+                opt.GreenT_z0   (:,:) double   = []
+                opt.GreenT_3D   (:,:,:) double = []
             end
+
             No = numel(obj);
             objT = repmat(ImageT,No,1);
+
             for io = 1:No
                 [tmp, hsd, GreenFunction,GreenT_z0] = opd2tmp0(obj(io).OPD,obj(io).Microscope,Med,'g',opt.g,'nLoop',...
                     opt.nLoop,'alpha',opt.alpha,'smoothing',opt.smoothing,...
@@ -861,6 +866,7 @@ classdef ImageQLSI   <   ImageMethods
                 objT(io).Microscope = obj(io).Microscope;
                 objT(io).Illumination = obj(io).Illumination;
             end
+
         end
 
         function obj2List = download(objList)

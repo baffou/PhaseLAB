@@ -1,4 +1,4 @@
-function im = flatten(im0,n)
+function im = flatten0(im0,n)
 
 if nargin==1
     n = 1;

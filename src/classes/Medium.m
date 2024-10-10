@@ -31,7 +31,7 @@ classdef Medium <  handle & matlab.mixin.Copyable
     methods
         
         function obj = Medium(n,nS)
-            % . Medium(n) or Medium(n,nS)
+            % Medium(n) or Medium(n,nS)
             if nargin==2
                 obj.n0 = n;
                 obj.nS0 = nS;

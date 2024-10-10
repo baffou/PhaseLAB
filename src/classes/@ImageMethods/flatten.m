@@ -2,7 +2,7 @@ function [obj2, mask] = flatten(obj,method,opt)
 
 
 arguments
-    obj (1,:) ImageMethods
+    obj ImageMethods
     method (1,:) char {mustBeMember(method,{'Waves','Sine','Zernike','Chebyshev','Hermite','Legendre','Gaussian'})} = 'Gaussian'
     opt.nmax (1,1) {mustBeInteger(opt.nmax)} = 2
     opt.threshold double = 0 % if not zero, segment the cells and create a mask
@@ -11,6 +11,7 @@ arguments
     opt.display logical = false
     opt.nGauss = 100
 end
+
 
 % method:
 %   'Zernike'
@@ -31,6 +32,7 @@ if strcmp(method,'Zernike') && opt.threshold ~= 0
 end
 
 No = numel(obj);
+
 for io = 1:No
 
     if ~isempty(opt.mask)
