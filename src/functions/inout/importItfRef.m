@@ -271,7 +271,7 @@ elseif strcmpi(acquisitionSoftware,'polarCGMcontrol')
     % itf and ref look like ITF_0001_125324.txt and REF_125423.txt where
     % the tag 125324 is unique for a reference and link to the
     % interferograms
-    tags = cell(Nf,1);
+    tags = cell(Nrf,1);
     for rr = 1:Nrf
         REF(rr) = Interfero([folder RefFileNames{rr}],MI(1),'remote',opt.remote,'channel',opt.channel,'gpu',opt.gpu);
         tags.("r"+RefFileNames{rr}(end-9:end-4)) = rr;  % tags.r152354 = 1;
