@@ -381,7 +381,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             end
         end
 
-
         function makeMoviedx(IM,videoName,opt)
             arguments
                 IM
@@ -683,8 +682,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             end
         end
 
-
-
         function IM = adjustPolarOffsets(IM0,method)
             arguments
                 IM0
@@ -857,7 +854,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 end
             end
         end
-
 
         function  [polarImages, polarImageGradients] = CGMpolar(IM)
             [polarImages, polarImageGradients] = extractPolarImages( adjustPolarOffsets(IM) );

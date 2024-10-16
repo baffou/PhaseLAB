@@ -43,7 +43,7 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
     end
 
     properties (Access = private, Constant)
-        softwareList = {'Sid4Bio','PHAST','CG','PhaseLIVE','other'}
+        softwareList = {'Sid4Bio','PHAST','CG','PhaseLIVE','polarCGMconntrol','other'}
         f_Nikon      = 200;  % focal length of the TL recommended by Nikon
         f_Thorlabs   = 200;  % focal length of the TL recommended by Thorlabs
         f_Leica      = 200;  % focal length of the TL recommended by Leica
@@ -65,50 +65,44 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
             %Microscope(OB,f_TL,CGcam)
             %Microscope(OB,f_TL,Cam)
             %Microscope(OB,f_TL,CGcam,'software')
-            m.Objective = Objective();
-            m.CGcam = CGcamera();
-            if nargin~=0
+            arguments
+                OB Objective = Objective()
+                f_TL = 180
+                CGcam CGcamera = CGcamera()
+                software {mustBeMember(software,{'Sid4Bio','PHAST','CG','PhaseLIVE','polarCGMconntrol','other'})} = 'other'
+            end
 
-                if nargin>=5
-                    error(['input numbers must be either 1, 2 or 4. Here it is ' num2str(nargin)])
-                end
-                
-                if isnumeric(OB) % OB is the magnification
-                    OB = Objective(OB);
-                elseif ~isa(OB,'Objective')
-                    error('First input must be an Objective object')
-                end
-                
-                if nargin==4
-                    m.CGcam = CGcam;
-                    m.software = software;
-                end
-                
-                if nargin==3
-                    m.CGcam = CGcam;
-                    m.software = 'other';
-                end
-                
+            if isnumeric(OB) % OB is the magnification
+                m.Objective = Objective(OB);
+            elseif isa(OB,'Objective')
                 m.Objective = OB;
-                if nargin~=1
-                    if isnumeric(f_TL)
-                       m.f_TL = f_TL;
-                    elseif strcmpi(f_TL,'nikon')
-                        m.f_TL = m.f_Nikon;
-                    elseif strcmpi(f_TL,'zeiss')
-                        m.f_TL = m.f_Zeiss;
-                    elseif strcmpi(f_TL,'leica')
-                        m.f_TL = m.f_Leica;
-                    elseif strcmpi(f_TL,'olympus')
-                        m.f_TL = m.f_Olympus;
-                    elseif strcmpi(f_TL,'Thorlabs')
-                        m.f_TL = m.f_Thorlabs;
-                    else
-                        error('wrong microscope brand')
-                    end
-                end                        
-            end %nargin~=0
-            eval(['m.f_brand=m(1).f_' m.Objective.objBrand ';'])
+            else
+                error('First input must be an Objective object')
+            end
+            
+            m.CGcam = CGcam;
+            m.software = software;
+            
+            m.Objective = OB;
+            if nargin~=1
+                if isnumeric(f_TL)
+                   m.f_TL = f_TL;
+                elseif strcmpi(f_TL,'nikon')
+                    m.f_TL = m.f_Nikon;
+                elseif strcmpi(f_TL,'zeiss')
+                    m.f_TL = m.f_Zeiss;
+                elseif strcmpi(f_TL,'leica')
+                    m.f_TL = m.f_Leica;
+                elseif strcmpi(f_TL,'olympus')
+                    m.f_TL = m.f_Olympus;
+                elseif strcmpi(f_TL,'Thorlabs')
+                    m.f_TL = m.f_Thorlabs;
+                else
+                    error('wrong microscope brand')
+                end
+            end                        
+
+            m.f_brand=m(1).(['f_' m.Objective.objBrand]);
 
         end      
            

@@ -115,6 +115,8 @@ else
             ItfFileNames = ItfFileNames0;
             opt.selection=1:Nif;
         end
+    elseif strcmpi(acquisitionSoftware,'polarCGMcontrol') 
+
     else
         error('Please specify a sofware if using importItfRef')
     end
