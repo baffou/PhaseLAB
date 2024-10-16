@@ -43,7 +43,7 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
     end
 
     properties (Access = private, Constant)
-        softwareList = {'Sid4Bio','PHAST','CG','PhaseLIVE','polarCGMconntrol','other'}
+        softwareList = {'Sid4Bio','PHAST','CG','PhaseLIVE','polarCGMcontrol','other'}
         f_Nikon      = 200;  % focal length of the TL recommended by Nikon
         f_Thorlabs   = 200;  % focal length of the TL recommended by Thorlabs
         f_Leica      = 200;  % focal length of the TL recommended by Leica
@@ -69,7 +69,7 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
                 OB Objective = Objective()
                 f_TL = 180
                 CGcam CGcamera = CGcamera()
-                software {mustBeMember(software,{'Sid4Bio','PHAST','CG','PhaseLIVE','polarCGMconntrol','other'})} = 'other'
+                software {mustBeMember(software,{'Sid4Bio','PHAST','CG','PhaseLIVE','polarCGMcontrol','other'})} = 'other'
             end
 
             if isnumeric(OB) % OB is the magnification
