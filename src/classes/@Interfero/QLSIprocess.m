@@ -20,7 +20,8 @@ arguments
     opt.CGdistanceList = []  % the grating distance was varied during the acquisition of the images list
     opt.resetCrops   logical = false % reset crops between each image calculation, to make sure the algorithm enable the user to click for each image, or force the detection of the spot for each image in the auto mode.
     opt.unwrap (1,1) logical = false % use unwrapping. Slows down a bit the processing.
-    opt.display (1,1) logical = true % display the crops, even when automatic
+    opt.displayCrop (1,1) logical = true % display the crops, even when automatic
+    opt.displayBar (1,1) logical = true % display the progression bar in case of multiple images
     opt.Rfactor (1,1) double = 1 % multiplies the distance of the crop from the center of the image by Rfactor. Useful to crop the spots at 45°, by just setting R=sqrt(2)
 end
 Nf = numel(Itf);
@@ -120,13 +121,14 @@ for ii = 1:Nf
         Itfi = Itf(ii);
     end
     
-    if ii==2
+
+    if ii==2 && opt.displayBar
         fwb = waitbar(0,'1','Name','Image processing...',...
             'CreateCancelBtn','setappdata(gcbf,''canceling'',1)');
         setappdata(fwb,'canceling',0);
     end
     
-    if ii>=2
+    if ii>=2 && opt.displayBar
         if getappdata(fwb,'canceling')
             break
         end
@@ -216,7 +218,7 @@ for ii = 1:Nf
         'definition',opt.definition, ...
         'FcropShape',opt.Fcropshape, ...
         'auto',opt.auto, ...
-        'display',opt.display, ...
+        'display',opt.displayCrop, ...
         'Rfactor',opt.Rfactor);
 
     Im_int = ifft2(ifftshift(FImc));
@@ -230,7 +232,7 @@ for ii = 1:Nf
         'definition',opt.definition, ...
         'FcropShape',opt.Fcropshape, ...
         'auto',opt.auto, ...
-        'display',opt.display, ...
+        'display',opt.displayCrop, ...
         'Rfactor',opt.Rfactor);
     
     Im_DW1 = ifft2(ifftshift(FImc));
@@ -242,7 +244,7 @@ for ii = 1:Nf
         'Fcrops',cropParam2, ...
         'definition',opt.definition, ...
         'FcropShape',opt.Fcropshape, ...
-        'display',opt.display, ...
+        'display',opt.displayCrop, ...
         'Rfactor',opt.Rfactor);
     
     Im_DW2 = ifft2(ifftshift(FImc));
@@ -308,7 +310,7 @@ for ii = 1:Nf
         W = g2sTikhonovRT(DWx,DWy,opt.Smatrix,Tikh);
     end
 
-    if ii>=2
+    if ii>=2 && opt.displayBar
         waitbar(ii/Nf,fwb,sprintf('Image processing duration: %.3f s',toc))
     end
     
@@ -360,7 +362,7 @@ for ii = 1:Nf
 
 end
 
-if Nf >= 2 % delete waitbar
+if Nf >= 2 && opt.displayBar % delete waitbar
     delete(fwb)
 end
 

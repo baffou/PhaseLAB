@@ -66,9 +66,9 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
             %Microscope(OB,f_TL,Cam)
             %Microscope(OB,f_TL,CGcam,'software')
             arguments
-                OB Objective = Objective()
+                OB = Objective()
                 f_TL = 180
-                CGcam CGcamera = CGcamera()
+                CGcam = CGcamera()
                 software {mustBeMember(software,{'Sid4Bio','PHAST','CG','PhaseLIVE','polarCGMcontrol','other'})} = 'other'
             end
 
