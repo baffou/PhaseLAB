@@ -759,10 +759,14 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
         end
 
-        function [polarImages, polarImageGradients] = extractPolarImages(IM,fac)
+        function [polarImages, polarImageGradients] = extractPolarImages(IM,opt)
             arguments
                 IM
-                fac = 0.8
+                opt.norm_nm = 10; % amplitude that correspond to saturated color
+            end
+
+            if opt.norm_nm > 1e-3 % value in nm
+                opt.norm_nm = opt.norm_nm*1e-9; % set in [m]
             end
 
             [Nim, Nch] = size(IM);
@@ -808,10 +812,11 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 polarImages(Nim).Illumination = IM(ii,1).Illumination;
                 polarImages(Nim).Microscope = IM(ii,1).Microscope;
 
+
                 [Ny, Nx] = size(polarImages(ii).dphi);
                 hsvImage = zeros(Ny, Nx, 3);
                 hsvImage(:,:,1) = polarImages(ii).theta0/pi/2+0.5;
-                hsvImage(:,:,2) = 1/fac*polarImages(ii).dphi/max(polarImages(ii).dphi(:));
+                hsvImage(:,:,2) = 1/norm*polarImages(ii).dphi;
                 hsvImage(:,:,3) = ones(Ny,Nx);
 
                 polarImages(ii).rgbImage = hsv2rgb(hsvImage);
@@ -835,7 +840,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     [Ny, Nx] = size(polarImageGradients(ii,1).dphi);
                     hsvImage = zeros(Ny, Nx, 3);
                     hsvImage(:,:,1) = polarImageGradients(ii,1).theta0/pi/2+0.5;
-                    hsvImage(:,:,2) = 1/fac*polarImageGradients(ii,1).dphi/max(polarImageGradients(ii,1).dphi(:));
+                    hsvImage(:,:,2) = 1/norm*polarImageGradients(ii,1).dphi/max(polarImageGradients(ii,1).dphi(:));
                     hsvImage(:,:,3) = ones(Ny,Nx);
                     polarImageGradients(ii,1).rgbImage = hsv2rgb(hsvImage);
 
@@ -847,7 +852,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     [Ny, Nx] = size(polarImageGradients(ii,2).dphi);
                     hsvImage = zeros(Ny, Nx, 3);
                     hsvImage(:,:,1) = polarImageGradients(ii,2).theta0/pi/2+0.5;
-                    hsvImage(:,:,2) = 1/fac*polarImageGradients(ii,2).dphi/max(polarImageGradients(ii,2).dphi(:));
+                    hsvImage(:,:,2) = 1/norm*polarImageGradients(ii,2).dphi/max(polarImageGradients(ii,2).dphi(:));
                     hsvImage(:,:,3) = ones(Ny,Nx);
                     polarImageGradients(ii,2).rgbImage = hsv2rgb(hsvImage);
 
