@@ -1,4 +1,4 @@
-classdef PolarImages   <   handle & matlab.mixin.Copyable
+classdef ImagePolar   <   handle & matlab.mixin.Copyable
     % class to deal with polar QLSI images
     properties
         IM (1,4) ImageQLSI
@@ -21,7 +21,7 @@ classdef PolarImages   <   handle & matlab.mixin.Copyable
 
     methods
 
-        function obj = PolarImages(IM,norm)
+        function obj = ImagePolar(IM,norm)
             arguments
                 IM  = ImageQLSI.empty()
                 norm = 10e-9 % 10 nm of retardance
@@ -36,9 +36,9 @@ classdef PolarImages   <   handle & matlab.mixin.Copyable
                     obj.Microscope = IM(1).Microscope;
 
                 else
-                    obj = repmat(PolarImages(),Nim,1);
+                    obj = repmat(ImagePolar(),Nim,1);
                     for nim = 1:Nim
-                        obj(nim) = PolarImages(IM(nim,:), norm); % copy of the handle. No duplication.
+                        obj(nim) = ImagePolar(IM(nim,:), norm); % copy of the handle. No duplication.
                         obj(nim).Illumination = IM(1).Illumination;
                         obj(nim).Microscope = IM(1).Microscope;
                     end

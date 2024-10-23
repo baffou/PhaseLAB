@@ -686,7 +686,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 Im45(io) = copy(Im(io));
                 Im90(io) = copy(Im(io)); % not duplicate to keep the MI.
                 Im135(io) = copy(Im(io));
-
+io
                 Im00(io).Itf0 = polarInterpolation(Im(io).Itf,0, opt.interpolation);
                 Im00(io).channel = '90';
 
