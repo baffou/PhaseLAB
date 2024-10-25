@@ -34,7 +34,7 @@ end
 No = numel(obj);
 
 for io = 1:No
-
+    printLoop(io,No)
     if ~isempty(opt.mask)
         mask = opt.mask;
     elseif opt.threshold~=0 && ~strcmp(method,'Zernike') % then create a mask
@@ -73,7 +73,8 @@ for io = 1:No
     end
 
 
-    if strcmp(method,'Zernike')
+    switch method
+        case 'Zernike'
         temp=obj(io).OPD;
         for n = 1:opt.nmax
             for m = mod(n,2):2:n
@@ -81,26 +82,31 @@ for io = 1:No
             end
         end
         obj2(io).OPD=temp;
-    elseif strcmp(method,'Waves') || strcmp(method,'Sine')
-        temp=obj(io).OPD;
-        for n = 1:opt.nmax
-            temp = SineRemoval(temp,n,mask);
-        end
-        obj2(io).OPD=temp;
-    elseif  strcmp(method,'Gaussian')
-        obj2(io).OPD=obj2(io).OPD-imgaussfilt(obj(io).OPD,opt.nGauss);
-    else
+        case {'Waves','Sine'}
+            temp=obj(io).OPD;
+            for n = 1:opt.nmax
+                temp = SineRemoval(temp,n,mask);
+            end
+            obj2(io).OPD=temp;
+        case 'Gaussian'
+            obj2(io).OPD=obj2(io).OPD-imgaussfilt(obj(io).OPD,opt.nGauss);
+        case {'Chebyshev','Hermite','Legendre'}
 
-        temp=obj(io).OPD;
-
-        for n = 0:opt.nmax
-            for m = 0:opt.nmax
-                if n+m <= opt.nmax
-                    temp = polynomialRemoval(temp,method,n,m,'mask',mask);
+            temp=obj(io).OPD;
+    
+            for n = 0:opt.nmax
+                for m = 0:opt.nmax
+                    if n+m <= opt.nmax
+                        fprintf('(%d,%d)\t',n,m)
+                        temp = polynomialRemoval(temp,method,n,m,'mask',mask);
+                    end
                 end
             end
-        end
-        obj2(io).OPD=temp;
+            fprintf('\n')
+            obj2(io).OPD=temp;
+        otherwise
+            error('not a proper method name')
+    
     end
 
 

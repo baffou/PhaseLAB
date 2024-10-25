@@ -1,11 +1,22 @@
 classdef ImagePolar   <   handle & matlab.mixin.Copyable
     % class to deal with polar QLSI images
+    
     properties
-        IM (1,4) ImageQLSI
-        retardanceMax (1,1) double % max amplitude of the retardance on the color map of theta
-        smoothing = [] % Gaussian filter of the OPD images
+        IM (1,4) ImageQLSI  % smoothed if smoothing ≠ 0
+    end
+    
+    properties(GetAccess = public, SetAccess = private)
+        retardanceMax (1,1) double = 20 % max amplitude of the retardance on the color map of theta
+        smoothing (1,1) double {mustBeGreaterThanOrEqual(smoothing,0)} = 0 % Gaussian filter of the OPD images. None if  = 0
+    end
+
+    properties(Hidden)
         Microscope
         Illumination
+    end
+
+    properties (Access = private)
+        IM0 (1,4) ImageQLSI % raw image
     end
 
     properties(Dependent)
@@ -16,7 +27,9 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         dphi
         Wbar
         retardance
+        dW
         rgbImage
+        OPDmean
     end
 
     methods
@@ -30,7 +43,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
 
                 Nim = size(IM,1);
                 if Nim == 1
-                    obj.IM = IM; % copy of the handle. No duplication.
+                    obj.IM0 = IM; % copy of the handle. No duplication.
                     obj.retardanceMax = norm;
                     obj.Illumination = IM(1).Illumination;
                     obj.Microscope = IM(1).Microscope;
@@ -43,7 +56,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                         obj(nim).Microscope = IM(1).Microscope;
                     end
                 end
-
+                obj.updateIM() % apply the IM, that includes the smoothing
             end
         end
 
@@ -94,6 +107,18 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             img = hsv2rgb(hsvImage);
         end
 
+        function img = get.OPDmean(obj)
+            img = obj.Wbar;
+        end
+
+        function app = figure(obj)
+            if nargout
+                app = figurePolar(obj);
+            else
+                figurePolar(obj)
+            end
+        end
+
         function val = get.Wbar(obj)
             val = obj.phibar*obj.Illumination.lambda/(2*pi); 
         end
@@ -102,20 +127,46 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             val = obj.dphi*obj.Illumination.lambda/(2*pi); 
         end
 
+        function val = get.dW(obj)
+            val = obj.retardance; 
+        end
+
 
         function set.retardanceMax(obj, val)
             % converts in [m] in case the norm factor is entered in [nm]
             obj.retardanceMax = convert_nm(val);
         end
 
+
+
         function set_retMax(obj, val)
+            if val >1e-3 % value in [nm]
+                val = val*1e-9; % conversion in [m]
+            end
             Nim = numel(obj);
             for nim = 1:Nim
                 obj(nim).retardanceMax = val;
             end
         end
 
+        function set_smoothing(obj, val)
+            Nim = numel(obj);
+            for nim = 1:Nim
+                obj(nim).smoothing = val;
+                obj(nim).updateIM()
+            end
+        end
 
+        function updateIM(obj)
+            Nim = numel(obj);
+            for nim = 1:Nim
+                if obj(nim).smoothing ~= 0
+                    obj(nim).IM = obj(nim).IM0.flatten("Gaussian","nGauss",obj.smoothing);
+                else
+                    obj(nim).IM = obj(nim).IM0;
+                end
+            end
+        end
 
         function val = get.Nx(obj)
             val = obj.IM.Nx;
@@ -124,7 +175,55 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         function val = get.Ny(obj)
             val = obj.IM.Ny;
         end
+
+        function export(obj,path,opt)
+            arguments
+                obj
+                path
+                opt.formats string {mustBeMember(opt.formats,["eps","png","jpg","fig","txt"])}
+                opt.types string {mustBeMember(opt.types,["OPDmean","retardance","rgbImage","Wbar","phibar","theta0","dphi","dW"])}
+                opt.num = 1
+            end
+
+            path = char(path);
+            if path(end) == '/'
+                path = path(1:end-1); % remove the last "/"
+            end
         
+            for im = 1:numel(obj)
+                for iif = 1:numel(opt.formats)
+                    switch opt.formats(iif)
+                        case {"eps","png","jpg","fig"}
+                            if opt.formats(iif) == "eps",opt.formats(iif)="epsc";end
+                            ext = char(opt.formats(iif));
+                            if ~exist('hfig','var')
+                                hfig = figure;
+                                subplot(1,3,1)
+                                imageph(obj(im).OPDmean*1e9)
+                                title('OPDmean')
+                                subplot(1,3,2)
+                                imageph(obj(im).retardance*1e9)
+                                title('retardance')
+                                clim([0 obj(im).retardanceMax*1e9])
+                                subplot(1,3,3)
+                                imagehsv(obj(im).rgbImage)
+                                title('theta')
+                                fullwidth
+                            end
+    
+                            saveas(hfig, path + "/overview_" + textkkk(opt.num) + "." + ext(1:3), ext);
+                            
+    
+                        case "txt"
+                            for iit = 1:numel(opt.types)
+                                dlmwrite(path + "/" + opt.types(iit) + "_" + textkkk(opt.num) + ".txt", obj(im).(opt.types(iit)),' ');
+                            end                        
+                    end
+                end
+                if exist('hfig','var'),close(hfig),end
+                clear hfig
+            end
+        end
     end
 
 
