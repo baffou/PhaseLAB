@@ -40,6 +40,8 @@ for ii = 1:Npanels
             h.UserData.fun{ii} = @imagebk;
         case {'fl'}
             h.UserData.fun{ii} = @imagefl;
+        case {'dx'}
+            h.UserData.fun{ii} = @opendx;
         case {'hsv'}
             h.UserData.fun{ii} = @imagehsv;
 %        case 'dx'  % does not work

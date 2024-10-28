@@ -13,20 +13,26 @@ if nargin==1 % no predefined mask
     mask = ones(Ny,Nx);
     Zlim = 0;
     TF = fftshift(fft2(img0));    
-    while(button==1)
+    while(button == 1 || button == char('z') || button == char('Z'))
     
-        imagegb(log(abs(TF)))
+        if ~exist('him','var') % to avoid a zoom out coming from the function imagegb
+            him = imagegb(log(abs(TF)));
+        else
+            him.CData = log(abs(TF));
+        end
+
         if Zlim==0
             Zlim = get(gca,'CLim');
         else
             set(gca,'CLim',Zlim);
         end
+
         title('Click on the center of the spot to be removed')
 
         [x1,y1,button] = ginput(1); % center
         if button==1
             set(gcf,'CurrentCharacter',char(0))
-            zoom out
+            %zoom out
             title('Click further away to define a crop radius around this spot')
             [x2,y2] = ginput(1); % radius
 
@@ -56,9 +62,15 @@ if nargin==1 % no predefined mask
             circle2 = (R2C >= 1); %mask circle for each iteration
             % demodulation in the Fourier space
             mask = mask.*double(circle1.*circle2);
-            imagegb(log(abs(TF.*mask)))
+            him.CData = log(abs(TF.*mask));
             drawnow
             TF = TF.*circle1.*circle2;
+        elseif button == char('z')
+            zoom(2)
+            drawnow
+        elseif button == char('Z')
+            zoom(0.5)
+            drawnow
         end
     end
     img = ifft2(ifftshift(TF.*circle1.*circle2));

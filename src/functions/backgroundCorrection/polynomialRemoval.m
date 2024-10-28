@@ -5,8 +5,8 @@ function Imout = polynomialRemoval(Im,method,n,m,opt)
 arguments
     Im
     method (1,:) char {mustBeMember(method,{'Chebyshev','Chebyshev2','Hermite','Legendre'})} = 'Hermite'
-    n = 1   % order of the polynomial
-    m = 1   % order of the polynomial
+    n = 1   % order of the polynomial along x
+    m = 1   % order of the polynomial alongy
     opt.mask logical = logical.empty()
 end
 % Im=IM(1).OPD;

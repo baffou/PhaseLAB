@@ -1,15 +1,20 @@
 function [obj2, mask] = flatten(obj,method,opt)
-
+% flatten the backgound of the OPD image of the ImageQLSI or ImageEM object
+% If a threshold is specified and well adjusted, remove the background
+% without taking into account the object. Useful for eukaryotic cells.
 
 arguments
     obj ImageMethods
     method (1,:) char {mustBeMember(method,{'Waves','Sine','Zernike','Chebyshev','Hermite','Legendre','Gaussian'})} = 'Gaussian'
-    opt.nmax (1,1) {mustBeInteger(opt.nmax)} = 2
+    opt.nmax (1,:) {mustBeInteger(opt.nmax)} = 2 % n or [nx, ny]
     opt.threshold double = 0 % if not zero, segment the cells and create a mask
-    opt.mask = []  % specifies a mask, instead of computing one when threshold is not zero
+    opt.mask = []  % specifies a selection mask, instead of computing one when threshold is not zero
     opt.kind  (1,1) {mustBeInteger(opt.kind)} = 1 % for Chebychev
     opt.display logical = false
     opt.nGauss = 100
+    opt.cut = 0.5
+    opt.invert = false
+    opt.params = []
 end
 
 
@@ -34,104 +39,44 @@ end
 No = numel(obj);
 
 for io = 1:No
-    printLoop(io,No)
+    printLoop(io,No)    
+    
     if ~isempty(opt.mask)
         mask = opt.mask;
-    elseif opt.threshold~=0 && ~strcmp(method,'Zernike') % then create a mask
+    elseif (opt.threshold~=0 || ~isempty(opt.params)) && ~strcmp(method,'Zernike') % then create a mask
 
-        mask0 = abs(obj(io).DWx) > opt.threshold*1e-9;
-        IMxm = obj(io).DWx.*mask0;
+        if isempty(opt.params)
+            nGauss = opt.nGauss;
+            cut = opt.cut;
+            invert = opt.invert;
+        else
+            opt.threshold = convert_nm(opt.params.gradThresh)*1e9;
+            nGauss = opt.params.smoothing;
+            cut = opt.params.cut;
+            invert = opt.params.invert;
+        end
 
-        mask0 = abs(obj(io).DWy) > opt.threshold*1e-9;
-        IMym = obj(io).DWy.*mask0;
 
-
-        N = 3;
-        Tikh = 1e-5;
-
-        x = (1:size(IMxm,2))';
-        y = (1:size(IMym,1))';
-        opt.Smatrix = g2sTikhonovRTalpha(x,y,N);
-        W = g2sTikhonovRT(IMxm,IMym,opt.Smatrix,Tikh);
-
-        %avgBG = mean(mean(W(~mask0)));
-        %W = W-avgBG;
-        %mask = W<opt.threshold*10*1e-9;
-
-        %mask = ~mask0;
-        mask = conv2(mask0,ones(10),"same")<1;
-
-        dynamicFigure('ph',obj(io).OPD,'ph',W,'bw',double(mask0),'bw',double(mask),'nm',[2,2],'titles',{'original W','thresholded W','mask0','mask'})
-        fullscreen
-
+        
+        mask = computeSegmentationMasks(obj(io).DWx, obj(io).DWy,...
+                                     opt.threshold, nGauss, cut, invert);
+    
+    
+    
+ 
     else
-        mask = ones(obj(io).Ny, obj(io).Nx)==1;
+        mask = ones(size(obj.OPD));
     end
 
-    if strcmpi(method,'Chebyshev') && opt.kind == 2
-        method='Chebyshev2';
-    end
+    obj2(io).OPD = flatten0(obj(io).OPD,method,"kind", ...
+        opt.kind,"mask",mask,"nGauss",opt.nGauss,"nmax",opt.nmax);
 
 
-    switch method
-        case 'Zernike'
-        temp=obj(io).OPD;
-        for n = 1:opt.nmax
-            for m = mod(n,2):2:n
-                temp = ZernikeRemoval(temp,n,m); % use a temp image to avoid writing several times on the HDD in remote mode.
-            end
-        end
-        obj2(io).OPD=temp;
-        case {'Waves','Sine'}
-            temp=obj(io).OPD;
-            for n = 1:opt.nmax
-                temp = SineRemoval(temp,n,mask);
-            end
-            obj2(io).OPD=temp;
-        case 'Gaussian'
-            obj2(io).OPD=obj2(io).OPD-imgaussfilt(obj(io).OPD,opt.nGauss);
-        case {'Chebyshev','Hermite','Legendre'}
-
-            temp=obj(io).OPD;
-    
-            for n = 0:opt.nmax
-                for m = 0:opt.nmax
-                    if n+m <= opt.nmax
-                        fprintf('(%d,%d)\t',n,m)
-                        temp = polynomialRemoval(temp,method,n,m,'mask',mask);
-                    end
-                end
-            end
-            fprintf('\n')
-            obj2(io).OPD=temp;
-        otherwise
-            error('not a proper method name')
-    
-    end
-
-
-    if opt.threshold~=0 && ~strcmp(method,'Zernike')
-        if opt.display
-            subplot(2,2,4)
-            imageph(temp)
-            title('final image')
-            colormap(Pradeep)
-            %climSym
-            subplot(2,2,3)
-            imageph(obj(io).OPD)
-            title('initial image')
-            colormap(Pradeep)
-            %climSym
-            subplot(2,2,2)
-            imageph(temp.*mask+(1-mask).*max(temp(:)))
-            title('considered area')
-            fullscreen
-            drawnow
-        end
-    end
     % cancel the gradients DWx and DWy, in case they exist,
     %  because they are not true anymore
     obj2(io).cancelGradients();
+
+
 
 end
 

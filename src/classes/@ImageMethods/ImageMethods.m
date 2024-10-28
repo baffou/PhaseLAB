@@ -109,7 +109,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                             title(sprintf(['T #' num2str(numbers(iim)) '\n' IMlist(iim).comment]))
                         else
                             imagesc(IMlist(iim).(opt.types{1}))
-                            colormap(gca,'phase1024')
+                            colormap(gca,Sepia)
                             title(sprintf(['OPD #' num2str(numbers(iim)) '\n' IMlist(iim).comment]))
                             iim=iim+1;
                         end
@@ -166,7 +166,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
         end
 
-        function opendx(obj,opt)
+        function opendx_old(obj,opt)
             arguments
                 obj
                 opt.persp = 1
@@ -177,7 +177,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.colorMap =  []
                 opt.title = []
                 opt.factor = 1 % correction factor, for instance 5.55e-3 to convert the OPD color scale into dry mass
-                opt.label = 'Optical path difference (nm)'
+                opt.clabel = 'Optical path difference (nm)'
                 opt.imType = 'OPD'
                 opt.axisDisplay (1,1) logical = true
                 opt.displayedTime = string.empty()
@@ -222,10 +222,10 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.factor=cell(1,Nim);
                 opt.factor(:)={val};
             end
-            if ~isa(opt.label,'cell')
-                val=opt.label;
-                opt.label=cell(1,Nim);
-                opt.label(:)={val};
+            if ~isa(opt.clabel,'cell')
+                val=opt.clabel;
+                opt.clabel=cell(1,Nim);
+                opt.clabel(:)={val};
             end
 
 
@@ -301,9 +301,9 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                         end
                     else
                         if strcmp(opt.imType{ii},'OPD')
-                            opt.colorMap{ii}=phase1024;
+                            opt.colorMap{ii} = Sepia;
                         else
-                            opt.colorMap{ii}=gray;
+                            opt.colorMap{ii} = gray;
                         end
                         colormap(gca,opt.colorMap{ii});
 
@@ -314,7 +314,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     %camlight(AZ, EL)
                     if opt.phi==0 &&  opt.theta==0
                         cb=colorbar(FontSize=20);
-                        cb.Label.String = opt.label{ii};
+                        cb.Label.String = opt.clabel{ii};
                         view(2)
                         AZ_light=30;
                         EL_light=25;
@@ -322,7 +322,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                         cb=colorbar('southoutside',FontSize=16);
                         a =  cb.Position; %gets the positon and size of the color bar
                         set(cb,'Position',[a(1) a(2) a(3)/4 a(4)])% To change size
-                        cb.Label.String = opt.label{ii};
+                        cb.Label.String = opt.clabel{ii};
                         cb.Label.FontSize = 20;
                         view(opt.phi,EL_camera)
                         camPos=get(gca,"CameraPosition");
@@ -381,6 +381,120 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             end
         end
 
+
+        function opendx(obj,opt)
+            arguments
+                obj
+                opt.persp = 1
+                opt.phi = 0
+                opt.theta = 0
+                opt.ampl = 10
+                opt.zrange = []
+                opt.colorMap =  []
+                opt.title = []
+                opt.factor = 1 % correction factor, for instance 5.55e-3 to convert the OPD color scale into dry mass
+                opt.clabel = 'Optical path difference (nm)'
+                opt.imType = 'OPD'
+                opt.axisDisplay (1,1) logical = true
+                opt.displayedTime = string.empty()
+                opt.timeUnit char {mustBeMember(opt.timeUnit,{'s','min','h'})}= 's'
+                opt.timeFontSize = []
+                opt.timeFontColor = []
+            end
+
+
+            % convert all the options into cells:
+            if ~isa(opt.imType,'cell')
+                opt.imType={opt.imType};
+            end
+
+            Nim = numel(opt.imType);
+
+            if ~isa(opt.factor,'cell')
+                val = opt.factor;
+                opt.factor = cell(1,Nim);
+                opt.factor(:) = {val};
+            end
+            if ~isa(opt.title,'cell')
+                val = opt.title;
+                opt.title = cell(1,Nim);
+                opt.title(:) = {val};
+            end
+            if ~isa(opt.zrange,'cell')
+                val = opt.zrange;
+                opt.zrange = cell(1,Nim);
+                opt.zrange(:) = {val};
+            end
+            if ~isa(opt.ampl,'cell')
+                val = opt.ampl;
+                opt.ampl = cell(1,Nim);
+                opt.ampl(:) = {val};
+            end
+            if ~isa(opt.colorMap,'cell')
+                val = opt.colorMap;
+                opt.colorMap = cell(1,Nim);
+                opt.colorMap(:) = {val};
+            end
+            if ~isa(opt.clabel,'cell')
+                val = opt.clabel;
+                opt.clabel = cell(1,Nim);
+                opt.clabel(:) = {val};
+            end
+
+
+            for ii=1:Nim
+                if ~isempty(opt.imType{ii})
+                    fac=opt.factor{ii};
+
+                    img = obj.(opt.imType{ii});
+
+                    if strcmpi(opt.imType{ii},'OPD')
+                        img=img*1e9;
+                    end
+
+                    if isempty(opt.zrange{ii})
+                        zrange=[min(img(:)) max(img(:))]*fac;
+                    else
+                        zrange=opt.zrange{ii};
+                    end
+
+                    if ~isempty(opt.title{ii})
+                        figTitle = opt.title{ii};
+                    elseif isprop(obj,'OPDfileName') % ie if ImageQLSI object
+                        figTitle = obj.OPDfileName;
+                    else
+                        figTitle = ' ';
+                    end
+
+
+                    if isempty(opt.colorMap{ii})
+                        if strcmp(opt.imType{ii},'OPD')
+                            opt.colorMap{ii} = Sepia;
+                        else
+                            opt.colorMap{ii} = gray;
+                        end
+                    end
+                    
+                    if Nim <= 3
+                        nRow = 1;
+                        nCol = Nim;
+                    else
+                        nRow = 2;
+                        nCol = ceil(Nim/2);
+                    end
+                    subplot(nRow,nCol,ii)
+
+                    opendx0(img, "persp", opt.persp, "phi", opt.phi, "theta", ...
+                        opt.theta, "ampl", opt.ampl{ii}, "zrange", zrange, ...
+                        "colorMap", opt.colorMap{ii}, "title", opt.title{ii}, ...
+                        "factor", fac, "clabel", opt.clabel{ii}, "pxSize", obj.pxSize, ...
+                        "figTitle", figTitle, "axisDisplay", opt.axisDisplay, ...
+                        "displayedTime", opt.displayedTime, "timeUnit", opt.timeUnit, ...
+                        "timeFontSize", opt.timeFontSize, "timeFontColor", opt.timeFontColor)
+                end
+            end
+        end
+
         function makeMoviedx(IM,videoName,opt)
             arguments
                 IM
@@ -394,7 +508,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.colorMap =  []
                 opt.title = []
                 opt.factor = 1 % correction factor, for instance 5.55e-3 to convert the OPD color scale into dry mass
-                opt.label = 'Optical path difference (nm)'
+                opt.clabel = 'Optical path difference (nm)'
                 opt.imType  = 'OPD'
                 opt.axisDisplay  (1,1) logical = true
                 opt.frameTime = []  % if empty, nothing is displayed, if numeric value, the time is displayed on each frame
@@ -423,7 +537,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 end
                 opendx(IM(u),'persp',opt.persp,'phi',opt.phi,'theta',opt.theta,...
                     'ampl',opt.ampl,'zrange',opt.zrange,'colorMap',opt.colorMap, ...
-                    'title',opt.title,'factor',opt.factor,'label',opt.label,'imType',opt.imType, ...
+                    'title',opt.title,'factor',opt.factor,'label',opt.clabel,'imType',opt.imType, ...
                     'axisDisplay',opt.axisDisplay,'displayedTime',time, ...
                     'timeUnit',opt.timeUnit,'timeFontSize',opt.timeFontSize, ...
                     'timeFontSize',opt.timeFontSize,'timeFontColor', opt.timeFontColor)
