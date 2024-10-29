@@ -118,7 +118,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             elseif obj1.Nx~=obj2.Nx || obj1.Ny~=obj2.Ny
                 error('You are trying to sum two images with different pixel numbers.')
             end
-            objs = duplicate(obj1);
+            objs = duplicate0(obj1);
             objs.Ex = obj1.Ex + obj2.Ex;
             objs.Ey = obj1.Ey + obj2.Ey;
             objs.Ez = obj1.Ez + obj2.Ez;
@@ -128,7 +128,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
         function objs = sum(objList) % coherent sum of the fields
-            objs = duplicate(objList(1));
+            objs = duplicate0(objList(1));
             No = numel(objList);
             for io = 2:No
                 objs = objs+objList(io);
@@ -284,8 +284,8 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 n = 3
             end
             if nargout
-                obj2=duplicate(obj);
-                obj2.Einc=duplicate(obj.Einc);
+                obj2=duplicate0(obj);
+                obj2.Einc=duplicate0(obj.Einc);
             else
                 obj2=obj;
             end
@@ -411,7 +411,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
         function objList = Escat(objList0)
-            objList=duplicate(objList0);
+            objList=duplicate0(objList0);
 
             No=numel(objList0);
             for io=1:No
@@ -501,7 +501,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
 
             if nargout
-                obj=duplicate(obj0);
+                obj=duplicate0(obj0);
             else
                 obj=obj0;
             end
@@ -520,7 +520,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             % Mirror image with an horizontal mirror
 
             if nargout
-                obj=duplicate(obj0);
+                obj=duplicate0(obj0);
             else
                 obj=obj0;
             end
@@ -540,7 +540,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             % Mirror image with an horizontal mirror
 
             if nargout
-                obj=duplicate(obj0);
+                obj=duplicate0(obj0);
             else
                 obj=obj0;
             end
@@ -560,7 +560,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             % applies a phase shift to all the components of a field, but
             % not to its Einc. Useful to articially simulate SLIM imaging.
             if nargout
-                objList=duplicate(objList0);
+                objList=duplicate0(objList0);
             else
                 objList=objList0;
             end
@@ -617,7 +617,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
 
             if nargout
-                IMout = duplicate(IM); % not copy(), to also duplicate the Einc
+                IMout = duplicate0(IM); % not copy(), to also duplicate the Einc
             else
                 IMout = IM;
             end

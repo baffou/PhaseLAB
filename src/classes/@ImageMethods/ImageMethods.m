@@ -590,7 +590,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 obj0
                 opt.xy1 = []
                 opt.xy2 = []
-                opt.Center = 'Auto' % 'Auto', 'Manual' or [x, y]
+                opt.Center = 'Manual' % 'Auto', 'Manual' or [x, y]
                 opt.Size = 'Manual' % 'Auto', 'Manual', d or [dx, dy]
                 opt.twoPoints logical = false
                 opt.params double = double.empty()

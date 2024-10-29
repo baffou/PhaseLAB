@@ -20,7 +20,7 @@ arguments
 end
 
 % zrange in nm
-EL_camera=90-opt.theta;
+EL_camera = 90-opt.theta;
 [Ny,Nx] = size(img);
 
 % make sure some variables are in cell type

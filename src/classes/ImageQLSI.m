@@ -558,7 +558,7 @@ classdef ImageQLSI   <   ImageMethods
             end
 
             if nargout
-                obj=duplicate(obj0);
+                obj=duplicate0(obj0);
             else
                 obj=obj0;
             end

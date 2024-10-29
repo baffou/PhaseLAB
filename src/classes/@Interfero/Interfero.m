@@ -274,7 +274,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 obj0
                 opt.xy1 = []
                 opt.xy2 = []
-                opt.Center = 'Auto' % 'Auto', 'Manual' or [x, y]
+                opt.Center = 'Manual' % 'Auto', 'Manual' or [x, y]
                 opt.Size = 'Manual' % 'Auto', 'Manual', d or [dx, dy]
                 opt.twoPoints logical = false
                 opt.params double = double.empty()
@@ -332,7 +332,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         function obj = square(obj0)
 
             if nargout
-                obj = duplicate(obj0);
+                obj = duplicate0(obj0);
             else
                 obj = obj0;
             end
@@ -474,7 +474,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         function [objList,mask0] = spotRemoval(objList0,mask)
 
             if nargout>=1
-                objList=duplicate(objList0);
+                objList=duplicate0(objList0);
             else
                 objList=objList0;
             end

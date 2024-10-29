@@ -1,7 +1,7 @@
 classdef ImagePolar   <   handle & matlab.mixin.Copyable
     % class to deal with polar QLSI images
     
-    properties
+    properties(GetAccess = public, SetAccess = {?Duplicate})
         IM (1,4) ImageQLSI  % smoothed if smoothing ≠ 0
     end
     
@@ -161,7 +161,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             Nim = numel(obj);
             for nim = 1:Nim
                 if obj(nim).smoothing ~= 0
-                    obj(nim).IM = obj(nim).IM0.flatten("Gaussian","nGauss",obj.smoothing);
+                    obj(nim).IM = obj(nim).IM0.flatten("Gaussian","nGauss",obj.smoothing,"display",0);
                 else
                     obj(nim).IM = obj(nim).IM0;
                 end
@@ -182,7 +182,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                 path
                 opt.formats string {mustBeMember(opt.formats,["eps","png","jpg","fig","txt"])}
                 opt.types string {mustBeMember(opt.types,["OPDmean","retardance","rgbImage","Wbar","phibar","theta0","dphi","dW"])}
-                opt.num = 1
+                opt.num = []
             end
 
             path = char(path);
@@ -210,8 +210,12 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                                 title('theta')
                                 fullwidth
                             end
-    
-                            saveas(hfig, path + "/overview_" + textkkk(opt.num) + "." + ext(1:3), ext);
+                            if isempty(opt.num)
+                                num = im;
+                            else
+                                num = opt.num;
+                            end
+                            saveas(hfig, path + "/overview_" + textkkk(num) + "." + ext(1:3), ext);
                             
     
                         case "txt"

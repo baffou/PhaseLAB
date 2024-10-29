@@ -10,7 +10,7 @@ arguments
     opt.threshold double = 0 % if not zero, segment the cells and create a mask
     opt.mask = []  % specifies a selection mask, instead of computing one when threshold is not zero
     opt.kind  (1,1) {mustBeInteger(opt.kind)} = 1 % for Chebychev
-    opt.display logical = false
+    opt.display logical = true
     opt.nGauss = 100
     opt.cut = 0.5
     opt.invert = false
@@ -65,11 +65,11 @@ for io = 1:No
     
  
     else
-        mask = ones(size(obj.OPD));
+        mask = ones(size(obj(io).OPD));
     end
 
-    obj2(io).OPD = flatten0(obj(io).OPD,method,"kind", ...
-        opt.kind,"mask",mask,"nGauss",opt.nGauss,"nmax",opt.nmax);
+    obj2(io).OPD = flatten0(obj(io).OPD,method,"kind", opt.kind,...
+        "mask",mask,"nGauss",opt.nGauss,"nmax",opt.nmax, "display", opt.display);
 
 
     % cancel the gradients DWx and DWy, in case they exist,
