@@ -10,6 +10,9 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         smoothing (1,1) double {mustBeGreaterThanOrEqual(smoothing,0)} = 0 % Gaussian filter of the OPD images. None if  = 0
     end
 
+    properties
+        rgb_bg0 char {mustBeMember(rgb_bg0,{'white','black'})} = 'black'  % smoothed if smoothing ≠ 0
+    end
     properties(Hidden)
         Microscope
         Illumination
@@ -97,12 +100,15 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                 obj
             end
 
-
- 
+            if strcmp(obj.rgb_bg0,'black')
+                corr = 1;
+            else
+                corr = 0;
+            end
             hsvImage = zeros(obj.Ny, obj.Nx, 3);
             hsvImage(:,:,1) = obj.theta0/pi/2+0.5;
-            hsvImage(:,:,2) = 1/obj.retardanceMax*obj.dphi * obj.Illumination.lambda/(2*pi);
-            hsvImage(:,:,3) = ones(obj.Ny,obj.Nx);
+            hsvImage(:,:,2+corr) = 1/obj.retardanceMax*obj.dphi * obj.Illumination.lambda/(2*pi);
+            hsvImage(:,:,3-corr) = ones(obj.Ny,obj.Nx);
 
             img = hsv2rgb(hsvImage);
         end
@@ -176,6 +182,13 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             val = obj.IM.Ny;
         end
 
+        function rgb_bg(obj, val)
+            Nim = numel(obj);
+            for ii = 1:Nim
+                obj(ii).rgb_bg0 = val;
+            end
+        end
+
         function export(obj,path,opt)
             arguments
                 obj
@@ -193,12 +206,12 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             for im = 1:numel(obj)
                 for iif = 1:numel(opt.formats)
                     switch opt.formats(iif)
-                        case {"eps","png","jpg","fig"}
+                        case {"eps","png","jpg","fig","epsc"}
                             if opt.formats(iif) == "eps",opt.formats(iif)="epsc";end
                             ext = char(opt.formats(iif));
                             if ~exist('hfig','var')
                                 hfig = figure;
-                                subplot(1,3,1)
+                                ax1 = subplot(1,3,1);
                                 imageph(obj(im).OPDmean*1e9)
                                 title('OPDmean')
                                 subplot(1,3,2)
@@ -210,6 +223,8 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                                 title('theta')
                                 fullwidth
                             end
+                            sb = Scalebar(20e-6, obj(im).IM(1).pxSize);
+                            sb.insert(ax1)
                             if isempty(opt.num)
                                 num = im;
                             else
