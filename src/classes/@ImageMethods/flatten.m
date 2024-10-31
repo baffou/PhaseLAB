@@ -17,7 +17,9 @@ arguments
     opt.params = []
 end
 
-
+if opt.threshold == 0
+    opt.display = false;
+end
 % method:
 %   'Zernike'
 %   or
@@ -55,15 +57,9 @@ for io = 1:No
             cut = opt.params.cut;
             invert = opt.params.invert;
         end
-
-
         
         mask = computeSegmentationMasks(obj(io).DWx, obj(io).DWy,...
                                      opt.threshold, nGauss, cut, invert);
-    
-    
-    
- 
     else
         mask = ones(size(obj(io).OPD));
     end

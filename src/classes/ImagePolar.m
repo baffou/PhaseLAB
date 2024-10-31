@@ -78,8 +78,8 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                 obj
             end
 
-            img = angle((obj.IM(1).Ph-obj.IM(3).Ph) ...
-                   + 1i*(obj.IM(2).Ph-obj.IM(4).Ph));
+            img = mod(0.5*angle((obj.IM(1).Ph-obj.IM(3).Ph) ...
+                   + 1i*(obj.IM(2).Ph-obj.IM(4).Ph)),pi);
 
         end
 
@@ -106,7 +106,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                 corr = 0;
             end
             hsvImage = zeros(obj.Ny, obj.Nx, 3);
-            hsvImage(:,:,1) = obj.theta0/pi/2+0.5;
+            hsvImage(:,:,1) = obj.theta0/pi;
             hsvImage(:,:,2+corr) = 1/obj.retardanceMax*obj.dphi * obj.Illumination.lambda/(2*pi);
             hsvImage(:,:,3-corr) = ones(obj.Ny,obj.Nx);
 
