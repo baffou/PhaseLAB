@@ -438,12 +438,12 @@ classdef ImageQLSI   <   ImageMethods
             else
                 INT = intsum/Nim;
             end
-            OPD = OPDsum/Nim;
-            DWx = DWxsum/Nim;
-            DWy = DWysum/Nim;
-            IMout = ImageQLSI(INT,OPD,IM(1).Microscope,IM(1).Illumination);
-            IMout.DWx0 = DWx;
-            IMout.DWy0 = DWy;
+            OPDn = OPDsum/Nim;
+            DWxn = DWxsum/Nim;
+            DWyn = DWysum/Nim;
+            IMout = ImageQLSI(INT,OPDn,IM(1).Microscope,IM(1).Illumination);
+            IMout.DWx0 = DWxn;
+            IMout.DWy0 = DWyn;
             IMout.Microscope = IM.Microscope;
             IMout.TfileName = 'Average images';
             IMout.OPDfileName = 'Average images';

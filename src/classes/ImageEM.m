@@ -27,6 +27,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         E2
         E
         Ph
+        Ph_coh
         OPD
         OPDnm
         T
@@ -351,61 +352,17 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
         function [IMs,mat] = Jones(IM,varargin)
-            %angles in degrees
-            Nvar = numel(varargin);
-
-            % Quarter waveplate
-            QWP = [1 0;0 1i];
-            % Half waveplate
-            HWP = [1 0;0 -1];
-            % Polarizer
-            P = [1 0;0 0];
-            % Rotation matrix
-            R = @(theta) [cosd(theta) -sind(theta);sind(theta) cosd(theta)];
-
-
-            mat = eye(2,2);
-            if isnumeric(varargin{1}) % [a b; c d]
-                if all(size(varargin{1})==[2 2])
-                    mat = varargin{1};
-                end
-            else
-                for ii = 1:2:Nvar
-                    if mod(Nvar,2)
-                        error('Must have an even number of inputs')
-                    end
-                    if ~ischar(varargin{ii})
-                        error('this input must be text: ''P'', ''QWP'' or ''HWP''')
-                    elseif ~isnumeric(varargin{ii+1})
-                        error('this input must be a number')
-                    end
-                    switch varargin{ii}
-                        case 'P'
-                            mat = R(varargin{ii+1})*P*R(-varargin{ii+1})*mat;
-                        case 'QWP'
-                            mat = R(varargin{ii+1})*QWP*R(-varargin{ii+1})*mat;
-                        case 'HWP'
-                            mat = R(varargin{ii+1})*HWP*R(-varargin{ii+1})*mat;
-                    end
-                end
-            end
-            IMs = Jones0(IM,mat);
-
-        end
-
-        function IMs = Jones0(IM,mat)
+            
             Nim = numel(IM);
             IMs = ImageEM(Nim);
             for iim = 1:Nim
-                E_x = IM(iim).Ex*mat(1,1)+IM(iim).Ey*mat(1,2);
-                E_y = IM(iim).Ex*mat(2,1)+IM(iim).Ey*mat(2,2);
-                Einc_x = IM(iim).Einc.Ex*mat(1,1)+IM(iim).Einc.Ey*mat(1,2);
-                Einc_y = IM(iim).Einc.Ex*mat(2,1)+IM(iim).Einc.Ey*mat(2,2);
+                [E_x, E_y, mat] = Jones0(IM(iim).Ex, IM(iim).Ey, varargin);
+                [Einc_x, Einc_y] = Jones0(IM(iim).Einc.Ex, IM(iim).Einc.Ey, mat);
 
                 IMs(iim) = ImageEM(E_x,E_y,IM.Ez*0,Einc_x,Einc_y,IM.Ez*0);
-                IMs(iim).Microscope = IM.Microscope;
-                IMs(iim).Illumination = IM.Illumination;
-                IMs(iim).comment = IM.comment;
+                IMs(iim).Microscope = IM(iim).Microscope;
+                IMs(iim).Illumination = IM(iim).Illumination;
+                IMs(iim).comment = IM(iim).comment;
 
             end
         end
@@ -428,9 +385,9 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
             % complex vectorial incident field at the center of the image
             if isempty(obj.Einc) % if the object is already an incident field
-                valx=obj.Ex(end/2,end/2);
-                valy=obj.Ey(end/2,end/2);
-                valz=obj.Ez(end/2,end/2);
+                valx=obj.Ex(ceil(end/2),ceil(end/2));
+                valy=obj.Ey(ceil(end/2),ceil(end/2));
+                valz=obj.Ez(ceil(end/2),ceil(end/2));
                 val0 = [valx, valy, valz];
             else % take the EE0 of the Einc
                 val0 = obj.Einc.EE0;

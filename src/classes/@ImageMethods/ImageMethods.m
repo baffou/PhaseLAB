@@ -45,25 +45,25 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             end
         end
 
-        function val=lambda(obj)
-            val=obj.Illumination.lambda;
+        function val = lambda(obj)
+            val = obj.Illumination.lambda;
         end
 
-        function val=dxSize(obj)
-            val=obj.Microscope.CGcam.dxSize;
+        function val = dxSize(obj)
+            val = obj.Microscope.CGcam.dxSize;
         end
 
-        function val=pxSize(obj)
-            val=obj.pxSizeCorrection*obj.Microscope.pxSize*obj.binningFactor;
+        function val = pxSize(obj)
+            val = obj.pxSizeCorrection*obj.Microscope.pxSize*obj.binningFactor;
         end
 
         function imageHSV(obj)
-            Hue=(obj.OPD-min(obj.OPD(:)))/(max(obj.OPD(:))-min(obj.OPD(:)));
-            Sat=obj.T/max(obj.T(:));
+            Hue = (obj.OPD-min(obj.OPD(:)))/(max(obj.OPD(:))-min(obj.OPD(:)));
+            Sat = obj.T/max(obj.T(:));
             imHSV(:,:,1)=Hue;
             imHSV(:,:,2)=Sat;
             imHSV(:,:,3)=1;
-            imRGB=hsv2rgb(imHSV);
+            imRGB = hsv2rgb(imHSV);
             imagesc(imRGB)
             axis equal
         end
