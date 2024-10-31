@@ -276,6 +276,22 @@ classdef ImageQLSI   <   ImageMethods
 
         end
 
+        function obj2 = lowPassFilter(obj,nCrop)
+            arguments
+                obj
+                nCrop double = 10
+            end
+            if nargout
+                obj2=copy(obj);
+            else
+                obj2=obj;
+            end
+            for io=1:numel(obj)
+                obj2(io).OPD = lowPassFilter(obj(io).OPD,nCrop);
+            end
+
+        end
+
         function obj2 = smooth(obj,nCrop)
             arguments
                 obj
