@@ -318,7 +318,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 obj2(ii).Einc.Ex = imEx;
                 obj2(ii).Einc.Ey = imEy;
                 obj2(ii).Einc.Ez = imEz;
-                obj2(ii).Microscope.CGcam.Camera.dxSize=obj2(ii).Microscope.CGcam.Camera.dxSize*n;
+                obj2(ii).binningFactor=obj2(ii).binningFactor*n;
             end
 
         end

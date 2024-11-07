@@ -263,12 +263,19 @@ for ii = 1:Nf
 
 %    DW1 = sign(MI.CGcam.zoom)*angle(Im_DW1.*conj(Rf_DW1))* MI.CGcam.alpha(IL(ii).lambda);
 %    DW2 = sign(MI.CGcam.zoom)*angle(Im_DW2.*conj(Rf_DW2))* MI.CGcam.alpha(IL(ii).lambda);
-    if opt.noRef
-        DW1 = -anglefun(Im_DW1)* MI.CGcam.alpha(IL(ii).lambda);
-        DW2 = -anglefun(Im_DW2)* MI.CGcam.alpha(IL(ii).lambda);
+    if strcmpi(opt.definition,'low') % compute the correction factor in case the image is small (fast mode)
+        rx = cropParam2.R(1);
+        corr = Nx/length(round((-rx:rx-1)));
     else
-        DW1 = -anglefun(Im_DW1.*conj(Rf_DW1))* MI.CGcam.alpha(IL(ii).lambda);
-        DW2 = -anglefun(Im_DW2.*conj(Rf_DW2))* MI.CGcam.alpha(IL(ii).lambda);
+        corr = 1;
+    end
+
+    if opt.noRef
+        DW1 = -anglefun(Im_DW1)* corr*MI.CGcam.alpha(IL(ii).lambda);
+        DW2 = -anglefun(Im_DW2)* corr*MI.CGcam.alpha(IL(ii).lambda);
+    else
+        DW1 = -anglefun(Im_DW1.*conj(Rf_DW1))* corr*MI.CGcam.alpha(IL(ii).lambda);
+        DW2 = -anglefun(Im_DW2.*conj(Rf_DW2))* corr*MI.CGcam.alpha(IL(ii).lambda);
     end
     DWx = cropParam1.angle.cos*DW1-cropParam1.angle.sin*DW2;
     DWy = cropParam1.angle.sin*DW1+cropParam1.angle.cos*DW2;
@@ -313,32 +320,26 @@ for ii = 1:Nf
     if ii>=2 && opt.displayBar
         waitbar(ii/Nf,fwb,sprintf('Image processing duration: %.3f s',toc))
     end
-    
-    if strcmpi(opt.definition,'low') % compute the correction factor in case the image is small (fast mode)
-        rx = cropParam2.R(1);
-        corr = Nx/length(round((-rx:rx-1)));
-    else
-        corr = 1;
-    end
-    
+        
     if isempty(opt.remotePath)
-        IM(ii) = ImageQLSI(Int,W*corr,MI,duplicate0(IL(ii)),imageNumber=Itfi.imageNumber);
+        IM(ii) = ImageQLSI(Int,W,MI,duplicate0(IL(ii)),imageNumber=Itfi.imageNumber);
     else
-        IM(ii) = ImageQLSI(Int,W*corr,MI,duplicate0(IL(ii)),"remotePath",opt.remotePath,"fileName",removeExtension(Itfi.fileName),imageNumber=Itfi.imageNumber);
+        IM(ii) = ImageQLSI(Int,W,MI,duplicate0(IL(ii)),"remotePath",opt.remotePath,"fileName",removeExtension(Itfi.fileName),imageNumber=Itfi.imageNumber);
     end
 
     IM(ii).Microscope = duplicate0(MI); % copy of MI because, as an handle object, MI may change for some reason after the computation of the image.
+    IM(ii).binningFactor = Itf(ii).binningFactor;
 
     if strcmpi(opt.definition,'low')
-        IM(ii).pxSizeCorrection=corr;
+        IM(ii).pxSizeCorrection = corr;
     end
     
     IM(ii) = IM(ii).setFcrops([cropParam0, cropParam1, cropParam2]);
     IM(ii) = IM(ii).setProcessingSoftware('PhaseLAB');
 
     if opt.saveGradients
-        IM(ii).DWx0 = DWx;
-        IM(ii).DWy0 = DWy;
+        IM(ii).DWx0 = DWx/IM(ii).pxSize;
+        IM(ii).DWy0 = DWy/IM(ii).pxSize;
     end
     
 %    if updateRefFcrop==1

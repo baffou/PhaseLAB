@@ -10,7 +10,7 @@ lambda = 532e-9;
 IL = Illumination(lambda,ME);
 
 %% CREATION OF A DIPOLE -- DI=Dipole(material,radius);
-radius = 75e-9;
+radius = 15e-9;
 DI = Dipole('Au',radius);
 
 %DI=DI.moveBy('x',2e-6,'z',2e-6);

@@ -842,7 +842,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     %figure,imagegb(Phi3-Phi1+acos(C));
                     %clim([-1.57 0])
                     dPhi3map = Phi3-Phi1+asin(C);
-                    dPhi3 = mean(dPhi3map(:));
+                    dPhi3 = median(dPhi3map(:));
                     %dPhi3 = Phi3-Phi1+acos(C);
     
                     phi1 = IM(ii,1).Ph;
@@ -854,8 +854,8 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     %% other polars 2 & 4
                     E1 = sqrt(T1);
                     E3 = sqrt(T3);
-                    dPhi2 = mean(mean(Phi2+unwrap(  pi/4-angle( E1.*exp(1i*phi1)+1i*E3.*exp(1i*phi3)))));
-                    dPhi4 = mean(mean(Phi4+unwrap(3*pi/4-angle(-E1.*exp(1i*phi1)+1i*E3.*exp(1i*phi3)))));
+                    dPhi2 = median(median(Phi2+unwrap(  pi/4-angle( E1.*exp(1i*phi1)+1i*E3.*exp(1i*phi3)))));
+                    dPhi4 = median(median(Phi4+unwrap(3*pi/4-angle(-E1.*exp(1i*phi1)+1i*E3.*exp(1i*phi3)))));
     
                     %% New OPD images, with the right shift
                     lambda = IM(ii, 1).Illumination.lambda;

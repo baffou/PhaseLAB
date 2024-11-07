@@ -53,6 +53,10 @@ classdef Interfero < handle & matlab.mixin.Copyable
                                                                                                    % 2 if images are not stored (only path/fileName), and to be used as a gpuArray once imported
     end
 
+    properties(Access = private)
+        binningFactor (1,1) double {mustBeInteger,mustBePositive} = 1 % in order to properly compute the pixel size of the interferogram from the Microscope properties
+    end
+
     methods
         function obj = Interfero(fileName,MI,opt)
             % obj = Interfero()
@@ -257,7 +261,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         end
 
         function val = get.pxSize(obj)
-            val = obj.Microscope.pxSize();
+            val = obj.Microscope.pxSize()*obj.binningFactor;
         end
 
         function obj = clearFcrops(obj)
@@ -647,6 +651,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 ImG(io).channel = 'G';
                 ImR(io).Itf0 = colorInterpolation(Im(io).Itf,'r');
                 ImR(io).channel = 'R';
+                
             end
            
             % List independent references
@@ -698,6 +703,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
                 Im135(io).Itf0 = polarInterpolation(Im(io).Itf,135, opt.interpolation);
                 Im135(io).channel = '45';
+
             end
            
             % List independent references

@@ -12,7 +12,7 @@ arguments
     opt.Fcrops FcropParameters
     opt.FcropShape = 'disc'
     opt.definition = 'high'
-    opt.auto = false
+    opt.auto = true
     opt.display (1,1) logical = true
     opt.Rfactor (1,1) double = 1 % multiplies the distance of the crop from the center of the image by Rfactor. Useful to crop the spots at 45°, by just setting R=sqrt(2)
 end
