@@ -639,6 +639,8 @@ classdef Interfero < handle & matlab.mixin.Copyable
             arguments
                 Im Interfero
             end
+            disp('Split polar')
+
             Ni = numel(Im);
 
             ImG=Interfero(Ni);
@@ -679,6 +681,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 Im Interfero
                 opt.interpolation {mustBeMember(opt.interpolation,{'regionfill','linear'})} = 'linear'
             end
+            disp('Split polar')
             Ni = numel(Im);
 
             Im00 = Interfero(Ni);

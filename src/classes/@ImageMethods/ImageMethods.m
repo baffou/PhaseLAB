@@ -796,10 +796,11 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             end
         end
 
-        function IM = adjustPolarOffsets(IM0,method)
+        function IM = adjustPolarOffsets(IM0,method,paus)
             arguments
                 IM0
                 method {mustBeMember(method,{'manual','auto','Manual','Auto'})} = 'Auto'
+                paus = false
             end
 
             [Nim, Nch] = size(IM0);
@@ -826,8 +827,30 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     Phi3 = IM(ii,3).Ph;
                     Phi4 = IM(ii,4).Ph;
     
+                    %C = 0.5*(T2-T4)./sqrt(T1.*T3);
                     C = 0.5*(T2-T4)./sqrt(T1.*T3);
     
+                    if paus
+                        asinC = asin(C);
+                        dphi = Phi1-Phi3;
+                        figure, plot(mean(asinC(end:2-10:end/2+10,:)),'LineWidth',1.5)
+                        hold on
+                        plot(mean(dphi(end:2-10:end/2+10,:)),'-.','LineWidth',2)
+                        %%
+                        figure, imagesc(asinC),clim([-0.05 0.05]),colorbar
+                        
+                        figure, imagesc(dphi),clim([-0.05 0.05]),colorbar%,clim([-0.05 0.05])
+                        disp(T1(end/2,end/2))
+                        disp(T2(end/2,end/2))
+                        disp(T3(end/2,end/2))
+                        disp(T4(end/2,end/2))
+                        disp(Phi1(end/2,end/2))
+                        disp(Phi2(end/2,end/2))
+                        disp(Phi3(end/2,end/2))
+                        disp(Phi4(end/2,end/2))                        
+                        pause(1)
+                    end
+
                     while any(abs(C(:)) > 1)
                         warning('some pixels feature a C>1')
                         list = find(abs(C(:))>1);

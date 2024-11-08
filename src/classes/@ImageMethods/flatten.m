@@ -52,14 +52,14 @@ for io = 1:No
             cut = opt.cut;
             invert = opt.invert;
         else
-            opt.threshold = convert_nm(opt.params.gradThresh)*1e9;
+            opt.threshold = convert_nm(opt.params.threshold)*1e9;
             nGauss = opt.params.smoothing;
             cut = opt.params.cut;
             invert = opt.params.invert;
         end
         
         mask = computeSegmentationMasks(obj(io).DWx, obj(io).DWy,...
-                                     opt.threshold, nGauss, cut, invert);
+            "threshold", opt.threshold, "smoothing", nGauss, "cut", cut, "invert", invert);
     else
         mask = ones(size(obj(io).OPD));
     end
