@@ -8,10 +8,13 @@ arguments
     opt.smoothing
     opt.cut
     opt.invert
+    opt.type char {mustBeMember(opt.type,{'OPD','T','gradients'})} = 'gradients'
 end
 
 if opt.threshold == 0
     maskFinal = logical (im1*0 + 1);
+    mask1 = [];
+    mask2 = [];
 else
 
     if ~isempty(im2)    % supposed to be two gradients
@@ -20,9 +23,13 @@ else
 
         mask1 = mask0x&mask0y;
 
-    else % supposed to be the initial image.
-
-        mask1 = abs(im1-min(im1(:))) < opt.threshold; % increase by the min of the image because supposed to be an OPD image, with negative values
+    else % supposed to be the T image.
+        switch opt.type
+            case {'OPD','gradients'}
+                mask1 = abs(im1-min(im1(:))) < opt.threshold; % subtract the min of the image because supposed to be an OPD image, with negative values
+            otherwise % 'T'
+                mask1 = abs(im1) < opt.threshold;
+        end
     end
 
 

@@ -593,6 +593,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.Center = 'Manual' % 'Auto', 'Manual' or [x, y]
                 opt.Size = 'Manual' % 'Auto', 'Manual', d or [dx, dy]
                 opt.twoPoints logical = false
+                opt.margin = 0
                 opt.params double = double.empty()
                 opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
                 opt.app = [] % figure uifigure object to be considered in case the image is already open
@@ -625,7 +626,8 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                             'params',opt.params, ...
                             'shape',opt.shape, ...
                             'displayT',opt.displayT, ...
-                            'colormap',opt.colormap);
+                            'colormap',opt.colormap, ...
+                            'margin',opt.margin);
                         params=[x1, x2, y1, y2];
                     else
                         x1 = opt.params(1);

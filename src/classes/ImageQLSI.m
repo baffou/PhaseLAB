@@ -733,7 +733,11 @@ classdef ImageQLSI   <   ImageMethods
                 error('A ImageQLSI object cannot be rotated if it is remote.')
             end
 
-        end        
+        end    
+
+        function val = gradients(obj)
+            val = obj.DWnorm;
+        end
 
         function IMout = propagation(IM, z, opt)
             % numerical propagation over the distance z

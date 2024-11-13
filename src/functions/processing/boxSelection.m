@@ -18,12 +18,14 @@ arguments
     opt.displayT logical = false
     opt.colorImage = false % if it is true, keeps the same color in pixel (1,1) after cropping
     opt.colormap = parula
+    opt.margin double {mustBeInteger} = 0
     %    opt.figure = []; % figure uifigure object to be considered in case the image is already open
 end
 
 isapp = 0;
 if isnumeric(im)
-    h=figure;imagegb(im,opt.colormap)
+    h=figure;
+    imagegb(im,opt.colormap)
     [Ny, Nx]= size(im);
     h.UserData.Axes = gca;
     fullscreen
@@ -62,7 +64,7 @@ elseif isa(im,'matlab.apps.AppBase') % is im an app, PhaseLABgui, or PhaseLABgui
 
 end
 
-
+h.Visible = false;
 
 
 
@@ -70,7 +72,7 @@ if opt.twoPoints
     if isapp
         app.displayMessage('Draw a rectangle')
     end
-
+    h.Visible = true;
     roi = drawrectangle;
     x1 = round(roi.Position(1));
     x2 = round(roi.Position(1)+roi.Position(3));
@@ -87,6 +89,11 @@ if opt.twoPoints
         end
     end
 
+elseif opt.margin ~= 0
+    x1 = 1  + opt.margin;
+    x2 = Nx - opt.margin;
+    y1 = 1  + opt.margin;
+    y2 = Ny - opt.margin;    
 elseif ~isempty(opt.xy1) && ~isempty(opt.xy2)  % crop('xy1', [a,b], 'xy2', [a,b])
     if numel(opt.xy1)~=2
         error('First input must be a 2-vector (x,y)')
@@ -107,6 +114,7 @@ else % if not twopoints
             error('the Center argument must be a 2-vector [x, y], or a char array ''Manual'' or ''Auto''.')
         end
     elseif strcmpi(opt.Center,'Manual') % crop('Center','Manual')
+        h.Visible = true;
 
         [xc_px,yc_px] = ginput(1);
 
@@ -123,6 +131,7 @@ else % if not twopoints
         yc_px = Ny/2;
     end
     if strcmpi(opt.Size,'Manual') % crop('Center','Manual')
+        h.Visible = true;
         h.UserData.getPoint = 0;
 
         rr = rectangle(h.UserData.Axes(1),'EdgeColor',[0.3 0.5 1], LineWidth=2);
@@ -203,16 +212,15 @@ else % if not twopoints
     if exist('rr','var')
         delete(rr)
     end
-    if ~isapp
-        pause(0.5)
-        close(h)
-    else
-        app.UIFigure.HandleVisibility = fhv;    % return original state
-
-    end
 end
 
+if ~isapp
+    pause(0.5)
+    close(h)
+else
+    app.UIFigure.HandleVisibility = fhv;    % return original state
 
+end
 
 end
 
@@ -258,7 +266,7 @@ else
     h.UserData.side_px = side_px;
 end
 if isa(h,'matlab.apps.AppBase')
-    title(sprintf('Size: %d µm, %d px\n',side_units,side_px))
+    h.displayMessage(sprintf('Size: %d µm, %d px\n',side_units,side_px))
 else
     title(sprintf('Size: %d px\n',side_px))
 end
