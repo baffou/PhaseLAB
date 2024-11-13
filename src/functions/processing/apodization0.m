@@ -1,7 +1,8 @@
-function [im, mask] = apodization(im0,npx)
-
-if nargin == 1
-    npx=20;
+function [im, mask, m0] = apodization0(im0,npx,m0)
+arguments
+    im0 % image to be apodized
+    npx = 20 % number of pixels of the apodized border
+    m0 = []  % mean value of the apodized border
 end
 
 %npx=100;
@@ -11,7 +12,9 @@ end
 
 mask=ones(Ny,Nx);
 
-m0=mean(im0(:));
+if isempty(m0)
+    m0 = mean(im0(:));
+end
 
 [~,hBand]=meshgrid(0:Nx-1,0:npx-1);
 vBand=meshgrid(0:npx-1,0:Ny-1);

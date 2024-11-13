@@ -670,20 +670,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             im = obj.lambda*obj.Illumination.n/pi*abs( log(obj.T)/2+1i*obj.Ph ).^2;
         end
 
-        function bool = is_empty(obj)
-            % return 1 is the object is empty, or if all the properties are empty
-            No = numel(obj);
-            val = zeros(No,1);
-            for io = 1:No
-                if isempty(obj(io))
-                    val(io) = 1;
-                else
-                    val(io) = isempty(obj(io).OPD);
-                end
-            end
-            bool = logical(val);
-        end
-
         function IM = adjustPolarOffsets2(IM0)
             % previous formalism, involving an arccos
 

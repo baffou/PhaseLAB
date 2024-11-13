@@ -10,7 +10,7 @@ lambda = 532e-9;
 IL = Illumination(lambda,ME);
 
 %% CREATION OF A DIPOLE -- DI=Dipole(material,radius);
-radius = 15e-9;
+radius = 50e-9;
 DI = Dipole('Au',radius);
 
 %DI=DI.moveBy('x',2e-6,'z',2e-6);
@@ -40,7 +40,8 @@ IM(4) = imaging(DI2,IL,MI,200);
 dynamicFigure("ph", IM(1), "ph", IM(2), "ph", IM(3), "ph", IM(4))
 fullwidth
 
-
+%%
+IM.figure
 
 
 

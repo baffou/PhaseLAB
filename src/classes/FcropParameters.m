@@ -1,4 +1,4 @@
-classdef FcropParameters  %parameters of the crop in the Fourier plane
+classdef FcropParameters < matlab.mixin.Copyable  %parameters of the crop in the Fourier plane
     
     properties
         x          double

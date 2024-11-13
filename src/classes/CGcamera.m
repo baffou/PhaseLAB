@@ -251,7 +251,7 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
 
         function obj = CGrotate(obj,beta)
             if nargout
-                obj  = duplicate0(obj);
+                obj  = Methods.duplicate(obj);
             end
 
             obj.CG.angle = beta;

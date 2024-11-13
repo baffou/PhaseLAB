@@ -36,11 +36,11 @@ for io = 1:Nim % in case NAill ~= 0, and multiple illuminations are used, ie. mu
     
     % propagation in the Fourier plane
     
-    FExg=fftshift(fft2(apodization(Exg,20)));
-    FEyg=fftshift(fft2(apodization(Eyg,20)));
+    FExg=fftshift(fft2(apodization0(Exg,20)));
+    FEyg=fftshift(fft2(apodization0(Eyg,20)));
     
-    FExgref=fftshift(fft2(apodization(Exgref,20)));
-    FEygref=fftshift(fft2(apodization(Eygref,20)));
+    FExgref=fftshift(fft2(apodization0(Exgref,20)));
+    FEygref=fftshift(fft2(apodization0(Eygref,20)));
     
     % multiplication by the mask of the orders 0 and 1
     r0 = opt.r0; % radius of the center crop in px
@@ -146,8 +146,8 @@ fwc=IM(1).Microscope.CGcam.Camera.fullWellCapacity*opt.Nim;
 
 Itf00=noiseFunction(Itf0*(fwc/2)/(Icam));
 Itf00ref=noiseFunctionRef(Itf0ref*(fwc/2)/(Icam));
-Itf=apodization(Itf00,40);
-Ref=apodization(Itf00ref,40);
+Itf=apodization0(Itf00,40);
+Ref=apodization0(Itf00ref,40);
 
 Fitf=fftshift(fft2(Itf));
 Fref=fftshift(fft2(Ref));

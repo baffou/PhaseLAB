@@ -28,12 +28,12 @@ classdef ImageQLSI   <   ImageMethods
         % comment
     end
 
-    properties(SetAccess={?Interfero,?ImageT})
+    properties(SetAccess={?Interfero,?ImageT,?Methods})
         ItfFileName
         channel (1,:) char {mustBeMember(channel,{'R','G','0','45','90','135','none'})} = 'none'
     end
 
-    properties(GetAccess = public, SetAccess={?ImageMethods,?ImageT})
+    properties(GetAccess = public, SetAccess={?ImageMethods,?ImageT,?Methods})
         TfileName
         OPDfileName
         imageNumber
@@ -44,7 +44,7 @@ classdef ImageQLSI   <   ImageMethods
     end
 
 
-    properties(Hidden,SetAccess = private)
+    properties(Hidden,SetAccess = {?Methods})
         Fcrops %3-cell FcropParameters object crops{1:3}
         processingSoftware
         avgIm = 1  % the image results from the average of avgIm images, using the plus method
@@ -577,7 +577,7 @@ classdef ImageQLSI   <   ImageMethods
             end
 
             if nargout
-                obj=duplicate0(obj0);
+                obj=copy(obj0);
             else
                 obj=obj0;
             end
@@ -928,6 +928,20 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
+        function bool = is_empty(obj)
+            % return 1 if the object is empty, or if all the properties are empty
+            No = numel(obj);
+            val = zeros(No,1);
+            for io = 1:No
+                if isempty(obj(io))
+                    val(io) = 1;
+                else
+                    val(io) = isempty(obj(io).OPD);
+                end
+            end
+            bool = logical(val);
+        end
+
         function save(objList,folder,varargin)
             % save T and/or OPD images as jpg and txt images
             % IM.save('_postprocess')  save only the OPD image
@@ -978,19 +992,7 @@ classdef ImageQLSI   <   ImageMethods
         end
 
         function write(obj,obj_in)
-            % makes obj2 = obj, but without giving a new handle
-            propList = ["T0","OPD0","DWx0","DWy0","ItfFileName",...
-                "TfileName","OPDfileName","imageNumber","folder"...
-                "Microscope","Illumination","comment","processingSoft","pxSizeCorrection"];
-
-            if numel(obj) ~= numel(obj_in) 
-                error('The input and output image lists must have the same number of elements')
-            end
-            for io = 1:numel(obj_in)
-                for propName = propList
-                    obj(io).(propName) = obj_in(io).(propName);
-                end
-            end
+            Methods.obj2obj(obj,obj_in)
         end
 
 

@@ -15,6 +15,7 @@ arguments
     opt.remotePath = []
     opt.Tnormalisation = true % or false or 'subtraction'
     opt.RemoveCameraOffset = false
+    opt.darkZoneCorrection = false
     opt.auto = true % Find automatically the spot of highest intensity
     opt.noRef = false % Do not consider the Ref interferogram to compute the DW and OPD images
     opt.CGdistanceList = []  % the grating distance was varied during the acquisition of the images list
@@ -178,9 +179,16 @@ for ii = 1:Nf
         else
             apoNpx = opt.apodization;
         end
-        [~,mask] = apodization(Itfi.Itf,apoNpx);
 
-        FIm = fftshift(fft2(Itfi.Itf.*mask));
+        % 1.
+        % [~,mask] = apodization0(Itfi.Itf,apoNpx);
+        % FIm = fftshift(fft2(Itfi.Itf.*mask));
+
+        % 2.
+        FIm = fftshift(fft2(apodization0(Itfi.Itf,apoNpx)));
+
+
+
         if Itfi.Ref.TFapo == apoNpx  % if the apo TF has already been calculated for Ref and matches the one of the Itf
             FRf = Itfi.Ref.TF;
         else   % else calculate the TF of the Ref with apodization
@@ -261,26 +269,53 @@ for ii = 1:Nf
     
     % phase gradient images
 
-%    DW1 = sign(MI.CGcam.zoom)*angle(Im_DW1.*conj(Rf_DW1))* MI.CGcam.alpha(IL(ii).lambda);
-%    DW2 = sign(MI.CGcam.zoom)*angle(Im_DW2.*conj(Rf_DW2))* MI.CGcam.alpha(IL(ii).lambda);
-    if strcmpi(opt.definition,'low') % compute the correction factor in case the image is small (fast mode)
-        rx = cropParam2.R(1);
-        corr = Nx/length(round((-rx:rx-1)));
-    else
-        corr = 1;
-    end
+    if ~opt.darkZoneCorrection
+        if strcmpi(opt.definition,'low') % compute the correction factor in case the image is small (fast mode)
+            rx = cropParam2.R(1);
+            corr = Nx/length(round((-rx:rx-1)));
+        else
+            corr = 1;
+        end
+    
+        if opt.noRef
+            DW1 = -anglefun(Im_DW1)* corr*MI.CGcam.alpha(IL(ii).lambda);
+            DW2 = -anglefun(Im_DW2)* corr*MI.CGcam.alpha(IL(ii).lambda);
+        else
+            DW1 = -anglefun(Im_DW1.*conj(Rf_DW1))* corr*MI.CGcam.alpha(IL(ii).lambda);
+            DW2 = -anglefun(Im_DW2.*conj(Rf_DW2))* corr*MI.CGcam.alpha(IL(ii).lambda);
+        end
+        DWx = cropParam1.angle.cos*DW1-cropParam1.angle.sin*DW2;
+        DWy = cropParam1.angle.sin*DW1+cropParam1.angle.cos*DW2;
 
-    if opt.noRef
-        DW1 = -anglefun(Im_DW1)* corr*MI.CGcam.alpha(IL(ii).lambda);
-        DW2 = -anglefun(Im_DW2)* corr*MI.CGcam.alpha(IL(ii).lambda);
-    else
-        DW1 = -anglefun(Im_DW1.*conj(Rf_DW1))* corr*MI.CGcam.alpha(IL(ii).lambda);
-        DW2 = -anglefun(Im_DW2.*conj(Rf_DW2))* corr*MI.CGcam.alpha(IL(ii).lambda);
-    end
-    DWx = cropParam1.angle.cos*DW1-cropParam1.angle.sin*DW2;
-    DWy = cropParam1.angle.sin*DW1+cropParam1.angle.cos*DW2;
+    else % dark zone correction
+        % from Optics Communications 402 (2017) 276–284
+        zeta = Itfi.Microscope.CGcam.zeta;
+        if strcmpi(opt.definition,'low')
+            ItfNew = Itfi.normalize(imresize(Int,zeta*size(Int)));
+        else
+            ItfNew = Itfi.normalize(Int);
+        end
+        [~,DWx_error,DWy_error] = QLSIprocess(ItfNew,IL(ii).lambda,"displayCrop",false); %Add options? 
 
-
+        IM_Ph0 = ImageQLSI(Int,Int*0,MI,IL(ii).lambda); % Zero phase
+        Itf_Ph0 = CGMinSilico(IM_Ph0);
+        [~,DWx_Ph0,DWy_Ph0] = QLSIprocess(Itf_Ph0,IL(ii).lambda,"displayCrop",false);
+        DWx = DWx_error - DWx_Ph0;
+        DWy = DWy_error - DWy_Ph0;
+        figure
+        subplot(1,2,1)
+        imagegb(DWx_error)
+        imgg = imgaussfilt(DWx_error(:),10);
+        minc = min(imgg);
+        maxc = max(imgg);
+        clim([minc, maxc])
+        title('Itf/T gradients')
+        subplot(1,2,2)
+        imagegb(DWx_Ph0)
+        clim([minc, maxc])
+        title('zero W gradients')
+    end   
+        
     % artificial aberrations
     %[Ny, Nx]=size(DWx);
     %[X,~]=meshgrid(1:Nx,1:Ny);
@@ -322,12 +357,12 @@ for ii = 1:Nf
     end
         
     if isempty(opt.remotePath)
-        IM(ii) = ImageQLSI(Int,W,MI,duplicate0(IL(ii)),imageNumber=Itfi.imageNumber);
+        IM(ii) = ImageQLSI(Int,W,MI,Methods.duplicate(IL(ii)),imageNumber=Itfi.imageNumber);
     else
-        IM(ii) = ImageQLSI(Int,W,MI,duplicate0(IL(ii)),"remotePath",opt.remotePath,"fileName",removeExtension(Itfi.fileName),imageNumber=Itfi.imageNumber);
+        IM(ii) = ImageQLSI(Int,W,MI,Methods.duplicate(IL(ii)),"remotePath",opt.remotePath,"fileName",removeExtension(Itfi.fileName),imageNumber=Itfi.imageNumber);
     end
 
-    IM(ii).Microscope = duplicate0(MI); % copy of MI because, as an handle object, MI may change for some reason after the computation of the image.
+    IM(ii).Microscope = Methods.duplicate(MI); % copy of MI because, as an handle object, MI may change for some reason after the computation of the image.
     IM(ii).binningFactor = Itf(ii).binningFactor;
 
     if strcmpi(opt.definition,'low')
