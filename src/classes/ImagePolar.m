@@ -1,7 +1,7 @@
 classdef ImagePolar   <   handle & matlab.mixin.Copyable
     % class to deal with polar QLSI images
     
-    properties(GetAccess = public, SetAccess = {?Duplicate})
+    properties(GetAccess = public, SetAccess = {?Methods})
         IM (1,4) ImageQLSI  % smoothed if smoothing ≠ 0
     end
     
@@ -18,7 +18,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         Illumination
     end
 
-    properties (Access = private)
+    properties (Access = {?Methods})
         IM0 (1,4) ImageQLSI % raw image
     end
 

@@ -554,8 +554,11 @@ classdef ImageQLSI   <   ImageMethods
         end
 
         function obj = cancelGradients(obj)
-            obj.DWx0 = [];
-            obj.DWy0 = [];
+            No = numel(obj);
+            for io = 1:No
+                obj(io).DWx0 = [];
+                obj(io).DWy0 = [];
+            end
         end
 
         function [obj, params] = level0(obj0,opt)

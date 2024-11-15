@@ -12,15 +12,18 @@ arguments
     opt.kind  (1,1) {mustBeInteger(opt.kind)} = 1 % for Chebychev
     opt.display logical = true
     opt.nGauss = 100
+    opt.smoothing = 0
     opt.cut = 0.5
     opt.invert = false
     opt.params = []
     opt.type
+    opt.cancelGradients logical = false
 end
 
 if opt.threshold == 0
     opt.display = false;
 end
+dsp = opt.display;
 % method:
 %   'Zernike'
 %   or
@@ -39,23 +42,23 @@ if strcmp(method,'Zernike') && opt.threshold ~= 0
     warning('No threshold algorithm can be applied with Zernike flattening. The threshold value is ignored.')
 end
 
-No = numel(obj);
+[No, Nch] = size(obj);
 
 for io = 1:No
-    printLoop(io,No)    
-    
+    printLoop(io,No)
+
     if ~isempty(opt.mask)
         mask = opt.mask;
     elseif (opt.threshold~=0 || ~isempty(opt.params)) && ~strcmp(method,'Zernike') % then create a mask
 
         if isempty(opt.params)
-            nGauss = opt.nGauss;
+            smoothing = opt.smoothing;
             cut = opt.cut;
             invert = opt.invert;
             type = opt.type;
         else
-            opt.threshold = convert_nm(opt.params.threshold)*1e9;
-            nGauss = opt.params.smoothing;
+            opt.threshold = opt.params.threshold;
+            smoothing = opt.params.smoothing;
             cut = opt.params.cut;
             invert = opt.params.invert;
             type = opt.params.type;
@@ -63,29 +66,31 @@ for io = 1:No
 
         switch type
             case 'gradients'
-                mask = computeSegmentationMasks(obj(io).DWx, obj(io).DWy, ...
-                    "threshold", opt.threshold, "smoothing", nGauss, "cut", cut, "invert", invert,"type",type);
+                mask = computeSegmentationMasks(obj(io,1).DWx, obj(io,1).DWy, ...
+                    "threshold", opt.threshold, "smoothing", smoothing, "cut", cut, "invert", invert,"type",type);
             case 'OPD'
-                mask = computeSegmentationMasks(obj(io).OPD, ...
-                    "threshold", opt.threshold, "smoothing", nGauss, "cut", cut, "invert", invert,"type",type);
+                mask = computeSegmentationMasks(obj(io,1).OPD, ...
+                    "threshold", opt.threshold, "smoothing", smoothing, "cut", cut, "invert", invert,"type",type);
             case 'T'
-                mask = computeSegmentationMasks(obj(io).T, ...
-                    "threshold", opt.threshold, "smoothing", nGauss, "cut", cut, "invert", invert,"type",type);
+                mask = computeSegmentationMasks(obj(io,1).T, ...
+                    "threshold", opt.threshold, "smoothing", smoothing, "cut", cut, "invert", invert,"type",type);
         end
 
     else
-        mask = ones(size(obj(io).OPD));
+        mask = ones(size(obj(io,1).OPD));
     end
 
-    obj2(io).OPD = flatten0(obj(io).OPD,method,"kind", opt.kind,...
-        "mask",mask,"nGauss",opt.nGauss,"nmax",opt.nmax, "display", opt.display);
-
-
+    for ich = 1:Nch
+        obj2(io,ich).OPD = flatten0(obj(io,ich).OPD,method,"kind", opt.kind,...
+            "mask",mask,"nGauss",opt.nGauss,"nmax",opt.nmax, "display", dsp);
+        dsp = 0;
+    end
+    dsp = opt.display;
     % cancel the gradients DWx and DWy, in case they exist,
-    %  because they are not true anymore
-    obj2(io).cancelGradients();
-
-
+    % because they are not true anymore
+    if opt.cancelGradients
+        obj2(io,ich).cancelGradients();
+    end
 
 end
 
