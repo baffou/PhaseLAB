@@ -119,17 +119,19 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             elseif obj1.Nx~=obj2.Nx || obj1.Ny~=obj2.Ny
                 error('You are trying to sum two images with different pixel numbers.')
             end
-            objs = duplicate0(obj1);
+            objs = copy(obj1);
             objs.Ex = obj1.Ex + obj2.Ex;
             objs.Ey = obj1.Ey + obj2.Ey;
             objs.Ez = obj1.Ez + obj2.Ez;
+            objs.Einc = copy(obj1.Einc);
             objs.Einc.Ex = obj1.Einc.Ex + obj2.Einc.Ex;
             objs.Einc.Ey = obj1.Einc.Ey + obj2.Einc.Ey;
             objs.Einc.Ez = obj1.Einc.Ez + obj2.Einc.Ez;
         end
 
         function objs = sum(objList) % coherent sum of the fields
-            objs = duplicate0(objList(1));
+            objs = copy(objList(1));
+            objs.Einc = copy(objList(1).Einc);
             No = numel(objList);
             for io = 2:No
                 objs = objs+objList(io);
@@ -285,8 +287,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 n = 3
             end
             if nargout
-                obj2=duplicate0(obj);
-                obj2.Einc=duplicate0(obj.Einc);
+                obj2=Methods.duplicate(obj);
             else
                 obj2=obj;
             end
@@ -368,7 +369,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
         function objList = Escat(objList0)
-            objList=duplicate0(objList0);
+            objList = copy(objList0);
 
             No=numel(objList0);
             for io=1:No
@@ -458,7 +459,8 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
 
             if nargout
-                obj=duplicate0(obj0);
+                obj = copy(obj0);
+                obj.Einc = copy(obj0.Einc);
             else
                 obj=obj0;
             end
@@ -477,7 +479,8 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             % Mirror image with an horizontal mirror
 
             if nargout
-                obj=duplicate0(obj0);
+                obj=copy(obj0);
+                obj.Einc=copy(obj0.Einc);
             else
                 obj=obj0;
             end
@@ -497,7 +500,8 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             % Mirror image with an horizontal mirror
 
             if nargout
-                obj=duplicate0(obj0);
+                obj=copy(obj0);
+                obj.Einc=copy(obj0.Einc);
             else
                 obj=obj0;
             end
@@ -517,7 +521,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             % applies a phase shift to all the components of a field, but
             % not to its Einc. Useful to articially simulate SLIM imaging.
             if nargout
-                objList=duplicate0(objList0);
+                objList=copy(objList0);
             else
                 objList=objList0;
             end
@@ -574,7 +578,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
 
             if nargout
-                IMout = duplicate0(IM); % not copy(), to also duplicate the Einc
+                IMout = Methods.duplicate(IM); % not copy(), to also duplicate the Einc
             else
                 IMout = IM;
             end
@@ -597,6 +601,21 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 IMout(io).Einc.Ey=imProp(ey0,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
             end
         end
+
+        function bool = is_empty(obj)
+            % return 1 if the object is empty, or if all the properties are empty
+            No = numel(obj);
+            val = zeros(No,1);
+            for io = 1:No
+                if isempty(obj(io))
+                    val(io) = 1;
+                else
+                    val(io) = isempty(obj(io).Ex);
+                end
+            end
+            bool = logical(val);
+        end
+
 
         function save(objList,folder,varargin)
             % save T and/or OPD images as jpg and txt images

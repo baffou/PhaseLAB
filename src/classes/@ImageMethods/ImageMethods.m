@@ -593,6 +593,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.Center = 'Manual' % 'Auto', 'Manual' or [x, y]
                 opt.Size = 'Manual' % 'Auto', 'Manual', d or [dx, dy]
                 opt.twoPoints logical = false
+                opt.margin = 0
                 opt.params double = double.empty()
                 opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
                 opt.app = [] % figure uifigure object to be considered in case the image is already open
@@ -625,7 +626,8 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                             'params',opt.params, ...
                             'shape',opt.shape, ...
                             'displayT',opt.displayT, ...
-                            'colormap',opt.colormap);
+                            'colormap',opt.colormap, ...
+                            'margin',opt.margin);
                         params=[x1, x2, y1, y2];
                     else
                         x1 = opt.params(1);
@@ -668,20 +670,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
         function im = get.Rytov(obj)
             im = obj.lambda*obj.Illumination.n/pi*abs( log(obj.T)/2+1i*obj.Ph ).^2;
-        end
-
-        function bool = is_empty(obj)
-            % return 1 is the object is empty, or if all the properties are empty
-            No = numel(obj);
-            val = zeros(No,1);
-            for io = 1:No
-                if isempty(obj(io))
-                    val(io) = 1;
-                else
-                    val(io) = isempty(obj(io).OPD);
-                end
-            end
-            bool = logical(val);
         end
 
         function IM = adjustPolarOffsets2(IM0)

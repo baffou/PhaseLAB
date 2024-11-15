@@ -51,7 +51,7 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
         f_Zeiss      = 165;  % focal length of the TL recommended by Zeiss
     end
      
-    properties(Access = private)
+    properties(Access = {?Methods}) % private
         f_brand        % tubelens recommended by the manufacturer. Used to compute the actual mgnification, which can be different from the one specified by the manufacturer if another tube lens focal length is used.        
     end
     

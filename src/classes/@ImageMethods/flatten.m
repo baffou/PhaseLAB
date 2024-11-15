@@ -15,6 +15,7 @@ arguments
     opt.cut = 0.5
     opt.invert = false
     opt.params = []
+    opt.type
 end
 
 if opt.threshold == 0
@@ -51,15 +52,27 @@ for io = 1:No
             nGauss = opt.nGauss;
             cut = opt.cut;
             invert = opt.invert;
+            type = opt.type;
         else
             opt.threshold = convert_nm(opt.params.threshold)*1e9;
             nGauss = opt.params.smoothing;
             cut = opt.params.cut;
             invert = opt.params.invert;
+            type = opt.params.type;
         end
-        
-        mask = computeSegmentationMasks(obj(io).DWx, obj(io).DWy,...
-            "threshold", opt.threshold, "smoothing", nGauss, "cut", cut, "invert", invert);
+
+        switch type
+            case 'gradients'
+                mask = computeSegmentationMasks(obj(io).DWx, obj(io).DWy, ...
+                    "threshold", opt.threshold, "smoothing", nGauss, "cut", cut, "invert", invert,"type",type);
+            case 'OPD'
+                mask = computeSegmentationMasks(obj(io).OPD, ...
+                    "threshold", opt.threshold, "smoothing", nGauss, "cut", cut, "invert", invert,"type",type);
+            case 'T'
+                mask = computeSegmentationMasks(obj(io).T, ...
+                    "threshold", opt.threshold, "smoothing", nGauss, "cut", cut, "invert", invert,"type",type);
+        end
+
     else
         mask = ones(size(obj(io).OPD));
     end
