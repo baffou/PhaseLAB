@@ -10,7 +10,7 @@ end
 
 Nvar = numel(varargin);
 
-if Nvar > 1  % Jones(im1, im2, 'P', 45, 'QWP', 30', ...)
+if Nvar > 1  % Jones0(im1, im2, 'P', 45, 'QWP', 30', ...)
     %angles in degrees
 
     % Quarter waveplate

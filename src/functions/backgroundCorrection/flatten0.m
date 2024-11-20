@@ -19,6 +19,12 @@ else
     mask = opt.mask;
 end
 
+if all(mask(:) == 0)
+    imgf = img;
+    disp('only-zero-values mask. Wrong flatten parameters')
+    return
+end
+
 if numel(opt.nmax) == 1
     condition_nmax = @(n,m) n+m <= opt.nmax;
     opt.nmax = [opt.nmax,opt.nmax];

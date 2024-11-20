@@ -115,7 +115,7 @@ else % Automatic selection
             opt.selection=1:Nif;
         end
     elseif strcmpi(acquisitionSoftware,'polarCGMcontrol')
-        ItfFileList = dir([folder opt.nickname 'ITF*.txt']);
+        ItfFileList = dir([folder opt.nickname 'ITF*.tif']);
         ItfFileNames0 = {ItfFileList.name};
         Nif = numel(ItfFileNames0);
 
@@ -268,7 +268,7 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
 
     end
 elseif strcmpi(acquisitionSoftware,'polarCGMcontrol')
-    % itf and ref look like ITF_0001_125324.txt and REF_125423.txt where
+    % itf and ref look like ITF_0001_125324.tif and REF_125423.tif where
     % the tag 125324 is unique for a reference and link to the
     % interferograms
     for rr = 1:Nrf

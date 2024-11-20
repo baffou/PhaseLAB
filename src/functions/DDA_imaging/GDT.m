@@ -17,7 +17,6 @@ end
 NPout.mesh.E0 = IL.E0;
 lambda = IL.lambda;
 NPout.Illumination = IL;
-eps = NPout.eps;
 n = IL.n;
 nS = IL.nS;
 NPout.n_ext = n;
@@ -29,14 +28,17 @@ N = NPout.mesh.N;
 
 kk = direct*2*pi/lambda;
 k0 = norm(kk);
-chi = (eps-n*n)*a*a*a;
+
+% chi = (epsmat - n*n*eye(3))*a*a*a;
+
+chi = NPout.chiTensor(n)*a*a*a;
 
 %% incoming electric field
 r12 = (n-nS)/(n+nS);
 EE0 = zeros(3*N,1);
 for ii = 1:N
     %EE0(3*ii-2:3*ii) = E0*exp(1i*n*kk*pos(ii,:)');
-    EE0(3*ii-2:3*ii) = E0*exp(1i*n*kk*pos(ii,:)')+r12*E0*exp(-1i*n*kk*pos(ii,:)');
+    EE0(3*ii-2:3*ii) = E0*exp(1i*n*kk*pos(ii,:)') + r12*E0*exp(-1i*n*kk*pos(ii,:)');
 end
 
 %% Construction of the Matrix to be inverted
@@ -50,9 +52,9 @@ for ny = 1:N
             T1 = (   R'*R -d^2*Id)/(d*d*d);
             T2 = (3*(R'*R)-d^2*Id)/(d*d*d*d);
             T3 = (3*(R'*R)-d^2*Id)/(d*d*d*d*d);
-            S0(3*ny-2:3*ny,3*nx-2:3*nx) = (-k0^2*n*n*T1-1i*n*k0*T2+T3)*exp(1i*n*k0*d);
+            S0(3*ny-2:3*ny,3*nx-2:3*nx) = chi*(-k0^2*n*n*T1-1i*n*k0*T2+T3)*exp(1i*n*k0*d);
         else
-            S0(3*ny-2:3*ny,3*nx-2:3*nx) = -4*pi/(3*a*a*a)*Id;
+            S0(3*ny-2:3*ny,3*nx-2:3*nx) = -chi*4*pi/(3*a*a*a)*Id;
         end
     end
 end
@@ -67,7 +69,7 @@ for ny = 1:N
         R = pos(nx,:)-pos(ny,:).*[1,1,-1];
         d = sqrt(R*R');
         T3 = 3*(R'*R)-d^2*Id/(d*d*d*d*d);
-        Ssurf(3*ny-2:3*ny,3*nx-2:3*nx) = T3*[[-1 0 0];[0 -1 0];[0 0 1]];
+        Ssurf(3*ny-2:3*ny,3*nx-2:3*nx) = chi*T3*[[-1 0 0];[0 -1 0];[0 0 1]];
 %        Ssurf(3*ny-2:3*ny,3*nx-2:3*nx) = T3*[[-1 0 0];[0 -1 0];[0 0 1]]*exp(1i*n*k0*d);  % in principle this exp is not put. Just to check the difference
     end
 end
@@ -77,12 +79,12 @@ end
 
 %% Calculation
 fprintf('DDA matrix inversion. Please wait...\n')
-EE = (eye(3*N)-eps0*chi*S0)\EE0;
+EE = (eye(3*N)-eps0*S0)\EE0;
 fprintf('Done.\n')
 
 NPout.mesh.EE = reshape(EE,[3,N]).';
 NPout.mesh.EE0 = reshape(EE0,[3,N]).';
-NPout.mesh.p = eps0*chi*NPout.mesh.EE;
+NPout.mesh.p = eps0*NPout.mesh.EE*chi;
 NPout.mesh.chi = chi;
 NPout.Illumination = IL;
 

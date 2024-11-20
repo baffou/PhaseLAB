@@ -785,11 +785,12 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             end
         end
 
-        function IM = adjustPolarOffsets(IM0,method,paus)
+        function IM = adjustPolarOffsets(IM0,method,opt)
             arguments
                 IM0
                 method {mustBeMember(method,{'manual','auto','Manual','Auto'})} = 'Auto'
-                paus = false
+                opt.pause = false
+                opt.polarized logical = true
             end
 
             [Nim, Nch] = size(IM0);
@@ -816,28 +817,40 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     Phi3 = IM(ii,3).Ph;
                     Phi4 = IM(ii,4).Ph;
     
-                    %C = 0.5*(T2-T4)./sqrt(T1.*T3);
-                    C = 0.5*(T2-T4)./sqrt(T1.*T3);
-    
-                    if paus
+                    S3 = 2*imag(IM(1).Illumination.polar(1)*IM(1).Illumination.polar(2)');
+                    if opt.polarized
+                        if S3 <0
+                            C = 0.5*(T2-T4)./sqrt(T1.*T3);
+                        else
+                            C = -0.5*(T2-T4)./sqrt(T1.*T3);
+                        end
+                    else
+                            C = -3.4 * -0.5*(T3-T1)./sqrt(T2.*T4);                    
+                    end
+
+                    if opt.pause
                         asinC = asin(C);
                         dphi = Phi1-Phi3;
-                        figure, plot(mean(asinC(end:2-10:end/2+10,:)),'LineWidth',1.5)
+                        asinC = asinC-mean(asinC(:));
+                        dphi = dphi - mean(dphi(:));
+                        figure
+                        subplot(1,3,1)
+                        % plot(0.64*mean(real(asinC(end/2-10:end/2+10,:))),'b','LineWidth',1.5)
+                        plot(mean(real(asinC(end/2-10:end/2+10,:))),'b','LineWidth',1.5)
                         hold on
-                        plot(mean(dphi(end:2-10:end/2+10,:)),'-.','LineWidth',2)
+                        plot(mean(dphi(end/2-10:end/2+10,:)),'r-.','LineWidth',2)
+                        legend({'asinC','Phi1-Phi3'})
+                        lims = [-1 1];
+                        ylim(lims)
                         %%
-                        figure, imagesc(asinC),clim([-0.05 0.05]),colorbar
+                        subplot(1,3,2)
+                        imagesc(real(asinC)),clim(lims),colorbar
                         
-                        figure, imagesc(dphi),clim([-0.05 0.05]),colorbar%,clim([-0.05 0.05])
-                        disp(T1(end/2,end/2))
-                        disp(T2(end/2,end/2))
-                        disp(T3(end/2,end/2))
-                        disp(T4(end/2,end/2))
-                        disp(Phi1(end/2,end/2))
-                        disp(Phi2(end/2,end/2))
-                        disp(Phi3(end/2,end/2))
-                        disp(Phi4(end/2,end/2))                        
-                        pause(1)
+                        subplot(1,3,3)
+                        imagesc(dphi),clim(lims),colorbar%,clim([-0.05 0.05])
+                        fullwidth
+                        title(ii+"/"+Nim)
+                        drawnow
                     end
 
                     while any(abs(C(:)) > 1)

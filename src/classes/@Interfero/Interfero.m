@@ -406,6 +406,8 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     end
                     obj(io).Ref = val;
                 end
+            else
+                error('The number of Ref interferos does not match the number of interferos')
             end
             if isempty(obj(1).Ref.TF)
                 %obj(1).Ref.TF = fftshift(fft2(obj(1).Ref.Itf));
@@ -863,16 +865,16 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 Im135(io) = copy(Im(io));
 
                 Im00(io).Itf0 = polarInterpolation(Im(io).Itf,0, opt.interpolation);
-                Im00(io).channel = '90';
+                Im00(io).channel = '0';
 
                 Im45(io).Itf0 = polarInterpolation(Im(io).Itf,45, opt.interpolation);
-                Im45(io).channel = '135';
+                Im45(io).channel = '45';
 
                 Im90(io).Itf0 = polarInterpolation(Im(io).Itf,90, opt.interpolation);
-                Im90(io).channel = '0';
+                Im90(io).channel = '90';
 
                 Im135(io).Itf0 = polarInterpolation(Im(io).Itf,135, opt.interpolation);
-                Im135(io).channel = '45';
+                Im135(io).channel = '135';
 
             end
            
@@ -881,7 +883,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 [RefIndep, refPosList] = independentObjects([Im.Ref]);
     
                 % split the polars of these list of independent references
-                [Ref0,Ref45,Ref90,Ref135]=splitPolars(RefIndep);
+                [Ref0,Ref45,Ref90,Ref135] = splitPolars(RefIndep);
     
                 % Re-assign the proper Ref to all the interferograms
                 Im00.Reference(Ref0(refPosList));
@@ -972,6 +974,18 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 objG = [objG(:) objR(:)];
             end
 
+        end
+
+        function obj2 = removeRef(obj)
+            if nargout
+                obj2 = copy(obj);
+            else
+                obj2 = obj;
+            end
+            No = numel(obj);
+            for io = 1:No
+                obj(io).Ref = Interfero.empty();
+            end
         end
 
         function obj2 = removeOffset(obj,val)

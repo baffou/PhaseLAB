@@ -17,7 +17,7 @@ switch polar
         mask = ones(size(Im));
         mask(2:2:end,2:2:end) = 0;
     case 45
-        ny = 2; nx = 3;
+        ny = 3; nx = 2;
         mask = ones(size(Im));
         mask(2:2:end,1:2:end) = 0;
     case 90
@@ -25,7 +25,7 @@ switch polar
         mask = ones(size(Im));
         mask(1:2:end,1:2:end) = 0;
     case 135
-        ny = 3; nx = 2;
+        ny = 2; nx = 3;
         mask = ones(size(Im));
         mask(1:2:end,2:2:end) = 0;
 end
