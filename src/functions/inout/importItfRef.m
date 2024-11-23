@@ -273,16 +273,20 @@ elseif strcmpi(acquisitionSoftware,'polarCGMcontrol')
     % interferograms
     for rr = 1:Nrf
         REF(rr) = Interfero([folder RefFileNames{rr}],MI(1),'remote',opt.remote,'channel',opt.channel,'gpu',opt.gpu);
-        tags.("r"+RefFileNames{rr}(end-9:end-4)) = rr;  % tags.r152354 = 1;
+        minIndex = find(RefFileNames{rr}=='_',1,'last');
+        maxIndex = find(RefFileNames{rr}=='.',1,'last')-1;
+        tags.("r"+RefFileNames{rr}(minIndex:maxIndex)) = rr;  % tags.r152354 = 1;
     end
 
     for ii = 1:Nif
         fprintf([ItfFileNames{ii} '\n'])
         %            fprintf([folder ItfFileNames{ii} '\n'])
-        INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI(nimMI(ii)),'remote',opt.remote,'imageNumber',opt.selection(ii),'channel',opt.channel,'gpu',opt.gpu);
+        INT(ii) = Interfero([folder ItfFileNames{ii}],MI(nimMI(ii)),'remote',opt.remote,'imageNumber',opt.selection(ii),'channel',opt.channel,'gpu',opt.gpu);
         INT(ii).Microscope = MI(nimMI(ii));
         if Nrf ~= 0
-            tag  =  tags.("r"+ItfFileNames{ii}(end-9:end-4));
+            minIndex = find(ItfFileNames{ii}=='_',1,'last');
+            maxIndex = find(ItfFileNames{ii}=='.',1,'last')-1;
+            tag = tags.("r"+ItfFileNames{ii}(minIndex:maxIndex));
             try
                 INT(ii).Reference(REF(tag));
             catch

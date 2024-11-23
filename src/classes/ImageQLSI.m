@@ -819,7 +819,7 @@ classdef ImageQLSI   <   ImageMethods
 
         end
 
-        function [objList2,mask0] = spotRemoval(objList,mask)
+        function [objList2,mask0] = removeFringes(objList,mask)
             No = numel(objList);
             if nargout
                 objList2 = copy(objList);
@@ -831,15 +831,15 @@ classdef ImageQLSI   <   ImageMethods
             obj = objList(io);
 
             if nargin == 1
-                [objList2(io).OPD0, mask0] = spotRemoval0(obj.OPD);
+                [objList2(io).OPD0, mask0] = removeFringes0(obj.OPD);
             else % mask specified
-                objList2(io).OPD0 = spotRemoval0(obj.OPD,mask);
+                objList2(io).OPD0 = removeFringes0(obj.OPD,mask);
                 mask0 = mask;
             end
 
             for io = 2:No
                 obj = objList(io);
-                objList2(io).OPD0 = spotRemoval0(obj.OPD,mask0);
+                objList2(io).OPD0 = removeFringes0(obj.OPD,mask0);
             end
         end
 

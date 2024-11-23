@@ -511,7 +511,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         end
             
 
-        function [objList,mask0] = spotRemoval(objList0,mask)
+        function [objList,mask0] = removeFringes(objList0,mask)
 
             if nargout>=1
                 objList=Methods.duplicate(objList0);
@@ -523,19 +523,19 @@ classdef Interfero < handle & matlab.mixin.Copyable
             obj = objList(1);
 
             if nargin==1 % no predefined mask
-                [objList(1).Itf0, mask0] = spotRemoval0(objList0(1).Itf);
-                objList(1).Ref.Itf0 = spotRemoval0(objList0(1).Ref.Itf,mask0);
+                [objList(1).Itf0, mask0] = removeFringes0(objList0(1).Itf);
+                objList(1).Ref.Itf0 = removeFringes0(objList0(1).Ref.Itf,mask0);
                 
             elseif nargin==2 % predefined mask
-                [obj.Itf0, mask0] = spotRemoval0(obj.Itf,mask);
-                obj.Ref.Itf0 = spotRemoval0(obj.Ref.Itf,mask);
+                [obj.Itf0, mask0] = removeFringes0(obj.Itf,mask);
+                obj.Ref.Itf0 = removeFringes0(obj.Ref.Itf,mask);
             else
                 error('not the proper number of inputs')
             end
 
             % applies the mask on the other Interfero objects of the list.
             for io = 2:numel(objList)
-                objList(io).spotRemoval(mask0)
+                objList(io).removeFringes(mask0)
             end
 
         end

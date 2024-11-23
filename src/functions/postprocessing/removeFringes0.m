@@ -1,4 +1,4 @@
-function [img,mask0] = spotRemoval0(img0,mask)
+function [img,mask0] = removeFringes0(img0,mask)
 % remove spots in the Fourier space of an image in order to remove periodic
 % artefacts
 
