@@ -1,4 +1,4 @@
-function OptProp = CSfromAlpha(alpha,lambda,n_ext)
+function OptProp = alpha2CS(alpha,lambda,n_ext)
 
 k0 = 2*pi./lambda;
 

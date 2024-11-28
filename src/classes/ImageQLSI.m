@@ -1,11 +1,11 @@
-%% NPimaging package
-% Class that defines an experimental image acquired by QLSI
-
-% author: Guillaume Baffou
-% affiliation: CNRS, Institut Fresnel
-% date: Jul 31, 2019
 
 classdef ImageQLSI   <   ImageMethods
+
+    % Class that defines an experimental image acquired by QLSI
+
+    % author: Guillaume Baffou
+    % affiliation: CNRS, Institut Fresnel
+    % date: Jul 31, 2019
 
     %    properties(GetAccess = public, SetAccess = private)
     properties(Dependent)
@@ -17,6 +17,7 @@ classdef ImageQLSI   <   ImageMethods
         Ph      % Phase image
         Nx
         Ny
+        E       % sqrt(T)
     end
 
     properties(Access = public, Hidden)
@@ -27,12 +28,12 @@ classdef ImageQLSI   <   ImageMethods
         % comment
     end
 
-    properties(SetAccess={?Interfero,?ImageT})
+    properties(SetAccess={?Interfero,?ImageT,?Methods})
         ItfFileName
         channel (1,:) char {mustBeMember(channel,{'R','G','0','45','90','135','none'})} = 'none'
     end
 
-    properties(GetAccess = public, SetAccess={?ImageMethods,?ImageT})
+    properties(GetAccess = public, SetAccess={?ImageMethods,?ImageT,?Methods})
         TfileName
         OPDfileName
         imageNumber
@@ -43,7 +44,7 @@ classdef ImageQLSI   <   ImageMethods
     end
 
 
-    properties(Hidden,SetAccess = private)
+    properties(Hidden,SetAccess = {?Methods})
         Fcrops %3-cell FcropParameters object crops{1:3}
         processingSoftware
         avgIm = 1  % the image results from the average of avgIm images, using the plus method
@@ -51,6 +52,8 @@ classdef ImageQLSI   <   ImageMethods
 
     methods
         function obj = ImageQLSI(INT,OPD,MI,IL,opt)
+            % obj = ImageQLSI(INT,OPD,MI,IL,opt)
+
             arguments
                 INT = []     % fileName or Matrix
                 OPD = []     % fileName or Matrix
@@ -63,7 +66,7 @@ classdef ImageQLSI   <   ImageMethods
 
             if isa(INT,'ImageEM')
                 Nim = numel(INT);
-                obj = ImageQLSI(Nim);
+                obj = repmat(ImageQLSI(1),size(INT));
                 objEM=INT;
                 for ii = 1:Nim
                     obj(ii) = ImageQLSI(objEM(ii).T,objEM(ii).OPD,objEM(ii).Microscope,objEM(ii).Illumination);
@@ -160,6 +163,10 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
+        function val = get.E(obj)
+            val = sqrt(obj.T);
+        end
+
         function set.T(obj,val)
             if isnumeric(val) % input is a matrix
                 if isnumeric(obj.T0)
@@ -200,16 +207,19 @@ classdef ImageQLSI   <   ImageMethods
         end
 
         function val = get.DWx(obj)
+            % Returns the OPD gradient along x
             if isempty(obj.DWx0)
-                val = imgradientxy(obj.OPD);
+                val = ( obj.OPD - obj.OPD(1:end,[end 1:end-1]) ) / obj.pxSize;
+                % imgradientxy(I) does not work properly. Gives a weird results...
             else
                 val = obj.DWx0;
             end
         end
 
         function val = get.DWy(obj)
+            % Returns the OPD gradient along y
             if isempty(obj.DWy0)
-                [~, val] = imgradientxy(obj.OPD);
+                val = ( obj.OPD - obj.OPD([end 1:end-1], 1:end) ) / obj.pxSize;
             else
                 val = obj.DWy0;
             end
@@ -265,6 +275,22 @@ classdef ImageQLSI   <   ImageMethods
             end
             for io=1:numel(obj)
                 obj2(io).OPD = highPassFilter(obj(io).OPD,nCrop);
+            end
+
+        end
+
+        function obj2 = lowPassFilter(obj,nCrop)
+            arguments
+                obj
+                nCrop double = 10
+            end
+            if nargout
+                obj2=copy(obj);
+            else
+                obj2=obj;
+            end
+            for io=1:numel(obj)
+                obj2(io).OPD = lowPassFilter(obj(io).OPD,nCrop);
             end
 
         end
@@ -431,12 +457,12 @@ classdef ImageQLSI   <   ImageMethods
             else
                 INT = intsum/Nim;
             end
-            OPD = OPDsum/Nim;
-            DWx = DWxsum/Nim;
-            DWy = DWysum/Nim;
-            IMout = ImageQLSI(INT,OPD,IM(1).Microscope,IM(1).Illumination);
-            IMout.DWx0 = DWx;
-            IMout.DWy0 = DWy;
+            OPDn = OPDsum/Nim;
+            DWxn = DWxsum/Nim;
+            DWyn = DWysum/Nim;
+            IMout = ImageQLSI(INT,OPDn,IM(1).Microscope,IM(1).Illumination);
+            IMout.DWx0 = DWxn;
+            IMout.DWy0 = DWyn;
             IMout.Microscope = IM.Microscope;
             IMout.TfileName = 'Average images';
             IMout.OPDfileName = 'Average images';
@@ -527,138 +553,17 @@ classdef ImageQLSI   <   ImageMethods
 
         end
 
-        function [obj2, mask] = flatten(obj,method,opt)
-        arguments
-            obj (1,:) ImageMethods
-            method (1,:) char {mustBeMember(method,{'Waves','Sine','Zernike','Chebyshev','Hermite','Legendre','Gaussian'})} = 'Gaussian'
-            opt.nmax (1,1) {mustBeInteger(opt.nmax)} = 2
-            opt.threshold double = 0 % if not zero, segment the cells and create a mask
-            opt.kind  (1,1) {mustBeInteger(opt.kind)} = 1 % for Chebychev
-            opt.display logical = false
-            opt.nGauss = 100
-        end
-        
-        % method:
-        %   'Zernike'
-        %   or
-        %   'Waves', 'Wave', 'Sine', 'sine'     (by default)
-        %   or
-        %   'Chebyshev
-        
-        if nargout
-            obj2=copy(obj);
-        else
-            obj2=obj;
-        end
-        
-        
-        if strcmp(method,'Zernike') && opt.threshold ~= 0
-            warning('No threshold algorithm can be applied with Zernike flattening. The threshold value is ignored.')
-        end
-        
-        No = numel(obj);
-        for io = 1:No
-        
-            if opt.threshold~=0 && ~strcmp(method,'Zernike') % then create a mask
-
-                mask0 = abs(obj(io).DWx) > opt.threshold*1e-9;
-                IMxm = obj(io).DWx.*mask0;
-                
-                mask0 = abs(obj(io).DWy) > opt.threshold*1e-9;
-                IMym = obj(io).DWy.*mask0;
-
-                
-                N = 3;
-                Tikh = 1e-5;
-                
-                x = (1:size(IMxm,2))';
-                y = (1:size(IMym,1))';
-                opt.Smatrix = g2sTikhonovRTalpha(x,y,N);
-                W = g2sTikhonovRT(IMxm,IMym,opt.Smatrix,Tikh);
-
-                %avgBG = mean(mean(W(~mask0)));
-                %W = W-avgBG;
-                %mask = W<opt.threshold*10*1e-9;
-
-                %mask = ~mask0;
-                mask = conv2(mask0,ones(10),"same")<1;
-
-                dynamicFigure('ph',obj(io).OPD,'ph',W,'bw',double(mask0),'bw',double(mask),'nm',[2,2],'titles',{'original W','thresholded W','mask0','mask'})
-                fullscreen
-                
-            else
-                mask = ones(obj(io).Ny, obj(io).Nx)==1;
-            end
-        
-            if strcmpi(method,'Chebyshev') && opt.kind == 2
-                method='Chebyshev2';
-            end
-        
-        
-            if strcmp(method,'Zernike')
-                temp=obj(io).OPD;
-                for n = 1:opt.nmax
-                    for m = mod(n,2):2:n
-                        temp = ZernikeRemoval(temp,n,m); % use a temp image to avoid writing several times on the HDD in remote mode.
-                    end
-                end
-                obj2(io).OPD=temp;
-            elseif strcmp(method,'Waves') || strcmp(method,'Sine')
-                temp=obj(io).OPD;
-                for n = 1:opt.nmax
-                    temp = SineRemoval(temp,n,mask);
-                end
-                obj2(io).OPD=temp;
-            elseif  strcmp(method,'Gaussian')
-                obj2(io).OPD=obj2(io).OPD-imgaussfilt(obj(io).OPD,opt.nGauss);
-            else  
-        
-                temp=obj(io).OPD;
-        
-                for n = 0:opt.nmax
-                    for m = 0:opt.nmax
-                        if n+m <= opt.nmax
-                            temp = polynomialRemoval(temp,method,n,m,'mask',mask);
-                        end
-                    end
-                end
-                obj2(io).OPD=temp;
-            end
-            
-            
-            if opt.threshold~=0 && ~strcmp(method,'Zernike')
-                if opt.display
-                    subplot(2,2,4)
-                    imageph(temp)
-                    title('final image')
-                    colormap(Pradeep)
-                    %climSym
-                    subplot(2,2,3)
-                    imageph(obj(io).OPD)
-                    title('initial image')
-                    colormap(Pradeep)
-                    %climSym
-                    subplot(2,2,2)
-                    imageph(temp.*mask+(1-mask).*max(temp(:)))
-                    title('considered area')
-                    fullscreen
-                    drawnow
-                end
-            end
-            % cancel the gradients DWx and DWy, in case they exist,
-            %  because they are not true anymore
-            obj2(io).cancelGradients();
-            close all            
-        end
-
-        end
-
         function obj = cancelGradients(obj)
-            obj.DWx0 = [];
-            obj.DWy0 = [];
+            No = numel(obj);
+            for io = 1:No
+                obj(io).DWx0 = [];
+                obj(io).DWy0 = [];
+            end
         end
 
         function [obj, params] = level0(obj0,opt)
+            % applies an offset to an image so that the average value of th
+            % selected area is zero (or opt.value).
             arguments
                 obj0
                 opt.method (1,:) char {mustBeMember(opt.method,{'mean','average','median','boundaryMedian'})}= 'mean'
@@ -671,10 +576,11 @@ classdef ImageQLSI   <   ImageMethods
                 opt.params double = double.empty() % = [x1, x2, y1, y2]
                 opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
                 opt.app matlab.apps.AppBase = PhaseLABgui.empty()
+                opt.value (1,1) double = 0 % in case the value should be different from zero
             end
 
             if nargout
-                obj=duplicate(obj0);
+                obj=copy(obj0);
             else
                 obj=obj0;
             end
@@ -722,7 +628,7 @@ classdef ImageQLSI   <   ImageMethods
                     error('unkown option')
                 end
 
-                obj(io).OPD = obj(io).OPD-offsetFunction(obj(io).OPD(y1:y2,x1:x2));
+                obj(io).OPD = obj(io).OPD-offsetFunction(obj(io).OPD(y1:y2,x1:x2)) + opt.value;
                 if ~isempty(opt.app)
                     opt.app.updateImages()
                 end
@@ -830,7 +736,11 @@ classdef ImageQLSI   <   ImageMethods
                 error('A ImageQLSI object cannot be rotated if it is remote.')
             end
 
-        end        
+        end    
+
+        function val = gradients(obj)
+            val = obj.DWnorm;
+        end
 
         function IMout = propagation(IM, z, opt)
             % numerical propagation over the distance z
@@ -909,7 +819,7 @@ classdef ImageQLSI   <   ImageMethods
 
         end
 
-        function [objList2,mask0] = spotRemoval(objList,mask)
+        function [objList2,mask0] = removeFringes(objList,mask)
             No = numel(objList);
             if nargout
                 objList2 = copy(objList);
@@ -921,15 +831,15 @@ classdef ImageQLSI   <   ImageMethods
             obj = objList(io);
 
             if nargin == 1
-                [objList2(io).OPD0, mask0] = spotRemoval0(obj.OPD);
+                [objList2(io).OPD0, mask0] = removeFringes0(obj.OPD);
             else % mask specified
-                objList2(io).OPD0 = spotRemoval0(obj.OPD,mask);
+                objList2(io).OPD0 = removeFringes0(obj.OPD,mask);
                 mask0 = mask;
             end
 
             for io = 2:No
                 obj = objList(io);
-                objList2(io).OPD0 = spotRemoval0(obj.OPD,mask0);
+                objList2(io).OPD0 = removeFringes0(obj.OPD,mask0);
             end
         end
 
@@ -952,22 +862,25 @@ classdef ImageQLSI   <   ImageMethods
         end
 
         function [objT, GreenFunction, GreenT_z0] = TMPprocess(obj,Med,opt)
+
             arguments
-                obj ImageQLSI
-                Med MediumT
-                opt.g (1,1) double = 1
-                opt.nLoop (1,1) double = 1
-                opt.alpha (1,1) double = 1e-5
-                opt.smoothing (1,1) double = 0
-                opt.imExpander (1,1) logical = false
-                opt.T0 (1,1) double = 22
-                opt.zT (1,1) double = 0
-                opt.GreenOPD (:,:) double = []
-                opt.GreenT_z0  (:,:) double = []
-                opt.GreenT_3D  (:,:,:) double = []
+                obj             ImageQLSI
+                Med             MediumT
+                opt.g           (1,1) double   = 1
+                opt.nLoop       (1,1) double   = 1
+                opt.alpha       (1,1) double   = 1e-5
+                opt.smoothing   (1,1) double   = 0
+                opt.imExpander  (1,1) logical  = true
+                opt.T0          (1,1) double   = 22
+                opt.zT          (1,1) double   = 0
+                opt.GreenOPD    (:,:) double   = []
+                opt.GreenT_z0   (:,:) double   = []
+                opt.GreenT_3D   (:,:,:) double = []
             end
+
             No = numel(obj);
             objT = repmat(ImageT,No,1);
+
             for io = 1:No
                 [tmp, hsd, GreenFunction,GreenT_z0] = opd2tmp0(obj(io).OPD,obj(io).Microscope,Med,'g',opt.g,'nLoop',...
                     opt.nLoop,'alpha',opt.alpha,'smoothing',opt.smoothing,...
@@ -979,6 +892,7 @@ classdef ImageQLSI   <   ImageMethods
                 objT(io).Microscope = obj(io).Microscope;
                 objT(io).Illumination = obj(io).Illumination;
             end
+
         end
 
         function obj2List = download(objList)
@@ -991,6 +905,48 @@ classdef ImageQLSI   <   ImageMethods
                 %obj2List(io).DWx0=objList(io).DWx;
                 %obj2List(io).DWy=objList(io).DWy;
             end
+        end
+
+        function IMout = ImageEM(IM,IMref)
+            % converts a polarization resolved, experimental set of QLSI
+            % images into a ImageEM object.
+            arguments
+                IM (:,4) ImageQLSI
+                IMref (1,1) ImageEM
+            end
+            Nim = size(IM,1);
+            IMout = ImageEM(Nim);
+
+            % ref field
+                
+            for ii = 1:Nim
+                Ex = IM(ii,1).E.*exp(1i*IM(ii,1).Ph);
+                Ey = IM(ii,3).E.*exp(1i*IM(ii,3).Ph);
+                Ez = Ey*0;
+                if isempty(IMref)
+                    IMout(ii) = ImageEM(Ex, Ey, Ez);
+                else
+                    dphx = exp(1i*angle(IMref.Ex));
+                    dphy = exp(1i*angle(IMref.Ey));
+                    IMout(ii) = ImageEM(Ex.*dphx, Ey.*dphy, Ez, IMref.Ex, IMref.Ey, IMref.Ez); % multiply by the Eref because each image has been normalized so that the phase is close to zero in average on each image, even with a ciruclar polarization.
+                end
+                IMout(ii).Microscope = IM(ii,1).Microscope;
+                IMout(ii).Illumination = IM(ii,1).Illumination;
+            end
+        end
+
+        function bool = is_empty(obj)
+            % return 1 if the object is empty, or if all the properties are empty
+            No = numel(obj);
+            val = zeros(No,1);
+            for io = 1:No
+                if isempty(obj(io))
+                    val(io) = 1;
+                else
+                    val(io) = isempty(obj(io).OPD);
+                end
+            end
+            bool = logical(val);
         end
 
         function save(objList,folder,varargin)
@@ -1043,19 +999,7 @@ classdef ImageQLSI   <   ImageMethods
         end
 
         function write(obj,obj_in)
-            % makes obj2 = obj, but without giving a new handle
-            propList = ["T0","OPD0","DWx0","DWy0","ItfFileName",...
-                "TfileName","OPDfileName","imageNumber","folder"...
-                "Microscope","Illumination","comment","processingSoft","pxSizeCorrection"];
-
-            if numel(obj) ~= numel(obj_in) 
-                error('The input and output image lists must have the same number of elements')
-            end
-            for io = 1:numel(obj_in)
-                for propName = propList
-                    obj(io).(propName) = obj_in(io).(propName);
-                end
-            end
+            Methods.obj2obj(obj,obj_in)
         end
 
 

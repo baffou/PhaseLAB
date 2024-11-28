@@ -21,7 +21,7 @@ V=XX*sind(opt.thetaGrating)+YY*cosd(opt.thetaGrating);
 Ref=sqrt(I0)*exp(-1i*(2*pi*(V)/opt.freq)); % supposed to be polarized along y
 Itf00=abs(IM.Ey+Ref).^2 + abs(IM.Ex).^2;
 
-Itf0=apodization(Itf00,40);
+Itf0=apodization0(Itf00,40);
 %figure
 %imagegb(Itf0)
 

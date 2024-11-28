@@ -40,6 +40,8 @@ for ii = 1:Npanels
             h.UserData.fun{ii} = @imagebk;
         case {'fl'}
             h.UserData.fun{ii} = @imagefl;
+        case {'dx'}
+            h.UserData.fun{ii} = @opendx;
         case {'hsv'}
             h.UserData.fun{ii} = @imagehsv;
 %        case 'dx'  % does not work
@@ -50,7 +52,7 @@ for ii = 1:Npanels
         case {'pattern','nm'}
             h.UserData.nm = varargin{2*ii};
             notAdisplay = notAdisplay + 1;
-        case {'range','zrange'}
+        case {'range','zrange','clim'}
             h.UserData.range = varargin{2*ii};
             notAdisplay = notAdisplay + 1;
         otherwise
@@ -64,6 +66,9 @@ if isempty(h.UserData.nm)
     h.UserData.nm = [1, Npanels];  % n*m panels
 end
 
+if isnumeric(h.UserData.range)
+    h.UserData.range = repmat({h.UserData.range}, Npanels, 1);
+end
 
 % extraction of the images from the objects
 h.UserData.imageList = cell(Npanels,1);
@@ -88,7 +93,7 @@ for ii = 1:Npanels
         case {'double','gpuArray'}
             Nim = size(varargin{2*ii},3);
             if Nim == 1  % 2D image
-                h.UserData.imageList{ii} = varargin{2*ii};
+                h.UserData.imageList{ii} = {varargin{2*ii}};
             else   % stack of 2D image
                 h.UserData.imageList{ii} = cell(Nim,1);
                 for im = 1:Nim

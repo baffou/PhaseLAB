@@ -1,4 +1,4 @@
-function obj2 = duplicate(obj)
+function obj2 = duplicate0(obj)
 % duplicates and object while duplicating all its noncopyable
 % handle properties as well, which the copy method does not do.
 
@@ -15,7 +15,7 @@ if ~ isempty(obj) % isempty can happen with the Einc property of the reference I
             if isobject(prop)
                 %if isempty(prop)
                 %propList{ip}
-                obj2(io).(propList{ip}) = duplicate(obj(io).(propList{ip}));
+                obj2(io).(propList{ip}) = duplicate0(obj(io).(propList{ip}));
                 %end
 
             end

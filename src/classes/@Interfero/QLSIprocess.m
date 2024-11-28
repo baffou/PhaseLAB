@@ -15,11 +15,15 @@ arguments
     opt.remotePath = []
     opt.Tnormalisation = true % or false or 'subtraction'
     opt.RemoveCameraOffset = false
+    opt.darkZoneCorrection = false
     opt.auto = true % Find automatically the spot of highest intensity
     opt.noRef = false % Do not consider the Ref interferogram to compute the DW and OPD images
     opt.CGdistanceList = []  % the grating distance was varied during the acquisition of the images list
     opt.resetCrops   logical = false % reset crops between each image calculation, to make sure the algorithm enable the user to click for each image, or force the detection of the spot for each image in the auto mode.
     opt.unwrap (1,1) logical = false % use unwrapping. Slows down a bit the processing.
+    opt.displayCrop (1,1) logical = true % display the crops, even when automatic
+    opt.displayBar (1,1) logical = true % display the progression bar in case of multiple images
+    opt.Rfactor (1,1) double = 1 % multiplies the distance of the crop from the center of the image by Rfactor. Useful to crop the spots at 45°, by just setting R=sqrt(2)
 end
 Nf = numel(Itf);
 %% Shaping of the Illumination object(s)
@@ -118,13 +122,14 @@ for ii = 1:Nf
         Itfi = Itf(ii);
     end
     
-    if ii==2
+
+    if ii==2 && opt.displayBar
         fwb = waitbar(0,'1','Name','Image processing...',...
             'CreateCancelBtn','setappdata(gcbf,''canceling'',1)');
         setappdata(fwb,'canceling',0);
     end
     
-    if ii>=2
+    if ii>=2 && opt.displayBar
         if getappdata(fwb,'canceling')
             break
         end
@@ -174,9 +179,16 @@ for ii = 1:Nf
         else
             apoNpx = opt.apodization;
         end
-        [~,mask] = apodization(Itfi.Itf,apoNpx);
 
-        FIm = fftshift(fft2(Itfi.Itf.*mask));
+        % 1.
+        % [~,mask] = apodization0(Itfi.Itf,apoNpx);
+        % FIm = fftshift(fft2(Itfi.Itf.*mask));
+
+        % 2.
+        FIm = fftshift(fft2(apodization0(Itfi.Itf,apoNpx)));
+
+
+
         if Itfi.Ref.TFapo == apoNpx  % if the apo TF has already been calculated for Ref and matches the one of the Itf
             FRf = Itfi.Ref.TF;
         else   % else calculate the TF of the Ref with apodization
@@ -209,25 +221,39 @@ for ii = 1:Nf
         pause(1)
     end
 
-    [FImc,FRfc,cropParam0] = FourierCrop(FIm,FRf,zeta,Fcrops=cropParam0,definition=opt.definition,FcropShape=opt.Fcropshape,auto=opt.auto);
+    [FImc,FRfc,cropParam0] = FourierCrop(FIm,FRf,zeta, ...
+        'Fcrops',cropParam0, ...
+        'definition',opt.definition, ...
+        'FcropShape',opt.Fcropshape, ...
+        'auto',opt.auto, ...
+        'display',opt.displayCrop, ...
+        'Rfactor',opt.Rfactor);
 
     Im_int = ifft2(ifftshift(FImc));
     Rf_int = ifft2(ifftshift(FRfc));
 
-    %    fprintf('FIRST ORDER ALONG XD\n')
+    % fprintf('FIRST ORDER ALONG XD\n')
     cropParam1.R = cropParam0.R;
     cropParam2.R = cropParam0.R;
-    [FImc,FRfc,cropParam1] = FourierCrop(FIm,FRf,Fcrops=cropParam1,definition=opt.definition,FcropShape=opt.Fcropshape,auto=opt.auto);
-    
-
-    %figure('Name','QLSIprocess.m/ TF Fourier crop 1st order'),imagetf(FImc)
+    [FImc,FRfc,cropParam1] = FourierCrop(FIm,FRf,zeta, ...
+        'Fcrops',cropParam1, ...
+        'definition',opt.definition, ...
+        'FcropShape',opt.Fcropshape, ...
+        'auto',opt.auto, ...
+        'display',opt.displayCrop, ...
+        'Rfactor',opt.Rfactor);
     
     Im_DW1 = ifft2(ifftshift(FImc));
     Rf_DW1 = ifft2(ifftshift(FRfc));
 
     % fprintf('FIRST ORDER ALONG YD\n')
     cropParam2 = cropParam1.rotate90();
-    [FImc,FRfc,cropParam2] = FourierCrop(FIm,FRf,Fcrops=cropParam2,definition=opt.definition,FcropShape=opt.Fcropshape);
+    [FImc,FRfc,cropParam2] = FourierCrop(FIm,FRf,zeta, ...
+        'Fcrops',cropParam2, ...
+        'definition',opt.definition, ...
+        'FcropShape',opt.Fcropshape, ...
+        'display',opt.displayCrop, ...
+        'Rfactor',opt.Rfactor);
     
     Im_DW2 = ifft2(ifftshift(FImc));
     Rf_DW2 = ifft2(ifftshift(FRfc));
@@ -243,19 +269,53 @@ for ii = 1:Nf
     
     % phase gradient images
 
-%    DW1 = sign(MI.CGcam.zoom)*angle(Im_DW1.*conj(Rf_DW1))* MI.CGcam.alpha(IL(ii).lambda);
-%    DW2 = sign(MI.CGcam.zoom)*angle(Im_DW2.*conj(Rf_DW2))* MI.CGcam.alpha(IL(ii).lambda);
-    if opt.noRef
-        DW1 = -anglefun(Im_DW1)* MI.CGcam.alpha(IL(ii).lambda);
-        DW2 = -anglefun(Im_DW2)* MI.CGcam.alpha(IL(ii).lambda);
-    else
-        DW1 = -anglefun(Im_DW1.*conj(Rf_DW1))* MI.CGcam.alpha(IL(ii).lambda);
-        DW2 = -anglefun(Im_DW2.*conj(Rf_DW2))* MI.CGcam.alpha(IL(ii).lambda);
-    end
-    DWx = cropParam1.angle.cos*DW1-cropParam1.angle.sin*DW2;
-    DWy = cropParam1.angle.sin*DW1+cropParam1.angle.cos*DW2;
+    if ~opt.darkZoneCorrection
+        if strcmpi(opt.definition,'low') % compute the correction factor in case the image is small (fast mode)
+            rx = cropParam2.R(1);
+            corr = Nx/length(round((-rx:rx-1)));
+        else
+            corr = 1;
+        end
+    
+        if opt.noRef
+            DW1 = -anglefun(Im_DW1)* corr*MI.CGcam.alpha(IL(ii).lambda);
+            DW2 = -anglefun(Im_DW2)* corr*MI.CGcam.alpha(IL(ii).lambda);
+        else
+            DW1 = -anglefun(Im_DW1.*conj(Rf_DW1))* corr*MI.CGcam.alpha(IL(ii).lambda);
+            DW2 = -anglefun(Im_DW2.*conj(Rf_DW2))* corr*MI.CGcam.alpha(IL(ii).lambda);
+        end
+        DWx = cropParam1.angle.cos*DW1-cropParam1.angle.sin*DW2;
+        DWy = cropParam1.angle.sin*DW1+cropParam1.angle.cos*DW2;
 
+    else % dark zone correction
+        % from Optics Communications 402 (2017) 276–284
+        zeta = Itfi.Microscope.CGcam.zeta;
+        if strcmpi(opt.definition,'low')
+            ItfNew = Itfi.normalize(imresize(Int,zeta*size(Int)));
+        else
+            ItfNew = Itfi.normalize(Int);
+        end
+        [~,DWx_error,DWy_error] = QLSIprocess(ItfNew,IL(ii).lambda,"displayCrop",false); %Add options? 
 
+        IM_Ph0 = ImageQLSI(Int,Int*0,MI,IL(ii).lambda); % Zero phase
+        Itf_Ph0 = CGMinSilico(IM_Ph0);
+        [~,DWx_Ph0,DWy_Ph0] = QLSIprocess(Itf_Ph0,IL(ii).lambda,"displayCrop",false);
+        DWx = DWx_error - DWx_Ph0;
+        DWy = DWy_error - DWy_Ph0;
+        figure
+        subplot(1,2,1)
+        imagegb(DWx_error)
+        imgg = imgaussfilt(DWx_error(:),10);
+        minc = min(imgg);
+        maxc = max(imgg);
+        clim([minc, maxc])
+        title('Itf/T gradients')
+        subplot(1,2,2)
+        imagegb(DWx_Ph0)
+        clim([minc, maxc])
+        title('zero W gradients')
+    end   
+        
     % artificial aberrations
     %[Ny, Nx]=size(DWx);
     %[X,~]=meshgrid(1:Nx,1:Ny);
@@ -292,35 +352,29 @@ for ii = 1:Nf
         W = g2sTikhonovRT(DWx,DWy,opt.Smatrix,Tikh);
     end
 
-    if ii>=2
+    if ii>=2 && opt.displayBar
         waitbar(ii/Nf,fwb,sprintf('Image processing duration: %.3f s',toc))
     end
-    
-    if strcmpi(opt.definition,'low') % compute the correction factor in case the image is small (fast mode)
-        rx = cropParam2.R(1);
-        corr = Nx/length(round((-rx:rx-1)));
-    else
-        corr = 1;
-    end
-    
+        
     if isempty(opt.remotePath)
-        IM(ii) = ImageQLSI(Int,W*corr,MI,duplicate(IL(ii)),imageNumber=Itfi.imageNumber);
+        IM(ii) = ImageQLSI(Int,W,MI,Methods.duplicate(IL(ii)),imageNumber=Itfi.imageNumber);
     else
-        IM(ii) = ImageQLSI(Int,W*corr,MI,duplicate(IL(ii)),"remotePath",opt.remotePath,"fileName",removeExtension(Itfi.fileName),imageNumber=Itfi.imageNumber);
+        IM(ii) = ImageQLSI(Int,W,MI,Methods.duplicate(IL(ii)),"remotePath",opt.remotePath,"fileName",removeExtension(Itfi.fileName),imageNumber=Itfi.imageNumber);
     end
 
-    IM(ii).Microscope = duplicate(MI); % copy of MI because, as an handle object, MI may change for some reason after the computation of the image.
+    IM(ii).Microscope = Methods.duplicate(MI); % copy of MI because, as an handle object, MI may change for some reason after the computation of the image.
+    IM(ii).binningFactor = Itf(ii).binningFactor;
 
     if strcmpi(opt.definition,'low')
-        IM(ii).pxSizeCorrection=corr;
+        IM(ii).pxSizeCorrection = corr;
     end
     
     IM(ii) = IM(ii).setFcrops([cropParam0, cropParam1, cropParam2]);
     IM(ii) = IM(ii).setProcessingSoftware('PhaseLAB');
 
     if opt.saveGradients
-        IM(ii).DWx0 = DWx;
-        IM(ii).DWy0 = DWy;
+        IM(ii).DWx0 = DWx/IM(ii).pxSize;
+        IM(ii).DWy0 = DWy/IM(ii).pxSize;
     end
     
 %    if updateRefFcrop==1
@@ -344,7 +398,7 @@ for ii = 1:Nf
 
 end
 
-if Nf >= 2 % delete waitbar
+if Nf >= 2 && opt.displayBar % delete waitbar
     delete(fwb)
 end
 

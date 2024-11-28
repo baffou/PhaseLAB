@@ -1,9 +1,6 @@
-%% Example that import intensity and phase experiemental images.
-
-%% HEADING 
+%% Example of the processing of 2-color interferograms
 
 clear
-addpath(genpath('/Users/perseus/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
 
 %% BUILDING OF THE MEDIUM -- ME=Medium(n,nS);
 ME=Medium('water','glass');

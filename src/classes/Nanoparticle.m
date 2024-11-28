@@ -8,7 +8,7 @@
 classdef Nanoparticle
 
     properties(Access = public)
-        mat        % material of the nanoparticle
+        mat         % material of the nanoparticle
         geom        % geometry type of the nanoparticle
         params      % parameters of the geometry
         mesh        % Meshing object
@@ -18,25 +18,27 @@ classdef Nanoparticle
 
     properties(Dependent)
         lambda      % free-space wavelength of illumination
-        n       % complex refractive index of the nanoparticle material
-        eps     % permittivity of the nanoparticle material
-        alpha   % complex polarizability calculated by DDA
-        Cext    % Extinction cross section
-        Csca    % Scattering cross section, defined form a formula
-        Csca2    % Scattering cross section, defined from ext-abs
-        Csca0    % Scattering cross section, defined from p^2
-        Cabs    % Absorption cross section, defined from ext-sca
-        Cabs2    % Absorption cross section, defined from a formula
+        n           % complex refractive index of the nanoparticle material
+        eps         % permittivity of the nanoparticle material
+        epsTensor   % permittivity tensor of the nanoparticle material
+        alpha       % complex polarizability calculated by DDA
+        Cext        % Extinction cross section
+        Csca        % Scattering cross section, defined form a formula
+        Csca2       % Scattering cross section, defined from ext-abs
+        Csca0       % Scattering cross section, defined from p^2
+        Cabs        % Absorption cross section, defined from ext-sca
+        Cabs2       % Absorption cross section, defined from a formula
     end
 
     properties(Hidden)
         Illumination
+        epsHidden
     end
     
     properties(Access = private)
         eps0 = 8.854187817e-12;
         c0 = 299792458;
-        epsHidden
+        RotMat = [1 0 0;0 1 0;0 0 1];
     end
     
     methods
@@ -254,49 +256,50 @@ classdef Nanoparticle
             end
         end
 
-        function obj = rotate(obj,axis,theta,point)
-            %rotate(theta,axis,point)
-            if nargin==3
-                point=mean(obj.mesh.pos);
-            elseif nargin~=4
-                error('number of input for the method rotate must be 2 or 3')
+        function obj = rotate(obj,theta,opt)
+            %obj.rotate(theta,axis,point)
+            arguments
+                obj
+                theta double
+                opt.axis {mustBeMember(opt.axis,["x","y","z"])} = "z"
+                opt.center = mean(obj.mesh.pos)
             end
-            if ~isnumeric(theta)
-                error('theta mush be a number')
-            elseif length(theta)~=1
-                error('theta should not be a vector, but a scalar')
-            elseif theta*1000~=round(theta*1000)
-                theta*1000
-                round(theta*1000)
-                warning('are you sure the input of rotation() is in degres and not in radian?')
-                
+
+            if theta*1000~=round(theta*1000)
+                warning('The rotation angle input must be in degrees, not in radians. Are you sure it is?')
             end
-            if ~ischar(axis)
-                error('the axis parameter must be a string')
-            elseif strcmp(axis,'x')
-                RotMat = ...
-                [1 0           0
-                 0 cosd(theta) -sind(theta)
-                 0 sind(theta)  cosd(theta)];
-            elseif strcmp(axis,'y')
-                RotMat = ...
-                [cosd(theta) 0 sind(theta)
-                 0          1 0
-                -sind(theta) 0 cosd(theta)];
-            elseif strcmp(axis,'z')
-                RotMat = ...
-                [cosd(theta) -sind(theta) 0
-                 sind(theta)  cosd(theta) 0
-                 0           0          1];
-            else
-                error('The axis must be ''x'', ''y'' or ''z''')
+            
+            switch char(opt.axis)
+                case 'x'
+                    rotMat = ...
+                    [1 0           0
+                     0 cosd(theta) -sind(theta)
+                     0 sind(theta)  cosd(theta)];
+                case 'y'
+                    rotMat = ...
+                    [cosd(theta) 0 sind(theta)
+                     0          1 0
+                    -sind(theta) 0 cosd(theta)];
+                case 'z'
+                    rotMat = ...
+                    [cosd(theta) -sind(theta) 0
+                     sind(theta)  cosd(theta) 0
+                     0           0          1];
             end
-            point0 = mean(obj.mesh.pos);
-            obj = obj.moveTo(point);
+            obj = obj.moveBy(-opt.center);
             for ic = 1:obj.mesh.N
-                obj.mesh.pos(ic,:) = (RotMat*obj.mesh.pos(ic,:).').';
+                obj.mesh.pos(ic,:) = (rotMat*obj.mesh.pos(ic,:).').';
             end
-            obj = obj.moveTo(point0);
+            obj = obj.moveBy(opt.center);
+
+            % rotate the permittivity tensor of the unit cells as well
+            % switch numel(obj.eps)
+            %     case 3
+            %         obj.epsHidden = rotMat.*[obj.eps(1) 0 0; 0 obj.eps(2) 0;0 0 obj.eps(3)];
+            %     case 9
+            %         obj.epsHidden = rotMat.*obj.eps;
+            % end
+            obj.RotMat = obj.RotMat*rotMat;
         end
         
         function obj = moveBy(obj,varargin)
@@ -395,6 +398,32 @@ classdef Nanoparticle
             else
                 val = epsReadDDA(obj.lambda,obj.mat);   % dielectric function of the nanoparticle 
             end
+        end
+
+        function val = get.epsTensor(obj)
+            if length(obj.eps) == 1
+                tens = [obj.eps 0 0
+                        0 obj.eps 0
+                        0 0 obj.eps];
+            elseif length(obj.eps) == 3
+                tens = [obj.eps(1) 0 0
+                        0 obj.eps(2) 0
+                        0 0 obj.eps(3)];
+            end
+            val = obj.RotMat*tens*transpose(obj.RotMat);
+        end
+
+        function val = chiTensor(obj,n)
+            if length(obj.eps) == 1
+                tens = [obj.eps-n^2 0 0
+                        0 obj.eps-n^2 0
+                        0 0 obj.eps-n^2];
+            elseif length(obj.eps) == 3
+                tens = [obj.eps(1)-n^2 0 0
+                        0 obj.eps(2)-n^2 0
+                        0 0 obj.eps(3)-n^2];
+            end
+            val = obj.RotMat*tens*transpose(obj.RotMat);
         end
 
         function val = get.alpha(obj)

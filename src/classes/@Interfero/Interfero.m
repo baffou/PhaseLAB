@@ -27,6 +27,10 @@ classdef Interfero < handle & matlab.mixin.Copyable
     properties
         comment  % Any comment to leave to this image
     end
+    properties (Dependent,Hidden)
+        RefIm     (:,:) double
+    end
+
 
 
     properties(SetAccess = private)
@@ -51,6 +55,10 @@ classdef Interfero < handle & matlab.mixin.Copyable
         remote {mustBeInteger,mustBeLessThanOrEqual(remote,2),mustBeGreaterThanOrEqual(remote,0)}  % 0 if images are stored 
                                                                                                    % 1 if images are not stored (only path/fileName), 
                                                                                                    % 2 if images are not stored (only path/fileName), and to be used as a gpuArray once imported
+    end
+
+    properties(Access = private)
+        binningFactor (1,1) double {mustBeInteger,mustBePositive} = 1 % in order to properly compute the pixel size of the interferogram from the Microscope properties
     end
 
     methods
@@ -248,6 +256,10 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         end
 
+        function val = get.RefIm(obj)
+            val = obj.Ref.Itf;
+        end
+
         function val = get.software(obj)
             val = obj.Microscope.software;
         end
@@ -257,7 +269,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         end
 
         function val = get.pxSize(obj)
-            val = obj.Microscope.pxSize();
+            val = obj.Microscope.pxSize()*obj.binningFactor;
         end
 
         function obj = clearFcrops(obj)
@@ -274,7 +286,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 obj0
                 opt.xy1 = []
                 opt.xy2 = []
-                opt.Center = 'Auto' % 'Auto', 'Manual' or [x, y]
+                opt.Center = 'Manual' % 'Auto', 'Manual' or [x, y]
                 opt.Size = 'Manual' % 'Auto', 'Manual', d or [dx, dy]
                 opt.twoPoints logical = false
                 opt.params double = double.empty()
@@ -283,7 +295,6 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 opt.channel = false % true if 2-color interfero
             end
             if nargout>=1
-                fprintf('copying the object')
                 obj=copy(obj0);
             else
                 obj=obj0;
@@ -332,7 +343,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         function obj = square(obj0)
 
             if nargout
-                obj = duplicate(obj0);
+                obj = Methods.duplicate(obj0);
             else
                 obj = obj0;
             end
@@ -395,6 +406,8 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     end
                     obj(io).Ref = val;
                 end
+            else
+                error('The number of Ref interferos does not match the number of interferos')
             end
             if isempty(obj(1).Ref.TF)
                 %obj(1).Ref.TF = fftshift(fft2(obj(1).Ref.Itf));
@@ -407,7 +420,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             if nargin == 1
                 obj.TF = fftshift(fft2(obj.Itf));
             elseif nargin == 2
-                obj.TF = fftshift(fft2(apodization(obj.Itf,apoNpx)));
+                obj.TF = fftshift(fft2(apodization0(obj.Itf,apoNpx)));
                 obj.TFapo=apoNpx;
             end
         end
@@ -415,6 +428,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         function clearTF(objList) % Clear the computed TF of the Ref.
             for io=1:numel(objList)
                 objList(io).Ref.TF = [];
+                objList(io).Ref.TFapo = [];
             end
         end
 
@@ -471,10 +485,36 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         end
 
-        function [objList,mask0] = spotRemoval(objList0,mask)
+        function obj = normalize(obj0,mat,opt)
+            % Function that normalizes the interfero image by a matrix (division)
+            arguments
+                obj0 Interfero
+                mat (:,:) double
+                opt.refAsWell logical = false
+            end
+            if nargout>=1
+                obj = Methods.duplicate(obj0);
+            else
+                obj = obj0;
+            end
+            Nim = numel(obj);
+            for im = 1:Nim
+                if any(size(mat) ~= size(obj.Itf))
+                    error('the normalization matrix must have the same size as the interferogram')
+                else
+                    obj(im).Itf0 = obj(im).Itf./mat;
+                    if opt.refAsWell
+                        obj(im).Ref.Itf0 = obj(im).Ref.Itf./mat;
+                    end
+                end
+            end
+        end
+            
+
+        function [objList,mask0] = removeFringes(objList0,mask)
 
             if nargout>=1
-                objList=duplicate(objList0);
+                objList=Methods.duplicate(objList0);
             else
                 objList=objList0;
             end
@@ -483,23 +523,96 @@ classdef Interfero < handle & matlab.mixin.Copyable
             obj = objList(1);
 
             if nargin==1 % no predefined mask
-                [objList(1).Itf0, mask0] = spotRemoval0(objList0(1).Itf);
-                objList(1).Ref.Itf0 = spotRemoval0(objList0(1).Ref.Itf,mask0);
+                [objList(1).Itf0, mask0] = removeFringes0(objList0(1).Itf);
+                objList(1).Ref.Itf0 = removeFringes0(objList0(1).Ref.Itf,mask0);
                 
             elseif nargin==2 % predefined mask
-                [obj.Itf0, mask0] = spotRemoval0(obj.Itf,mask);
-                obj.Ref.Itf0 = spotRemoval0(obj.Ref.Itf,mask);
+                [obj.Itf0, mask0] = removeFringes0(obj.Itf,mask);
+                obj.Ref.Itf0 = removeFringes0(obj.Ref.Itf,mask);
             else
                 error('not the proper number of inputs')
             end
 
             % applies the mask on the other Interfero objects of the list.
             for io = 2:numel(objList)
-                objList(io).spotRemoval(mask0)
+                objList(io).removeFringes(mask0)
             end
 
         end
 
+        function obj = rot90(obj0,k)
+            % rotate the images of the object by k*90°
+            arguments
+                obj0
+                k {mustBeInteger(k)} = 1
+            end
+
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+
+            if isnumeric(obj0(1).Itf0)
+                for io=1:numel(obj0)
+                    obj(io).Ref.Itf0=rot90(obj0(io).Ref.Itf0,k);
+                    obj(io).Itf0=rot90(obj0(io).Itf0,k);
+                    if ~isempty(obj.TF)
+                        obj(io).TF=rot90(obj0(io).TF,k);
+                    end
+                end
+            else
+                error('An interfero object cannot be rotated if it is remote.')
+            end
+
+        end            
+    
+        function obj = flipud(obj0)
+            % Mirror image with an horizontal mirror
+
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+
+            if isnumeric(obj0(1).Itf0)
+                for io=1:numel(obj0)
+                    obj(io).Itf0  =obj0(io).Itf0(end:-1:1,:);
+                    obj(io).Ref.Itf0 = obj0(io).Ref.Itf0(end:-1:1,:);
+                    if ~isempty(obj.TF)
+                        obj(io).TF = obj0(io).TF(end:-1:1,:);
+                    end
+                end
+            else
+                error('An Interfero object cannot be rotated if it is remote.')
+            end
+
+        end            
+    
+        function obj = fliplr(obj0)
+            % Mirror image with an horizontal mirror
+
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+
+            if isnumeric(obj0(1).Itf0)
+                for io=1:numel(obj0)
+                    obj(io).Itf0  =obj0(io).Itf0(:,end:-1:1);
+                    obj(io).Ref.Itf0 = obj0(io).Ref.Itf0(:,end:-1:1);
+                    if ~isempty(obj.TF)
+                        obj(io).TF = obj0(io).TF(:,end:-1:1);
+                    end
+                end
+            else
+                error('An Interfero object cannot be rotated if it is remote.')
+            end
+
+        end            
+    
         function val=getAreaMean(obj,Narea,hfig)
             if nargin==1
                 obj.figure()
@@ -546,6 +659,66 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 saveData(hfig,hc)
             end
 
+        end
+
+        function bool = is_empty(obj)
+            % return 1 if the object is empty, or if all the properties are empty
+            No = numel(obj);
+            val = zeros(No,1);
+            for io = 1:No
+                if isempty(obj(io))
+                    val(io) = 1;
+                else
+                    val(io) = isempty(obj(io).Itf0);
+                end
+            end
+            bool = logical(val);
+        end
+
+        function obj = replaceArea(obj0,opt)
+            arguments
+                obj0
+                opt.allImages = false % apply the same crop to all the images.
+            end
+            if nargout
+                obj = copy(obj0);
+            else
+                obj = obj0;
+            end
+
+            [No,Nch] = size(obj0);
+            mask = [];
+            for io = 1:No
+                [obj(io,1).Itf0, mask] = replaceArea0(obj(io,1).Itf, obj(io,1).Ref.Itf,"mask",mask);
+                for ich = 2:Nch
+                    [obj(io,ich).Itf0, mask] = replaceArea0(obj(io,ich).Itf, obj(io,ich).Ref.Itf, "mask",mask);
+                end
+                if ~opt.allImages
+                    mask = [];
+                end
+            end
+
+        end
+
+        function obj = apodization(obj0,val)
+            arguments
+                obj0
+                val = 20
+            end
+
+            if nargout
+                obj = copy(obj0);
+            else
+                obj = obj0;
+            end
+            Nim = numel(obj0);
+            for io = 1:Nim
+                m0 = [];
+                if ~isempty(obj(io).Ref)
+                    [obj(io).Ref.Itf0, ~, m0] = apodization0(obj0(io).Ref.Itf,val);
+                end
+                obj(io).Itf0 = apodization0(obj0(io).Itf,val,m0);
+            end
 
         end
 
@@ -635,6 +808,8 @@ classdef Interfero < handle & matlab.mixin.Copyable
             arguments
                 Im Interfero
             end
+            disp('Split polar')
+
             Ni = numel(Im);
 
             ImG=Interfero(Ni);
@@ -647,6 +822,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 ImG(io).channel = 'G';
                 ImR(io).Itf0 = colorInterpolation(Im(io).Itf,'r');
                 ImR(io).channel = 'R';
+                
             end
            
             % List independent references
@@ -666,13 +842,15 @@ classdef Interfero < handle & matlab.mixin.Copyable
             end
         end
 
-        function [Im00,Im45,Im90,Im135] = splitPolars(Im)
+        function [Im00,Im45,Im90,Im135] = splitPolars(Im,opt)
             % Im comes from a 4-polar camera
             % This function creates 4 Interfero objects, for each polars
             % Uses interpolation to keep the same number of pixels
             arguments
                 Im Interfero
+                opt.interpolation {mustBeMember(opt.interpolation,{'regionfill','linear'})} = 'linear'
             end
+            disp('Split polar')
             Ni = numel(Im);
 
             Im00 = Interfero(Ni);
@@ -680,22 +858,24 @@ classdef Interfero < handle & matlab.mixin.Copyable
             Im90 = Interfero(Ni);
             Im135= Interfero(Ni);
             for io = 1:Ni
+                printLoop(io, Ni)
                 Im00(io) = copy(Im(io)); % not duplicate to keep the MI.
                 Im45(io) = copy(Im(io));
                 Im90(io) = copy(Im(io)); % not duplicate to keep the MI.
                 Im135(io) = copy(Im(io));
 
-                Im00(io).Itf0 = polarInterpolation(Im(io).Itf,0);
+                Im00(io).Itf0 = polarInterpolation(Im(io).Itf,0, opt.interpolation);
                 Im00(io).channel = '0';
 
-                Im45(io).Itf0 = polarInterpolation(Im(io).Itf,45);
+                Im45(io).Itf0 = polarInterpolation(Im(io).Itf,45, opt.interpolation);
                 Im45(io).channel = '45';
 
-                Im90(io).Itf0 = polarInterpolation(Im(io).Itf,90);
+                Im90(io).Itf0 = polarInterpolation(Im(io).Itf,90, opt.interpolation);
                 Im90(io).channel = '90';
 
-                Im135(io).Itf0 = polarInterpolation(Im(io).Itf,135);
+                Im135(io).Itf0 = polarInterpolation(Im(io).Itf,135, opt.interpolation);
                 Im135(io).channel = '135';
+
             end
            
             % List independent references
@@ -703,7 +883,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 [RefIndep, refPosList] = independentObjects([Im.Ref]);
     
                 % split the polars of these list of independent references
-                [Ref0,Ref45,Ref90,Ref135]=splitPolars(RefIndep);
+                [Ref0,Ref45,Ref90,Ref135] = splitPolars(RefIndep);
     
                 % Re-assign the proper Ref to all the interferograms
                 Im00.Reference(Ref0(refPosList));
@@ -794,6 +974,18 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 objG = [objG(:) objR(:)];
             end
 
+        end
+
+        function obj2 = removeRef(obj)
+            if nargout
+                obj2 = copy(obj);
+            else
+                obj2 = obj;
+            end
+            No = numel(obj);
+            for io = 1:No
+                obj(io).Ref = Interfero.empty();
+            end
         end
 
         function obj2 = removeOffset(obj,val)

@@ -27,9 +27,27 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         E2
         E
         Ph
+        Ph_coh
         OPD
         OPDnm
         T
+    end
+
+    properties(Dependent) % Stokes parameters
+        S0
+        S1
+        S2
+        S3
+        I   % S0
+        Q   % S1
+        U   % S2
+        V   % S3
+        L   % Q + 1i*U
+        A   % long radius of the ellipse
+        B   % short radius of the ellipse
+        theta   % tilt of the ellipse
+        h   % handedness sign(V)
+        e   % excentricity
     end
 
     methods
@@ -57,7 +75,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                     % do nothing
                 end
             elseif nargin==1 % ImageEM(n)    n empty objects
-                obj = repmat(ImageEM,Ex,0);
+                obj = repmat(ImageEM,Ex,1);
             elseif nargin<=3 % ImageEM(Eincx,Eincy,Eincz) typically when defining an incident field
                 obj.Ex = Ex;
                 obj.Ey = Ey;
@@ -101,17 +119,19 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             elseif obj1.Nx~=obj2.Nx || obj1.Ny~=obj2.Ny
                 error('You are trying to sum two images with different pixel numbers.')
             end
-            objs = duplicate(obj1);
+            objs = copy(obj1);
             objs.Ex = obj1.Ex + obj2.Ex;
             objs.Ey = obj1.Ey + obj2.Ey;
             objs.Ez = obj1.Ez + obj2.Ez;
+            objs.Einc = copy(obj1.Einc);
             objs.Einc.Ex = obj1.Einc.Ex + obj2.Einc.Ex;
             objs.Einc.Ey = obj1.Einc.Ey + obj2.Einc.Ey;
             objs.Einc.Ez = obj1.Einc.Ez + obj2.Einc.Ez;
         end
 
         function objs = sum(objList) % coherent sum of the fields
-            objs = duplicate(objList(1));
+            objs = copy(objList(1));
+            objs.Einc = copy(objList(1).Einc);
             No = numel(objList);
             for io = 2:No
                 objs = objs+objList(io);
@@ -192,6 +212,71 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
         end
 
+        function val = get.S0(obj)
+            % 1st Stokes component
+            val = abs(obj.Ex).^2 + abs(obj.Ey).^2;
+        end
+
+        function val = get.S1(obj)
+            % 2nd Stokes component
+            val = abs(obj.Ex).^2 - abs(obj.Ey).^2;
+        end
+
+        function val = get.S2(obj)
+            % 3nd Stokes component
+            val = 2*real(obj.Ex.*conj(obj.Ey));
+        end
+
+        function val = get.S3(obj)
+            % 4th Stokes component
+            val = -2*imag(obj.Ex.*conj(obj.Ey));
+        end
+
+        function val = get.I(obj)
+            % 1st Stokes component
+            val = abs(obj.Ex).^2 + abs(obj.Ey).^2;
+        end
+
+        function val = get.Q(obj)
+            % 2nd Stokes component
+            val = abs(obj.Ex).^2 - abs(obj.Ey).^2;
+        end
+
+        function val = get.U(obj)
+            % 3nd Stokes component
+            val = 2*real(obj.Ex.*conj(obj.Ey));
+        end
+
+        function val = get.V(obj)
+            % 4th Stokes component
+            val = -2*imag(obj.Ex.*conj(obj.Ey));
+        end
+
+        function val = get.L(obj)
+            val = obj.Q + 1i*obj.U;
+        end
+
+        function val = get.A(obj)
+            val = sqrt(0.5*(obj.I+abs(obj.L)));
+        end
+
+        function val = get.B(obj)
+            val = sqrt(0.5*(obj.I-abs(obj.L)));
+        end
+
+        function val = get.theta(obj)
+            val = 0.5*angle(obj.L);
+        end
+
+        function val = get.h(obj)
+            val = sign(obj.V);
+        end
+
+        function val = get.e(obj)
+            % excentricity
+            val = sqrt(abs(1-obj.B.^2./obj.A.^2));
+        end
+
         function val = zoom(obj)
             val=obj.Microscope.CGcam.zoom;
         end
@@ -202,8 +287,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 n = 3
             end
             if nargout
-                obj2=duplicate(obj);
-                obj2.Einc=duplicate(obj.Einc);
+                obj2=Methods.duplicate(obj);
             else
                 obj2=obj;
             end
@@ -235,7 +319,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 obj2(ii).Einc.Ex = imEx;
                 obj2(ii).Einc.Ey = imEy;
                 obj2(ii).Einc.Ez = imEz;
-                obj2(ii).Microscope.CGcam.Camera.dxSize=obj2(ii).Microscope.CGcam.Camera.dxSize*n;
+                obj2(ii).binningFactor=obj2(ii).binningFactor*n;
             end
 
         end
@@ -269,67 +353,23 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
         function [IMs,mat] = Jones(IM,varargin)
-            %angles in degrees
-            Nvar = numel(varargin);
-
-            % Quarter waveplate
-            QWP = [1 0;0 1i];
-            % Half waveplate
-            HWP = [1 0;0 -1];
-            % Polarizer
-            P = [1 0;0 0];
-            % Rotation matrix
-            R = @(theta) [cosd(theta) -sind(theta);sind(theta) cosd(theta)];
-
-
-            mat = eye(2,2);
-            if isnumeric(varargin{1}) % [a b; c d]
-                if all(size(varargin{1})==[2 2])
-                    mat = varargin{1};
-                end
-            else
-                for ii = 1:2:Nvar
-                    if mod(Nvar,2)
-                        error('Must have an even number of inputs')
-                    end
-                    if ~ischar(varargin{ii})
-                        error('this input must be text: ''P'', ''QWP'' or ''HWP''')
-                    elseif ~isnumeric(varargin{ii+1})
-                        error('this input must be a number')
-                    end
-                    switch varargin{ii}
-                        case 'P'
-                            mat = R(varargin{ii+1})*P*R(-varargin{ii+1})*mat;
-                        case 'QWP'
-                            mat = R(varargin{ii+1})*QWP*R(-varargin{ii+1})*mat;
-                        case 'HWP'
-                            mat = R(varargin{ii+1})*HWP*R(-varargin{ii+1})*mat;
-                    end
-                end
-            end
-            IMs = Jones0(IM,mat);
-
-        end
-
-        function IMs = Jones0(IM,mat)
+            
             Nim = numel(IM);
             IMs = ImageEM(Nim);
             for iim = 1:Nim
-                E_x = IM(iim).Ex*mat(1,1)+IM(iim).Ey*mat(1,2);
-                E_y = IM(iim).Ex*mat(2,1)+IM(iim).Ey*mat(2,2);
-                Einc_x = IM(iim).Einc.Ex*mat(1,1)+IM(iim).Einc.Ey*mat(1,2);
-                Einc_y = IM(iim).Einc.Ex*mat(2,1)+IM(iim).Einc.Ey*mat(2,2);
+                [E_x, E_y, mat] = Jones0(IM(iim).Ex, IM(iim).Ey, varargin);
+                [Einc_x, Einc_y] = Jones0(IM(iim).Einc.Ex, IM(iim).Einc.Ey, mat);
 
                 IMs(iim) = ImageEM(E_x,E_y,IM.Ez*0,Einc_x,Einc_y,IM.Ez*0);
-                IMs(iim).Microscope = IM.Microscope;
-                IMs(iim).Illumination = IM.Illumination;
-                IMs(iim).comment = IM.comment;
+                IMs(iim).Microscope = IM(iim).Microscope;
+                IMs(iim).Illumination = IM(iim).Illumination;
+                IMs(iim).comment = IM(iim).comment;
 
             end
         end
 
         function objList = Escat(objList0)
-            objList=duplicate(objList0);
+            objList = copy(objList0);
 
             No=numel(objList0);
             for io=1:No
@@ -346,9 +386,9 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
             % complex vectorial incident field at the center of the image
             if isempty(obj.Einc) % if the object is already an incident field
-                valx=obj.Ex(end/2,end/2);
-                valy=obj.Ey(end/2,end/2);
-                valz=obj.Ez(end/2,end/2);
+                valx=obj.Ex(ceil(end/2),ceil(end/2));
+                valy=obj.Ey(ceil(end/2),ceil(end/2));
+                valz=obj.Ez(ceil(end/2),ceil(end/2));
                 val0 = [valx, valy, valz];
             else % take the EE0 of the Einc
                 val0 = obj.Einc.EE0;
@@ -419,7 +459,8 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
 
             if nargout
-                obj=duplicate(obj0);
+                obj = copy(obj0);
+                obj.Einc = copy(obj0.Einc);
             else
                 obj=obj0;
             end
@@ -438,7 +479,8 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             % Mirror image with an horizontal mirror
 
             if nargout
-                obj=duplicate(obj0);
+                obj=copy(obj0);
+                obj.Einc=copy(obj0.Einc);
             else
                 obj=obj0;
             end
@@ -458,7 +500,8 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             % Mirror image with an horizontal mirror
 
             if nargout
-                obj=duplicate(obj0);
+                obj=copy(obj0);
+                obj.Einc=copy(obj0.Einc);
             else
                 obj=obj0;
             end
@@ -478,7 +521,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             % applies a phase shift to all the components of a field, but
             % not to its Einc. Useful to articially simulate SLIM imaging.
             if nargout
-                objList=duplicate(objList0);
+                objList=copy(objList0);
             else
                 objList=objList0;
             end
@@ -498,16 +541,30 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
         function IM = polarMask(IM0)
             IM = copy(IM0);
-            IM.Ey(1:2:end,1:2:end) = 0;
-            IM.Ex(2:2:end,2:2:end) = 0;
-            IM.Ex(1:2:end,2:2:end) = ( IM0.Ex(2:2:end,1:2:end)+IM0.Ey(2:2:end,1:2:end))/2;
-            IM.Ey(1:2:end,2:2:end) = ( IM0.Ex(2:2:end,1:2:end)+IM0.Ey(2:2:end,1:2:end))/2;
-            IM.Ex(2:2:end,1:2:end) = (-IM0.Ex(1:2:end,2:2:end)+IM0.Ey(1:2:end,2:2:end))/2;
-            IM.Ey(2:2:end,1:2:end) = (+IM0.Ex(1:2:end,2:2:end)-IM0.Ey(1:2:end,2:2:end))/2;
+            IM.Ex(1:2:end,1:2:end) = 0;
+            IM.Ey(2:2:end,2:2:end) = 0;
+            IM.Ex(2:2:end,1:2:end) = ( IM0.Ex(2:2:end,1:2:end)+IM0.Ey(2:2:end,1:2:end))/2;
+            IM.Ey(2:2:end,1:2:end) = ( IM0.Ex(2:2:end,1:2:end)+IM0.Ey(2:2:end,1:2:end))/2;
+            IM.Ex(1:2:end,2:2:end) = (+IM0.Ex(1:2:end,2:2:end)-IM0.Ey(1:2:end,2:2:end))/2;
+            IM.Ey(1:2:end,2:2:end) = (-IM0.Ex(1:2:end,2:2:end)+IM0.Ey(1:2:end,2:2:end))/2;
             if ~isempty(IM.Einc)
-                IM.Einc = IM.Einc.polarMask;
+                IM.Einc = IM.Einc.polarMask();
             end
         end
+
+        function IM = polarMask2(IM0)
+            IM = copy(IM0);
+            IM.Ey(1:2:end,1:2:end) = 0;
+            IM.Ex(2:2:end,2:2:end) = 0;
+            IM.Ex(2:2:end,1:2:end) = (+IM0.Ex(2:2:end,1:2:end)-IM0.Ey(2:2:end,1:2:end))/2;
+            IM.Ey(2:2:end,1:2:end) = (-IM0.Ex(2:2:end,1:2:end)+IM0.Ey(2:2:end,1:2:end))/2;
+            IM.Ex(1:2:end,2:2:end) = ( IM0.Ex(1:2:end,2:2:end)+IM0.Ey(1:2:end,2:2:end))/2;
+            IM.Ey(1:2:end,2:2:end) = ( IM0.Ex(1:2:end,2:2:end)+IM0.Ey(1:2:end,2:2:end))/2;
+            if ~isempty(IM.Einc)
+                IM.Einc = IM.Einc.polarMask2();
+            end
+        end
+
 
         function IMout = propagation(IM, z, opt)
             % numerical propagation over the distance z
@@ -521,7 +578,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
 
             if nargout
-                IMout = duplicate(IM); % not copy(), to also duplicate the Einc
+                IMout = Methods.duplicate(IM); % not copy(), to also duplicate the Einc
             else
                 IMout = IM;
             end
@@ -544,6 +601,21 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 IMout(io).Einc.Ey=imProp(ey0,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
             end
         end
+
+        function bool = is_empty(obj)
+            % return 1 if the object is empty, or if all the properties are empty
+            No = numel(obj);
+            val = zeros(No,1);
+            for io = 1:No
+                if isempty(obj(io))
+                    val(io) = 1;
+                else
+                    val(io) = isempty(obj(io).Ex);
+                end
+            end
+            bool = logical(val);
+        end
+
 
         function save(objList,folder,varargin)
             % save T and/or OPD images as jpg and txt images

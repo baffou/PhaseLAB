@@ -1,3 +1,4 @@
+brand:'Silios'
 dexel size:	5.5e-6
 Gamma:	33e-6
 Nx:2048

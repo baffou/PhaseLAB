@@ -17,6 +17,10 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
         comment char = char.empty()   % any comment regarding the image
     end
 
+    properties(Dependent)
+        Rytov
+    end
+
     properties(Hidden)
         processingSoft
         pxSizeCorrection = 1
@@ -41,25 +45,25 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             end
         end
 
-        function val=lambda(obj)
-            val=obj.Illumination.lambda;
+        function val = lambda(obj)
+            val = obj.Illumination.lambda;
         end
 
-        function val=dxSize(obj)
-            val=obj.Microscope.CGcam.dxSize;
+        function val = dxSize(obj)
+            val = obj.Microscope.CGcam.dxSize;
         end
 
-        function val=pxSize(obj)
-            val=obj.pxSizeCorrection*obj.Microscope.pxSize*obj.binningFactor;
+        function val = pxSize(obj)
+            val = obj.pxSizeCorrection*obj.Microscope.pxSize*obj.binningFactor;
         end
 
         function imageHSV(obj)
-            Hue=(obj.OPD-min(obj.OPD(:)))/(max(obj.OPD(:))-min(obj.OPD(:)));
-            Sat=obj.T/max(obj.T(:));
+            Hue = (obj.OPD-min(obj.OPD(:)))/(max(obj.OPD(:))-min(obj.OPD(:)));
+            Sat = obj.T/max(obj.T(:));
             imHSV(:,:,1)=Hue;
             imHSV(:,:,2)=Sat;
             imHSV(:,:,3)=1;
-            imRGB=hsv2rgb(imHSV);
+            imRGB = hsv2rgb(imHSV);
             imagesc(imRGB)
             axis equal
         end
@@ -105,7 +109,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                             title(sprintf(['T #' num2str(numbers(iim)) '\n' IMlist(iim).comment]))
                         else
                             imagesc(IMlist(iim).(opt.types{1}))
-                            colormap(gca,'phase1024')
+                            colormap(gca,Sepia)
                             title(sprintf(['OPD #' num2str(numbers(iim)) '\n' IMlist(iim).comment]))
                             iim=iim+1;
                         end
@@ -162,7 +166,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
         end
 
-        function opendx(obj,opt)
+        function opendx_old(obj,opt)
             arguments
                 obj
                 opt.persp = 1
@@ -173,7 +177,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.colorMap =  []
                 opt.title = []
                 opt.factor = 1 % correction factor, for instance 5.55e-3 to convert the OPD color scale into dry mass
-                opt.label = 'Optical path difference (nm)'
+                opt.clabel = 'Optical path difference (nm)'
                 opt.imType = 'OPD'
                 opt.axisDisplay (1,1) logical = true
                 opt.displayedTime = string.empty()
@@ -218,10 +222,10 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.factor=cell(1,Nim);
                 opt.factor(:)={val};
             end
-            if ~isa(opt.label,'cell')
-                val=opt.label;
-                opt.label=cell(1,Nim);
-                opt.label(:)={val};
+            if ~isa(opt.clabel,'cell')
+                val=opt.clabel;
+                opt.clabel=cell(1,Nim);
+                opt.clabel(:)={val};
             end
 
 
@@ -297,9 +301,9 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                         end
                     else
                         if strcmp(opt.imType{ii},'OPD')
-                            opt.colorMap{ii}=phase1024;
+                            opt.colorMap{ii} = Sepia;
                         else
-                            opt.colorMap{ii}=gray;
+                            opt.colorMap{ii} = gray;
                         end
                         colormap(gca,opt.colorMap{ii});
 
@@ -310,7 +314,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     %camlight(AZ, EL)
                     if opt.phi==0 &&  opt.theta==0
                         cb=colorbar(FontSize=20);
-                        cb.Label.String = opt.label{ii};
+                        cb.Label.String = opt.clabel{ii};
                         view(2)
                         AZ_light=30;
                         EL_light=25;
@@ -318,7 +322,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                         cb=colorbar('southoutside',FontSize=16);
                         a =  cb.Position; %gets the positon and size of the color bar
                         set(cb,'Position',[a(1) a(2) a(3)/4 a(4)])% To change size
-                        cb.Label.String = opt.label{ii};
+                        cb.Label.String = opt.clabel{ii};
                         cb.Label.FontSize = 20;
                         view(opt.phi,EL_camera)
                         camPos=get(gca,"CameraPosition");
@@ -353,7 +357,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
                     if ~isempty(opt.displayedTime)
                         dims = get(gcf,'Position');
-                        Nmax = dims(4);
+                        Nmax = min(dims(3:4));
                         switch opt.timeUnit
                             case 's'
                                 timeFac = 1;
@@ -367,9 +371,9 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                         else
                             timeFontSize = opt.timeFontSize;
                         end
-                        text(Nmax/10, Nmax/10, ...
+                        text(10, 10, ...
                             sprintf("%.2f",round(opt.displayedTime/timeFac,2))+" "+opt.timeUnit, ...
-                            'Units','pixels', ...
+                            'Units','points', ...
                             'FontSize',timeFontSize, 'Color', opt.timeFontColor)
                     end
                     drawnow
@@ -377,6 +381,119 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             end
         end
 
+
+        function opendx(obj,opt)
+            arguments
+                obj
+                opt.persp = 1
+                opt.phi = 0
+                opt.theta = 0
+                opt.ampl = 10
+                opt.zrange = []
+                opt.colorMap =  []
+                opt.title = []
+                opt.factor = 1 % correction factor, for instance 5.55e-3 to convert the OPD color scale into dry mass
+                opt.clabel = 'Optical path difference (nm)'
+                opt.imType = 'OPD'
+                opt.axisDisplay (1,1) logical = true
+                opt.displayedTime = string.empty()
+                opt.timeUnit char {mustBeMember(opt.timeUnit,{'s','min','h'})}= 's'
+                opt.timeFontSize = []
+                opt.timeFontColor = []
+            end
+
+
+            % convert all the options into cells:
+            if ~isa(opt.imType,'cell')
+                opt.imType={opt.imType};
+            end
+
+            Nim = numel(opt.imType);
+
+            if ~isa(opt.factor,'cell')
+                val = opt.factor;
+                opt.factor = cell(1,Nim);
+                opt.factor(:) = {val};
+            end
+            if ~isa(opt.title,'cell')
+                val = opt.title;
+                opt.title = cell(1,Nim);
+                opt.title(:) = {val};
+            end
+            if ~isa(opt.zrange,'cell')
+                val = opt.zrange;
+                opt.zrange = cell(1,Nim);
+                opt.zrange(:) = {val};
+            end
+            if ~isa(opt.ampl,'cell')
+                val = opt.ampl;
+                opt.ampl = cell(1,Nim);
+                opt.ampl(:) = {val};
+            end
+            if ~isa(opt.colorMap,'cell')
+                val = opt.colorMap;
+                opt.colorMap = cell(1,Nim);
+                opt.colorMap(:) = {val};
+            end
+            if ~isa(opt.clabel,'cell')
+                val = opt.clabel;
+                opt.clabel = cell(1,Nim);
+                opt.clabel(:) = {val};
+            end
+
+
+            for ii=1:Nim
+                if ~isempty(opt.imType{ii})
+                    fac=opt.factor{ii};
+
+                    img = obj.(opt.imType{ii});
+
+                    if strcmpi(opt.imType{ii},'OPD')
+                        img=img*1e9;
+                    end
+
+                    if isempty(opt.zrange{ii})
+                        zrange=[min(img(:)) max(img(:))]*fac;
+                    else
+                        zrange=opt.zrange{ii};
+                    end
+
+                    if ~isempty(opt.title{ii})
+                        figTitle = opt.title{ii};
+                    elseif isprop(obj,'OPDfileName') % ie if ImageQLSI object
+                        figTitle = obj.OPDfileName;
+                    else
+                        figTitle = ' ';
+                    end
+
+
+                    if isempty(opt.colorMap{ii})
+                        if strcmp(opt.imType{ii},'OPD')
+                            opt.colorMap{ii} = Sepia;
+                        else
+                            opt.colorMap{ii} = gray;
+                        end
+                    end
+                    
+                    if Nim <= 3
+                        nRow = 1;
+                        nCol = Nim;
+                    else
+                        nRow = 2;
+                        nCol = ceil(Nim/2);
+                    end
+                    subplot(nRow,nCol,ii)
+
+                    opendx0(img, "persp", opt.persp, "phi", opt.phi, "theta", ...
+                        opt.theta, "ampl", opt.ampl{ii}, "zrange", zrange, ...
+                        "colorMap", opt.colorMap{ii}, "title", opt.title{ii}, ...
+                        "factor", fac, "clabel", opt.clabel{ii}, "pxSize", obj.pxSize, ...
+                        "figTitle", figTitle, "axisDisplay", opt.axisDisplay, ...
+                        "displayedTime", opt.displayedTime, "timeUnit", opt.timeUnit, ...
+                        "timeFontSize", opt.timeFontSize, "timeFontColor", opt.timeFontColor)
+                end
+            end
+        end
 
         function makeMoviedx(IM,videoName,opt)
             arguments
@@ -391,13 +508,14 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.colorMap =  []
                 opt.title = []
                 opt.factor = 1 % correction factor, for instance 5.55e-3 to convert the OPD color scale into dry mass
-                opt.label = 'Optical path difference (nm)'
+                opt.clabel = 'Optical path difference (nm)'
                 opt.imType  = 'OPD'
                 opt.axisDisplay  (1,1) logical = true
                 opt.frameTime = []  % if empty, nothing is displayed, if numeric value, the time is displayed on each frame
                 opt.timeUnit char {mustBeMember(opt.timeUnit,{'s','min','h'})} = 's'
                 opt.timeFontSize = []
                 opt.timeFontColor = [0, 0, 0]
+                opt.timeSize
             end
 
             % create the video writer with 1 fps
@@ -412,12 +530,17 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 hfig=figure;
                 fullscreen
                 %                hfig.Position=[1 1 1800 800];
-
+                if opt.frameTime ~= 0
+                    time = opt.frameTime*u;
+                else
+                    time = [];
+                end
                 opendx(IM(u),'persp',opt.persp,'phi',opt.phi,'theta',opt.theta,...
                     'ampl',opt.ampl,'zrange',opt.zrange,'colorMap',opt.colorMap, ...
-                    'title',opt.title,'factor',opt.factor,'label',opt.label,'imType',opt.imType, ...
-                    'axisDisplay',opt.axisDisplay,'displayedTime',opt.frameTime*u, ...
-                    'timeUnit',opt.timeUnit,'timeFontSize',opt.timeFontSize, 'timeFontColor', opt.timeFontColor)
+                    'title',opt.title,'factor',opt.factor,'label',opt.clabel,'imType',opt.imType, ...
+                    'axisDisplay',opt.axisDisplay,'displayedTime',time, ...
+                    'timeUnit',opt.timeUnit,'timeFontSize',opt.timeFontSize, ...
+                    'timeFontSize',opt.timeFontSize,'timeFontColor', opt.timeFontColor)
 
                 frame=getframe(hfig);
                 drawnow
@@ -467,14 +590,18 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 obj0
                 opt.xy1 = []
                 opt.xy2 = []
-                opt.Center = 'Auto' % 'Auto', 'Manual' or [x, y]
+                opt.Center = 'Manual' % 'Auto', 'Manual' or [x, y]
                 opt.Size = 'Manual' % 'Auto', 'Manual', d or [dx, dy]
                 opt.twoPoints logical = false
-                opt.params double = double.empty()
+                opt.margin = 0
+                opt.params double = double.empty()  % [x1, x2, y1, y2]
                 opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
                 opt.app = [] % figure uifigure object to be considered in case the image is already open
                 opt.displayT logical = false
                 opt.colormap = parula
+                opt.colorImage = false
+                opt.polarImage = false
+                opt.redo logical = false % in the case of a series of objects, dont apply the same crop for each image, and ask again the crop for each image
             end
 
             if nargout
@@ -485,31 +612,31 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
             sizeIm = [0 0];
             for io = 1:numel(obj)
-                if sum(sizeIm ~= size(obj(io).OPD)) % if the size of the image is not the same as the previous one
-                    if isempty(opt.params)
-                        if ~isempty(opt.app)
-                            boxObj = opt.app;
-                        else
-                            boxObj = obj(io);
-                        end
-
-                        [x1, x2, y1, y2] = boxSelection(boxObj,'xy1',opt.xy1, ...
-                            'xy2',opt.xy2, ...
-                            'Center',opt.Center, ...
-                            'Size',opt.Size, ...
-                            'twoPoints',opt.twoPoints, ...
-                            'params',opt.params, ...
-                            'shape',opt.shape, ...
-                            'displayT',opt.displayT, ...
-                            'colormap',opt.colormap);
-                        params=[x1, x2, y1, y2];
+                if sum(sizeIm ~= size(obj(io).OPD)) || opt.redo % redo the crop, if the size of the image is not the same as the previous one, or if the redo option is specified
+                    if ~isempty(opt.app)
+                        boxObj = opt.app;
                     else
-                        x1 = opt.params(1);
-                        x2 = opt.params(2);
-                        y1 = opt.params(3);
-                        y2 = opt.params(4);
-                        params=opt.params;
+                        boxObj = obj(io);
                     end
+
+                    [x1, x2, y1, y2] = boxSelection(boxObj, ...
+                        'xy1',opt.xy1, ...
+                        'xy2',opt.xy2, ...
+                        'Center',opt.Center, ...
+                        'Size',opt.Size, ...
+                        'twoPoints',opt.twoPoints, ...
+                        'params',opt.params, ...
+                        'shape',opt.shape, ...
+                        'displayT',opt.displayT, ...
+                        'colormap',opt.colormap, ...
+                        'colorImage',opt.colorImage, ...
+                        'polarImage',opt.polarImage, ...
+                        'margin',opt.margin, ...
+                        'params', opt.params);
+
+                    params=[x1, x2, y1, y2];
+
+
                 end
 
                 sizeIm = size(obj(io).OPD);
@@ -542,25 +669,12 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
         end
 
-        function im = Rytov(obj)
+        function im = get.Rytov(obj)
             im = obj.lambda*obj.Illumination.n/pi*abs( log(obj.T)/2+1i*obj.Ph ).^2;
         end
 
-        function bool = is_empty(obj)
-            % return 1 is the object is empty, or if all the properties are empty
-            No = numel(obj);
-            val = zeros(No,1);
-            for io = 1:No
-                if isempty(obj(io))
-                    val(io) = 1;
-                else
-                    val(io) = isempty(obj(io).OPD);
-                end
-            end
-            bool = logical(val);
-        end
-
-        function IM = adjustPolarOffsets(IM0)
+        function IM = adjustPolarOffsets2(IM0)
+            % previous formalism, involving an arccos
 
             [Nim, Nch] = size(IM0);
             if Nch ~= 4
@@ -627,7 +741,8 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
         end
 
-        function polarImages = extractPolarImages(IM)
+        function polarImages = extractPolarImages2(IM)
+            % previous formalism involving an arccos
 
             [Nim, Nch] = size(IM);
             if Nch ~= 4
@@ -670,8 +785,222 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             end
         end
 
-        function  polarImages = CGMpolar(IM)
-            polarImages = extractPolarImages( adjustPolarOffsets(IM) );
+        function IM = adjustPolarOffsets(IM0,method,opt)
+            arguments
+                IM0
+                method {mustBeMember(method,{'manual','auto','Manual','Auto'})} = 'Auto'
+                opt.pause = false
+                opt.polarized logical = true
+            end
+
+            [Nim, Nch] = size(IM0);
+            if Nch ~= 4
+                error('this method assumes that the input is an N*4 array of objects, where the 4 columns are the 4 polarisation measurements')
+            end
+
+            if nargout
+                IM = copy(IM0);
+            else
+                IM = IM0;
+            end
+            if strcmpi(method,'Auto')
+                for ii = 1:Nim
+                
+    
+                    T1 = IM(ii,1).T;
+                    T2 = IM(ii,2).T;
+                    T3 = IM(ii,3).T;
+                    T4 = IM(ii,4).T;
+    
+                    Phi1 = IM(ii,1).Ph;
+                    Phi2 = IM(ii,2).Ph;
+                    Phi3 = IM(ii,3).Ph;
+                    Phi4 = IM(ii,4).Ph;
+    
+                    S3 = 2*imag(IM(1).Illumination.polar(1)*IM(1).Illumination.polar(2)');
+                    if opt.polarized
+                        if S3 <0
+                            C = 0.5*(T2-T4)./sqrt(T1.*T3);
+                        else
+                            C = -0.5*(T2-T4)./sqrt(T1.*T3);
+                        end
+                    else
+                            C = -3.4 * -0.5*(T3-T1)./sqrt(T2.*T4);                    
+                    end
+
+                    if opt.pause
+                        asinC = asin(C);
+                        dphi = Phi1-Phi3;
+                        asinC = asinC-mean(asinC(:));
+                        dphi = dphi - mean(dphi(:));
+                        figure
+                        subplot(1,3,1)
+                        % plot(0.64*mean(real(asinC(end/2-10:end/2+10,:))),'b','LineWidth',1.5)
+                        plot(mean(real(asinC(end/2-10:end/2+10,:))),'b','LineWidth',1.5)
+                        hold on
+                        plot(mean(dphi(end/2-10:end/2+10,:)),'r-.','LineWidth',2)
+                        legend({'asinC','Phi1-Phi3'})
+                        lims = [-1 1];
+                        ylim(lims)
+                        %%
+                        subplot(1,3,2)
+                        imagesc(real(asinC)),clim(lims),colorbar
+                        
+                        subplot(1,3,3)
+                        imagesc(dphi),clim(lims),colorbar%,clim([-0.05 0.05])
+                        fullwidth
+                        title(ii+"/"+Nim)
+                        drawnow
+                    end
+
+                    while any(abs(C(:)) > 1)
+                        warning('some pixels feature a C>1')
+                        list = find(abs(C(:))>1);
+                        for io = 1:numel(list) % take the average of the neighfor pixels, because these problematic pixels are isolated in general
+                            C(list(io)) = (C(list(io)-1)+C(list(io)+1))/2;
+                        end
+                    end
+                    % C almost equal zero.
+                    % since C = cos(phi_x - ph_y), it means that phi_x and phi_y are in
+                    % quadratude, which is true because of the circular polarization !
+    
+                    %figure,imagegb(Phi3-Phi1+acos(C));
+                    %clim([-1.57 0])
+                    dPhi3map = Phi3-Phi1+asin(C);
+                    dPhi3 = median(dPhi3map(:));
+                    %dPhi3 = Phi3-Phi1+acos(C);
+    
+                    phi1 = IM(ii,1).Ph;
+                    phi3 = IM(ii,3).Ph - dPhi3;
+    
+                    %% setting the right offset to the first image to make sure the background is zero in OPD
+                    %phi1 = phi1 - mean(mean(phi1(1,1:end-1)+phi1(1:end-1,end)+phi1(2:end,1)+phi1(end,2:end)))/4;
+    
+                    %% other polars 2 & 4
+                    E1 = sqrt(T1);
+                    E3 = sqrt(T3);
+                    dPhi2 = median(median(Phi2+unwrap(  pi/4-angle( E1.*exp(1i*phi1)+1i*E3.*exp(1i*phi3)))));
+                    dPhi4 = median(median(Phi4+unwrap(3*pi/4-angle(-E1.*exp(1i*phi1)+1i*E3.*exp(1i*phi3)))));
+    
+                    %% New OPD images, with the right shift
+                    lambda = IM(ii, 1).Illumination.lambda;
+                    % IM(ii, 1).OPD = phi1*lambda/(2*pi); % useless
+                    IM(ii, 2).OPD = IM(ii, 2).OPD - dPhi2*lambda/(2*pi);
+                    IM(ii, 3).OPD = IM(ii, 3).OPD - dPhi3*lambda/(2*pi);
+                    IM(ii, 4).OPD = IM(ii, 4).OPD - dPhi4*lambda/(2*pi);
+
+                end
+            else % manual set of the area of the image that should be zero on each image
+                figure,imageph(IM(1, 1).OPD)
+                [x, y] = ginput(2);
+                IM.level0("params", [min(x), max(x), min(y), max(y)])
+            end
+
+        end
+
+        function [polarImages, polarImageGradients] = extractPolarImages(IM,opt)
+            arguments
+                IM
+                opt.norm_nm = 10; % amplitude that correspond to saturated color
+            end
+
+            if opt.norm_nm > 1e-3 % value in nm
+                opt.norm_nm = opt.norm_nm*1e-9; % set in [m]
+            end
+
+            [Nim, Nch] = size(IM);
+            if Nch ~= 4
+                error('this method assumes that the input is an N*4 array of objects, where the 4 columns are the 4 polarisation measurements')
+            end
+
+            % Preallocate the structure array
+            polarImages(Nim).phibar = [];
+            polarImages(Nim).theta0 = [];
+            polarImages(Nim).dphi = [];
+            polarImages(Nim).Illumination = [];
+            polarImages(Nim).Microscope = [];
+            polarImages(Nim).rgbImage = [];
+
+            if nargout == 2
+                polarImageGradients(Nim,2).phibar = [];
+                polarImageGradients(Nim,2).theta0 = [];
+                polarImageGradients(Nim,2).dphi = [];
+                polarImageGradients(Nim,2).Illumination = [];
+                polarImageGradients(Nim,2).Microscope = [];
+                polarImageGradients(Nim,2).rgbImage = [];
+            end
+
+            for ii = 1:Nim
+                % tphi1 = IM(ii,1).Ph;
+                % tphi2 = IM(ii,2).Ph + pi/4;
+                % tphi3 = IM(ii,3).Ph + pi/2;
+                % tphi4 = IM(ii,4).Ph + 3*pi/4;
+
+                tphi1 = IM(ii,1).Ph;
+                tphi2 = IM(ii,2).Ph;
+                tphi3 = IM(ii,3).Ph;
+                tphi4 = IM(ii,4).Ph;
+
+                polarImages(ii).theta0 = angle((tphi1-tphi3)+1i*(tphi2-tphi4));
+
+                polarImages(ii).phibar = (tphi1+tphi2+tphi3+tphi4)/4;
+
+                %deltaphi = sqrt(-(tphi4-phibar).*(tphi2-phibar)-(tphi3-phibar).*(tphi1-phibar));
+                polarImages(ii).dphi = sqrt(abs((tphi4-polarImages(ii).phibar).*(tphi2-polarImages(ii).phibar)+(tphi3-polarImages(ii).phibar).*(tphi1-polarImages(ii).phibar)));
+
+                polarImages(Nim).Illumination = IM(ii,1).Illumination;
+                polarImages(Nim).Microscope = IM(ii,1).Microscope;
+
+
+                [Ny, Nx] = size(polarImages(ii).dphi);
+                hsvImage = zeros(Ny, Nx, 3);
+                hsvImage(:,:,1) = polarImages(ii).theta0/pi/2+0.5;
+                hsvImage(:,:,2) = 1/norm*polarImages(ii).dphi;
+                hsvImage(:,:,3) = ones(Ny,Nx);
+
+                polarImages(ii).rgbImage = hsv2rgb(hsvImage);
+
+                if nargout == 2
+
+                    tphix1 = IM(ii,1).DWx;
+                    tphix2 = IM(ii,2).DWx;
+                    tphix3 = IM(ii,3).DWx;
+                    tphix4 = IM(ii,4).DWx;
+                    tphiy1 = IM(ii,1).DWy;
+                    tphiy2 = IM(ii,2).DWy;
+                    tphiy3 = IM(ii,3).DWy;
+                    tphiy4 = IM(ii,4).DWy;
+
+                    polarImageGradients(ii,1).theta0 = angle((tphix1-tphix3)+1i*(tphix2-tphix4));
+                    polarImageGradients(ii,1).phibar = (tphix1+tphix2+tphix3+tphix4)/4;
+                    polarImageGradients(ii,1).dphi = sqrt(abs((tphix4-polarImageGradients(ii,1).phibar).*(tphix2-polarImageGradients(ii,1).phibar)+(tphix3-polarImageGradients(ii,1).phibar).*(tphix1-polarImageGradients(ii,1).phibar)));    
+                    polarImageGradients(Nim,1).Illumination = IM(ii,1).Illumination;
+                    polarImages(Nim).Microscope = IM(ii,1).Microscope;
+                    [Ny, Nx] = size(polarImageGradients(ii,1).dphi);
+                    hsvImage = zeros(Ny, Nx, 3);
+                    hsvImage(:,:,1) = polarImageGradients(ii,1).theta0/pi/2+0.5;
+                    hsvImage(:,:,2) = 1/norm*polarImageGradients(ii,1).dphi/max(polarImageGradients(ii,1).dphi(:));
+                    hsvImage(:,:,3) = ones(Ny,Nx);
+                    polarImageGradients(ii,1).rgbImage = hsv2rgb(hsvImage);
+
+                    polarImageGradients(ii,2).theta0 = angle((tphiy1-tphiy3)+1i*(tphiy2-tphiy4));
+                    polarImageGradients(ii,2).phibar = (tphiy1+tphiy2+tphiy3+tphiy4)/4;
+                    polarImageGradients(ii,2).dphi = sqrt(abs((tphiy4-polarImageGradients(ii,2).phibar).*(tphiy2-polarImageGradients(ii,2).phibar)+(tphiy3-polarImageGradients(ii,2).phibar).*(tphiy1-polarImageGradients(ii,2).phibar)));    
+                    polarImageGradients(Nim,2).Illumination = IM(ii,2).Illumination;
+                    polarImages(Nim).Microscope = IM(ii,1).Microscope;
+                    [Ny, Nx] = size(polarImageGradients(ii,2).dphi);
+                    hsvImage = zeros(Ny, Nx, 3);
+                    hsvImage(:,:,1) = polarImageGradients(ii,2).theta0/pi/2+0.5;
+                    hsvImage(:,:,2) = 1/norm*polarImageGradients(ii,2).dphi/max(polarImageGradients(ii,2).dphi(:));
+                    hsvImage(:,:,3) = ones(Ny,Nx);
+                    polarImageGradients(ii,2).rgbImage = hsv2rgb(hsvImage);
+
+                end
+            end
+        end
+
+        function  [polarImages, polarImageGradients] = CGMpolar(IM)
+            [polarImages, polarImageGradients] = extractPolarImages( adjustPolarOffsets(IM) );
         end
     end
 

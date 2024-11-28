@@ -4,8 +4,8 @@ function [x, y] = maxPix(im)
 
 [Ny, Nx] = size(im);
 
-y_values = round(Ny/2+10) : Ny;
-x_values = round(Nx/2+10) : Nx;
+y_values = round(Ny/2) : Ny;
+x_values = round(Nx/2) : Nx;
 
 roi = abs(im(y_values, x_values));
 

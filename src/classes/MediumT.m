@@ -15,7 +15,7 @@ classdef MediumT
         mesh    % Mesh object. Coordinates of the points meshing the layer in z.
         mesh_param  % regular or progressive
         mesh_Npx
-    end        
+    end
     properties (Dependent)
         kappa   % Thermal conductivity of the medium.
         b       % 4-number vector defining the dn/dT fit coefficients b1, b2, b3, b4.
