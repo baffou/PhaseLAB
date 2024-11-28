@@ -61,6 +61,7 @@ classdef IFDDAobject < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispl
                 opt.z double = [] % shift in z. equals minus the radius if let empty
                 opt.fileName char
             end
+
             obj.pxSize=opt.pxSize;
 
             if ~isempty(opt.n) && isempty(opt.eps)
@@ -74,6 +75,7 @@ classdef IFDDAobject < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispl
             if strcmp(name,'spheroid')
                 name='ellipsoid';
             end
+
             obj.name=name;
             if strcmp(name,'sphere')
                 if ~isempty(opt.radius) && isempty(opt.diameter) && isempty(opt.size)
@@ -137,7 +139,6 @@ classdef IFDDAobject < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispl
                     warning('Height of the cylinder arbitrarily set to 100 nm.')
                     obj.dimZ=100e-9;
                 end
-                
             elseif strcmp(name,'arbitrary')
                 obj.fileName=opt.fileName;
             end
