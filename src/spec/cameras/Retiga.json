@@ -1,0 +1,9 @@
+{"class":"Camera",
+"brand": "Retiga",
+"model": "Retiga",
+"dxSize": 7.4e-6,
+"Nx": 1600,
+"Ny": 1200,
+"fullWellCapacity": 40000,
+"colorChannels":1
+}
