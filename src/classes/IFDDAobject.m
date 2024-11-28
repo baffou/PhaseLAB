@@ -1,5 +1,5 @@
 classdef IFDDAobject < handle & matlab.mixin.Copyable & matlab.mixin.CustomDisplay
-    properties(GetAccess = public, SetAccess=private)
+    properties(GetAccess = public, SetAccess = private)
         name (1,:) char = 'arbitrary'
         fileName (1,:) char = 'none' % in case name=='arbitrary'
     end
