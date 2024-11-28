@@ -20,7 +20,7 @@ if ~isempty(opt.nCell)
     opt.epsCell=opt.nCell^2;
 end
 if ~isempty(opt.n0)
-    opt.epsCell=opt.n0^2;
+    opt.eps0=opt.n0^2;
 end
 
 [Ny, Nx] = size(im);
