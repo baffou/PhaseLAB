@@ -73,7 +73,7 @@ switch method
 
 end
 
-imgf = imgf - mean(img(mask));
+%imgf = imgf - mean(img(mask));
 
 
 if ~isempty(opt.mask) && opt.display

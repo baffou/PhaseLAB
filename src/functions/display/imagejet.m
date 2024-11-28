@@ -1,15 +1,21 @@
-function h=imagejet(A,Amin,Amax)
+function h=imagejet(A,Amin,Amax,opt)
+arguments
+    A
+    Amin = []
+    Amax = []
+    opt.ax = gca
+end
 
 
 if nargout % do not display ans if no output is asked by the user.
-    h=imagesc(A);
+    h=imagesc(opt.ax,A);
 else
-    imagesc(A)
+    imagesc(opt.ax,A)
 end
-colorbar
+colorbar(opt.ax)
 set(gca,'YDir','normal')
 
-colormap(gca,jet(1024))
+colormap(opt.ax,jet(1024))
 
 
 if nargin==2
@@ -20,4 +26,4 @@ if nargin==3
     clim([Amin Amax])
 end
 
-set(gca,'dataAspectRatio',[1 1 1])
+set(opt.ax,'dataAspectRatio',[1 1 1])

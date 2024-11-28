@@ -136,6 +136,12 @@ classdef Dipole
             val = [obj.x,obj.y,obj.z];
         end
 
+        function obj = set.pos(obj,val)
+            obj.x = val(1);
+            obj.y = val(2);
+            obj.z = val(3);
+        end
+
         function val = get.lambda(obj)
             val = obj.Illumination.lambda;
         end
@@ -169,16 +175,69 @@ classdef Dipole
 
         function obj = set(obj,str1,val1,str2,val2,str3,val3)
             if nargin==3
-                eval(['obj.' str1 '=val1;'])
+                obj.(str1)=val1;
             elseif nargin==5
-                eval(['obj.' str1 '=val1;'])
-                eval(['obj.' str2 '=val2;'])
+                obj.(str1)=val1;
+                obj.(str2)=val2;
             elseif nargin==7
-                eval(['obj.' str1 '=val1;'])
-                eval(['obj.' str2 '=val2;'])
-                eval(['obj.' str3 '=val3;'])
+                obj.(str1)=val1;
+                obj.(str2)=val2;
+                obj.(str3)=val3;
             end
         end
+
+        function obj = rotate(obj,theta,opt)
+            %obj.rotate(thetaDeg,axis,point)
+            arguments
+                obj
+                theta double
+                opt.axis {mustBeMember(opt.axis,["x","y","z"])} = "z"
+                opt.center = []
+            end
+
+            if theta*1000 ~= round(theta*1000)
+                warning('The rotation angle input must be in degrees, not in radians. Are you sure it is?')
+            end
+
+            if isempty(opt.center)
+                opt.center = 0;
+                for ic = 1:numel(obj)
+                    opt.center = opt.center + obj(ic).pos/numel(obj);
+                end
+            end
+            
+            switch char(opt.axis)
+                case 'x'
+                    rotMat = ...
+                    [1 0           0
+                     0 cosd(theta) -sind(theta)
+                     0 sind(theta)  cosd(theta)];
+                case 'y'
+                    rotMat = ...
+                    [cosd(theta) 0 sind(theta)
+                     0          1 0
+                    -sind(theta) 0 cosd(theta)];
+                case 'z'
+                    rotMat = ...
+                    [cosd(theta) -sind(theta) 0
+                     sind(theta)  cosd(theta) 0
+                     0           0          1];
+            end
+            obj = obj.moveBy(-opt.center);
+            for ic = 1:numel(obj)
+                obj(ic).pos = (rotMat*obj(ic).pos(:)).';
+            end
+            obj = obj.moveBy(opt.center);
+
+            % rotate the permittivity tensor of the unit cells as well
+            % switch numel(obj.eps)
+            %     case 3
+            %         obj.epsHidden = rotMat.*[obj.eps(1) 0 0; 0 obj.eps(2) 0;0 0 obj.eps(3)];
+            %     case 9
+            %         obj.epsHidden = rotMat.*obj.eps;
+            % end
+        end
+                
 
         function obj = moveTo(obj,varargin)
             No = numel(obj);
@@ -315,31 +374,31 @@ classdef Dipole
                     n_DI = DI.n(ii);
                     m = n_DI/DI.n_ext;
                     k = 2*pi*DI.n_ext/DI.lambda;
-                    x = k*r0;
-                    z = m*x;
-                    N = round(2+x+4*x.^(1/3));
+                    x0 = k*r0;
+                    z0 = m*x0;
+                    N = round(2+x0+4*x0.^(1/3));
                 
                     % computation
                 
                     j = (1:N);
                 
-                    sqr = sqrt(pi*x/2);
-                    sqrm = sqrt(pi*z/2);
+                    sqr = sqrt(pi*x0/2);
+                    sqrm = sqrt(pi*z0/2);
                 
-                    phi = sqr.*besselj(j+0.5,x);
-                    xi = sqr.*(besselj(j+0.5,x)+1i*bessely(j+0.5,x));
-                    phim = sqrm.*besselj(j+0.5,z);
+                    phi = sqr.*besselj(j+0.5,x0);
+                    xi = sqr.*(besselj(j+0.5,x0)+1i*bessely(j+0.5,x0));
+                    phim = sqrm.*besselj(j+0.5,z0);
                 
-                    phi1 = [sin(x), phi(1:N-1)];
+                    phi1 = [sin(x0), phi(1:N-1)];
                 
-                    phi1m = [sin(z), phim(1:N-1)];
-                    y = sqr*bessely(j+0.5,x);
+                    phi1m = [sin(z0), phim(1:N-1)];
+                    y0 = sqr*bessely(j+0.5,x0);
                 
-                    y1 = [-cos(x), y(1:N-1)];
+                    y1 = [-cos(x0), y0(1:N-1)];
                 
-                    phip = (phi1-j/x.*phi);
-                    phimp = (phi1m-j/z.*phim);
-                    xip = (phi1+1i*y1)-j/x.*(phi+1i*y);
+                    phip = (phi1-j/x0.*phi);
+                    phimp = (phi1m-j/z0.*phim);
+                    xip = (phi1+1i*y1)-j/x0.*(phi+1i*y0);
                 
                     aj = (m*phim.*phip-phi.*phimp)./(m*phim.*xip-xi.*phimp);
                     bj = (phim.*phip-m*phi.*phimp)./(phim.*xip-m*xi.*phimp);
@@ -394,7 +453,6 @@ classdef Dipole
             ecart = max( max(5*[obj.r]) , 50e-9);
             [X, Y] = meshgrid(-ecart+min(min(posList(:,1))):1e-7:ecart+max(max(posList(:,1))) , -ecart+min(min(posList(:,2))):1e-7:ecart+max(max(posList(:,2))));
             Z = 0.*X + 0.*Y;
-            color = ones(size(X,2), size(X,1), 3);
             surf(X*1e6,Y*1e6,Z*1e6,'FaceColor','w','EdgeColor','w');
             colormap(Pradeep)
             view(14,28)

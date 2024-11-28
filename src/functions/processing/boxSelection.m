@@ -24,6 +24,12 @@ arguments
 end
 
 
+if isnumeric(opt.Center) && isnumeric(opt.Size)
+    displayOn = false;
+else
+    displayOn = true;
+end
+
 isapp = 0;
 if isnumeric(im)
     [Ny, Nx]= size(im);
@@ -62,37 +68,38 @@ elseif ~isempty(opt.params)
     y2 = opt.params(4);
 else
 
+    if displayOn
+        if isnumeric(im)
+            h=figure;
+            imagegb(im,opt.colormap)
+            h.UserData.Axes = gca;
+            fullscreen
+        elseif isapp % is im an app, PhaseLABgui, or PhaseLABgui_multiCanal
+            h = app.UIFigure;
+            % Check Matlab version, throw error if prior to r2020b
+            %assert(~verLessThan('Matlab', '9.9'), 'ginput not supported prior to Matlab r2020b.')
+        
+            % Set up figure handle visibility, run ginput, and return state
+            fhv = app.UIFigure.HandleVisibility;        % Current status
+            app.UIFigure.HandleVisibility = 'callback'; % Temp change (or, 'on')
+            set(0, 'CurrentFigure', app.UIFigure)       % Make fig current
+            h.UserData.Axes = [app.AxesLeft, app.AxesRight];
+            axes(app.AxesLeft)
+        elseif isa(im,'ImageMethods')
+            if opt.displayT
+                h=figure;imagegb(im(1).T,opt.colormap)
+            else
+                h=figure;imagegb(im(1).OPD,opt.colormap)
+            end
+            fullscreen
+            h.UserData.Axes = gca;
+        elseif isa(im,'Interfero')
+            h=figure;imagegb(imgaussfilt(im(1).Itf,4),opt.colormap) % imgaussfilt to remove the fringe and better see
+            h.UserData.Axes = gca;
+            fullscreen
     
-    if isnumeric(im)
-        h=figure;
-        imagegb(im,opt.colormap)
-        h.UserData.Axes = gca;
-        fullscreen
-    elseif isapp % is im an app, PhaseLABgui, or PhaseLABgui_multiCanal
-        h = app.UIFigure;
-        % Check Matlab version, throw error if prior to r2020b
-        %assert(~verLessThan('Matlab', '9.9'), 'ginput not supported prior to Matlab r2020b.')
-    
-        % Set up figure handle visibility, run ginput, and return state
-        fhv = app.UIFigure.HandleVisibility;        % Current status
-        app.UIFigure.HandleVisibility = 'callback'; % Temp change (or, 'on')
-        set(0, 'CurrentFigure', app.UIFigure)       % Make fig current
-        h.UserData.Axes = [app.AxesLeft, app.AxesRight];
-        axes(app.AxesLeft)
-    elseif isa(im,'ImageMethods')
-        if opt.displayT
-            h=figure;imagegb(im(1).T,opt.colormap)
-        else
-            h=figure;imagegb(im(1).OPD,opt.colormap)
+        
         end
-        fullscreen
-        h.UserData.Axes = gca;
-    elseif isa(im,'Interfero')
-        h=figure;imagegb(imgaussfilt(im(1).Itf,4),opt.colormap) % imgaussfilt to remove the fringe and better see
-        h.UserData.Axes = gca;
-        fullscreen
-
-    
     end
     
     
@@ -215,12 +222,13 @@ else
         y1 = floor(yc_px-Size_px(2)/2+1);
         y2 = floor(yc_px-Size_px(2)/2+Size_px(2));
     
-        if ~isapp
-            pause(0.5)
-            close(h)
-        else
-            app.UIFigure.HandleVisibility = fhv;    % return original state
-        
+        if displayOn
+            if ~isapp
+                pause(0.5)
+                close(h)
+            else
+                app.UIFigure.HandleVisibility = fhv;    % return original state
+            end        
         end    
     
         if exist('rr','var')

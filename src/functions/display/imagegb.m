@@ -1,25 +1,29 @@
-function h=imagegb(A,colorMap,Amin,Amax)
-
+function h = imagegb(A,colorMap,Amin,Amax,opt)
+arguments
+    A
+    colorMap = parula(1024)
+    Amin = []
+    Amax = []
+    opt.ax = gca
+end
 
 if nargout % do not display ans if no output is asked by the user.
-    h=imagesc(A);
+    h=imagesc(opt.ax, A);
 else
-    imagesc(A)
+    imagesc(opt.ax, A)
 end
-colorbar
-set(gca,'YDir','normal')
-if nargin<2
-    colorMap=parula(1024);
-end
-colormap(gca,colorMap)
+colorbar(opt.ax)
+set(opt.ax,'YDir','normal')
+
+colormap(opt.ax,colorMap)
 
 
 if nargin==3
-    caxis([min(min(A)) Amin])
+    clim([min(min(A)) Amin])
 end
 
 if nargin==4
-    caxis([Amin Amax])
+    clim([Amin Amax])
 end
 
-set(gca,'dataAspectRatio',[1 1 1])
+set(opt.ax,'dataAspectRatio',[1 1 1])

@@ -46,9 +46,6 @@ open(writerObj);
 IM = h.UserData.imageList{1};
 for u=1:numel(IM)
     % convert the image to a frame
-
-    h.UserData.imageList
-
     frame=getframe(h);
     drawnow
     writeVideo(writerObj, frame);

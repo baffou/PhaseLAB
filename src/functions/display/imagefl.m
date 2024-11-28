@@ -4,6 +4,7 @@ arguments
     Amin = 0
     Amax = 0
     opt.pxSize = []
+    opt.ax = gca
 end
 
 [Ny, Nx] = size(A);
@@ -11,21 +12,21 @@ end
 
 if ~isempty(opt.pxSize)
     if nargout
-        ai=imagesc(opt.pxSize*(1:Nx),opt.pxSize*(1:Ny),A);
+        ai=imagesc(opt.ax,opt.pxSize*(1:Nx),opt.pxSize*(1:Ny),A);
     else
-           imagesc(opt.pxSize*(1:Nx),opt.pxSize*(1:Ny),A)
+           imagesc(opt.ax,opt.pxSize*(1:Nx),opt.pxSize*(1:Ny),A)
     end
 else
     if nargout
-        ai=imagesc(A);
+        ai=imagesc(opt.ax,A);
     else
-        imagesc(A)
+        imagesc(opt.ax,A)
     end
 end
 
-set(gca,'dataAspectRatio',[1 1 1])
-colorbar;
-set(gca,'YDir','normal')
+set(opt.ax,'dataAspectRatio',[1 1 1])
+colorbar(opt.ax);
+set(opt.ax,'YDir','normal')
 
 colormap(invertedGreen())
 

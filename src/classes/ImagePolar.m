@@ -182,6 +182,10 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             val = obj.IM.Ny;
         end
 
+        function val = Tbar(obj)
+            val = (obj.IM(1).T+obj.IM(2).T+obj.IM(3).T+obj.IM(4).T)/4;
+        end
+
         function rgb_bg(obj, val)
             Nim = numel(obj);
             for ii = 1:Nim

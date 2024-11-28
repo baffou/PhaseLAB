@@ -93,7 +93,7 @@ for ii = 1:Npanels
         case {'double','gpuArray'}
             Nim = size(varargin{2*ii},3);
             if Nim == 1  % 2D image
-                h.UserData.imageList{ii} = {varargin{2*ii}};
+                h.UserData.imageList{ii} = varargin(2*ii);
             else   % stack of 2D image
                 h.UserData.imageList{ii} = cell(Nim,1);
                 for im = 1:Nim
