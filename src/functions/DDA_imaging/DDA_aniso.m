@@ -46,7 +46,7 @@ if isa(DI(1),'AniDipole')
 end
 
 
-alpha = DI(1).alpha;
+alphaTensor = DI(1).alphaTensor;
 
 
 r12 = (n-nS)/(n+nS);
@@ -70,7 +70,7 @@ for ny = 1:N
             T1 = (   R'*R -d^2*Id)/(d*d*d);
             T2 = (3*(R'*R)-d^2*Id)/(d*d*d*d);
             T3 = (3*(R'*R)-d^2*Id)/(d*d*d*d*d);
-            S0(3*ny-2:3*ny,3*nx-2:3*nx) = diag(alpha)*(-k0^2*n*n*T1-1i*n*k0*T2+T3)*exp(1i*n*k0*d);
+            S0(3*ny-2:3*ny,3*nx-2:3*nx) = alphaTensor*(-k0^2*n*n*T1-1i*n*k0*T2+T3)*exp(1i*n*k0*d);
         else
             %S0(3*ny-2:3*ny,3*nx-2:3*nx) = -4*pi/(3*a*a*a)*Id;
         end
@@ -87,7 +87,7 @@ for ny = 1:N
         if R==0,error('dipole located at the interface'),end
         d = sqrt(R*R');
         T3 = (3*(R'*R)-d^2*Id)/(d*d*d*d*d);
-        Ssurf(3*ny-2:3*ny,3*nx-2:3*nx) = diag(alpha)*T3*[[-1 0 0];[0 -1 0];[0 0 1]];
+        Ssurf(3*ny-2:3*ny,3*nx-2:3*nx) = alphaTensor*T3*[[-1 0 0];[0 -1 0];[0 0 1]];
     end
 end
 Ssurf = (nS*nS-n*n)/(nS*nS+n*n)*Ssurf/(4*pi*eps0);
@@ -103,9 +103,10 @@ EE = (eye(3*N)-eps0*S0)\EE0;
 if N>1,fprintf('Done.\n'),end
 
 EEout = reshape(EE,[3,N]).';
-pout = (eps0*(alpha(:)*ones(1,size(EEout,1))).*EEout.').';
+pout = eps0*(alphaTensor*EEout.').';
 
 for in = 1:N
     DI(in) = DI(in).setp(pout(in,:));
+    DI(in) = DI(in).setEE(EEout(in,:));
 end
 

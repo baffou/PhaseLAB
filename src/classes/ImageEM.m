@@ -595,10 +595,10 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 ey = IM(io).Ey;
                 ex0 = IM(io).Einc.Ex;
                 ey0 = IM(io).Einc.Ey;
-                IMout(io).Ex=imProp(ex,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
-                IMout(io).Ey=imProp(ey,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
-                IMout(io).Einc.Ex=imProp(ex0,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
-                IMout(io).Einc.Ey=imProp(ey0,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
+                IMout(io).Ex = imProp(ex,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
+                IMout(io).Ey = imProp(ey,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
+                IMout(io).Einc.Ex = imProp(ex0,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
+                IMout(io).Einc.Ey = imProp(ey0,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
             end
         end
 

@@ -14,24 +14,23 @@ if isempty(IL.n)
     error('A Medium object needs to be assigned to the Illumination object in this kind of calculation')
 end
 
-NPout.mesh.E0 = IL.E0;
+NPout.DIs.setE0( IL.E0 );
 lambda = IL.lambda;
-NPout.Illumination = IL;
 n = IL.n;
 nS = IL.nS;
 NPout.n_ext = n;
-a = NPout.mesh.a;
+a = NPout.a;
 direct = IL.direct;
 E0 = IL.E0;
-pos = NPout.mesh.pos;
-N = NPout.mesh.N;
+pos = NPout.pos;
+N = NPout.N;
 
 kk = direct*2*pi/lambda;
 k0 = norm(kk);
 
 % chi = (epsmat - n*n*eye(3))*a*a*a;
 
-chi = NPout.chiTensor(n)*a*a*a;
+chi = NPout.chiTensor*a*a*a;
 
 %% incoming electric field
 r12 = (n-nS)/(n+nS);
@@ -82,9 +81,9 @@ fprintf('DDA matrix inversion. Please wait...\n')
 EE = (eye(3*N)-eps0*S0)\EE0;
 fprintf('Done.\n')
 
-NPout.mesh.EE = reshape(EE,[3,N]).';
-NPout.mesh.EE0 = reshape(EE0,[3,N]).';
-NPout.mesh.p = eps0*NPout.mesh.EE*chi;
-NPout.mesh.chi = chi;
+
+NPout.DIs = NPout.DIs.setEE( reshape(EE,[3,N]).' );
+NPout.DIs = NPout.DIs.setEE0( reshape(EE0,[3,N]).' );
+NPout.DIs = NPout.DIs.setp( eps0*NPout.EE*transpose(chi) );
 NPout.Illumination = IL;
 

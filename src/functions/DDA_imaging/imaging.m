@@ -28,19 +28,19 @@ ImSize = Npx*pxSize;
 
 if isa(DIs(1),'Nanoparticle')
     NP = DIs;
-    if NP.Illumination.identity~=IL.identity
+    if NP.Illumination ~= IL
         warning('The illumination used to shine the nanoparticle is not the one used to compute the image')
     end
-    if isempty(NP.mesh.p)
+    if isempty(NP.p)
         error('The Nanoparticle must be illuminated before imaging')
     end
     clear DIs
-    Nd = numel(NP.mesh.pos)/3;
-    DI0 = Dipole(NP.mat,NP.mesh.a/2);
+    Nd = numel(NP.pos)/3;
+    DI0 = Dipole(NP.mat,NP.a/2);
     DIs = repmat(DI0,Nd,1);
     for id = 1:Nd
-        DIs(id) = DIs(id).setp(NP.mesh.p(id,:));
-        DIs(id) = DIs(id).moveTo(NP.mesh.pos(id,1),NP.mesh.pos(id,2),NP.mesh.pos(id,3));
+        DIs(id) = DIs(id).setp(NP.p(id,:));
+        DIs(id) = DIs(id).moveTo(NP.pos(id,1),NP.pos(id,2),NP.pos(id,3));
         DIs(id).Illumination = NP.Illumination;
     end
 end
@@ -90,7 +90,7 @@ uz = [0;0;1];
 NDI = numel(DIs);
 
 ILlist = [DIs(:).Illumination];
-if [ILlist(:).identity]~=IL.identity
+if any(ILlist(:)~=IL)
     warning('The illumination used to shine the nanoparticle is not the one used to compute the image')
 end
 
@@ -105,7 +105,7 @@ for id = 1:NDI
     DI = DIs(id);
     
 
-    if DI.Illumination.identity~=IL.identity
+    if DI.Illumination ~= IL
         warning('The illumination used to compute the image is not the one used to create the dipole')
         disp(DI.Illumination)
         disp(IL)

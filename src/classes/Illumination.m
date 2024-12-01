@@ -34,7 +34,6 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
 
     properties(Hidden)
         Medium  Medium
-        identity       % random number as a signature of the object. Mimic an handle object this way and enables the comparison between two objects.
     end
 
     properties(Hidden,Constant)
@@ -80,7 +79,6 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
                         end
                     end
                 end
-                obj(iv).identity = rand(1,1);
             end
         end
 

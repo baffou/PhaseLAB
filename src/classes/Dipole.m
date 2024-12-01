@@ -12,10 +12,11 @@ classdef Dipole
     properties(SetAccess = private , GetAccess = public)
         mat             % material
         r               % radius of the dipolar nanosphere [m]
-        eps             % complex permittivity of the nanosphere material
         n               % complex refractive index of the nanosphere material
         p               % electric dipolar moment
-        EE0             % local electric field experienced by the dipole
+        E0
+        EE0             % incoming E0 field at the dipole location
+        EE              % local electric field experienced by the dipole
     end
     properties(Access = public)
         x = 0           % x position of the dipole [m]
@@ -25,6 +26,11 @@ classdef Dipole
     end
 
     properties(Dependent)
+        eps
+        epsTensor
+        chiTensor
+        alpha
+        alphaTensor
         lambda          % free-space wavelength
         pos             % position vector [x,y,z]
         alphaMie        % Mie complex polarizability
@@ -37,22 +43,25 @@ classdef Dipole
         Illumination
     end
 
-    properties(Access = private)
+    properties(Access = {?Nanoparticle})
         eps0 = 8.8541878128e-12     % vacuum permittivity
         c = 299792458               % speed of light
-        epsHidden = []
+        RotMat = [1 0 0 ; 0 1 0 ; 0 0 1]  % Rotation of the nanoparticle, and in particular of any anisotropic optical properties
+        nHidden = []
         alphaHidden = []
     end
     
     methods
 
         function obj = Dipole(mat,radius,z)
+            % Dipole('Au', radius, [z]). By default, z = radius.
+            % Dipole(n, radius, [z])
+            % Dipole(alpha, radius, [z])
             arguments
                 mat = 'none'
                 radius (1, 1) double = 0
                 z (1, 1) double = 0
             end
-            %Dipole(mat,radius,[z]). By default, z = radius.
             if nargin~=0
 
                 obj.r = radius;
@@ -61,9 +70,9 @@ classdef Dipole
                     obj.mat = mat;
                 elseif isnumeric(mat) % permittivity
                     if abs(mat)>1e-6 % specify an epsilon value
-                        disp('The code understands that you specify directly the permittivity value instead of the material')
-                        obj.epsHidden = mat;
-                        obj.mat = 'user defined - permittivity';
+                        disp('The code understands that you specify directly the refractive index value instead of the material')
+                        obj.nHidden = mat;
+                        obj.mat = 'user defined - refractive index';
                     else
                         disp('The code understands that you specify directly the polarisability value instead of the material')
                         obj.alphaHidden = mat;
@@ -87,20 +96,17 @@ classdef Dipole
 %            obj = DDA(obj,IL);
             obj = DDA_aniso(obj,IL);
         end
-
-        function val = get.eps(obj)
-            if ~isempty(obj.epsHidden)
-                val = obj.epsHidden;
-            else
-                val = epsReadDDA(obj.lambda,obj.mat);   % dielectric function of the nanoparticle 
-            end
-        end
         
         function val = get.n(obj)
-            if ~isempty(obj.epsHidden)
-                val = sqrt(obj.epsHidden);
+            % returns the refractive index tensor (diagonal)
+            if ~isempty(obj.nHidden)
+                val = obj.nHidden;
             else
                 val = indexRead(obj.lambda,obj.mat);   % dielectric function of the nanoparticle 
+            end
+
+            if numel(val) == 1
+                val = [val , val, val];
             end
         end
         
@@ -109,7 +115,7 @@ classdef Dipole
             val = prop.alpha;
         end
 
-        function val = alpha(obj)
+        function val = get.alpha(obj)
             if isempty(obj.alphaHidden)
                 val = obj.alphaMie;
             else
@@ -130,6 +136,50 @@ classdef Dipole
         function val = get.CscaMie(obj)
             prop = MieTheory(obj);
             val = prop.Csca;
+        end
+
+        function  val = get.chiTensor(obj) 
+            if length(obj.eps) == 1
+                tens = [obj.eps-obj.n_ext^2 0 0
+                        0 obj.eps-obj.n_ext^2 0
+                        0 0 obj.eps-obj.n_ext^2];
+            elseif length(obj.eps) == 3
+                tens = [obj.eps(1)-obj.n_ext^2 0 0
+                        0 obj.eps(2)-obj.n_ext^2 0
+                        0 0 obj.eps(3)-obj.n_ext^2];
+            end
+            val = obj.RotMat*tens*transpose(obj.RotMat);
+        end
+
+        function  val = get.alphaTensor(obj) 
+            if length(obj.alpha) == 1
+                tens = [obj.alpha 0 0
+                        0 obj.alpha 0
+                        0 0 obj.alpha];
+            elseif length(obj.eps) == 3
+                tens = [obj.alpha(1) 0 0
+                        0 obj.alpha(2) 0
+                        0 0 obj.alpha(3)];
+            end
+            val = obj.RotMat*tens*transpose(obj.RotMat);
+        end
+
+        function  val = get.eps(obj)
+            val = obj.n.^2;
+        end
+
+
+        function  val = get.epsTensor(obj)
+            if length(obj.eps) == 1
+                tens = [obj.eps 0 0
+                        0 obj.eps 0
+                        0 0 obj.eps];
+            elseif length(obj.eps) == 3
+                tens = [obj.eps(1) 0 0
+                        0 obj.eps(2) 0
+                        0 0 obj.eps(3)];
+            end
+            val = obj.RotMat*tens*transpose(obj.RotMat);
         end
 
         function val = get.pos(obj)
@@ -155,34 +205,73 @@ classdef Dipole
 
         function obj = setp(obj,p)
             % Sets the dipole moment p
+            arguments
+                obj
+                p (:,3) double
+            end
+
             if ~isnumeric(p)
                 error('p must be a number')
-            elseif length(p)~=3
-                error('p must be a 3-vector')
+            elseif size(p,2)~=3
+                error('p must be an Nx3 array')
             end
-            obj.p = p;   % dipole moment of the nanoparticle 
+
+            if size(p,1) ~= numel(obj)
+                error('The number of positions must equal the number of dipoles')
+            end
+
+            for ip = 1:numel(obj)
+                obj(ip).p = p(ip,:);   % dipole moment of the nanoparticle 
+            end
+        end
+
+        function obj = setEE(obj,val)
+            % Sets the EE field
+            arguments
+                obj
+                val (:,3) double
+            end
+
+            if ~isnumeric(val)
+                error('EE must be a number')
+            elseif size(val,2)~=3
+                error('EE must be an Nx3 array')
+            end
+
+            if size(val,1) ~= numel(obj)
+                error('The number of positions must equal the number of dipoles')
+            end
+
+            for ip = 1:numel(obj)
+                obj(ip).EE = val(ip,:);
+            end
         end
 
         function obj = setEE0(obj,val)
-            % Sets the dipole moment p
-            if ~isnumeric(val)
-                error('EE0 must be a number')
-            elseif length(val)~=3
-                error('EE0 must be a 3-vector')
+            % Sets the EE0 field
+            arguments
+                obj
+                val (:,3) double
             end
-            obj.EE0 = val;   % dipole moment of the nanoparticle 
+
+            if size(val,1) ~= numel(obj)
+                error('The number of positions must equal the number of dipoles')
+            end
+
+            for ip = 1:numel(obj)
+                obj(ip).EE0 = val(ip,:);
+            end
         end
 
-        function obj = set(obj,str1,val1,str2,val2,str3,val3)
-            if nargin==3
-                obj.(str1)=val1;
-            elseif nargin==5
-                obj.(str1)=val1;
-                obj.(str2)=val2;
-            elseif nargin==7
-                obj.(str1)=val1;
-                obj.(str2)=val2;
-                obj.(str3)=val3;
+        function obj = setE0(obj,val)
+            % Sets the E0 value
+            arguments
+                obj
+                val (1,3) double
+            end
+
+            for ip = 1:numel(obj)
+                obj(ip).E0 = val;
             end
         end
 
@@ -208,33 +297,34 @@ classdef Dipole
             
             switch char(opt.axis)
                 case 'x'
-                    rotMat = ...
+                    R = ...
                     [1 0           0
                      0 cosd(theta) -sind(theta)
                      0 sind(theta)  cosd(theta)];
                 case 'y'
-                    rotMat = ...
+                    R = ...
                     [cosd(theta) 0 sind(theta)
                      0          1 0
                     -sind(theta) 0 cosd(theta)];
                 case 'z'
-                    rotMat = ...
+                    R = ...
                     [cosd(theta) -sind(theta) 0
                      sind(theta)  cosd(theta) 0
                      0           0          1];
             end
             obj = obj.moveBy(-opt.center);
             for ic = 1:numel(obj)
-                obj(ic).pos = (rotMat*obj(ic).pos(:)).';
+                obj(ic).pos = (R*obj(ic).pos(:)).';
+                obj(ic).RotMat = R*obj(ic).RotMat;
             end
             obj = obj.moveBy(opt.center);
 
             % rotate the permittivity tensor of the unit cells as well
             % switch numel(obj.eps)
             %     case 3
-            %         obj.epsHidden = rotMat.*[obj.eps(1) 0 0; 0 obj.eps(2) 0;0 0 obj.eps(3)];
+            %         obj.epsHidden = RotMat.*[obj.eps(1) 0 0; 0 obj.eps(2) 0;0 0 obj.eps(3)];
             %     case 9
-            %         obj.epsHidden = rotMat.*obj.eps;
+            %         obj.epsHidden = RotMat.*obj.eps;
             % end
         end
                 
@@ -365,7 +455,7 @@ classdef Dipole
                 DI = DIlist(io);
                 r0 = DI.r;
 
-                alpha = zeros(Nn, 1);
+                alpha0 = zeros(Nn, 1);
                 Cabs = zeros(Nn, 1);
                 Cext = zeros(Nn, 1);
                 Csca = zeros(Nn, 1);
@@ -410,11 +500,11 @@ classdef Dipole
                     Csca(ii) = Csca(ii)*2*pi/(k*k);
                     Cabs(ii) = Cext(ii)-Csca(ii);
                 
-                    alpha(ii) = 1i*6*pi*DI.n_ext*DI.n_ext*aj(1)/(k*k*k);
+                    alpha0(ii) = 1i*6*pi*DI.n_ext*DI.n_ext*aj(1)/(k*k*k);
                 
 
                 end
-                prop(io) = NPprop(alpha,sum(Cext),sum(Csca),sum(Cabs));
+                prop(io) = NPprop(alpha0,sum(Cext),sum(Csca),sum(Cabs));
             
             end
 
