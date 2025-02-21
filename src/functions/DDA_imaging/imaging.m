@@ -34,15 +34,16 @@ if isa(DIs(1),'Nanoparticle')
     if isempty(NP.p)
         error('The Nanoparticle must be illuminated before imaging')
     end
-    clear DIs
-    Nd = numel(NP.pos)/3;
-    DI0 = Dipole(NP.mat,NP.a/2);
-    DIs = repmat(DI0,Nd,1);
-    for id = 1:Nd
-        DIs(id) = DIs(id).setp(NP.p(id,:));
-        DIs(id) = DIs(id).moveTo(NP.pos(id,1),NP.pos(id,2),NP.pos(id,3));
-        DIs(id).Illumination = NP.Illumination;
-    end
+    % clear DIs
+    % Nd = numel(NP.pos)/3;
+    % DI0 = Dipole(NP.mat,NP.a/2);
+    % DIs = repmat(DI0,Nd,1);
+    % for id = 1:Nd
+    %     DIs(id) = DIs(id).setp(NP.p(id,:));
+    %     DIs(id) = DIs(id).moveTo(NP.pos(id,1),NP.pos(id,2),NP.pos(id,3));
+    %     DIs(id).Illumination = NP.Illumination;
+    % end
+    DIs = NP.DIs;
 end
 
 if isempty(DIs(1).p)
@@ -107,8 +108,6 @@ for id = 1:NDI
 
     if DI.Illumination ~= IL
         warning('The illumination used to compute the image is not the one used to create the dipole')
-        disp(DI.Illumination)
-        disp(IL)
     end
     
     %% Dipole created by a nanosphere
@@ -135,7 +134,7 @@ for id = 1:NDI
             kprimey = ky/M;
             kprimey0 = kprimey/k0;
            
-            if sqrt(kx*kx+ky*ky) <= NA*k0     % cutoff filter; taking into account the numerical aperture of the objective
+            if sqrt(kx*kx+ky*ky) < NA*k0     % cutoff filter; taking into account the numerical aperture of the objective
                 
                 ga = sqrt(nS^2*k0^2-kx^2-ky^2);
                 ga0 = sqrt(nS^2*k0^2-kx^2-ky^2)/(nS*k0);
@@ -241,10 +240,12 @@ for id = 1:NDI
 %                     %Ekprime0=Ekprime(1);
 % 
 %                 end
-                
                 Ekprimex(iky,ikx) = Ekprimex(iky,ikx) + Ekprime(1);
                 Ekprimey(iky,ikx) = Ekprimey(iky,ikx) + Ekprime(2);
                 Ekprimez(iky,ikx) = Ekprimez(iky,ikx) + Ekprime(3);
+                if abs(Ekprimex(iky,ikx))>1e-10
+                    pause(1)
+                end
             end % if k<NA*k0
         end    % end for kyy
     end        % end for kxx

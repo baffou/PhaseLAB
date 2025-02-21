@@ -178,10 +178,17 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
             val = IL.E0*exp(1i*IL.n*kk(:).'*pos(:))+r12*IL.E0*exp(-1i*IL.n*kk(:).'*pos(:));
         end
 
-        function obj = rotate(obj,varargin)
-            if ~nargin==mod(nargin,2)
-                error('The number of arguments of the rotate function should be an odd number, in the for ''x'',45, ...')
+        function obj2 = rotate(obj,varargin)
+            if isEven(nargin)
+                error('The number of arguments of the rotate function should be an even number, in the for ''x'',45, ...')
             end
+
+            if nargout
+                obj2 = copy(obj);
+            else
+                obj2 = obj;
+            end
+
             for il = 1:(nargin-1)/2
                 num = il*2-1;
                 phi = varargin{num+1};
@@ -200,8 +207,8 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
                 else
                     error('Rotation of Illumination should be around ''X'' or ''Y'' or ''Z''')
                 end
-                obj.direct = (RotMat*obj.direct(:))';
-                obj.polar = (RotMat*obj.polar(:))';
+                obj2.direct = (RotMat*obj.direct(:))';
+                obj2.polar = (RotMat*obj.polar(:))';
             end
 
 
@@ -212,6 +219,11 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
             Nvar = numel(varargin);
             if mod(Nvar,2)
                 error('Must have an even number of inputs')
+            end
+            if nargout
+                ILs = copy(IL);
+            else
+                ILs = IL;
             end
 
             % Quarter waveplate
@@ -240,13 +252,18 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
                         mat = R(varargin{ii+1})*HWP*R(-varargin{ii+1})*mat;
                 end
             end
-            ILs = IL.Jones0(mat);
+            ILs.Jones0(mat);
         end
 
         function ILs = Jones0(IL,mat)
             % Jones0(IL,mat). IL: Illumination object, mat: a Jones Matrix. Applies a Jones matrix to the incoming light IL./
             pol2 = [IL.polar(1);IL.polar(2)];
-            ILs = IL;
+            if nargout
+                ILs = copy(IL);
+            else
+                ILs = IL;
+            end
+
             pol = mat*pol2;
             ILs.I = IL.I*(norm(pol)/norm(pol2))^2;
             ILs.polar = [pol(1) pol(2) 0];

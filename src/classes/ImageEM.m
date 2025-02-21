@@ -43,9 +43,11 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         U   % S2
         V   % S3
         L   % Q + 1i*U
+        absL % |L|
         A   % long radius of the ellipse
         B   % short radius of the ellipse
         theta   % tilt of the ellipse
+        thetabar % theta*absL
         h   % handedness sign(V)
         e   % excentricity
     end
@@ -256,6 +258,10 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             val = obj.Q + 1i*obj.U;
         end
 
+        function val = get.absL(obj)
+            val = abs(obj.Q + 1i*obj.U);
+        end
+
         function val = get.A(obj)
             val = sqrt(0.5*(obj.I+abs(obj.L)));
         end
@@ -266,6 +272,25 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
         function val = get.theta(obj)
             val = 0.5*angle(obj.L);
+        end
+
+        function val = get.thetabar(obj)
+
+            retardanceMax =1e-10;
+            black = 1;
+
+            if black == 1
+                corr = 1;
+            else
+                corr = 0;
+            end
+            hsvImage = zeros(obj.Ny, obj.Nx, 3);
+            hsvImage(:,:,1) = obj.theta/pi;
+            hsvImage(:,:,2+corr) = 1/retardanceMax*obj.absL * obj.Illumination.lambda/(2*pi);
+            hsvImage(:,:,3-corr) = ones(obj.Ny,obj.Nx);
+
+            val = hsv2rgb(hsvImage);
+        
         end
 
         function val = get.h(obj)
@@ -541,14 +566,17 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
         function IM = polarMask(IM0)
             IM = copy(IM0);
-            IM.Ex(1:2:end,1:2:end) = 0;
-            IM.Ey(2:2:end,2:2:end) = 0;
-            IM.Ex(2:2:end,1:2:end) = ( IM0.Ex(2:2:end,1:2:end)+IM0.Ey(2:2:end,1:2:end))/2;
-            IM.Ey(2:2:end,1:2:end) = ( IM0.Ex(2:2:end,1:2:end)+IM0.Ey(2:2:end,1:2:end))/2;
-            IM.Ex(1:2:end,2:2:end) = (+IM0.Ex(1:2:end,2:2:end)-IM0.Ey(1:2:end,2:2:end))/2;
-            IM.Ey(1:2:end,2:2:end) = (-IM0.Ex(1:2:end,2:2:end)+IM0.Ey(1:2:end,2:2:end))/2;
-            if ~isempty(IM.Einc)
-                IM.Einc = IM.Einc.polarMask();
+            No = numel(IM0);
+            for io = 1:No
+                IM(io).Ex(1:2:end,1:2:end) = 0;
+                IM(io).Ey(2:2:end,2:2:end) = 0;
+                IM(io).Ex(2:2:end,1:2:end) = ( IM0(io).Ex(2:2:end,1:2:end)+IM0(io).Ey(2:2:end,1:2:end))/2;
+                IM(io).Ey(2:2:end,1:2:end) = ( IM0(io).Ex(2:2:end,1:2:end)+IM0(io).Ey(2:2:end,1:2:end))/2;
+                IM(io).Ex(1:2:end,2:2:end) = (+IM0(io).Ex(1:2:end,2:2:end)-IM0(io).Ey(1:2:end,2:2:end))/2;
+                IM(io).Ey(1:2:end,2:2:end) = (-IM0(io).Ex(1:2:end,2:2:end)+IM0(io).Ey(1:2:end,2:2:end))/2;
+                if ~isempty(IM(io).Einc)
+                    IM(io).Einc = IM(io).Einc.polarMask();
+                end
             end
         end
 

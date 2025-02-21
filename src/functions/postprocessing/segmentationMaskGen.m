@@ -20,6 +20,7 @@ paramsOut.smoothing  = app.smoothing;
 paramsOut.cut        = app.cut;
 paramsOut.invert     = app.invert;
 paramsOut.type       = app.type;
+paramsOut.manualMask = app.manualMask;
 mask = app.maskFinal;
 
 delete(app)

@@ -57,7 +57,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                                                                                                    % 2 if images are not stored (only path/fileName), and to be used as a gpuArray once imported
     end
 
-    properties(Access = private)
+    properties(Access={?Methods})
         binningFactor (1,1) double {mustBeInteger,mustBePositive} = 1 % in order to properly compute the pixel size of the interferogram from the Microscope properties
     end
 

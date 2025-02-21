@@ -68,13 +68,13 @@ classdef Dipole
 
                 if ischar(mat) % 'Au', 'BK7', ...
                     obj.mat = mat;
-                elseif isnumeric(mat) % permittivity
+                elseif isnumeric(mat) % permittivity or polarizability
                     if abs(mat)>1e-6 % specify an epsilon value
-                        disp('The code understands that you specify directly the refractive index value instead of the material')
+                        %disp('The code understands that you specify directly the refractive index value instead of the material')
                         obj.nHidden = mat;
                         obj.mat = 'user defined - refractive index';
                     else
-                        disp('The code understands that you specify directly the polarisability value instead of the material')
+                        %disp('The code understands that you specify directly the polarisability value instead of the material')
                         obj.alphaHidden = mat;
                         obj.mat = 'user defined - polarisability';
                     end
@@ -156,7 +156,7 @@ classdef Dipole
                 tens = [obj.alpha 0 0
                         0 obj.alpha 0
                         0 0 obj.alpha];
-            elseif length(obj.eps) == 3
+            elseif length(obj.alpha) == 3
                 tens = [obj.alpha(1) 0 0
                         0 obj.alpha(2) 0
                         0 0 obj.alpha(3)];

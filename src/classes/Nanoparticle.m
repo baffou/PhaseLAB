@@ -176,14 +176,14 @@ classdef Nanoparticle
                 else
                     error(['The geometry ''' varargin{1} ''' is not known.'])
                 end
+                obj.DIs = repmat(Dipole(mat,a/2),size(pos,1),1);
+                for ip = 1:obj.N
+                    obj.DIs(ip).pos = pos(ip,:);
+                end
+                obj.a = a;
+                fprintf(['Meshing with ' num2str(size(pos,1)) ' cells.\n'])
             end
-            obj.DIs = repmat(Dipole(mat,a/2),size(pos,1),1);
-            for ip = 1:obj.N
-                obj.DIs(ip).pos = pos(ip,:);
-            end
-            obj.a = a;
 
-            fprintf(['Meshing with ' num2str(size(pos,1)) ' cells.\n'])
         end
 
         function val = get.pos(obj)
@@ -209,7 +209,7 @@ classdef Nanoparticle
             if ~isempty(obj.DIs(1).EE)
                 val = zeros(obj.N,3);
                 for ip = 1:obj.N
-                    val(ip,:) = obj.DIs.EE;
+                    val(ip,:) = obj.DIs(ip).EE;
                 end
             else
                 val = [];
@@ -220,7 +220,7 @@ classdef Nanoparticle
             if ~isempty(obj.DIs(1).EE0)
                 val = zeros(obj.N,3);
                 for ip = 1:obj.N
-                    val(ip,:) = obj.DIs.EE0;
+                    val(ip,:) = obj.DIs(ip).EE0;
                 end
             else
                 val = [];
@@ -228,7 +228,7 @@ classdef Nanoparticle
         end
 
         function val = get.E0(obj)
-            val(ip,:) = obj.DIs(1).E0;
+            val = obj.DIs(1).E0;
         end
 
         function val = get.p(obj)
@@ -504,7 +504,7 @@ classdef Nanoparticle
         end
 
         function val = get.n_ext(obj) 
-            val = obj.DIs.n_ext;
+            val = obj.DIs(1).n_ext;
         end
 
         function obj = set.n_ext(obj, val)
@@ -553,7 +553,7 @@ classdef Nanoparticle
                 obj.DIs(ip).Illumination = IL;
             end
         end
-        
+                
         function figure(obj)
             [xs,ys,zs] = sphere;
             figure

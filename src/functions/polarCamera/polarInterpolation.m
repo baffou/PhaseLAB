@@ -35,9 +35,18 @@ if strcmp(method,'regionfill')
 elseif strcmp(method,'linear')
     % 0
     ImOut = Im.*(1-mask);
-    ImOut(:,nx:2:end-4+nx) = (Im(:,nx-1:2:end-5+nx) + Im(:,nx+1:2:end-3+nx))/2;
-    ImOut(ny:2:end-4+ny,:) = (Im(ny-1:2:end-5+ny,:) + Im(ny+1:2:end-3+ny,:))/2;
+    ImOut(:,nx:2:end-4+nx) = (ImOut(:,nx-1:2:end-5+nx) + ImOut(:,nx+1:2:end-3+nx))/2;
+    ImOut(ny:2:end-4+ny,:) = (ImOut(ny-1:2:end-5+ny,:) + ImOut(ny+1:2:end-3+ny,:))/2;
 
     ImOut = ImOut(3:end-2,3:end-2);
+
+    % %%
+    % figure
+    % subplot(1,4,1)
+    % imagegb(Im.*(1-mask))
+    % subplot(1,4,2)
+    % imagegb(ImOut)
+    % linkAxes
+   
 end
 

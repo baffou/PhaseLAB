@@ -108,10 +108,10 @@ for ii = 1:Nf
             set(hroi,'Visible','on') % in case a liveeditor program is used
             imagegb(imgaussfilt(Itf(ii).Itf,2)./imgaussfilt(Itf(ii).Ref.Itf,2))
             roi = drawrectangle;
-            x1 = round(roi.Position(1));
-            x2 = round(roi.Position(1)+roi.Position(3));
-            y1 = round(roi.Position(2));
-            y2 = round(roi.Position(2)+roi.Position(4));
+            x1 = round(roi.Position(1)-0.5);
+            x2 = round(roi.Position(1)+roi.Position(3)-0.5);
+            y1 = round(roi.Position(2)-0.5);
+            y2 = round(roi.Position(2)+roi.Position(4)-0.5);
             close(hroi)
             Itfi = Itf(ii).crop([x1 y1],[x2 y2]);
             opt.crop = [x1;y1;x2;y2];
@@ -170,7 +170,6 @@ for ii = 1:Nf
         cropParam2 = FcropParameters([],[],[],Nx,Ny);
     end
     
-
 
     if opt.apodization % if apodization required
         fprintf("apodization \n")
@@ -269,7 +268,7 @@ for ii = 1:Nf
     
     % phase gradient images
 
-    if ~opt.darkZoneCorrection
+    if ~opt.darkZoneCorrection % == false
         if strcmpi(opt.definition,'low') % compute the correction factor in case the image is small (fast mode)
             rx = cropParam2.R(1);
             corr = Nx/length(round((-rx:rx-1)));
@@ -287,7 +286,7 @@ for ii = 1:Nf
         DWx = cropParam1.angle.cos*DW1-cropParam1.angle.sin*DW2;
         DWy = cropParam1.angle.sin*DW1+cropParam1.angle.cos*DW2;
 
-    else % dark zone correction
+    elseif opt.darkZoneCorrection == 1 % Bing Xu
         % from Optics Communications 402 (2017) 276–284
         zeta = Itfi.Microscope.CGcam.zeta;
         if strcmpi(opt.definition,'low')
@@ -314,6 +313,40 @@ for ii = 1:Nf
         imagegb(DWx_Ph0)
         clim([minc, maxc])
         title('zero W gradients')
+    else % opt.darkZoneCorrection ∈ ]0, 1[ is the threshold
+        % method that sets dWX and dWy to 0
+        dzc = opt.darkZoneCorrection;
+        if strcmpi(opt.definition,'low') % compute the correction factor in case the image is small (fast mode)
+            rx = cropParam2.R(1);
+            corr = Nx/length(round((-rx:rx-1)));
+        else
+            corr = 1;
+        end
+    
+        if opt.noRef
+            DW1 = -anglefun(Im_DW1)* corr*MI.CGcam.alpha(IL(ii).lambda);
+            DW2 = -anglefun(Im_DW2)* corr*MI.CGcam.alpha(IL(ii).lambda);
+        else
+            DW1 = -anglefun(Im_DW1.*conj(Rf_DW1))* corr*MI.CGcam.alpha(IL(ii).lambda);
+            DW2 = -anglefun(Im_DW2.*conj(Rf_DW2))* corr*MI.CGcam.alpha(IL(ii).lambda);
+        end
+        DWx = cropParam1.angle.cos*DW1-cropParam1.angle.sin*DW2;
+        DWy = cropParam1.angle.sin*DW1+cropParam1.angle.cos*DW2;
+        
+        if strcmpi(dzc,'mask')
+            hfig = figure;
+            imageph(integration(DWx,DWy))
+            roi = drawpolygon();
+            mask = createMask(roi);
+            DWx(mask) = 0;
+            DWy(mask) = 0;
+            close(hfig)
+        elseif isnumeric(dzc)
+            DWx(Int < dzc) = 0;
+            DWy(Int < dzc) = 0;
+        else
+            error('Wrong value for darkZoneCorrection')
+        end        
     end   
         
     % artificial aberrations

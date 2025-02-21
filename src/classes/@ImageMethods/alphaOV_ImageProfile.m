@@ -1,6 +1,9 @@
 function [alphaNP,OVNP,OVNPn,OVNPn2,posList,pList] = alphaOV_ImageProfile(IM,opt)
+
+
+
 arguments
-    IM ImageMethods
+    IM (1,1) ImageMethods
     opt.fhandle =[] %matlab.ui.Figure
     opt.nmax (1,1)  {mustBeInteger} = 100
     opt.Dz  (1,1) {mustBeNumeric} = 0

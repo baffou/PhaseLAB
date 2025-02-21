@@ -13,7 +13,7 @@ if nargin==1 % no predefined mask
     mask = ones(Ny,Nx);
     Zlim = 0;
     TF = fftshift(fft2(img0));    
-    while(button == 1 || button == char('z') || button == char('Z'))
+    while(any([button == 1 , button == char('z') , button == char('Z')]))
     
         if ~exist('him','var') % to avoid a zoom out coming from the function imagegb
             him = imagegb(log(abs(TF)));

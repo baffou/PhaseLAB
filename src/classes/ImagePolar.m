@@ -25,6 +25,8 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
     properties(Dependent)
         Ny
         Nx
+        Ex
+        Ey
         theta0
         phibar
         dphi
@@ -61,6 +63,14 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                 end
                 obj.updateIM() % apply the IM, that includes the smoothing
             end
+        end
+
+        function val = get.Ex(obj)
+            val =      sqrt(obj.IM(1).T).*exp(1i*obj.IM(1).Ph);
+        end
+
+        function val = get.Ey(obj)
+            val = 1i * sqrt(obj.IM(3).T).*exp(1i*obj.IM(3).Ph);
         end
 
         function img = get.phibar(obj)
@@ -200,6 +210,8 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                 opt.formats string {mustBeMember(opt.formats,["eps","png","jpg","fig","txt"])}
                 opt.types string {mustBeMember(opt.types,["OPDmean","retardance","rgbImage","Wbar","phibar","theta0","dphi","dW"])}
                 opt.num = []
+                opt.colormap = parula
+                opt.clim = []
             end
 
             path = char(path);
@@ -213,29 +225,30 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                         case {"eps","png","jpg","fig","epsc"}
                             if opt.formats(iif) == "eps",opt.formats(iif)="epsc";end
                             ext = char(opt.formats(iif));
-                            if ~exist('hfig','var')
-                                hfig = figure;
-                                ax1 = subplot(1,3,1);
-                                imageph(obj(im).OPDmean*1e9)
-                                title('OPDmean')
-                                subplot(1,3,2)
-                                imageph(obj(im).retardance*1e9)
-                                title('retardance')
-                                clim([0 obj(im).retardanceMax*1e9])
-                                subplot(1,3,3)
-                                imagehsv(obj(im).rgbImage)
-                                title('theta')
-                                fullwidth
-                            end
-                            sb = Scalebar(20e-6, obj(im).IM(1).pxSize);
-                            sb.insert(ax1)
-                            if isempty(opt.num)
-                                num = im;
+                            Nt = numel(opt.types);
+                            if Nt > 1
+                                if ~exist('hfig','var')
+                                    hfig = figure;
+                                    Nt = numel(opt.types);
+                                    for it = 1:Nt
+                                        ax(it) = subplot(1,3,it);
+                                        imageph(obj(im).(opt.types(iit)))
+                                        title(opt.types(iit))
+                                    end
+                                    fullwidth
+                                end
+                                sb = Scalebar(20e-6, obj(im).IM(1).pxSize);
+                                sb.insert(ax(1))
+                                if isempty(opt.num)
+                                    num = im;
+                                else
+                                    num = opt.num;
+                                end
+                                saveas(hfig, path + "/overview_" + textkkk(num) + "." + ext(1:3), ext);
                             else
-                                num = opt.num;
+                                exportImage(obj(im).(opt.types), path + "/" + opt.types + "_" + textkkk(im) + "." + ext(1:3),"colormap",opt.colormap,"clim",opt.clim);
                             end
-                            saveas(hfig, path + "/overview_" + textkkk(num) + "." + ext(1:3), ext);
-                            
+
     
                         case "txt"
                             for iit = 1:numel(opt.types)

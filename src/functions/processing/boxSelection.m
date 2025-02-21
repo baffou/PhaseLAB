@@ -109,10 +109,10 @@ else
         end
         h.Visible = true;
         roi = drawrectangle;
-        x1 = round(roi.Position(1));
-        x2 = round(roi.Position(1)+roi.Position(3));
-        y1 = round(roi.Position(2));
-        y2 = round(roi.Position(2)+roi.Position(4));
+        x1 = round(roi.Position(1)-0.5);
+        x2 = round(roi.Position(1)+roi.Position(3)-0.5);
+        y1 = round(roi.Position(2)-0.5);
+        y2 = round(roi.Position(2)+roi.Position(4)-0.5);
     
         if isapp
             app.clearMessageArea()

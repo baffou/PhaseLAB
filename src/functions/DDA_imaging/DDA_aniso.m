@@ -56,7 +56,7 @@ EE0 = zeros(3*N,1);
 for ii = 1:N
     %EE0(3*ii-2:3*ii) = E0*exp(1i*n*kk*pos(ii,:)');
     EE0(3*ii-2:3*ii) = E0*exp(1i*n*kk*pos(ii,:)')+r12*E0*exp(-1i*n*kk*pos(ii,:)');
-    DI(ii) = DI(ii).setEE0(EE0(3*ii-2:3*ii));
+    DI(ii) = DI(ii).setEE0(EE0(3*ii-2:3*ii).');
 end
 
 %% Construction of the Matrix to be inverted

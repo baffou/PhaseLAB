@@ -36,6 +36,7 @@ end
 No = numel(Image);
 Itf = repmat(Interfero(),No,1);
 ItfRef = repmat(Interfero(),No,1);
+EE = ImageEM(No);
 for io = 1:No
 
 
@@ -134,7 +135,7 @@ for io = 1:No
     [E20y, E0y]    =    Emodely.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
     [E2Ref0y, ERef0y] = EmodelRefy.BackForPropagation(Grating,MI,IL);% Backpropagation of the light from the camera chip
 
-    EE = ImageEM(E0x, E0y, E0y*0, ERef0x, ERef0y, ERef0y*0,"Illumination",IL,"Microscope",MI);
+    EE(io) = ImageEM(E0x, E0y, E0y*0, ERef0x, ERef0y, ERef0y*0,"Illumination",IL,"Microscope",MI);
 
     E20 = E20x+E20y;
     E2Ref0 = E2Ref0x+E2Ref0y;

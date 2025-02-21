@@ -69,11 +69,11 @@ step = opt.step;
 opt.output.data.names = ["#image","#NP","#polar"];
 opt.output.data.inputs = [Nim,NNP,4];
 
-
-opt.output.data.alpha = zeros(Nim,NNP,Np);
-opt.output.data.OV  = zeros(Nim,NNP,Np);
-opt.output.data.OVw = zeros(Nim,NNP,Np);
- 
+if ~isfield(opt.output.data,'alpha') % if there is no info yet in the data
+    opt.output.data.alpha = zeros(Nim,NNP,Np);
+    opt.output.data.OV  = zeros(Nim,NNP,Np);
+    opt.output.data.OVw = zeros(Nim,NNP,Np);
+end
 
 
 for io = 1:Nim
@@ -125,20 +125,24 @@ for io = 1:Nim
                     imagesc(imT),colormap(gray),colorbar
                     set(gca,'Ydir','normal')
                     %% zoom on the particle of interest
-                    zoom on
-                    set(gcf,'currentch',char(1))
-                    get(gcf,'CurrentCharacter')
-                    waitfor(gcf,'CurrentCharacter',char(122))
-                    zoom reset
+                    if opt.zoom
+                        zoom on
+                        set(gcf,'currentch',char(1))
+                        get(gcf,'CurrentCharacter')
+                        waitfor(gcf,'CurrentCharacter',char(122))
+                        zoom reset
+                    end
                 else
                     axes(app.AxesLeft)
                     set(app.UIFigure,'currentch',char(1))
                     get(app.UIFigure,'CurrentCharacter')
-                    zoom on
-                    app.displayMessage('zoom and then press ''z'' key')
-                    waitfor(app.UIFigure,'CurrentCharacter',char(122))  % char 'z'
-                    app.clearMessageArea()
-                    zoom reset
+                    if opt.zoom
+                        zoom on
+                        app.displayMessage('zoom and then press ''z'' key')
+                        waitfor(app.UIFigure,'CurrentCharacter',char(122))  % char 'z'
+                        app.clearMessageArea()
+                        zoom reset
+                    end
                 end
             end
             % press the central pixel of the particle
@@ -270,7 +274,7 @@ for io = 1:Nim
                     %pxmax = input('valeur de pxmax');
                     if  ip ~= 1
                         button = 1;
-                    elseif ~opt.keeppminmax || io == 1
+                    elseif ~opt.keeppminmax || (io == 1 && iNP == 1)
                         hfig2 = figure(MenuBar="none",ToolBar="none",Name="Particle selection",NumberTitle="off");
                         plot(coo,realpha)
                         %save -ascii realpha_p250 realpha

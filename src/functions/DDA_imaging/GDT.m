@@ -15,6 +15,7 @@ if isempty(IL.n)
 end
 
 NPout.DIs.setE0( IL.E0 );
+NPout.Illumination = IL;
 lambda = IL.lambda;
 n = IL.n;
 nS = IL.nS;
@@ -84,6 +85,7 @@ fprintf('Done.\n')
 
 NPout.DIs = NPout.DIs.setEE( reshape(EE,[3,N]).' );
 NPout.DIs = NPout.DIs.setEE0( reshape(EE0,[3,N]).' );
+NPout.DIs = NPout.DIs.setE0( E0 );
 NPout.DIs = NPout.DIs.setp( eps0*NPout.EE*transpose(chi) );
 NPout.Illumination = IL;
 
