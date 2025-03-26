@@ -44,6 +44,8 @@ for ii = 1:Npanels
             h.UserData.fun{ii} = @opendx;
         case {'hsv'}
             h.UserData.fun{ii} = @imagehsv;
+        case {'Pr'} % Pradeep
+            h.UserData.fun{ii} = @imagePr;
 %        case 'dx'  % does not work
 %            h.UserData.fun{ii} = @(x) opendx(x,"theta",0,"phi",0,"persp",1,"colorMap",jet);
         case 'titles'

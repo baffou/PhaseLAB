@@ -31,7 +31,7 @@ Rbig.y = ( (1:2*ny)-ny-0.5 )*pxSize ;
 xxBig = ones(2*ny,1) * Rbig.x ;   
 yyBig = Rbig.y' * ones(1,2*nx) ;
 
-if nargin==3
+if nargin==4
     z = [universe(1).mesh.z(universe(1).mesh.npx:-1:2) universe(2).mesh.z];
     nz = length(z);
     Green = zeros(2*ny,2*nx,nz);

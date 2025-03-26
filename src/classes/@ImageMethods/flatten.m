@@ -16,7 +16,7 @@ arguments
     opt.cut = 0.5
     opt.invert = false
     opt.params = []
-    opt.type
+    opt.type (1,:) char {mustBeMember(opt.type,{'gradients','OPD','T'})} = 'OPD'
     opt.cancelGradients logical = false
 end
 

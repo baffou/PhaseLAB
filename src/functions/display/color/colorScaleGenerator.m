@@ -1,7 +1,7 @@
 function output = colorScaleGenerator(valTable,posTable,Ncolors)
 arguments
     valTable % a vertical array of hex ("a34c88")  or 3-vectors ( [102, 87, 213] ).
-    posTable (1,:) {mustBeNumeric(posTable),mustBeGreaterThanOrEqual(posTable,0)} % values between 0 and any max number, ideally 1 or 100.
+    posTable (1,:) {mustBeNumeric(posTable),mustBeGreaterThanOrEqual(posTable,0)} = [] % values between 0 and any max number, ideally 1 or 100.
     Ncolors = 1024 % number of colors in the output colorscale, 1024 by default
 end
 
