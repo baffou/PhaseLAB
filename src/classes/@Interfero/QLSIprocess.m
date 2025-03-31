@@ -13,7 +13,7 @@ arguments
     opt.apodization = false        % true, 1, or the width of the apodization in px
     opt.saveGradients = false
     opt.remotePath = []
-    opt.Tnormalisation = true % or false or 'subtraction'
+    opt.Tnormalisation = true % or false or 'subtraction'. To be false for a fluorescence image for instance
     opt.RemoveCameraOffset = false
     opt.darkZoneCorrection = false
     opt.auto = true % Find automatically the spot of highest intensity
@@ -85,6 +85,13 @@ else % if crops are not defined anywhere
 end
 Nx0 = 0;
 Ny0 = 0;
+
+
+if numel(opt.Tnormalisation) == 1 % just true or false
+    opt.Tnormalisation = repmat(opt.Tnormalisation,Nf,1);
+elseif numel(opt.Tnormalisation) ~= Nf
+    error('The length of the Tnormalisation vector input must equal the number of images')
+end
 
 for ii = 1:Nf
 
@@ -258,9 +265,9 @@ for ii = 1:Nf
     Rf_DW2 = ifft2(ifftshift(FRfc));
    
     % intensity image
-    if strcmpi(opt.Tnormalisation,'subtraction')
+    if strcmpi(opt.Tnormalisation(ii),'subtraction')
         Int = abs(Im_int-offset) - abs(Rf_int-offset);
-    elseif opt.Tnormalisation
+    elseif opt.Tnormalisation(ii)
         Int = abs(Im_int-offset)./abs(Rf_int-offset);
     else
         Int = abs(Im_int-offset);

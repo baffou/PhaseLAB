@@ -113,9 +113,10 @@ else
         x2 = round(roi.Position(1)+roi.Position(3)-0.5);
         y1 = round(roi.Position(2)-0.5);
         y2 = round(roi.Position(2)+roi.Position(4)-0.5);
+        
     
         if isapp
-            app.clearMessageArea()
+            app.displayMessage('Wait...',"color",app.warnColor)
             if strcmp(app.scaleButton.SelectedObject.Text,'µm')
                 x1=app.um2px(x1);
                 y1=app.um2px(y1);
@@ -200,7 +201,7 @@ else
                 Size_units = [Size_units, Size_units];
             end
         else % opt.Size == 'Auto'
-            Size_px = [Ny, Nx];
+            Size_px = [Nx, Ny];
         end
         for ii=1:2 % makes sure all the dimenions of the image size are even
             if mod(Size_px(ii),2)==1

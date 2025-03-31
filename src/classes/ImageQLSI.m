@@ -574,7 +574,7 @@ classdef ImageQLSI   <   ImageMethods
                 opt.Size = 'Auto' % 'Auto', 'Manual', d or [dx, dy]
                 opt.twoPoints logical = false
                 opt.params double = double.empty() % = [x1, x2, y1, y2]
-                opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
+                opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'Rectangle'
                 opt.app matlab.apps.AppBase = PhaseLABgui.empty()
                 opt.value (1,1) double = 0 % in case the value should be different from zero
             end
@@ -587,7 +587,11 @@ classdef ImageQLSI   <   ImageMethods
 
             sizeIm = [0 0]; 
             for io = 1:numel(obj)
-                printLoop(io,numel(obj))
+                if ~isempty(opt.app)
+                    opt.app.displayMessage(io+"/"+numel(obj),"color",opt.app.warnColor)
+                else
+                    printLoop(io,numel(obj))
+                end
                 if sum(sizeIm ~= size(obj(io).OPD)) % if the size of the image is not the same as the previous one
                     if isempty(opt.params)
                         if numel(obj)>1

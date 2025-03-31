@@ -19,6 +19,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
     properties(Dependent)
         Rytov
+        dmd
     end
 
     properties(Hidden)
@@ -580,7 +581,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             end
         end
 
-        function val = dmd(obj)
+        function val = get.dmd(obj)
             % returns the dry mass density in pg/µm^2
             val = 5.56*1e-3 * obj.OPD*1e9;
         end
@@ -634,7 +635,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                         'margin',opt.margin, ...
                         'params', opt.params);
 
-                    params=[x1, x2, y1, y2];
+                    params = [x1, x2, y1, y2];
 
 
                 end
@@ -642,8 +643,31 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 sizeIm = size(obj(io).OPD);
 
 
+                % Check if the box does not exceed the image boundaries
+                if x1<1
+                    disp('warning: box excedeed the image boundaries')
+                    x2 = x2-x1+1;
+                    x1 = 1;
+                end
+                if y1<1
+                    disp('warning: box excedeed the image boundaries')
+                    y2 = y2-y1+1;
+                    y1 = 1;
+                end
+                if x2>sizeIm(2)
+                    disp('warning: box excedeed the image boundaries')
+                    x1 = x1-x2+sizeIm(2);
+                    x2 = sizeIm(2);
+                end
+                if y2>sizeIm(1)
+                    disp('warning: box excedeed the image boundaries')
+                    y1 = y1-y2+sizeIm(1);
+                    y2 = sizeIm(1);
+                end
+
+
                 if isa (obj,'ImageQLSI')
-                    temp=obj(io).T(y1:y2,x1:x2); % temp variable to avoid importing the matrix twice for the calculation of Nx and Ny when it is stored in a file.
+                    temp = obj(io).T(y1:y2,x1:x2); % temp variable to avoid importing the matrix twice for the calculation of Nx and Ny when it is stored in a file.
                     obj(io).T   = temp;
                     obj(io).OPD = obj(io).OPD(y1:y2,x1:x2);
                     if ~isempty(obj(io).DWx0)
