@@ -1,12 +1,12 @@
 classdef CrossGrating  <  handle & matlab.mixin.Copyable
     % class that define a cross-grating used in CGM
 
-    properties (SetAccess = {?JS})
+    properties (SetAccess = {?JS,?CGcamera})
         name    char = 'undefined' % name
         Gamma   (1,1) % Period
         depth   (1,1) double % Etching depth. Only used and usefull for CGMinSilico simulations
         RI      (1,1) double % Refractive index of the material
-        lambda0 (1,1) double % Wavelength the grating is made for
+        lambda0 (1,1) double = 625e-9 % Wavelength the grating is made for
     end
 
     properties
@@ -40,9 +40,9 @@ classdef CrossGrating  <  handle & matlab.mixin.Copyable
                 if opt.depth~=0 && opt.lambda0~=0
                     error('You cannot specify at the same time lambda0 and depth')
                 end
-                if opt.depth==0 && opt.lambda0==0
-                    warning('You should specify at least lambda or depth or lambda0')
-                end
+%                if opt.depth==0 && opt.lambda0==0
+%                    warning('You should specify at least lambda or depth or lambda0')
+%                end
                 if opt.depth~=0
                     CG.set_depth(opt.depth);
                 elseif  opt.lambda0~=0

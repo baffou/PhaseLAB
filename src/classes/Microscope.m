@@ -27,7 +27,7 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
         CGcam  CGcamera % CGcamera object
     end
     properties
-        f_TL      (1,1) {mustBeNumeric, mustBePositive} = 180 % Actual focal length of the tube lens used in the microscope not necessarily the one advised by the constructor.
+        f_TL       = 180 % Actual focal length of the tube lens used in the microscope not necessarily the one advised by the constructor.
         software  char % software used with the microscope. Should be within the private property list obj.softwareList
     end
     
@@ -85,26 +85,37 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
             
             m.Objective = OB;
             if nargin~=1
-                if isnumeric(f_TL)
-                   m.f_TL = f_TL;
-                elseif strcmpi(f_TL,'nikon')
-                    m.f_TL = m.f_Nikon;
-                elseif strcmpi(f_TL,'zeiss')
-                    m.f_TL = m.f_Zeiss;
-                elseif strcmpi(f_TL,'leica')
-                    m.f_TL = m.f_Leica;
-                elseif strcmpi(f_TL,'olympus')
-                    m.f_TL = m.f_Olympus;
-                elseif strcmpi(f_TL,'Thorlabs')
-                    m.f_TL = m.f_Thorlabs;
-                else
-                    error('wrong microscope brand')
-                end
+                m.f_TL = f_TL;
             end                        
 
             m.f_brand=m(1).(['f_' m.Objective.objBrand]);
 
         end      
+
+        function set.f_TL(m,val)
+            if isnumeric(val)
+               m.f_TL = val;
+            elseif strcmpi(val,'nikon')
+                m.f_TL = m.f_Nikon;
+            elseif strcmpi(val,'zeiss')
+                m.f_TL = m.f_Zeiss;
+            elseif strcmpi(val,'leica')
+                m.f_TL = m.f_Leica;
+            elseif strcmpi(val,'olympus')
+                m.f_TL = m.f_Olympus;
+            elseif strcmpi(val,'Thorlabs')
+                m.f_TL = m.f_Thorlabs;
+            elseif all(isstrprop(val, 'digit')) % such as text: '165' or "165"
+                m.f_TL = str2double(val);
+            else
+                error('wrong microscope brand')
+            end
+
+            if m.f_TL<3 % focal length specified in [m]
+                m.f_TL = m.f_TL*1000;
+            end
+
+        end
            
         function set.zo(obj,z)
             if abs(z)>0.1
@@ -180,13 +191,6 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
             end
         end
         
-        function set.f_TL(obj,val)
-            if val<10 % focal length specified in [m]
-                obj.f_TL = val*1000;
-            else
-                obj.f_TL = val;
-            end
-        end
 
         function val = Mobj(m)      % Magnification of the objective, specified by the manufacturer.
             val = m.Objective.Mobj;

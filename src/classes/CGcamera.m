@@ -38,9 +38,9 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
                     fileName = varargin{1};
                     if istext(fileName) % check if it is text, only option.
                         fid = fopen(strcat(fileName,'.txt'));
-                        if fid==-1
+                        if fid == -1
                             fid = fopen(strcat(fileName,'.json'));
-                            if fid==-1
+                            if fid == -1
                                 error(['The file ' fileName '.json or .txt does not exist'])
                             else
                                 camType = class(Camera);
@@ -79,6 +79,11 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
                             cam = Camera(dxSize,Nx,Ny);
                             cam.brand = camBrand;
                             CrGr = CrossGrating(Gamma=Gamma,depth=CGdepth);
+                            if strcmpi(fileName(1:3),'sC8')
+                                CrGr.name = 'sC8';
+                            else
+                                CrGr.name = fileName;
+                            end
                             obj = CGcamera(cam,CrGr);
                             obj.fileName = fileName;
                             obj.CG.angle = CGangle;
