@@ -976,6 +976,34 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         end
 
+        function obj2 = subItf(obj,n,opt)
+            %  returns (1:n:end,1:n:end) images
+            arguments
+                obj
+                n = 2 % Takes a subimage, every n pixels. n=1 is identity.
+                      % n=2 is taking the green pixels of a RG image for instance.
+                      % n=3 is taking the green pixels of a RGBI image for instance.
+                opt.x = 1
+                opt.y = 1
+            end
+            if nargout
+                obj2 = Methods.duplicate(obj); %copy in order to duplicate the Ref as well
+            else
+                obj2 = obj;
+            end
+            obj2.clearTF
+            obj2.clearFcrops
+            for ii = 1:numel(obj)
+                obj2(ii).Microscope = obj(ii).Microscope; % the reference to MI was lost due to duplicate, while it should remain the same
+                imItf =     obj(ii).Itf(opt.y:n:end,opt.x:n:end);
+                imRef = obj(ii).Ref.Itf(opt.y:n:end,opt.x:n:end);
+                obj2(ii).Itf0 = imItf;
+                obj2(ii).Ref.Itf0 = imRef;
+                obj2(ii).binningFactor = obj2(ii).binningFactor*n;
+                obj2(ii).Ref.binningFactor = obj2(ii).Ref.binningFactor*n;
+            end
+
+        end
         function obj2 = removeRef(obj)
             if nargout
                 obj2 = copy(obj);

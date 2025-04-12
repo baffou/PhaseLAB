@@ -89,7 +89,11 @@ else % Automatic selection
         ItfFileList = dir([folder opt.nickname '_*.tif*']);
         ItfFileNamesTemp = {ItfFileList.name};
         ItfFileNamesTempBool = ~contains(ItfFileNamesTemp,'REF_');
-        ItfFileNames0 = ItfFileNamesTemp(ItfFileNamesTempBool);
+        if ~sum(ItfFileNamesTempBool) % none of the interferograms has a REF
+            ItfFileNames0 = ItfFileNamesTemp; % take them all
+        else
+            ItfFileNames0 = ItfFileNamesTemp(ItfFileNamesTempBool); % only select the ones that have been made properly with a REF by PhaseLIVE
+        end
         Nif = numel(ItfFileNames0);
 
         if Nif == 0

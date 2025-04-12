@@ -221,7 +221,7 @@ for ii = 1:Nf
     end
 
     %    fprintf('ZERO ORDER\n')
-    zeta = Itfi.Microscope.CGcam.zeta;
+    zeta = Itfi.Microscope.CGcam.zeta / Itfi.binningFactor;
 
     if ~isequal(size(FIm),size(FRf))
         pause(1)
@@ -282,13 +282,15 @@ for ii = 1:Nf
         else
             corr = 1;
         end
-    
+
+        alpha = corr*MI.CGcam.alpha(IL(ii).lambda)*Itfi.binningFactor;
+        
         if opt.noRef
-            DW1 = -anglefun(Im_DW1)* corr*MI.CGcam.alpha(IL(ii).lambda);
-            DW2 = -anglefun(Im_DW2)* corr*MI.CGcam.alpha(IL(ii).lambda);
+            DW1 = -anglefun(Im_DW1)* alpha;
+            DW2 = -anglefun(Im_DW2)* alpha;
         else
-            DW1 = -anglefun(Im_DW1.*conj(Rf_DW1))* corr*MI.CGcam.alpha(IL(ii).lambda);
-            DW2 = -anglefun(Im_DW2.*conj(Rf_DW2))* corr*MI.CGcam.alpha(IL(ii).lambda);
+            DW1 = -anglefun(Im_DW1.*conj(Rf_DW1))* alpha;
+            DW2 = -anglefun(Im_DW2.*conj(Rf_DW2))* alpha;
         end
         DWx = cropParam1.angle.cos*DW1-cropParam1.angle.sin*DW2;
         DWy = cropParam1.angle.sin*DW1+cropParam1.angle.cos*DW2;

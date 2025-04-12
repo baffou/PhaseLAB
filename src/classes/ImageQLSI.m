@@ -916,7 +916,7 @@ classdef ImageQLSI   <   ImageMethods
             % images into a ImageEM object.
             arguments
                 IM (:,4) ImageQLSI
-                IMref (1,1) ImageEM
+                IMref  = []
             end
             Nim = size(IM,1);
             IMout = ImageEM(Nim);

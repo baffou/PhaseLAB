@@ -258,7 +258,7 @@ for io = 1:Nim
                     if Dz ~= 0
                         r12 = (n1-n2)/(n1+n2);
                         k0 = 2*pi/IM(1).Illumination.lambda;
-                        Gamma = r12*exp(-2*1i*n1*k0*Dz);
+                        Gamma = r12*exp(-2*1i*n1*k0*Dz); 
                         alpha0 = 32*pi*Dz^3*(n2^2+n1^2)/(n2^2-n1^2);
                         alpha = alpha./(1+Gamma+alpha/alpha0);
                     end
