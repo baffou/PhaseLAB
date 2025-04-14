@@ -1,6 +1,7 @@
 % Method of the Interfero class.
 
-function [IM,DWx,DWy,Im_int] = QLSIprocess(Itf,IL,opt)
+function [IM,DWx,DWy,field] = QLSIprocess(Itf,IL,opt)
+% field contains T or W. Useful when IM is not an ouput because not T and W need to be both computed, so IM cannot be constructed : [~, DWx, DWy, field]
 arguments
     Itf Interfero
     IL % Illumination object or wavelength
@@ -11,7 +12,6 @@ arguments
     opt.Fcropshape char {mustBeMember(opt.Fcropshape, {'disc','square'})} = 'disc'
     opt.Smatrix = []
     opt.apodization = false        % true, 1, or the width of the apodization in px
-    opt.saveGradients = false
     opt.remotePath = []
     opt.Tnormalisation = true % or false or 'subtraction'. To be false for a fluorescence image for instance
     opt.RemoveCameraOffset = false
@@ -24,7 +24,11 @@ arguments
     opt.displayCrop (1,1) logical = true % display the crops, even when automatic
     opt.displayBar (1,1) logical = true % display the progression bar in case of multiple images
     opt.Rfactor (1,1) double = 1 % multiplies the distance of the crop from the center of the image by Rfactor. Useful to crop the spots at 45°, by just setting R=sqrt(2)
+    opt.saveGradients = false
+    opt.computeW = true
+    opt.computeT = true
 end
+
 Nf = numel(Itf);
 %% Shaping of the Illumination object(s)
 if isa(IL,'Illumination')
@@ -224,19 +228,36 @@ for ii = 1:Nf
     zeta = Itfi.Microscope.CGcam.zeta / Itfi.binningFactor;
 
     if ~isequal(size(FIm),size(FRf))
-        pause(1)
+        error('sizes of itf and ref not identical')
     end
 
-    [FImc,FRfc,cropParam0] = FourierCrop(FIm,FRf,zeta, ...
-        'Fcrops',cropParam0, ...
-        'definition',opt.definition, ...
-        'FcropShape',opt.Fcropshape, ...
-        'auto',opt.auto, ...
-        'display',opt.displayCrop, ...
-        'Rfactor',opt.Rfactor);
+    % intensity image
 
-    Im_int = ifft2(ifftshift(FImc));
-    Rf_int = ifft2(ifftshift(FRfc));
+    if opt.computeT
+
+        [FImc,FRfc,cropParam0] = FourierCrop(FIm,FRf,zeta, ...
+            'Fcrops',cropParam0, ...
+            'definition',opt.definition, ...
+            'FcropShape',opt.Fcropshape, ...
+            'auto',opt.auto, ...
+            'display',opt.displayCrop, ...
+            'Rfactor',opt.Rfactor);
+    
+        Im_int = ifft2(ifftshift(FImc));
+        Rf_int = ifft2(ifftshift(FRfc));
+    
+        if strcmpi(opt.Tnormalisation(ii),'subtraction')
+            Int = abs(Im_int-offset) - abs(Rf_int-offset);
+        elseif opt.Tnormalisation(ii)
+            Int = abs(Im_int-offset)./abs(Rf_int-offset);
+        else
+            Int = abs(Im_int-offset);
+        end
+
+    else
+        Int = [];
+    end
+
 
     % fprintf('FIRST ORDER ALONG XD\n')
     cropParam1.R = cropParam0.R;
@@ -264,14 +285,6 @@ for ii = 1:Nf
     Im_DW2 = ifft2(ifftshift(FImc));
     Rf_DW2 = ifft2(ifftshift(FRfc));
    
-    % intensity image
-    if strcmpi(opt.Tnormalisation(ii),'subtraction')
-        Int = abs(Im_int-offset) - abs(Rf_int-offset);
-    elseif opt.Tnormalisation(ii)
-        Int = abs(Im_int-offset)./abs(Rf_int-offset);
-    else
-        Int = abs(Im_int-offset);
-    end
     
     % phase gradient images
 
@@ -369,56 +382,68 @@ for ii = 1:Nf
     DWx = DWx-mean( DWx(:));
     DWy = DWy-mean( DWy(:));
 
-    if ii>=2,tic,end
-    if strcmpi(opt.method,'CPM')
-        W = intgrad_CPM(DWx,DWy);
-    elseif strcmpi(opt.method,'Errico')
-        W = intgrad2(DWx,DWy);
-    elseif strcmpi(opt.method,'Tikhonov')
-
-        if strcmpi(opt.definition,'low')
-            N = 13;
-            Tikh = 1e-5;
-        else
-            N = 3;
-            Tikh = 1e-5;
+    if opt.computeW
+    
+        if ii>=2,tic,end
+        if strcmpi(opt.method,'CPM')
+            W = intgrad_CPM(DWx,DWy);
+        elseif strcmpi(opt.method,'Errico')
+            W = intgrad2(DWx,DWy);
+        elseif strcmpi(opt.method,'Tikhonov')
+    
+            if strcmpi(opt.definition,'low')
+                N = 13;
+                Tikh = 1e-5;
+            else
+                N = 3;
+                Tikh = 1e-5;
+            end
+    
+            if (size(DWx,1)~=Nx0 || size(DWy,2)~=Ny0) && isempty(opt.Smatrix)  % if first time S calculation (Nx0 and Ny0 not yet defined), but not if S already exists because specified by the user
+                x = (1:size(DWx,2))';
+                y = (1:size(DWy,1))';
+                opt.Smatrix = g2sTikhonovRTalpha(x,y,N);
+                Nx0 = size(DWx,1);
+                Ny0 = size(DWy,2);
+            end
+            W = g2sTikhonovRT(DWx,DWy,opt.Smatrix,Tikh);
+            DWx = DWx/MI.pxSize;
+            DWy = DWy/MI.pxSize;
         end
-
-        if (size(DWx,1)~=Nx0 || size(DWy,2)~=Ny0) && isempty(opt.Smatrix)  % if first time S calculation (Nx0 and Ny0 not yet defined), but not if S already exists because specified by the user
-            x = (1:size(DWx,2))';
-            y = (1:size(DWy,1))';
-            opt.Smatrix = g2sTikhonovRTalpha(x,y,N);
-            Nx0 = size(DWx,1);
-            Ny0 = size(DWy,2);
-        end
-        W = g2sTikhonovRT(DWx,DWy,opt.Smatrix,Tikh);
+    else
+        W = [];
     end
 
     if ii>=2 && opt.displayBar
         waitbar(ii/Nf,fwb,sprintf('Image processing duration: %.3f s',toc))
     end
         
-    if isempty(opt.remotePath)
-        IM(ii) = ImageQLSI(Int,W,MI,Methods.duplicate(IL(ii)),imageNumber=Itfi.imageNumber);
-    else
-        IM(ii) = ImageQLSI(Int,W,MI,Methods.duplicate(IL(ii)),"remotePath",opt.remotePath,"fileName",removeExtension(Itfi.fileName),imageNumber=Itfi.imageNumber);
-    end
-
-    IM(ii).Microscope = Methods.duplicate(MI); % copy of MI because, as an handle object, MI may change for some reason after the computation of the image.
-    IM(ii).binningFactor = Itf(ii).binningFactor;
-
-    if strcmpi(opt.definition,'low')
-        IM(ii).pxSizeCorrection = corr;
-    end
+    if opt.computeT && opt.computeW % if compute both intensity and wavefront, create the ImageQLSI object
+        if isempty(opt.remotePath)
+            IM(ii) = ImageQLSI(Int,W,MI,Methods.duplicate(IL(ii)),imageNumber=Itfi.imageNumber);
+        else
+            IM(ii) = ImageQLSI(Int,W,MI,Methods.duplicate(IL(ii)),"remotePath",opt.remotePath,"fileName",removeExtension(Itfi.fileName),imageNumber=Itfi.imageNumber);
+        end
     
-    IM(ii) = IM(ii).setFcrops([cropParam0, cropParam1, cropParam2]);
-    IM(ii) = IM(ii).setProcessingSoftware('PhaseLAB');
-
-    if opt.saveGradients
-        IM(ii).DWx0 = DWx/IM(ii).pxSize;
-        IM(ii).DWy0 = DWy/IM(ii).pxSize;
-    end
+        IM(ii).Microscope = Methods.duplicate(MI); % copy of MI because, as an handle object, MI may change for some reason after the computation of the image.
+        IM(ii).binningFactor = Itf(ii).binningFactor;
     
+        if strcmpi(opt.definition,'low')
+            IM(ii).pxSizeCorrection = corr;
+        end
+        
+        IM(ii) = IM(ii).setFcrops([cropParam0, cropParam1, cropParam2]);
+        IM(ii) = IM(ii).setProcessingSoftware('PhaseLAB');
+    
+        if opt.saveGradients
+            IM(ii).DWx0 = DWx;
+            IM(ii).DWy0 = DWy;
+        end
+
+        IM(ii).ItfFileName = Itf(ii).fileName;
+        IM(ii).comment = Itf(ii).comment;
+        IM(ii).channel = Itf(ii).channel;
+    end
 %    if updateRefFcrop==1
         if ~opt.noRef
             Itfi.Ref.Fcrops = [cropParam0; cropParam1; cropParam2];
@@ -430,9 +455,6 @@ for ii = 1:Nf
         end
 %    end
 
-    IM(ii).ItfFileName = Itf(ii).fileName;
-    IM(ii).comment = Itf(ii).comment;
-    IM(ii).channel = Itf(ii).channel;
 
     if Nf > 1
         fprintf('\n')
@@ -444,6 +466,12 @@ if Nf >= 2 && opt.displayBar % delete waitbar
     delete(fwb)
 end
 
-IM = reshape(IM,size(Itf)); % in case the Itf was an N*M array of interferos, i.e., in case there are channels
+if opt.computeT && opt.computeW % ie if IM has been defined
+    IM = reshape(IM,size(Itf)); % in case the Itf was an N*M array of interferos, i.e., in case there are channels
+end
 
+if opt.computeT == 0
+    field = W;
+elseif  opt.computeW == 0
+    field = Int;
 end

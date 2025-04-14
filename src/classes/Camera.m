@@ -1,6 +1,6 @@
 classdef Camera  <  handle & matlab.mixin.Copyable
     
-    properties(SetAccess = {?ImageEM,?CGcamera,?ImageQLSI,?JS,?Camera_Andor}) % to enable modif of the dxSize due to binning or by json2obj
+    properties(SetAccess = {?ImageEM,?CGcamera,?ImageQLSI,?JS,?CameraExp}) % to enable modif of the dxSize due to binning or by json2obj
         dxSize (1,1) {mustBeNumeric} = 6.5e-6
         Nx (1,1) {mustBeInteger,mustBePositive} = 600
         Ny (1,1) {mustBeInteger,mustBePositive} = 600
@@ -93,6 +93,23 @@ classdef Camera  <  handle & matlab.mixin.Copyable
                 error('Wrong number of inputs')
             end
             
+        end
+
+        function obj2 = makeAlive(obj)
+            switch obj.brand
+                case 'Andor'
+                    obj2 = Camera_Andor(obj);
+                case 'Hamamatsu'
+                    obj2 = Camera_Hamamatsu(obj);
+                case 'PCO'
+                    obj2 = Camera_PCO(obj);
+                case 'Simu'
+                    obj2 = Camera_Simu(obj);
+                case 'Pixelink'
+                    obj2 = Camera_Pixelink(obj);
+                otherwise
+                    disp(obj.brand+" not implemented")
+            end
         end
 
     end

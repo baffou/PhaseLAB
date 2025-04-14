@@ -61,7 +61,7 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
                                 elseif strcmp(parameter,'relaylens zoom')
                                     RL_Zoom = str2double(line(colPos+1:end));
                                 elseif strcmp(parameter,'brand')
-                                    camBrand = line(colPos+1:end);
+                                    camBrand = line(colPos+2:end-1);
                                 elseif strcmp(parameter,'Nx')
                                     Nx = str2double(line(colPos+1:end));
                                 elseif strcmp(parameter,'Ny')

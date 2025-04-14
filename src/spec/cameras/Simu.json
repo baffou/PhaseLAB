@@ -1,0 +1,10 @@
+{"class":"Camera",
+"brand": "Simu",
+"model": "Simu",
+"dxSize": 6.5e-6,
+"Nx": 768,
+"Ny": 768,
+"fullWellCapacity": 20000,
+"offset":0,
+"colorChannels":1
+}

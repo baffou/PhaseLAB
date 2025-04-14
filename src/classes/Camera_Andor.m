@@ -1,14 +1,21 @@
-classdef Camera_Andor  <  Camera
-    
-    properties
-        expTime %exposure time in seconds
-    end
+classdef Camera_Andor  <  CameraExp & Camera
+    % inherits from two calses, the Camera classes and the abstract
+    % CameraExp class that contains all the properties and methods for live
+    % control of the camera.
+
+    % Each camera type has a specific class, here Andor cameras.
+    % See Camera_Hamamatsu
+    %     Camera_PCO
+    %     Camera_Pixelink
+    % for the other camera types
+
     properties(SetAccess = private)
-        hndl
-        CData
+        hndl  % Camera handle. Contains all the properties of the live camera (number of pixels, exp time, trigger mode, etc...)
+        CData double
     end
 
-    properties(Dependent, Access = private)
+    properties(Dependent, SetAccess = private)
+        expTime %exposure time in seconds
         imagesize
         width
         height
@@ -16,44 +23,73 @@ classdef Camera_Andor  <  Camera
         left
         stride
         transformImage
+        cycleMode
+        triggerMode
     end
 
 
     methods
 
         function obj = Camera_Andor(cam)
-            if obj.brand ~= "Andor"
+            if cam.brand ~= "Andor"
                 warning("this Camera is not supposed to be an Andor camera ")
             end
 
             propList = properties(cam);
-            for ii = 1:numel(propList)
-                obj.(propList{ii}) = cam.(propList{ii});
+
+            for ip = 1:numel(propList)
+                obj.(propList{ip}) = cam.(propList{ip});
             end
 
-            obj.CData = zeros(Ny,Nx);
+            obj.CData = zeros(cam.Ny,cam.Nx);
 
             Camera_Andor.setupSDK()
 
         end
 
-        function startCamera(obj)
-            [rc] = AT_InitialiseLibrary();
-            AT_CheckError(rc);
-            [rc,obj.hndl] = AT_Open(0);
-            AT_CheckError(rc);
-            disp('Camera initialized');
+        function rcout = switchCamera(obj,val)
+            arguments
+                obj
+                val {mustBeMember(val,{'on','off','On','Off'})}
+            end
 
-            [rc] = AT_SetBool(obj.hndl, 'SensorCooling', 0);
-            AT_CheckWarning(rc);
+            try
+                AT_InitialiseLibrary()
+            catch
+                disp('The Andor library could not be found')
+                rcout = -1;
+                return
+            end
+
+            switch val
+                case {'on','On'}
+                    [rc] = AT_InitialiseLibrary();
+                    AT_CheckError(rc);
+                    [rc,obj.hndl] = AT_Open(0);
+                    AT_CheckError(rc);
+                    if nargout
+                        rcout = rc;
+                    end
+                    disp('Camera initialized');
+        
+                    [rc] = AT_SetBool(obj.hndl, 'SensorCooling', 0);
+                    AT_CheckWarning(rc);
+
+                case {'off','Off'}        
+                    [rc] = AT_Close(obj.hndl);
+                    AT_CheckWarning(rc);
+                    [rc] = AT_FinaliseLibrary();
+                    AT_CheckWarning(rc);
+                    if nargout
+                        rcout = rc;
+                    end
+                    disp('Camera shutdown');     
+            end
         end
 
-        function stopCamera(obj)
-            [rc] = AT_Close(obj.hndl);
+        function setExpTime(obj)
+            [rc] = AT_SetFloat(obj.hndl,'ExposureTime',obj.expTime);
             AT_CheckWarning(rc);
-            [rc] = AT_FinaliseLibrary();
-            AT_CheckWarning(rc);
-            disp('Camera shutdown');            
         end
 
         function setMode(obj,cycleMode, triggerMode,opt)
@@ -94,13 +130,11 @@ classdef Camera_Andor  <  Camera
 
             [rc] = AT_Command(obj.hndl,'AcquisitionStart');
             AT_CheckWarning(rc);
-            cycleMode = AT_GetEnumString(obj.hndl,'CycleMode');
-            if strcmpi(cycleMode,'Fixed')
+            if strcmpi(obj.cycleMode,'Fixed')
                 obj.CData = zeros(obj.width, obj.height, obj.Nim);
-                triggerMode = AT_GetEnumString(obj.hndl,'TriggerMode');
-                if strcmpi(triggerMode,'External')
+                if strcmpi(obj.triggerMode,'External')
                     disp('Waiting for the TTL comb...')
-                elseif  strcmpi(triggerMode,'Internal')
+                elseif  strcmpi(obj.triggerMode,'Internal')
                     tic
                 end
                 for ii = 1:AT_GetInt(obj.hndl,'FrameCount')
@@ -130,12 +164,12 @@ classdef Camera_Andor  <  Camera
                     end
 
                 end
-                if  strcmpi(triggerMode,'Internal')
+                if  strcmpi(obj.triggerMode,'Internal')
                     txt = toc;
                     disp(['Aquisition performde in ' num2str(txt*1000) ' ms'])
                 end
         
-            elseif strcmpi(cycleMode,'Continuous')
+            elseif strcmpi(obj.cycleMode,'Continuous')
     
         
                     %%
@@ -143,7 +177,7 @@ classdef Camera_Andor  <  Camera
     
                 %%
 
-                obj.message('Live acquisition in progress...');
+                disp('Live acquisition in progress...');
 
                 while(ishandle(him))
                     tic;
@@ -227,7 +261,7 @@ classdef Camera_Andor  <  Camera
             AT_SetInt(obj.hndl, 'AOITop',    dims.top);
             AT_SetInt(obj.hndl, 'AOIVBin',   1);
             AT_SetInt(obj.hndl, 'AOIHBin',   1);
-            AT_CheckWarning2(rc);
+            AT_CheckWarning(rc);
         end
 
  
@@ -239,37 +273,49 @@ classdef Camera_Andor  <  Camera
                 obj
                 val (1,1) double {mustBeNumeric,mustBePositive}
             end
-            obj.expTime = val;
+            AT_SetFloat(obj.hndl,'ExposureTime',val*1e3);
         end
 
-        function val = get.width(app)
-            [rc,val] = AT_GetInt(app.hndl, 'AOIWidth');
-            AT_CheckWarning2(rc,app.TextArea);
+        function val = get.expTime(obj)
+            val = AT_GetFloat(obj.hndl,'ExposureTime');
         end
 
-        function val = get.height(app)
-            [rc,val] = AT_GetInt(app.hndl, 'AOIHeight');
-            AT_CheckWarning2(rc,app.TextArea);
+        function val = get.width(obj)
+            [rc,val] = AT_GetInt(obj.hndl, 'AOIWidth');
+            AT_CheckWarning(rc);
         end
 
-        function val = get.top(app)
-            [rc,val] = AT_GetInt(app.hndl, 'AOITop');
-            AT_CheckWarning2(rc,app.TextArea);
+        function val = get.height(obj)
+            [rc,val] = AT_GetInt(obj.hndl, 'AOIHeight');
+            AT_CheckWarning(rc);
+        end
+
+        function val = get.top(obj)
+            [rc,val] = AT_GetInt(obj.hndl, 'AOITop');
+            AT_CheckWarning(rc);
         end
         
-        function val = get.left(app)
-            [rc,val] = AT_GetInt(app.hndl, 'AOILeft');
-            AT_CheckWarning2(rc,app.TextArea);
+        function val = get.left(obj)
+            [rc,val] = AT_GetInt(obj.hndl, 'AOILeft');
+            AT_CheckWarning(rc);
         end
         
-        function val = get.stride(app)
-            [rc,val] = AT_GetInt(app.hndl, 'AOIStride');
-            AT_CheckWarning2(rc,app.TextArea);
+        function val = get.stride(obj)
+            [rc,val] = AT_GetInt(obj.hndl, 'AOIStride');
+            AT_CheckWarning(rc);
         end
         
-        function val = get.imagesize(app)
-            [rc,val] = AT_GetInt(app.hndl,'ImageSizeBytes');
-            AT_CheckWarning2(rc,app.TextArea);
+        function val = get.imagesize(obj)
+            [rc,val] = AT_GetInt(obj.hndl,'ImageSizeBytes');
+            AT_CheckWarning(rc);
+        end
+
+        function val = get.cycleMode(obj)
+            val = AT_GetEnumString(obj.hndl,'CycleMode');
+        end
+    
+        function val = get.triggerMode(obj)
+            val = AT_GetEnumString(obj.hndl,'TriggerMode');
         end
     
    end

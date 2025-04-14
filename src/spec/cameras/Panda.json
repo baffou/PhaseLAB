@@ -1,0 +1,10 @@
+{"class":"Camera",
+"brand": "PCO",
+"model": "Panda 4.2 bi UV",
+"dxSize": 6.5e-6,
+"Nx": 2048,
+"Ny": 2048,
+"fullWellCapacity": 48000,
+"offset":100,
+"colorChannels":1
+}
