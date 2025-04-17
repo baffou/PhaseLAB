@@ -3,19 +3,8 @@
 <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 35.7 35.7" style="enable-background:new 0 0 35.7 35.7;" xml:space="preserve">
 <style type="text/css">
-	.st0{fill:#C69090;}
-	.st1{fill:#1D1D1B;}
-	.st2{fill:#FFFFFF;}
+	.st0{fill:#C69090;stroke:#000000;stroke-miterlimit:10;}
 </style>
-<g>
-	<g>
-		<path class="st0" d="M18,34.3c-9.3,0-16.9-7.6-16.9-16.9S8.7,0.6,18,0.6s16.9,7.6,16.9,16.9S27.3,34.3,18,34.3z"/>
-		<path class="st1" d="M18,1.6c8.7,0,15.9,7.1,15.9,15.9S26.7,33.3,18,33.3S2.1,26.2,2.1,17.5S9.3,1.6,18,1.6 M18-0.4
-			c-9.9,0-17.9,8-17.9,17.9s8,17.9,17.9,17.9s17.9-8,17.9-17.9S27.9-0.4,18-0.4L18-0.4z"/>
-	</g>
-</g>
-<g>
-	<rect x="11" y="10.5" class="st2" width="14" height="14"/>
-	<path class="st1" d="M24,11.5v12H12v-12H24 M26,9.5H10v16h16V9.5L26,9.5z"/>
-</g>
+<path class="st0" d="M18,4.8c-7,0-12.7,5.6-12.7,12.6S11,30.1,18,30.1s12.7-5.6,12.7-12.6S25,4.8,18,4.8z M23.3,22.8H12.7V12.2h10.5
+	V22.8z"/>
 </svg>

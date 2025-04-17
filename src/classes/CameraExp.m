@@ -4,14 +4,15 @@ classdef (Abstract) CameraExp < handle
     
     properties(Abstract, SetAccess = private)
         hndl
-        CData double
+        %CData double
+        imageDimensionsList
     end
 
     properties(Abstract, Dependent, SetAccess = private)
-        expTime %exposure time in seconds
+        expTime % exposure time in seconds
         imagesize
-        width
-        height
+        width   % crop dimension, must be < Nx
+        height  % crop dimension, must be < Ny
         top
         left
         stride
@@ -19,7 +20,7 @@ classdef (Abstract) CameraExp < handle
         cycleMode
         triggerMode
     end
-
+    
     methods(Abstract)
         rc = switchCamera(obj,val)
         setExpTime(obj)

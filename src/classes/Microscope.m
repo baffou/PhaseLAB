@@ -88,7 +88,7 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
                 m.f_TL = f_TL;
             end                        
 
-            m.f_brand=m(1).(['f_' m.Objective.objBrand]);
+            m.f_brand=m(1).(['f_' m.Objective.brand]);
 
         end      
 
@@ -206,7 +206,7 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
         end
 
         function val = objBrand(m)      % Magnification of the objective, specified by the manufacturer.
-            val = m.Objective.objBrand;
+            val = m.Objective.brand;
         end
 
         function val = get.M(m)

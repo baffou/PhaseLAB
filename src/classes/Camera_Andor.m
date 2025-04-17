@@ -12,6 +12,7 @@ classdef Camera_Andor  <  CameraExp & Camera
     properties(SetAccess = private)
         hndl  % Camera handle. Contains all the properties of the live camera (number of pixels, exp time, trigger mode, etc...)
         CData double
+        imageDimensionsList
     end
 
     properties(Dependent, SetAccess = private)

@@ -18,7 +18,7 @@ classdef Objective  <  handle & matlab.mixin.Copyable
     properties(SetAccess = protected, GetAccess = public)
         Mobj (1,1) {mustBePositive} = 100     % Magnification of the objective, specified by the manufacturer.
         NA   (1,1) {mustBeNumeric, mustBePositive} = 1.3     % Numerical aperture of the microscope objective
-        objBrand char ='Olympus'  % Brand of the objective (can be 'Nikon', 'Thorlabs', 'Leica', 'Olympus' or 'Zeiss', nothing else. Proper specification is MANDATORY to properly estimate the magnification).
+        brand char ='Olympus'  % Brand of the objective (can be 'Nikon', 'Thorlabs', 'Leica', 'Olympus' or 'Zeiss', nothing else. Proper specification is MANDATORY to properly estimate the magnification).
     end
     properties%(NonCopyable)
         mask PCmask
@@ -47,7 +47,7 @@ classdef Objective  <  handle & matlab.mixin.Copyable
                 elseif nargin==3
                     obj.Mobj = abs(Mobj);
                     obj.NA = NA;
-                    obj.objBrand = brand;
+                    obj.brand = brand;
                 else
                     error('wrong number of inputs')
                 end
@@ -76,21 +76,21 @@ classdef Objective  <  handle & matlab.mixin.Copyable
             obj.NA = val;
         end
         
-        function set.objBrand(obj,val)
+        function set.brand(obj,val)
             if ~ischar(val)
                 error('NA should be a character string')
             end
             
             if strcmpi(val,'Olympus')
-                obj.objBrand = 'Olympus';
+                obj.brand = 'Olympus';
             elseif strcmp(val,'Nikon')
-                obj.objBrand = 'Nikon';
+                obj.brand = 'Nikon';
             elseif strcmp(val,'Zeiss')
-                obj.objBrand = 'Zeiss';
+                obj.brand = 'Zeiss';
             elseif strcmp(val,'Leica')
-                obj.objBrand = 'Leica';
+                obj.brand = 'Leica';
             elseif strcmp(val,'Thorlabs')
-                obj.objBrand = 'Thorlabs';
+                obj.brand = 'Thorlabs';
             else
                 error(['This objective brand, ' val ', is not known by PhaseLAB.'])
             end

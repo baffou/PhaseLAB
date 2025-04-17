@@ -1,6 +1,6 @@
 % Method of the Interfero class.
 
-function [IM,DWx,DWy,field] = QLSIprocess(Itf,IL,opt)
+function [IM,DWx,DWy,W,T] = QLSIprocess(Itf,IL,opt)
 % field contains T or W. Useful when IM is not an ouput because not T and W need to be both computed, so IM cannot be constructed : [~, DWx, DWy, field]
 arguments
     Itf Interfero
@@ -27,6 +27,7 @@ arguments
     opt.saveGradients = false
     opt.computeW = true
     opt.computeT = true
+    opt.computeIM = true % false if we only wish to get T, W, DWx, ..., but not the object
 end
 
 Nf = numel(Itf);
@@ -233,29 +234,29 @@ for ii = 1:Nf
 
     % intensity image
 
-    if opt.computeT
 
-        [FImc,FRfc,cropParam0] = FourierCrop(FIm,FRf,zeta, ...
-            'Fcrops',cropParam0, ...
-            'definition',opt.definition, ...
-            'FcropShape',opt.Fcropshape, ...
-            'auto',opt.auto, ...
-            'display',opt.displayCrop, ...
-            'Rfactor',opt.Rfactor);
+    [FImc,FRfc,cropParam0] = FourierCrop(FIm,FRf,zeta, ...
+        'Fcrops',cropParam0, ...
+        'definition',opt.definition, ...
+        'FcropShape',opt.Fcropshape, ...
+        'auto',opt.auto, ...
+        'display',opt.displayCrop, ...
+        'Rfactor',opt.Rfactor);
     
+    if opt.computeT
         Im_int = ifft2(ifftshift(FImc));
         Rf_int = ifft2(ifftshift(FRfc));
     
         if strcmpi(opt.Tnormalisation(ii),'subtraction')
-            Int = abs(Im_int-offset) - abs(Rf_int-offset);
+            T = abs(Im_int-offset) - abs(Rf_int-offset);
         elseif opt.Tnormalisation(ii)
-            Int = abs(Im_int-offset)./abs(Rf_int-offset);
+            T = abs(Im_int-offset)./abs(Rf_int-offset);
         else
-            Int = abs(Im_int-offset);
+            T = abs(Im_int-offset);
         end
 
     else
-        Int = [];
+        T = [];
     end
 
 
@@ -312,13 +313,13 @@ for ii = 1:Nf
         % from Optics Communications 402 (2017) 276–284
         zeta = Itfi.Microscope.CGcam.zeta;
         if strcmpi(opt.definition,'low')
-            ItfNew = Itfi.normalize(imresize(Int,zeta*size(Int)));
+            ItfNew = Itfi.normalize(imresize(T,zeta*size(T)));
         else
-            ItfNew = Itfi.normalize(Int);
+            ItfNew = Itfi.normalize(T);
         end
         [~,DWx_error,DWy_error] = QLSIprocess(ItfNew,IL(ii).lambda,"displayCrop",false); %Add options? 
 
-        IM_Ph0 = ImageQLSI(Int,Int*0,MI,IL(ii).lambda); % Zero phase
+        IM_Ph0 = ImageQLSI(T,T*0,MI,IL(ii).lambda); % Zero phase
         Itf_Ph0 = CGMinSilico(IM_Ph0);
         [~,DWx_Ph0,DWy_Ph0] = QLSIprocess(Itf_Ph0,IL(ii).lambda,"displayCrop",false);
         DWx = DWx_error - DWx_Ph0;
@@ -364,8 +365,8 @@ for ii = 1:Nf
             DWy(mask) = 0;
             close(hfig)
         elseif isnumeric(dzc)
-            DWx(Int < dzc) = 0;
-            DWy(Int < dzc) = 0;
+            DWx(T < dzc) = 0;
+            DWy(T < dzc) = 0;
         else
             error('Wrong value for darkZoneCorrection')
         end        
@@ -418,11 +419,11 @@ for ii = 1:Nf
         waitbar(ii/Nf,fwb,sprintf('Image processing duration: %.3f s',toc))
     end
         
-    if opt.computeT && opt.computeW % if compute both intensity and wavefront, create the ImageQLSI object
+    if opt.computeIM % if compute both intensity and wavefront, create the ImageQLSI object
         if isempty(opt.remotePath)
-            IM(ii) = ImageQLSI(Int,W,MI,Methods.duplicate(IL(ii)),imageNumber=Itfi.imageNumber);
+            IM(ii) = ImageQLSI(T,W,MI,Methods.duplicate(IL(ii)),imageNumber=Itfi.imageNumber);
         else
-            IM(ii) = ImageQLSI(Int,W,MI,Methods.duplicate(IL(ii)),"remotePath",opt.remotePath,"fileName",removeExtension(Itfi.fileName),imageNumber=Itfi.imageNumber);
+            IM(ii) = ImageQLSI(T,W,MI,Methods.duplicate(IL(ii)),"remotePath",opt.remotePath,"fileName",removeExtension(Itfi.fileName),imageNumber=Itfi.imageNumber);
         end
     
         IM(ii).Microscope = Methods.duplicate(MI); % copy of MI because, as an handle object, MI may change for some reason after the computation of the image.
@@ -466,12 +467,7 @@ if Nf >= 2 && opt.displayBar % delete waitbar
     delete(fwb)
 end
 
-if opt.computeT && opt.computeW % ie if IM has been defined
+if opt.computeIM % ie if IM has been defined
     IM = reshape(IM,size(Itf)); % in case the Itf was an N*M array of interferos, i.e., in case there are channels
 end
 
-if opt.computeT == 0
-    field = W;
-elseif  opt.computeW == 0
-    field = Int;
-end

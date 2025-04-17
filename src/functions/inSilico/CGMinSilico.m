@@ -1,4 +1,4 @@
-function [Itf, Grating, EE] = CGMinSilico(Image,opt)
+function [Itf, Grating, EE, img] = CGMinSilico(Image,opt)
 % Function that creates a simulated interferogram from a given T/OPD set of
 % images, including the image noise.
 % For this purpose, it uses all the data of the Microscope object contained
@@ -161,6 +161,9 @@ for io = 1:No
     Itf(io).Reference(ItfRef(io));
 
 
+    if nargout == 4
+        img = Itf(io).Itf0;
+    end
     % plot of the interferogram and its Fourier transform:
     % figure
     % subplot(1,2,1)

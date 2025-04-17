@@ -6,11 +6,7 @@ classdef Methods
             % all the copied object properties are duplicated as well, and
             % not handled.
             if ~ isempty(obj) % isempty can happen with the Einc property of the reference Interfero. Avoids recurcivity
-                try
-                    obj2 = copy(obj);
-                catch
-                    pause(1)
-                end
+                obj2 = copy(obj);
                 for io = 1:numel(obj)
                     % propList = fieldnamesNonDependent(obj(io));
                     propList = getNonDependentClassProperties(class(obj(io)));

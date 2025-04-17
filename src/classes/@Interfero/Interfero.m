@@ -15,17 +15,28 @@ classdef Interfero < handle & matlab.mixin.Copyable
         Ref      Interfero % interfero object corresponding to the reference image
     end
 
-    properties(SetAccess = private)
-        TF       % Fourier transform of the interfero
-        TFapo    = []% tells wether the TF has been calculated with an apodization (equals the width of the apodization)
-        channel (1,:) char {mustBeMember(channel,{'R','G','0','45','90','135','none'})} = 'none'
+    properties(SetAccess = {?Methods,?CameraExp})
+        TF        % Fourier transform of the interfero
+        TFapo     = []% tells wether the TF has been calculated with an apodization (equals the width of the apodization)
+        channel   (1,:) char {mustBeMember(channel,{'R','G','0','45','90','135','none'})} = 'none'
+        Navg % number of acquistions that have been averaged
+    end
+    
+    properties(Dependent)
+        timeStamp (1,:) char
+    end
+
+    properties(Access = {?Methods})
+        timeStamp0 (1,:) char
     end
 
     properties(Hidden)
         Itf0     % interferogram (matrix or path)
     end
+
     properties
         comment  % Any comment to leave to this image
+        expTime = []
     end
     properties (Dependent,Hidden)
         RefIm     (:,:) double
@@ -355,7 +366,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 x2 = obj(io).Nx/2  +Npx/2;
                 y1 = obj(io).Ny/2+1-Npx/2;
                 y2 = obj(io).Ny/2  +Npx/2;
-                obj(io).Itf = obj(io).Itf(y1:y2,x1:x2);
+                obj(io).Itf0 = obj(io).Itf(y1:y2,x1:x2);
                 if ~isempty(obj(io).Ref)
                     obj(io).Ref.square();
                 end
@@ -376,6 +387,9 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 convGPU = @(x) x;
             end
 
+            if isempty(val)
+                return
+            end
             if isnumeric(val)
                 No = numel(obj);
                 for io = 1:No
@@ -438,23 +452,23 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 obj = objList;
             else
                 
-                sumObj = objList(1).Itf;
+                sumObj = objList(1).Itf/No;
+                Nim = 0;
                 for io = 2:No
                     if objList(1).Microscope~=objList(io).Microscope
                         warning('Mean of Interfero objects that were not built using the same Microscope.')
                     end
-                    sumObj = sumObj+objList(io).Itf;
+                    sumObj = sumObj+objList(io).Itf/No;
+                    Nim = Nim + objList(io).Navg;
                 end
-                obj = Interfero(sumObj/No,objList(1).Microscope);
-
-                if ~isempty(objList(1).Ref)
-                    refList = [objList.Ref];
-                    refMean = refList.mean();
-                    obj.Reference(refMean)
-                end
+                obj = Methods.duplicate(objList(1));
+                obj.Itf0 = sumObj;
+                obj.Navg = Nim;
+                obj.clearTF()
+                
 
                 obj.fileName = ['Mean ' objList(1).fileName ' to '  objList(end).fileName];
-                obj.channel = objList(1).channel;
+
             end
         end
 
@@ -1060,6 +1074,37 @@ classdef Interfero < handle & matlab.mixin.Copyable
             for io = 2:No
                 obj=obj+objList(io);
             end
+        end
+
+        function setParams(obj, opt)
+            arguments
+                obj
+                opt.timeStamp
+                opt.expTime
+                opt.Navg
+            end
+
+            optList = fields(opt);
+            No = numel(optList);
+            Nim = numel(obj);
+            for io = 1:No
+                for im = 1:Nim
+                    obj(im).(optList{io}) = opt.(optList{io});
+                end
+            end
+
+        end
+
+        function val = get.timeStamp(obj)
+            val = datetime(obj.timeStamp0, 'InputFormat', 'yyMMdd_HH'':''mm'':''ss''.''SSS');
+        end
+
+        function set.timeStamp(obj,val)
+            arguments
+                obj
+                val datetime
+            end
+            obj.timeStamp0 = char(val,'yyMMdd_HH'':''mm'':''ss''.''SSS');
         end
 
     end

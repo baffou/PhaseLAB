@@ -644,6 +644,17 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             bool = logical(val);
         end
 
+        function obj2 = crop(obj,roi_x,roi_y)
+            obj2    = copy(obj);
+            obj2.Ex = obj.Ex(roi_y, roi_x);
+            obj2.Ey = obj.Ey(roi_y, roi_x);
+            obj2.Ez = obj.Ez(roi_y, roi_x);
+            obj2.Einc    = copy(obj.Einc);
+            obj2.Einc.Ex = obj.Einc.Ex(roi_y, roi_x);
+            obj2.Einc.Ey = obj.Einc.Ey(roi_y, roi_x);
+            obj2.Einc.Ez = obj.Einc.Ez(roi_y, roi_x);
+        end
+
 
         function save(objList,folder,varargin)
             % save T and/or OPD images as jpg and txt images

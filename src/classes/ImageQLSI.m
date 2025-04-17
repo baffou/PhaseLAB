@@ -209,6 +209,10 @@ classdef ImageQLSI   <   ImageMethods
         function val = get.DWx(obj)
             % Returns the OPD gradient along x
             if isempty(obj.DWx0)
+                if isempty(obj.OPD)
+                    val = [];
+                    return
+                end
                 val = ( obj.OPD - obj.OPD(1:end,[end 1:end-1]) ) / obj.pxSize;
                 % imgradientxy(I) does not work properly. Gives a weird results...
             else

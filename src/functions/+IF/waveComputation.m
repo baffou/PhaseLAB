@@ -177,7 +177,7 @@ switch illumination
 
         end
     case '4-quadrants'
-        MI.Objective = Objective(MI.Objective.Mobj, NAobj, MI.Objective.objBrand);
+        MI.Objective = Objective(MI.Objective.Mobj, NAobj, MI.Objective.brand);
         NAill = opt.NAill/ME.n; % because this is what IFDDA considers as the illumination
         [~, ~, NAlist{1}, phiList{1}] = generateDiscArray(NAill,opt.Ntheta,"quadrant",'topLeft');
         [~, ~, NAlist{2}, phiList{2}] = generateDiscArray(NAill,opt.Ntheta,"quadrant",'topRight');

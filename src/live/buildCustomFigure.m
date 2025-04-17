@@ -28,8 +28,7 @@ xPos = mod(opt.Position,3)*figWidth;
         
 %% Create a classic figure with a black background and no menu bar
 hfig = figure('Name', 'Custom GUI', ...
-    'Color', [0.1 0.1 0.1], ...
-    'MenuBar', 'none', ...
+    'Color', [0.1 0.1 0.1], ...%    'MenuBar', 'none', ...
     'Units', 'pixels', ...
     'Position', [xPos yPos figWidth figWidth]);
 
@@ -64,7 +63,6 @@ hax = axes('Parent', hfig, ...
     'Color', 'k', ...                        % black axes background
     'Box', 'on');
 
-
 hfig.UserData.hax  = hax;
 
 % Display a test image using imagesc
@@ -80,6 +78,10 @@ cb.Color = 'w';
 hax.Title.String = tag;
 hax.Title.FontSize = 16;
 hax.Title.Color = 'w';
+
+%xlim([1, opt.Nx])
+%ylim([1, opt.Ny])
+
 
 
 % Add a dropdown menu (popup) for the colormap
@@ -101,21 +103,18 @@ uic_invert = uicontrol('Style', 'checkbox', 'Parent', topPanel, ...
 x = x + controlWidth + spacing;
 
 
-uic_colormap.Callback = @(src, event) updateColorMap(hax,uic_colormap,uic_invert);
-uic_invert.Callback =   @(src, event) updateColorMap(hax,uic_colormap,uic_invert);
-
-
 
 
 % Add the min numeric edit field
-uicontrol('Style', 'edit', 'Parent', topPanel, ...
+uic_min = uicontrol('Style', 'edit', 'Parent', topPanel, ...
     'HorizontalAlignment','right', ...
     'FontSize',14, ...
-    'String', '0', ...
+    'String', '', ...
     'Position', [x, y2, controlWidth*0.7, controlHeight]);
 
+
 % Add the hold checkbox
-uicontrol('Style', 'checkbox', 'Parent', topPanel, ...
+uic_hold = uicontrol('Style', 'checkbox', 'Parent', topPanel, ...
     'String', 'hold', ...
     'FontSize',14, ...
     'Position', [x, y1, controlWidth*0.7, controlHeight], ...
@@ -125,17 +124,13 @@ x = x + controlWidth*0.7 + spacing;
 
 
 % Add the max numeric edit field
-uicontrol('Style', 'edit', 'Parent', topPanel, ...
+uic_max = uicontrol('Style', 'edit', 'Parent', topPanel, ...
     'HorizontalAlignment','right', ...
     'FontSize',14, ...
-    'String', '1', ...
+    'String', '', ...
     'Position', [x, y2, controlWidth*0.7, controlHeight]);
 
-% Add the reset button
-uicontrol('Style', 'pushbutton', 'Parent', topPanel, ...
-    'String', 'Reset', ...
-    'FontSize',14, ...
-    'Position', [x, y1, controlWidth*0.7, controlHeight]);
+
 x = x + controlWidth*0.7 + 4*spacing;
 
 
@@ -153,7 +148,7 @@ bg = uibuttongroup('Parent', topPanel, ...
 topPanel.Position(3) = x + bg.Position(3) + spacing;
 
 % Créer les toggle buttons dans le groupe
-imgButton = imread('icons/erase.png'); 
+imgButton = imread('icons/erase.png');
 uicontrol('Style', 'togglebutton', ...
           'Parent', bg, ...
           'CData', imgButton, ...  % set the button image
@@ -162,7 +157,7 @@ uicontrol('Style', 'togglebutton', ...
           'Tooltip','cancel any mode',...
           'Tag','none');
 
-imgButton = imread('icons/histo.png'); 
+imgButton = imread('icons/histo.png');
 uicontrol('Style', 'togglebutton', ...
           'Parent', bg, ...
           'CData', imgButton, ...  % set the button image
@@ -179,7 +174,7 @@ uicontrol('Style', 'togglebutton', ...
           'Tooltip','plot FFT',...
           'Tag','FFT');
 
-imgButton = imread('icons/Pathcrosscut.png'); 
+imgButton = imread('icons/Pathcrosscut.png');
 uicontrol('Style', 'togglebutton', ...
           'Parent', bg, ...
           'CData', imgButton, ...  % set the button image
@@ -187,15 +182,6 @@ uicontrol('Style', 'togglebutton', ...
           'Position', panelHeight*[0.05 0.05 0.4 0.4],...
           'Tooltip','plot crosscut',...
           'Tag','crosscut');
-
-imgButton = imread('icons/pipehole.png'); 
-uicontrol('Style', 'togglebutton', ...
-          'Parent', bg, ...
-          'CData', imgButton, ...  % set the button image
-          'Units', 'pixels', ...
-          'Position', panelHeight*[1.05 0.55 0.4 0.4],...
-          'Tooltip','pipehole',...
-          'Tag','pipehole');
 
 
 
@@ -224,17 +210,28 @@ end
 % addTwinFigure(hfig)
 % addTwinFigure(hfig)
 
-    function resizeFigure(hf)
-        % TODO: resizer aussi axe 2 si présent
-        panelH = hf.UserData.topPanel.Position(4);
-        % move the panel
-        hf.UserData.topPanel.Position(4)
-        hf.UserData.topPanel.Position(2)  = hf.Position(4)-panelH;
-        % redimension the axes
-        axesH = hf.Position(4) - panelH;
-        imSz = min([hf.Position(3)-120 axesH-80]);
-        hf.UserData.hax.Position = [60 40 imSz imSz];
-    end
+
+%% callbacks
+
+uic_colormap.Callback = @(src, event) updateColorMap(hax,uic_colormap,uic_invert);
+uic_invert.Callback =   @(src, event) updateColorMap(hax,uic_colormap,uic_invert);
+uic_hold.Callback =   @(src, event)   updateClim(hax, uic_hold, uic_min, uic_max);
+uic_min.Callback =   @(src, event)   updateClim(hax, uic_hold, uic_min, uic_max);
+uic_max.Callback =   @(src, event)   updateClim(hax, uic_hold, uic_min, uic_max);
+
+%% functions
+
+function resizeFigure(hf)
+    % TODO: resizer aussi axe 2 si présent
+    panelH = hf.UserData.topPanel.Position(4);
+    % move the panel
+    hf.UserData.topPanel.Position(4)
+    hf.UserData.topPanel.Position(2)  = hf.Position(4)-panelH;
+    % redimension the axes
+    axesH = hf.Position(4) - panelH;
+    imSz = min([hf.Position(3)-120 axesH-80]);
+    hf.UserData.hax.Position = [60 40 imSz imSz];
+end
 %% nested functions
     function updateColorMap(ax,uic_colormap,cb_inv)
         cmap = str2func(uic_colormap.String{uic_colormap.Value});
@@ -243,6 +240,29 @@ end
         else
             colormap(ax, cmap())
         end
+    end
+
+
+    function updateClim(hax, uic_hold, uic_min, uic_max)
+        if uic_hold.Value
+            clim(hax,hax.CLim) % Fix the clim to the current value.
+            if isempty(uic_min.String)
+                uic_min.String = num2str(hax.CLim(1));
+            else
+                hax.CLim(1) = str2double(uic_min.String);
+            end
+            if isempty(uic_max.String)
+                uic_max.String = num2str(hax.CLim(2));
+            else
+                hax.CLim(2) = str2double(uic_max.String);
+            end
+%            uic_max.String = num2str(hax.CLim(2));
+        else
+            hax.CLimMode = 'auto';
+            uic_min.String = '';
+            uic_max.String = '';
+        end
+
     end
 
     function TwinImageChanged(src, event)

@@ -25,11 +25,11 @@ classdef CGmatrix
         end
         
         function M = set.im(M,im0)
-            if size(im0,1)==size(im0,2)
+            %if size(im0,1)==size(im0,2)
                 M.im = im0;
-            else
-                error('The matrix must be square')
-            end
+            %else
+            %    error('The matrix must be square')
+            %end
         end
         
         function val = get.Ny(M)
