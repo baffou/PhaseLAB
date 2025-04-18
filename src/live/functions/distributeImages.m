@@ -17,7 +17,7 @@ if any(statusList(2:end)) % if any image other than raw need to be computed
         % Then no W or T calculation
         computeT = 0;
         computeW = 0;
-    elseif isempty(app.himList.T) % If still no T, but something more (W, PDCM, etc...)
+    elseif isempty(app.himList.T) && isempty(app.himList.Rytov) % If still neither T nor Rytov, but something more (W, PDCM, etc...)
         % then compute W
         computeT = 0;
         computeW = 1;

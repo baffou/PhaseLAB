@@ -88,18 +88,18 @@ classdef Camera_Simu  <  CameraExp & Camera
 
         end
 
-        function startAcquisition(obj,app)
+        function startAcquisition(obj,app,imgType)
             arguments
                 obj
                 app
+                imgType (1,3) char {mustBeMember(imgType,{'Ref','Itf'})} 
             end
             % call the full app to have access to hList, but also to the
             % liveOn property that can suddenly change in app if the user
             % clicks stop.
 
             app.lampState('Running')
-            
-            
+
             %% Image simulation
 
                     
@@ -133,13 +133,17 @@ classdef Camera_Simu  <  CameraExp & Camera
 
             if strcmpi(obj.cycleMode,'Fixed')
 
-                    app.Itf = CGMinSilico(repmat(IM0,obj.hndl.Nim,1),shotNoise = 1);
-                    app.Itf.setParams("timeStamp",datetime('now'),...
-                        "expTime",obj.hndl.expTime, ...
-                        "Navg",obj.hndl.Nim)
+                Itf = CGMinSilico(repmat(IM0,obj.hndl.Nim,1),shotNoise = 1);
+                
                 if ~app.burstCheckBox.Value
-                    app.Itf = mean(app.Itf);
+                    Itf = mean(Itf);
                 end
+                
+                app.([imgType '0']) = Itf.Itf; % app.Itf0 or app.Ref0
+                app.(imgType).setParams("timeStamp",datetime('now'),...
+                                  "expTime",obj.hndl.expTime, ...
+                                  "Navg",obj.hndl.Nim, ...
+                                  "ROI",app.Cam.getROI())
                     
                 if any( app.status_hfigList )
                     distributeImages(app)
@@ -158,10 +162,18 @@ classdef Camera_Simu  <  CameraExp & Camera
                 while(app.liveOn)
                     tic
                     %himList.raw.CData = rand(obj.width,obj.height);
-                    app.Itf = CGMinSilico(IM0.crop(app.roi_x,app.roi_y),shotNoise = 1,Nimages = app.liveAvgEditField.Value);
-                    app.Itf.timeStamp = datetime('now');
-                    app.Itf.expTime = obj.hndl.expTime;
-                    app.Itf.Navg = obj.hndl.Nim;
+                    Itf = CGMinSilico(IM0.crop(app.roi_x,app.roi_y),shotNoise = 1,Nimages = app.liveAvgEditField.Value);
+                    app.([imgType '0']) = Itf.Itf; % app.Itf0 or app.Ref0
+                    app.(imgType).setParams("timeStamp",datetime('now'),...
+                                      "expTime",obj.hndl.expTime, ...
+                                      "Navg",obj.hndl.Nim, ...
+                                      "ROI",app.Cam.getROI())
+                    
+                    
+                    % app.Itf.timeStamp = datetime('now');
+                    % app.Itf.ROI = app.Cam.getROI();
+                    % app.Itf.expTime = obj.hndl.expTime;
+                    % app.Itf.Navg = obj.hndl.Nim;
 
                     %app.himList.raw.CData =Itf.Itf;
                     if any( app.status_hfigList ) 
@@ -318,6 +330,10 @@ classdef Camera_Simu  <  CameraExp & Camera
 
         function val = get.triggerMode(obj)
             val = obj.hndl.triggerMode;
+        end
+
+        function val = getROI(obj)
+            val = [obj.left obj.top obj.left+obj.width-1 obj.top+obj.height-1];
         end
    end
     

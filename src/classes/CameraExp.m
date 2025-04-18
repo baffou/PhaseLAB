@@ -29,6 +29,7 @@ classdef (Abstract) CameraExp < handle
         stopAcquisition(obj)
         setImageDimensions(obj,str)
         setupSDK()
+        getROI()
     end
 
 end

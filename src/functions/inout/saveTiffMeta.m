@@ -7,6 +7,7 @@ arguments
     opt.RefFileNname {mustBeText} = ''
     opt.expTime = []
     opt.ROI (1,4) double
+    opt.RefFileName = ''
 end
 
 if isa(opt.lambda,'Illumination')
@@ -21,12 +22,12 @@ end
 
 t = Tiff(fileName, 'w');
 
-tagstruct.DateTime = char(Itf.timeStamp,'yyMMdd_HH'':''mm'':''ss''.''SSS');
+tagstruct.DateTime = datetime2str(Itf.timeStamp);
 
 if ~isfield(opt,'ROI')
     opt.ROI = [1 1 Itf.Nx Itf.Ny];
 end
-tagstruct.Make = ['crop: ' num2str(opt.ROI)];
+tagstruct.Make = ROI2str(opt.ROI);
 
 description = sprintf([...
 '\nACQUISITION\n', ...
@@ -82,7 +83,7 @@ tagstruct.ImageDescription = description;
     % tagstruct.Artist = description;
     % tagstruct.Copyright = description;
     % tagstruct.Software = description;
-    % tagstruct.HostComputer = description;
+    tagstruct.HostComputer = opt.RefFileName;
     % tagstruct.DateTime = '20jan2025';
 
 

@@ -23,7 +23,11 @@ classdef Interfero < handle & matlab.mixin.Copyable
     end
     
     properties(Dependent)
-        timeStamp (1,:) char
+        timeStamp % returns a datetime from the char stored in timeStamp0.Avoids having a DateTime object here that Methods.duplicate would have a hard time to handle
+    end
+
+    properties
+        ROI (1,4) double % returns a datetime from the char stored in timeStamp0.Avoids having a DateTime object here that Methods.duplicate would have a hard time to handle
     end
 
     properties(Access = {?Methods})
@@ -1082,6 +1086,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 opt.timeStamp
                 opt.expTime
                 opt.Navg
+                opt.ROI
             end
 
             optList = fields(opt);
