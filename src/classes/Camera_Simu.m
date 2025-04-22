@@ -104,48 +104,60 @@ classdef Camera_Simu  <  CameraExp & Camera
 
                     
                     
-            system = 'NP';
-            switch system
-                case 'NP'
-                    radius = 500e-9;
-                    DI0  =  Dipole('Au',radius);
-                    DI = [DI0.moveBy('x',1e-6), DI0.moveBy('x',-1.4e-6,'y',0.7e-6,'z',-0.6e-6), DI0.moveBy('x',3e-6,'y',-3e-6)];
-                    DI  =  DI.shine(app.IL);
-        
-                    IM0 = imaging(DI,app.IL,app.MI,obj.height);
-                case 'noise'
-                    IM0(il) = ImageQLSI(ones(Npx),zeros(Npx),MI,IL(il));
-                case 'Gaussian'
-                    IMref = ImageQLSI(ones(obj.height,obj.width),zeros(obj.height,obj.width),app.MI,app.IL);
-                    Gampl  =  100e-9; % Gaussian profile amplitude [m]
-                    Gradius  =  obj.width/10; % Gaussian profile radius [m]
-                    [X,Y]  =  meshgrid(1:obj.width,1:obj.height);
-                    X  =  X-mean(X(:));
-                    Y  =  Y-mean(Y(:));
-                    Gauss = exp(-(X.^2+Y.^2)/Gradius.^2);
-                    OPD  =  Gampl*Gauss; % (Fig 2f)
-                    T = 1-0.1*Gauss;
-                    IM0 = ImageEM(ImageQLSI(sqrt(T),OPD,app.MI,app.IL),ImageEM(IMref));
+            if strcmp(imgType,'Itf')
+
+                system = 'NP';
+                switch system
+                    case 'NP'
+                        radius = 500e-9;
+                        DI0  =  Dipole('Au',radius);
+                        DI = [DI0.moveBy('x',1e-6), DI0.moveBy('x',-1.4e-6,'y',0.7e-6,'z',-0.6e-6), DI0.moveBy('x',3e-6,'y',-3e-6)];
+                        DI  =  DI.shine(app.IL);
+            
+                        IM0 = imaging(DI,app.IL,app.MI,obj.height);
+                    case 'noise'
+                        IM0(il) = ImageQLSI(ones(Npx),zeros(Npx),MI,IL(il));
+                    case 'Gaussian'
+                        IMref = ImageQLSI(ones(obj.height,obj.width),zeros(obj.height,obj.width),app.MI,app.IL);
+                        Gampl  =  100e-9; % Gaussian profile amplitude [m]
+                        Gradius  =  obj.width/10; % Gaussian profile radius [m]
+                        [X,Y]  =  meshgrid(1:obj.width,1:obj.height);
+                        X  =  X-mean(X(:));
+                        Y  =  Y-mean(Y(:));
+                        Gauss = exp(-(X.^2+Y.^2)/Gradius.^2);
+                        OPD  =  Gampl*Gauss; % (Fig 2f)
+                        T = 1-0.1*Gauss;
+                        IM0 = ImageEM(ImageQLSI(sqrt(T),OPD,app.MI,app.IL),ImageEM(IMref));
+                        
+                end            
                     
-            end            
-                    
+            else
+                radius = 0.001e-9;
+                DI0  =  Dipole('Au',radius);
+                DI = [DI0.moveBy('x',1e-6), DI0.moveBy('x',-1.4e-6,'y',0.7e-6,'z',-0.6e-6), DI0.moveBy('x',3e-6,'y',-3e-6)];
+                DI  =  DI.shine(app.IL);
+    
+                IM0 = imaging(DI,app.IL,app.MI,obj.height);
+            end
                     
 
             if strcmpi(obj.cycleMode,'Fixed')
 
-                Itf = CGMinSilico(repmat(IM0,obj.hndl.Nim,1),shotNoise = 1);
-                
                 if ~app.burstCheckBox.Value
+                    Itf = CGMinSilico(IM0,shotNoise = 1,Nimages = app.refAvgEditField.Value);
+                else
+                    Itf = CGMinSilico(repmat(IM0,obj.hndl.Nim,1),shotNoise = 1);
                     Itf = mean(Itf);
                 end
-                
+                dt = datetime('now');
+
                 app.([imgType '0']) = Itf.Itf; % app.Itf0 or app.Ref0
-                app.(imgType).setParams("timeStamp",datetime('now'),...
+                app.(imgType).setParams("timeStamp",dt,...
                                   "expTime",obj.hndl.expTime, ...
                                   "Navg",obj.hndl.Nim, ...
                                   "ROI",app.Cam.getROI())
                     
-                if any( app.status_hfigList )
+                if ~strcmp(imgType,'Ref') && any( app.status_hfigList )
                     distributeImages(app)
                 end
 
@@ -162,7 +174,7 @@ classdef Camera_Simu  <  CameraExp & Camera
                 while(app.liveOn)
                     tic
                     %himList.raw.CData = rand(obj.width,obj.height);
-                    Itf = CGMinSilico(IM0.crop(app.roi_x,app.roi_y),shotNoise = 1,Nimages = app.liveAvgEditField.Value);
+                    Itf = CGMinSilico(IM0,shotNoise = 1,Nimages = app.liveAvgEditField.Value);
                     app.([imgType '0']) = Itf.Itf; % app.Itf0 or app.Ref0
                     app.(imgType).setParams("timeStamp",datetime('now'),...
                                       "expTime",obj.hndl.expTime, ...

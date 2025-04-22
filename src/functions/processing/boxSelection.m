@@ -13,6 +13,7 @@ arguments
     opt.Center = 'Manual' % 'Auto', 'Manual' or [x, y]
     opt.Size = 'Manual' % 'Auto', 'Manual', d or [dx, dy]
     opt.twoPoints logical = true
+    opt.roi (1,:) double = []
     opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
     opt.displayT logical = false
     opt.colorImage = false % if it is true, keeps the same color in pixel (1,1) after cropping, for a 2-color camera
@@ -60,6 +61,14 @@ elseif ~isempty(opt.xy1) && ~isempty(opt.xy2)  % crop('xy1', [a,b], 'xy2', [a,b]
     x2 = max([opt.xy1(1),opt.xy2(1)]);
     y1 = min([opt.xy1(2),opt.xy2(2)]);
     y2 = max([opt.xy1(2),opt.xy2(2)]);
+elseif ~isempty(opt.roi)  % crop('roi', [x0 y0 width height])
+    if numel(opt.roi)~=4
+        error('First input must be a 4-vector roi = (x,y,w,h)')
+    end
+    x1 = round(opt.roi(1));
+    x2 = round(opt.roi(1)+opt.roi(3)-1);
+    y1 = round(opt.roi(2));
+    y2 = round(opt.roi(2)+opt.roi(4)-1);
 elseif ~isempty(opt.params)
 
     x1 = opt.params(1);

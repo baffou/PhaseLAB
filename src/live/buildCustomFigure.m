@@ -247,12 +247,12 @@ end
         if uic_hold.Value
             clim(hax,hax.CLim) % Fix the clim to the current value.
             if isempty(uic_min.String)
-                uic_min.String = num2str(hax.CLim(1));
+                uic_min.String = sprintf('%.3g',(hax.CLim(1)));
             else
                 hax.CLim(1) = str2double(uic_min.String);
             end
             if isempty(uic_max.String)
-                uic_max.String = num2str(hax.CLim(2));
+                uic_max.String = sprintf('%.3g',(hax.CLim(2)));
             else
                 hax.CLim(2) = str2double(uic_max.String);
             end

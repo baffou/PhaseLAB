@@ -296,7 +296,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             end
         end
 
-        function [obj,params] = crop(obj0,opt)
+        function [obj,params,img] = crop(obj0,opt)
             arguments
                 obj0
                 opt.xy1 = []
@@ -308,6 +308,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
                 opt.app = []; % figure uifigure object to be considered in case the image is already open
                 opt.channel = false % true if 2-color interfero
+                opt.roi = []
             end
             if nargout>=1
                 obj=copy(obj0);
@@ -321,6 +322,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     'Center',opt.Center, ...
                     'Size',opt.Size, ...
                     'twoPoints',opt.twoPoints, ...
+                    'roi',opt.roi, ...
                     'params',opt.params, ...
                     'shape',opt.shape, ...
                     'colorImage',opt.channel);
@@ -349,6 +351,10 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     obj(io).Ref.Itf0 = Ref0im(y1:y2,x1:x2);
                     obj(io).Ref.TF = fftshift(fft2(obj(io).Ref.Itf));
                 end
+            end
+
+            if nargin == 3 % just returns the croped image
+                img = obj(1).Itf;
             end
 
 
