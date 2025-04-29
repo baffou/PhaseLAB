@@ -75,12 +75,12 @@ classdef Camera_Simu  <  CameraExp & Camera
         function setMode(obj,cycleMode, triggerMode,opt)
             arguments
                 obj
-                cycleMode   {mustBeMember(cycleMode,   {'Fixed','Continuous'})}
+                cycleMode   {mustBeMember(cycleMode,   {'Fixed','Continuous','Burst'})}
                 triggerMode {mustBeMember(triggerMode, {'Internal','External','Software'})}
                 opt.expTime = []
                 opt.Nim = 1 % number of images to be acquiredin Fixed mode
             end
-
+            
             obj.hndl.cycleMode = cycleMode;
             obj.hndl.triggerMode = triggerMode;
             obj.hndl.expTime = opt.expTime;
@@ -88,11 +88,12 @@ classdef Camera_Simu  <  CameraExp & Camera
 
         end
 
-        function startAcquisition(obj,app,imgType)
+        function startAcquisition(obj,app,imgType,mode)
             arguments
                 obj
                 app
-                imgType (1,3) char {mustBeMember(imgType,{'Ref','Itf'})} 
+                imgType (1,3) char {mustBeMember(imgType,{'Ref','Itf'})}
+                mode char {mustBeMember(mode,{'live','burst','snap','timeLapse'})} = 'snap'
             end
             % call the full app to have access to hList, but also to the
             % liveOn property that can suddenly change in app if the user
@@ -131,7 +132,7 @@ classdef Camera_Simu  <  CameraExp & Camera
                         
                 end            
                     
-            else
+            else  % imType == Ref
                 radius = 0.001e-9;
                 DI0  =  Dipole('Au',radius);
                 DI = [DI0.moveBy('x',1e-6), DI0.moveBy('x',-1.4e-6,'y',0.7e-6,'z',-0.6e-6), DI0.moveBy('x',3e-6,'y',-3e-6)];
@@ -143,34 +144,52 @@ classdef Camera_Simu  <  CameraExp & Camera
 
             if strcmpi(obj.cycleMode,'Fixed')
 
-                if ~app.burstCheckBox.Value
-                    Itf = CGMinSilico(IM0,shotNoise = 1,Nimages = app.refAvgEditField.Value);
-                else
+                if strcmpi(mode,'burst')
                     Itf = CGMinSilico(repmat(IM0,obj.hndl.Nim,1),shotNoise = 1);
-                    Itf = mean(Itf);
+                    dt = datetime('now');
+                    ItfArray = zeros(IM0.Ny,IM0.Nx,obj.hndl.Nim);
+                    for ii = 1:obj.hndl.Nim
+                        ItfArray(:,:,ii) = Itf(ii).Itf;
+                        app.([imgType '0']) = ItfArray; % normally app.Itf0, never app.Ref0
+                    end
+                else % snap or timeLapse => average the Itfs
+                    Itf = CGMinSilico(IM0,shotNoise = 1,Nimages = app.refAvgEditField.Value);
+                    dt = datetime('now');
+                    app.([imgType '0']) = Itf(1).Itf;   % app.Itf0 or app.Ref0
                 end
-                dt = datetime('now');
 
-                app.([imgType '0']) = Itf.Itf; % app.Itf0 or app.Ref0
                 app.(imgType).setParams("timeStamp",dt,...
                                   "expTime",obj.hndl.expTime, ...
                                   "Navg",obj.hndl.Nim, ...
                                   "ROI",app.Cam.getROI())
                     
                 if ~strcmp(imgType,'Ref') && any( app.status_hfigList )
-                    distributeImages(app)
+                    app.computeImages(mode)
+                    app.updateImages()
                 end
 
 
             elseif strcmpi(obj.cycleMode,'Continuous')
-    
         
-                if all(app.status_hfigList == 0)
+                if all(app.status_hfigList == 0) && strcmpi(mode,'live') % if live mode (and not timeLapse) and nothing to display stop
                     return
                 end
 
-                disp('Live acquisition in progress...');
+                if strcmpi(mode,'timeLapse')
+                    [N, dt] = timeLapseUI;
+                    % Parameters
+                    dt = seconds(dt);         % Interval between successive images
+                end
+    
+        
+                % if all(app.status_hfigList == 0)
+                %     return
+                % end
 
+                disp('Live acquisition in progress...');
+                k = 0;
+                t0 = datetime('now');
+                nextTime = t0;
                 while(app.liveOn)
                     tic
                     %himList.raw.CData = rand(obj.width,obj.height);
@@ -180,16 +199,30 @@ classdef Camera_Simu  <  CameraExp & Camera
                                       "expTime",obj.hndl.expTime, ...
                                       "Navg",obj.hndl.Nim, ...
                                       "ROI",app.Cam.getROI())
-                    
-                    
+
                     % app.Itf.timeStamp = datetime('now');
                     % app.Itf.ROI = app.Cam.getROI();
                     % app.Itf.expTime = obj.hndl.expTime;
                     % app.Itf.Navg = obj.hndl.Nim;
 
                     %app.himList.raw.CData =Itf.Itf;
+
+                    if strcmpi(mode,'timeLapse')
+                        if datetime('now') >= nextTime && nextTime < t0 + (N+1)*dt
+                            nextTime = t0 + k*dt;
+                            app.saveCurrentImage()
+                            k = k+1;
+                        elseif datetime('now') > t0 + (N+1)*dt
+                            disp('stop')
+                            app.liveOn = 0;
+                        end
+                    end
+
                     if any( app.status_hfigList ) 
-                        distributeImages(app)
+                        app.computeImages()
+                        app.updateImages()
+                    else
+                        drawnow
                     end
                                         
 

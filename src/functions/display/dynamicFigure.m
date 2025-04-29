@@ -41,7 +41,7 @@ for ii = 1:Npanels
         case {'fl'}
             h.UserData.fun{ii} = @imagefl;
         case {'dx'}
-            h.UserData.fun{ii} = @opendx;
+            h.UserData.fun{ii} = @opendx0;
         case {'hsv'}
             h.UserData.fun{ii} = @imagehsv;
         case {'Pr'} % Pradeep

@@ -694,7 +694,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
         end
 
         function im = get.Rytov(obj)
-            im = obj.lambda*obj.Illumination.n/pi*abs( log(obj.T)/2+1i*obj.Ph ).^2;
+            im = obj.lambda*obj.Illumination.n/pi*abs( log(obj.T)/2 + 1i*obj.Ph ).^2;
         end
 
         function IM = adjustPolarOffsets2(IM0)

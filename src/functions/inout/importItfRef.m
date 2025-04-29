@@ -14,7 +14,9 @@ opt.nickname = convertStringsToChars(opt.nickname);
 
 IL = []; %If metadatas == false, IL will stay blank !
 
-
+if strcmpi(opt.selection,'all')
+    opt.selection = [];
+end
 
 % set the acquisition software
 if isa(MI(1),'Microscope') %Microscope already built
@@ -147,7 +149,7 @@ else % Automatic selection
         end
 
     else
-        error('Please specify a sofware if using importItfRef')
+        error('Please specify a software if using importItfRef')
     end
 
 end

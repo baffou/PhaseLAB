@@ -4,7 +4,6 @@ arguments
     Itf Interfero
     MI (1,1) Microscope
     opt.lambda = []
-    opt.RefFileNname {mustBeText} = ''
     opt.expTime = []
     opt.ROI (1,4) double
     opt.RefFileName = ''
