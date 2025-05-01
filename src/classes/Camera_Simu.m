@@ -134,9 +134,9 @@ classdef Camera_Simu  <  CameraExp & Camera
                     
             else  % imType == Ref
                 radius = 0.001e-9;
-                DI0  =  Dipole('Au',radius);
+                DI0 = Dipole('Au',radius);
                 DI = [DI0.moveBy('x',1e-6), DI0.moveBy('x',-1.4e-6,'y',0.7e-6,'z',-0.6e-6), DI0.moveBy('x',3e-6,'y',-3e-6)];
-                DI  =  DI.shine(app.IL);
+                DI = DI.shine(app.IL);
     
                 IM0 = imaging(DI,app.IL,app.MI,obj.height);
             end
@@ -176,7 +176,12 @@ classdef Camera_Simu  <  CameraExp & Camera
                 end
 
                 if strcmpi(mode,'timeLapse')
-                    [N, dt] = timeLapseUI;
+                    appTL = timeLapsePanel();
+                    if ~isvalid(appTL)
+                        return
+                    end
+                    N = appTL.N;
+                    dt = appTL.dt;
                     % Parameters
                     dt = seconds(dt);         % Interval between successive images
                 end
@@ -188,8 +193,6 @@ classdef Camera_Simu  <  CameraExp & Camera
 
                 disp('Live acquisition in progress...');
                 k = 0;
-                t0 = datetime('now');
-                nextTime = t0;
                 while(app.liveOn)
                     tic
                     %himList.raw.CData = rand(obj.width,obj.height);
@@ -208,12 +211,25 @@ classdef Camera_Simu  <  CameraExp & Camera
                     %app.himList.raw.CData =Itf.Itf;
 
                     if strcmpi(mode,'timeLapse')
-                        if datetime('now') >= nextTime && nextTime < t0 + (N+1)*dt
+                        if ~exist('t0','var')
+                            t0 = datetime('now');
+                            nextTime = t0;
+                        end
+                        if isvalid(appTL)
+                            appTL.setNextImageTime(nextTime)
+                        end
+                        if datetime('now') >= nextTime && k<N
+                            k = k+1;
                             nextTime = t0 + k*dt;
                             app.saveCurrentImage()
-                            k = k+1;
-                        elseif datetime('now') > t0 + (N+1)*dt
-                            disp('stop')
+                            if isvalid(appTL)
+                                appTL.setImageNumber(k)
+                            end
+                        elseif k>=N
+                            if isvalid(appTL)
+                                appTL.setImageNumber(k)
+                            end
+                            appTL.setNextImageTime('0')
                             app.liveOn = 0;
                         end
                     end

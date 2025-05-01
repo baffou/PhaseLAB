@@ -45,38 +45,30 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
     methods
 
         function obj = Illumination(lambda,ME,I,polar)
+            arguments
+                lambda = []
+                ME Medium = Medium('water','glass');
+                I  double = 1
+                polar (1,:) = [1 0 0]
+            end
             % (lambda[,Medium(n,nS),I,polar]). polar can be a 2- or 3-vector, not necessarily unitary.
             if nargin ~= 0
                 Nv = numel(lambda);
-                obj = repmat(Illumination(), Nv, 1);
-                for iv = 1:Nv
-                    obj(iv) = Methods.duplicate(obj(iv));
-                    obj(iv).lambda = lambda(iv);
-                    if nargin == 1
-                        obj(iv).Medium = Medium('water','glass');
+                if Nv>1
+                    obj = repmat(Illumination(), Nv, 1);
+                    for iv = 1:Nv
+                        obj(iv) = Illumination(lambda(iv));
                     end
-                    if nargin >= 2
-                        if ~isa(ME,'Medium')
-                            error('The 2nd input must be a Medium object')
-                        else
-                            obj(iv).Medium = ME;
-                        end
-                    end
-                    if nargin >= 3
-                        if ~isnumeric(I)
-                            error('The 2nd input (I) must be a number')
-                        else
-                            obj(iv).I = I;
-                        end
-                    end
-                    if nargin == 4
-                        if numel(polar) == 2
-                            obj(iv).polar = [polar(:)' 0];
-                        elseif numel(polar) ==  3
-                            obj(iv).polar = polar(:)';
-                        else
-                            error('not a good expression for a polarization')
-                        end
+                else
+                    obj.lambda = lambda;
+                    obj.Medium = ME;
+                        obj.I = I;
+                    if numel(polar) == 2
+                        obj.polar = [polar(:)' 0];
+                    elseif numel(polar) ==  3
+                        obj.polar = polar(:)';
+                    else
+                        error('not a good expression for a polarization')
                     end
                 end
             end
@@ -102,6 +94,8 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
                     obj(iv).lambda = val(iv);
                 end
             end
+
+            obj.onLambdaSet()
         end
 
         function set.polar(obj,val)
@@ -269,6 +263,10 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
             ILs.polar = [pol(1) pol(2) 0];
         end
 
-
+        function onLambdaSet(obj)
+            % Tobe overloaded in the daughter class monochromator
+            % Does not any anything special here, but does action the
+            % monochromator in the class Monochromator
+        end
     end
 end

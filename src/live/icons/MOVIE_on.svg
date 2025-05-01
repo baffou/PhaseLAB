@@ -3,51 +3,52 @@
 <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 35.7 35.7" style="enable-background:new 0 0 35.7 35.7;" xml:space="preserve">
 <style type="text/css">
-	.st0{fill:#C18F8F;}
-	.st1{fill:#1D1D1B;}
-	.st2{fill:#FFFFFF;stroke:#1D1D1B;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
-	.st3{clip-path:url(#SVGID_00000138541678472643852160000005239134793350379397_);}
-	.st4{clip-path:url(#SVGID_00000026848293340693920560000014004529967137255611_);}
+	.st0{fill:#C18F8F;stroke:#000000;stroke-miterlimit:10;}
+	.st1{fill:#FFFFFF;stroke:#1D1D1B;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st2{clip-path:url(#SVGID_00000125584005911843818040000016610755711094139816_);}
+	.st3{clip-path:url(#SVGID_00000055693654207873494900000001264359496359034042_);}
 </style>
 <g>
-	<path class="st0" d="M17.9,34.7C8.6,34.7,1,27.1,1,17.8C1,8.6,8.6,1,17.9,1s16.9,7.6,16.9,16.9C34.7,27.1,27.1,34.7,17.9,34.7z"/>
-	<path class="st1" d="M17.9,2c8.7,0,15.9,7.1,15.9,15.9c0,8.7-7.1,15.9-15.9,15.9C9.1,33.7,2,26.6,2,17.9C2,9.1,9.1,2,17.9,2
-		 M17.9,0C8,0,0,8,0,17.9s8,17.9,17.9,17.9s17.9-8,17.9-17.9C35.7,8,27.7,0,17.9,0L17.9,0z"/>
+	<circle class="st0" cx="18" cy="17.8" r="14"/>
 </g>
-<polygon class="st2" points="14.4,23.4 14.4,12.3 22.2,17.9 "/>
+<polygon class="st1" points="15.9,22.3 15.9,13.3 22.2,17.9 "/>
 <g>
 	<g>
-		<defs>
-			<path id="SVGID_1_" d="M17.9,0C8,0,0,8,0,17.9s8,17.9,17.9,17.9s17.9-8,17.9-17.9C35.7,8,27.7,0,17.9,0z"/>
-		</defs>
-		<clipPath id="SVGID_00000159438228981068692780000002584995089556763524_">
-			<use xlink:href="#SVGID_1_"  style="overflow:visible;"/>
-		</clipPath>
-		<g style="clip-path:url(#SVGID_00000159438228981068692780000002584995089556763524_);">
-			<rect x="7.9" y="4.2" class="st2" width="5.3" height="5.3"/>
-			<rect x="15.2" y="4.2" class="st2" width="5.3" height="5.3"/>
-			<rect x="22.6" y="4.2" class="st2" width="5.3" height="5.3"/>
-			<polyline class="st2" points="5.9,6.2 5.9,9.5 3.2,9.5 3.2,9.5 			"/>
-			<polyline class="st2" points="32.5,9.5 31.9,9.5 29.9,9.5 29.9,6.8 29.9,6.1 			"/>
+		<g>
+			<defs>
+				<path id="SVGID_1_" d="M18,3.3c-8,0-14.5,6.5-14.5,14.5S9.9,32.3,18,32.3s14.5-6.5,14.5-14.5C32.4,9.8,25.9,3.3,18,3.3z"/>
+			</defs>
+			<clipPath id="SVGID_00000031904530068523265320000004813054420685141140_">
+				<use xlink:href="#SVGID_1_"  style="overflow:visible;"/>
+			</clipPath>
+			<g style="clip-path:url(#SVGID_00000031904530068523265320000004813054420685141140_);">
+				<rect x="9.9" y="6.7" class="st1" width="4.3" height="4.3"/>
+				<rect x="15.8" y="6.7" class="st1" width="4.3" height="4.3"/>
+				<rect x="21.8" y="6.7" class="st1" width="4.3" height="4.3"/>
+				<polyline class="st1" points="8.2,8.4 8.2,11 6.1,11 6.1,11 				"/>
+				<polyline class="st1" points="29.8,11 29.3,11 27.7,11 27.7,8.8 27.7,8.3 				"/>
+			</g>
 		</g>
 	</g>
 	<g>
-		<defs>
-			<path id="SVGID_00000103222793279575593100000012646329897856834708_" d="M17.9,0C8,0,0,8,0,17.9s8,17.9,17.9,17.9
-				s17.9-8,17.9-17.9C35.7,8,27.7,0,17.9,0z"/>
-		</defs>
-		<clipPath id="SVGID_00000085214932331087897670000010629317959407554714_">
-			<use xlink:href="#SVGID_00000103222793279575593100000012646329897856834708_"  style="overflow:visible;"/>
-		</clipPath>
-		<g style="clip-path:url(#SVGID_00000085214932331087897670000010629317959407554714_);">
-			<rect x="7.9" y="26.2" class="st2" width="5.3" height="5.3"/>
-			<rect x="15.2" y="26.2" class="st2" width="5.3" height="5.3"/>
-			<rect x="22.6" y="26.2" class="st2" width="5.3" height="5.3"/>
-			<polyline class="st2" points="3.2,26.2 5.9,26.2 5.9,29.7 			"/>
-			<path class="st2" d="M0.6,28.9"/>
-			<path class="st2" d="M3.2,31.5"/>
-			<polyline class="st2" points="29.9,30.1 29.9,28.9 29.9,26.2 32.5,26.2 			"/>
-			<path class="st2" d="M32.5,31.5"/>
+		<g>
+			<defs>
+				<path id="SVGID_00000072251602757365584950000006607077848581042603_" d="M18,3.3c-8,0-14.5,6.5-14.5,14.5S9.9,32.3,18,32.3
+					s14.5-6.5,14.5-14.5C32.4,9.8,25.9,3.3,18,3.3z"/>
+			</defs>
+			<clipPath id="SVGID_00000168075332729729412550000011078698568871029633_">
+				<use xlink:href="#SVGID_00000072251602757365584950000006607077848581042603_"  style="overflow:visible;"/>
+			</clipPath>
+			<g style="clip-path:url(#SVGID_00000168075332729729412550000011078698568871029633_);">
+				<rect x="9.9" y="24.5" class="st1" width="4.3" height="4.3"/>
+				<rect x="15.8" y="24.5" class="st1" width="4.3" height="4.3"/>
+				<rect x="21.8" y="24.5" class="st1" width="4.3" height="4.3"/>
+				<polyline class="st1" points="6.1,24.5 8.2,24.5 8.2,27.4 				"/>
+				<path class="st1" d="M4,26.7"/>
+				<path class="st1" d="M6.1,28.8"/>
+				<polyline class="st1" points="27.7,27.7 27.7,26.7 27.7,24.5 29.8,24.5 				"/>
+				<path class="st1" d="M29.8,28.8"/>
+			</g>
 		</g>
 	</g>
 </g>
