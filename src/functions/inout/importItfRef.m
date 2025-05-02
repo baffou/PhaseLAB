@@ -87,7 +87,7 @@ else % Automatic selection
         else % if not opt.selection
             ItfFileNames = ItfFileNames0;
         end
-    elseif strcmpi(acquisitionSoftware,'PhaseLive')
+    elseif strcmpi(acquisitionSoftware,'PhaseLive') || strcmpi(acquisitionSoftware,'PhaseLAB')
         ItfFileList = dir([folder opt.nickname '_*.tif*']);
         ItfFileNamesTemp = {ItfFileList.name};
         ItfFileNamesTempBool = ~contains(ItfFileNamesTemp,'REF_');
@@ -232,7 +232,7 @@ if strcmpi(acquisitionSoftware,'phast') || strcmpi(acquisitionSoftware,'Sid4Bio'
 
     end
 
-elseif strcmpi(acquisitionSoftware,'phaselive')
+elseif strcmpi(acquisitionSoftware,'PhaseLIVE') || strcmpi(acquisitionSoftware,'PhaseLAB')
     if isa(MI(1),'Microscope') % and not a char
         for rr = 1:Nrf
             REF(rr) = Interfero([folder RefFileNames{rr}],MI(1),'remote',opt.remote,'channel',opt.channel,'gpu',opt.gpu);
@@ -245,7 +245,11 @@ elseif strcmpi(acquisitionSoftware,'phaselive')
             INT(ii)  =  Interfero([folder ItfFileNames{ii}],MI(nimMI(ii)),'remote',opt.remote,'imageNumber',opt.selection(ii),'channel',opt.channel,'gpu',opt.gpu);
             INT(ii).Microscope = MI(nimMI(ii));
             if Nrf ~= 0
-                currentRefFileName  =  [getTag(TIFF,270)];
+                if strcmpi(acquisitionSoftware,'PhaseLIVE')
+                    currentRefFileName  =  [getTag(TIFF,270)];
+                elseif strcmpi(acquisitionSoftware,'PhaseLAB')
+                    currentRefFileName  =  getTag(TIFF,'HostComputer');
+                end
                 RefIndice  =  strcmp(RefFileNames,currentRefFileName);
                 try
                     INT(ii).Reference(REF(RefIndice));

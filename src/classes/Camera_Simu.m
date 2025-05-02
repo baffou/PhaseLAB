@@ -3,9 +3,10 @@ classdef Camera_Simu  <  CameraExp & Camera
     % CameraExp class that contains all the properties and methods for live
     % control of the camera.
 
-    % Each camera type has a specific class, here Andor cameras.
+    % Each camera type has a specific class, here Simu cameras.
     % See Camera_Hamamatsu
     %     Camera_PCO
+    %     Camera_Andor
     %     Camera_Pixelink
     % for the other camera types
     
@@ -51,9 +52,9 @@ classdef Camera_Simu  <  CameraExp & Camera
             obj.hndl.Nim = 1;
             obj.setImageDimensions(cam.Nx,cam.Ny,1,1)
 
-            obj.imageDimensionsList = {['''' num2str(cam.Nx) ' x ' num2str(cam.Ny) ''''], ...
-                ['''' num2str(round(cam.Nx/2)) ' x ' num2str(round(cam.Ny/2)) ''''],...
-                ['''' num2str(round(cam.Nx/4)) ' x ' num2str(round(cam.Ny/4)) '''']};
+            obj.imageDimensionsList = {[num2str(cam.Nx) ' x ' num2str(cam.Ny)], ...
+                [num2str(round(cam.Nx/2)) ' x ' num2str(round(cam.Ny/2))],...
+                [num2str(round(cam.Nx/4)) ' x ' num2str(round(cam.Ny/4))]};
 
         end
 
@@ -144,6 +145,12 @@ classdef Camera_Simu  <  CameraExp & Camera
 
             if strcmpi(obj.cycleMode,'Fixed')
 
+                if strcmp(imgType,'Ref')
+                    Nim = app.refAvgEditField.Value;
+                else % snap or time Lapse
+                    Nim = app.snapAvgEditField.Value;
+                end                    
+
                 if strcmpi(mode,'burst')
                     Itf = CGMinSilico(repmat(IM0,obj.hndl.Nim,1),shotNoise = 1);
                     dt = datetime('now');
@@ -153,9 +160,9 @@ classdef Camera_Simu  <  CameraExp & Camera
                         app.([imgType '0']) = ItfArray; % normally app.Itf0, never app.Ref0
                     end
                 else % snap or timeLapse => average the Itfs
-                    Itf = CGMinSilico(IM0,shotNoise = 1,Nimages = app.refAvgEditField.Value);
+                    Itf = CGMinSilico(IM0,shotNoise = 1,Nimages = Nim);
                     dt = datetime('now');
-                    app.([imgType '0']) = Itf(1).Itf;   % app.Itf0 or app.Ref0
+                    app.([imgType '0']) = Itf(1).Itf/Nim;   % app.Itf0 or app.Ref0
                 end
 
                 app.(imgType).setParams("timeStamp",dt,...
@@ -305,11 +312,11 @@ classdef Camera_Simu  <  CameraExp & Camera
                         obj.top    = 929;
                         obj.left   = 1;
                     otherwise
-                        numbers = sscanf(varargin{1}, '%*[^0-9]%d');
-                        obj.width  = numbers(1);
-                        obj.height = numbers(2);
-                        obj.left   = 1 + floor((obj.Nx-numbers(1))/2);
-                        obj.top    = 1 + floor((obj.Ny-numbers(2))/2);
+                        numbers = regexp(varargin{1}, '[+-]?\d*\.?\d+', 'match');
+                        obj.width  = str2double(numbers{1});
+                        obj.height = str2double(numbers{2});
+                        obj.left   = 1 + floor((obj.Nx-str2double(numbers{1}))/2);
+                        obj.top    = 1 + floor((obj.Ny-str2double(numbers{2}))/2);
                 end
 
             elseif nargin == 5 && isnumeric([varargin{1:end}]) % setImageDimensions(2560,2160)

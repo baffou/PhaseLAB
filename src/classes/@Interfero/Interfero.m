@@ -482,6 +482,14 @@ classdef Interfero < handle & matlab.mixin.Copyable
             end
         end
 
+        function fig = figure(obj)
+            if nargout
+                fig = PhaseLABgui_multiCanal(obj);
+            else
+                PhaseLABgui_multiCanal(obj);
+            end
+        end
+
         function fig = figure2(obj)
             fig = figure;
 
