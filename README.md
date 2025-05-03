@@ -1,6 +1,12 @@
 # PhaseLAB
 
-Welcome to the PhaseLAB toolbox, created to help you deal with wavefront and phase images acquired using QLSI.
+Welcome to the PhaseLAB toolbox, created to help you deal with wavefront and phase images acquired using QLSI / CGM.
+
+You need at Matlab version 2023a or later, to run this toolbox.
+You need the following Matlab packages:
+- Image processing toolbox
+- Statistics and machine learning toolboox (for the poissrnd function when using in Silico module)
+
 
 PhaseLAB is licensed under the Creative Commons Attribution-NonCommercial (CC BY-NC) license. This means you are free to use, share, and modify the software, but only for non-commercial purposes
 
