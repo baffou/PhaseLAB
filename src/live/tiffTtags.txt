@@ -1,0 +1,54 @@
+Tiff fields
+	DateTime -> date au format ASCII
+	Make     -> crop au format ASCII
+
+
+A chaque fois qu'on veut sauver une image, on regarde s'il y a déjà un interfero avec le même DateTime et crop. Si oui, on ne sauve pas l'interfero, si non, on en crée un nouveau REF_0002.tiff
+
+Dans le field Model, on enregistre tout ce qui correspond au Microscope, sur plusieurs lignes.
+
+
+Les seuls champs ASCII qui s'affichent sous imagej sont
+	ImageDescription
+	Software
+	Artist
+	HostComputer
+	DateTime
+Make et Model ne s'affichent pas :/ Mais le crop, on se fiche de le savoir, pas grave si on ne l'affiche pas.
+
+En conclusion :
+
+DateTime->		date au format ASCII
+Make->			crop au format ASCII (invisible sous imagej)
+HostComputer->		Ref file name
+ImageDescription->	Propriétés du microscope
+
+
+
+
+Les données du microscope à sauvegarder:
+ACQUISITION
+expTime
+NavgItf
+NavgRef
+
+ILLUMINATION
+lambda
+
+MICROSCOPE
+Mobj
+NA
+f_TL
+CGcamName
+RLname
+CGname
+CamName
+CG distance
+zoom
+dxSize
+pxSize
+zeta
+Gamma
+
+
+

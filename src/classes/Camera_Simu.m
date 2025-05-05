@@ -59,6 +59,9 @@ classdef Camera_Simu  <  CameraExp & Camera
         end
 
         function rc = switchCamera(obj,val)
+            % switch on or off the camera
+            % Cam.switch('on')
+            % Cam.switch('off')
             arguments
                 obj
                 val {mustBeMember(val,{'on','off'})}
@@ -69,6 +72,7 @@ classdef Camera_Simu  <  CameraExp & Camera
                     rc = 0;
                     disp('Camera initialized');
                 case 'off'
+                    rc = 0;
                     disp('Camera shutdown');            
             end
         end
@@ -330,7 +334,7 @@ classdef Camera_Simu  <  CameraExp & Camera
 
         end
 
-        function obj = setExpTime(obj,val)
+        function setExpTime(obj,val)
             arguments
                 obj
                 val (1,1) double {mustBeNumeric,mustBePositive}

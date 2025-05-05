@@ -11,7 +11,7 @@ classdef Camera_Andor  <  CameraExp & Camera
 
     properties(SetAccess = private)
         hndl  % Camera handle. Contains all the properties of the live camera (number of pixels, exp time, trigger mode, etc...)
-        CData double
+        %CData double
         imageDimensionsList
     end
 
@@ -42,13 +42,31 @@ classdef Camera_Andor  <  CameraExp & Camera
                 obj.(propList{ip}) = cam.(propList{ip});
             end
 
-            obj.CData = zeros(cam.Ny,cam.Nx);
+            %obj.CData = zeros(cam.Ny,cam.Nx);
 
             Camera_Andor.setupSDK()
 
+            obj.setMode('Continuous', 'Software')
+
+
+            obj.setImageDimensions(cam.Nx,cam.Ny,1,1)
+
+            obj.imageDimensionsList = { '2560 x 2160'
+                                        '2064 x 2048'
+                                        '1920 x 1080'
+                                        '1392 x 1040'
+                                        '528 x 512'
+                                        '240 x 256'
+                                        '144 x 128'
+                                        '2560 x 304'};
+        
+        
         end
 
         function rcout = switchCamera(obj,val)
+            % switch on or off the camera
+            % Cam.switch('on')
+            % Cam.switch('off')
             arguments
                 obj
                 val {mustBeMember(val,{'on','off','On','Off'})}
@@ -88,21 +106,16 @@ classdef Camera_Andor  <  CameraExp & Camera
             end
         end
 
-        function setExpTime(obj)
-            [rc] = AT_SetFloat(obj.hndl,'ExposureTime',obj.expTime);
-            AT_CheckWarning(rc);
-        end
-
         function setMode(obj,cycleMode, triggerMode,opt)
             arguments
                 obj
-                cycleMode   {mustBeMember(cycleMode,   ['Fixed','Continuous'])}
-                triggerMode {mustBeMember(triggerMode, ['Internal','External','Software'])}
+                cycleMode   {mustBeMember(cycleMode,   {'Fixed','Continuous','Burst'})}
+                triggerMode {mustBeMember(triggerMode, {'Internal','External','Software'})}
+                opt.expTime = []
                 opt.Nim = 1 % number of images to be acquiredin Fixed mode
             end
-
-
-            [rc] = AT_SetFloat(obj.hndl,     'ExposureTime',obj.expTime);
+            
+            [rc] = AT_SetFloat(obj.hndl,     'ExposureTime',opt.expTime);
             AT_CheckWarning(rc);
             [rc] = AT_SetEnumString(obj.hndl,'CycleMode',cycleMode);
             AT_CheckWarning(rc);
@@ -123,65 +136,104 @@ classdef Camera_Andor  <  CameraExp & Camera
 
         end
 
-        function startAcquisition(obj,him)
+        function startAcquisition(obj,app,imgType,mode)
             arguments
                 obj
-                him = []
+                app
+                imgType (1,3) char {mustBeMember(imgType,{'Ref','Itf'})}
+                mode char {mustBeMember(mode,{'live','burst','snap','timeLapse'})} = 'snap'
             end
+            % call the full app to have access to hList, but also to the
+            % liveOn property that can suddenly change in app if the user
+            % clicks stop.
 
+            app.lampState('Running')
+
+            %% Image simulation
+
+                    
+                    
             [rc] = AT_Command(obj.hndl,'AcquisitionStart');
             AT_CheckWarning(rc);
+
             if strcmpi(obj.cycleMode,'Fixed')
-                obj.CData = zeros(obj.width, obj.height, obj.Nim);
-                if strcmpi(obj.triggerMode,'External')
-                    disp('Waiting for the TTL comb...')
-                elseif  strcmpi(obj.triggerMode,'Internal')
-                    tic
-                end
-                for ii = 1:AT_GetInt(obj.hndl,'FrameCount')
 
-                    [rc] = AT_QueueBuffer(obj.hndl,obj.imagesize);
-                    AT_CheckWarning2(rc);
-                    
-                    try
-                        [rc,buf] = AT_WaitBuffer(obj.hndl,10000);
+                Nim = AT_GetInt(obj.hndl,'FrameCount'); % should already be properly set to NavgRef or NavgSnap before calling this function, in the LIVE app
+
+                if strcmpi(mode,'burst')
+                    dt = datetime('now');
+                    ItfArray = zeros(IM0.Ny,IM0.Nx,obj.hndl.Nim);
+    
+                        
+                    for ii = 1:AT_GetInt(obj.hndl,'FrameCount')
+    
+                        [rc] = AT_QueueBuffer(obj.hndl,obj.imagesize);
                         AT_CheckWarning2(rc);
-    
-                        if rc ~= 0 % in case no TTL signal is received and it simply gives rise to rc=13 error.
-                            disp('Aborted. No TL signal received')
-                            obj.CData(:,:,ii) = 0;
-                            break
-                        else
-                            [rc, obj.CData(:,:,ii)] = AT_ConvertMono16ToMatrix(buf,obj.height,obj.width,obj.stride);
+                        
+                        try
+                            [rc,buf] = AT_WaitBuffer(obj.hndl,10000);
                             AT_CheckWarning2(rc);
-                            assignin('base', 'imageSequence', obj.CData);
-                            disp([num2str(ii) ' images saved'])
+        
+                            if rc ~= 0 % in case no TTL signal is received and it simply gives rise to rc=13 error.
+                                error('Aborted. No TL signal received')
+                            else
+                                [rc, ItfArray(:,:,ii)] = AT_ConvertMono16ToMatrix(buf,obj.height,obj.width,obj.stride);
+                                AT_CheckWarning2(rc);
+                            end
+    
+                        catch  % in case no TTL is received and it gives rise to an error
+                                error('Aborted. No TL signal received')
                         end
-
-                    catch  % in case no TTL is received and it gives rise to an error
-
-                            disp('Aborted. No TL signal received')
-                            obj.CData(:,:,ii) = 0;
-                    end
-
+    
+                    end                    
+                    
+                    
+                else % snap or timeLapse => average the Itfs
+                    [rc,buf] = AT_WaitBuffer(obj.hndl,10000);
+                    AT_CheckWarning2(rc);
+                    [rc, bufm] = AT_ConvertMono16ToMatrix(buf,obj.height,obj.width,obj.stride);
+                    AT_CheckWarning2(rc);
+                    dt = datetime('now');
+                    app.([imgType '0']) = mean(bufm, 3);   % app.Itf0 or app.Ref0
                 end
-                if  strcmpi(obj.triggerMode,'Internal')
-                    txt = toc;
-                    disp(['Aquisition performde in ' num2str(txt*1000) ' ms'])
+
+                app.(imgType).setParams("timeStamp",dt,...
+                                  "expTime",obj.hndl.expTime, ...
+                                  "Navg",obj.hndl.Nim, ...
+                                  "ROI",app.Cam.getROI())
+                    
+                if ~strcmp(imgType,'Ref') && any( app.status_hfigList )
+                    app.computeImages(mode)
+                    app.updateImages()
                 end
-        
+
+
             elseif strcmpi(obj.cycleMode,'Continuous')
+        
+                if all(app.status_hfigList == 0) && strcmpi(mode,'live') % if live mode (and not timeLapse) and nothing to display stop
+                    return
+                end
+
+                if strcmpi(mode,'timeLapse')
+                    appTL = timeLapsePanel();
+                    if ~isvalid(appTL)
+                        return
+                    end
+                    N = appTL.N;
+                    dt = appTL.dt;
+                    % Parameters
+                    dt = seconds(dt);         % Interval between successive images
+                end
     
         
-                    %%
-                him.CData = zeros(obj.width,obj.height);
-    
-                %%
+                % if all(app.status_hfigList == 0)
+                %     return
+                % end
 
                 disp('Live acquisition in progress...');
-
-                while(ishandle(him))
-                    tic;
+                k = 0;
+                while(app.liveOn)
+                    tic
                     [rc] = AT_SetFloat(obj.hndl, 'ExposureTime', obj.expTime);
                     AT_CheckWarning2(rc);
                     [rc] = AT_QueueBuffer(obj.hndl,obj.imagesize);
@@ -191,15 +243,55 @@ classdef Camera_Andor  <  CameraExp & Camera
                     [rc,buf] = AT_WaitBuffer(obj.hndl,10000);
                     AT_CheckWarning2(rc);
                 
-                    [rc,him.CData] = AT_ConvertMono16ToMatrix(buf,obj.height,obj.width,obj.stride);
+                    [rc,app.([imgType '0'])] = AT_ConvertMono16ToMatrix(buf,obj.height,obj.width,obj.stride);
+                    % LA IL FAUDRAIT MOYENNER LES IMAGES RECUES. EST CE QUE
+                    % BUF EST UNE Nx*Ny*Nim matrice ?
                     AT_CheckWarning2(rc);
                     drawnow
+                    
+                   
+                    if strcmpi(mode,'timeLapse')
+                        if ~exist('t0','var')
+                            t0 = datetime('now');
+                            nextTime = t0;
+                        end
+                        if isvalid(appTL)
+                            appTL.setNextImageTime(nextTime)
+                        end
+                        if datetime('now') >= nextTime && k<N
+                            k = k+1;
+                            nextTime = t0 + k*dt;
+                            app.saveCurrentImage()
+                            if isvalid(appTL)
+                                appTL.setImageNumber(k)
+                            end
+                        elseif k>=N
+                            if isvalid(appTL)
+                                appTL.setImageNumber(k)
+                            end
+                            appTL.setNextImageTime('0')
+                            app.liveOn = 0;
+                        end
+                    end
+
+                    if any( app.status_hfigList ) 
+                        app.computeImages()
+                        app.updateImages()
+                    else
+                        drawnow
+                    end
+                                        
+
+                    app.HzEditField.Value = round(1/toc,1);
                 end
+                app.HzEditField.Value = double.empty();
+
                 %assignin('base', 'liveImage', obj.Itf);
 
             else
                 error('not a proper CycleMode input')
             end
+
 
         end
         
@@ -265,20 +357,22 @@ classdef Camera_Andor  <  CameraExp & Camera
             AT_CheckWarning(rc);
         end
 
+        function setExpTime(obj)
+            [rc] = AT_SetFloat(obj.hndl,'ExposureTime',obj.expTime);
+            AT_CheckWarning(rc);
+        end
+
  
 
         % get/set methods
 
-        function set.expTime(obj,val)
-            arguments
-                obj
-                val (1,1) double {mustBeNumeric,mustBePositive}
-            end
-            AT_SetFloat(obj.hndl,'ExposureTime',val*1e3);
-        end
-
         function val = get.expTime(obj)
             val = AT_GetFloat(obj.hndl,'ExposureTime');
+        end
+
+        function set.width(obj, val)
+            rc= AT_SetInt(obj.hndl, 'AOIWidth', val);
+            AT_CheckWarning(rc);
         end
 
         function val = get.width(obj)
@@ -286,13 +380,28 @@ classdef Camera_Andor  <  CameraExp & Camera
             AT_CheckWarning(rc);
         end
 
+        function set.height(obj, val)
+            rc= AT_SetInt(obj.hndl, 'AOIHeight', val);
+            AT_CheckWarning(rc);
+        end
+        
         function val = get.height(obj)
             [rc,val] = AT_GetInt(obj.hndl, 'AOIHeight');
             AT_CheckWarning(rc);
         end
 
+        function set.top(obj, val)
+            rc= AT_SetInt(obj.hndl, 'AOITop', val);
+            AT_CheckWarning(rc);
+        end
+        
         function val = get.top(obj)
             [rc,val] = AT_GetInt(obj.hndl, 'AOITop');
+            AT_CheckWarning(rc);
+        end
+        
+        function set.left(obj, val)
+            rc= AT_SetInt(obj.hndl, 'AOILeft', val);
             AT_CheckWarning(rc);
         end
         
@@ -319,6 +428,9 @@ classdef Camera_Andor  <  CameraExp & Camera
             val = AT_GetEnumString(obj.hndl,'TriggerMode');
         end
     
+        function val = getROI(obj)
+            val = [obj.left obj.top obj.left+obj.width-1 obj.top+obj.height-1];
+        end
    end
     
     methods(Static)
@@ -341,6 +453,18 @@ classdef Camera_Andor  <  CameraExp & Camera
             addpath(genpath(sdkPath));
         end
     end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

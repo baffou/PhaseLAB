@@ -1,7 +1,7 @@
 brand:'Andor'
 dexel size:	6.5e-6
 Gamma:	19.5e-6
-relaylens zoom:	2
+relaylens zoom:	-2
 Nx:2560
 Ny:2160
 CGdepth: 550e-9
