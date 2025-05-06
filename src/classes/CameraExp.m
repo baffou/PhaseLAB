@@ -22,7 +22,7 @@ classdef (Abstract) CameraExp < handle
     end
     
     methods(Abstract)
-        rc = switchCamera(obj,val)
+        rc = turn(obj,val)
         setExpTime(obj)
         setMode(obj,cycleMode, triggerMode,opt)
         startAcquisition(obj,him)

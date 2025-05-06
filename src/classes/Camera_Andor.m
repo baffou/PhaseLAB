@@ -63,21 +63,13 @@ classdef Camera_Andor  <  CameraExp & Camera
         
         end
 
-        function rcout = switchCamera(obj,val)
+        function rcout = turn(obj,val)
             % switch on or off the camera
-            % Cam.switch('on')
-            % Cam.switch('off')
+            % Cam.turn('on')
+            % Cam.turnh('off')
             arguments
                 obj
                 val {mustBeMember(val,{'on','off','On','Off'})}
-            end
-
-            try
-                AT_InitialiseLibrary()
-            catch
-                disp('The Andor library could not be found')
-                rcout = -1;
-                return
             end
 
             switch val

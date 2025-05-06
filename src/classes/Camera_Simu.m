@@ -58,10 +58,10 @@ classdef Camera_Simu  <  CameraExp & Camera
 
         end
 
-        function rc = switchCamera(obj,val)
-            % switch on or off the camera
-            % Cam.switch('on')
-            % Cam.switch('off')
+        function rc = turn(obj,val)
+            % turn on or off the camera
+            % Cam.turn('on')
+            % Cam.turn('off')
             arguments
                 obj
                 val {mustBeMember(val,{'on','off'})}
