@@ -40,26 +40,7 @@ classdef Camera_Andor  <  CameraExp & Camera
 
             for ip = 1:numel(propList)
                 obj.(propList{ip}) = cam.(propList{ip});
-            end
-
-            %obj.CData = zeros(cam.Ny,cam.Nx);
-
-            Camera_Andor.setupSDK()
-
-            obj.setMode('Continuous', 'Software')
-
-
-            obj.setImageDimensions(cam.Nx,cam.Ny,1,1)
-
-            obj.imageDimensionsList = { '2560 x 2160'
-                                        '2064 x 2048'
-                                        '1920 x 1080'
-                                        '1392 x 1040'
-                                        '528 x 512'
-                                        '240 x 256'
-                                        '144 x 128'
-                                        '2560 x 304'};
-        
+            end        
         
         end
 

@@ -39,10 +39,6 @@ classdef Camera_Simu  <  CameraExp & Camera
                 obj.(propList{ip}) = cam.(propList{ip});
             end
 
-            %obj.CData = zeros(cam.Ny,cam.Nx);
-
-            Camera_Simu.setupSDK()
-
             obj.hndl.cycleMode = 'Continuous';
             obj.hndl.triggerMode = 'Software';
             obj.hndl.width = cam.Nx;

@@ -243,9 +243,9 @@ for id = 1:NDI
                 Ekprimex(iky,ikx) = Ekprimex(iky,ikx) + Ekprime(1);
                 Ekprimey(iky,ikx) = Ekprimey(iky,ikx) + Ekprime(2);
                 Ekprimez(iky,ikx) = Ekprimez(iky,ikx) + Ekprime(3);
-                if abs(Ekprimex(iky,ikx))>1e-10
-                    pause(1)
-                end
+                % if abs(Ekprimex(iky,ikx))>1e-10
+                %     pause(1)
+                % end
             end % if k<NA*k0
         end    % end for kyy
     end        % end for kxx

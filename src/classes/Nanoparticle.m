@@ -51,7 +51,7 @@ classdef Nanoparticle
     
     methods
         function obj = Nanoparticle(mat,varargin)
-
+            % mat : material or refractive index
             if nargin>1
                 if ischar(varargin{1})
                     obj.geom = varargin{1};
