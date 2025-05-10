@@ -40,10 +40,10 @@ switch object
         IL=Illumination(lambda,ME);
         bin=6;
         NPdiam = 100e-9;
-        epsNP=epsRead(IL.lambda,'Au');
-        Obj=IFDDAobject('sphere', "size",NPdiam, "pxSize", MI.pxSize/bin, "eps",epsNP);
+        epsNP = epsRead('Au',IL.lambda);
+        Obj = IFDDAobject('sphere', "size",NPdiam, "pxSize", MI.pxSize/bin, "eps",epsNP);
         Obj.moveBy("x",MI.pxSize*0.25,"y",MI.pxSize*0.25,"z",1.0*NPdiam)
-        Npx=2048;
+        Npx = 2048;
     case 'microbead'
         bin=1;
         epsNP=1.51;

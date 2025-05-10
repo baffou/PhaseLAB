@@ -102,7 +102,7 @@ classdef Dipole
             if ~isempty(obj.nHidden)
                 val = obj.nHidden;
             else
-                val = indexRead(obj.lambda,obj.mat);   % dielectric function of the nanoparticle 
+                val = indexRead(obj.mat,obj.lambda);   % dielectric function of the nanoparticle 
             end
 
             if numel(val) == 1

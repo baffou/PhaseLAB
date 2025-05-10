@@ -1,5 +1,4 @@
-%% NPimaging package
-% function that returns the complex value of the complex refractive index
+% Function that returns the complex value of the complex refractive index
 % of a material as a function of the wavelength lambda0nm.
 %
 % fileName is the name of the file that contains a set of permittivies
@@ -9,9 +8,12 @@
 % affiliation: CNRS, Institut Fresnel
 % date: Feb 10, 2020
 
-function index = indexRead(lambda0,fileName)
+function index = indexRead(fileName,lambda0)
+if lambda0>10 %supposedly given in [nm]
+    lambda0 = lambda0*1e-9; %then convert in [m]
+end
 
-nMetal = dlmread(['n' fileName '.txt']);
+nMetal = readmatrix(['n' fileName '.txt']);
 Nl = length(lambda0);
 index = zeros(Nl,1);
 

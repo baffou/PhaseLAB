@@ -44,15 +44,16 @@ classdef Medium <  handle & matlab.mixin.Copyable
         function val = get.n(obj)
             if isnumeric(obj.n0)
                 val = obj.n0;
-            else
-                if strcmpi(obj.n0,'glass') || strcmpi(obj.n0,'BK7')
+            else % is char
+                mat = obj.n0;
+                if strcmpi(mat,'glass') || strcmpi(mat,'BK7')
                     val = 1.51;
-                elseif strcmpi(obj.n0,'water')
+                elseif strcmpi(mat,'water')
                     val = 1.33;
-                elseif strcmp(obj.n0,'air')
+                elseif strcmp(mat,'air')
                     val = 1.;
                 elseif ~isempty(obj.Illumination)
-                    val = real(indexRead(obj.Illumination.lambda,obj.n0));
+                    val = real(indexRead(mat,obj.Illumination.lambda));
                 else
                     error('There is a problem with the definition of the material')
                 end
@@ -62,15 +63,16 @@ classdef Medium <  handle & matlab.mixin.Copyable
         function val = get.nS(obj)
             if isnumeric(obj.nS0)
                 val = obj.nS0;
-            else
-                if strcmpi(obj.nS0,'glass') || strcmpi(obj.nS0,'BK7')
+            else % is char
+                mat = obj.n0;
+                if strcmpi(mat,'glass') || strcmpi(mat,'BK7')
                     val = 1.51;
-                elseif strcmpi(obj.nS0,'water')
+                elseif strcmpi(mat,'water')
                     val = 1.33;
-                elseif strcmp(obj.nS0,'air')
+                elseif strcmp(mat,'air')
                     val = 1.;
                 elseif ~isempty(obj.Illumination)
-                    val = real(indexRead(obj.Illumination.lambda,obj.n0));
+                    val = real(indexRead(mat,obj.Illumination.lambda));
                 else
                     error('There is a problem with the definition of the material')
                 end

@@ -7,7 +7,12 @@ classdef Camera_Andor  <  CameraExp & Camera
     % See Camera_Hamamatsu
     %     Camera_PCO
     %     Camera_Pixelink
-    % for the other camera types
+    % for t
+    % 
+    % 
+    % 
+    % 
+    % he other camera types
 
     properties(SetAccess = private)
         hndl  % Camera handle. Contains all the properties of the live camera (number of pixels, exp time, trigger mode, etc...)
