@@ -25,8 +25,6 @@ classdef Camera_Simu  <  CameraExp & Camera
         left
         stride
         transformImage
-        cycleMode
-        triggerMode
     end
 
     methods
@@ -143,7 +141,7 @@ classdef Camera_Simu  <  CameraExp & Camera
             end
                     
 
-            if strcmpi(obj.cycleMode,'Fixed')
+            if ~strcmp(mode,'live') % Fixed
 
                 if strcmp(imgType,'Ref')
                     Nim = app.refAvgEditField.Value;
@@ -176,7 +174,7 @@ classdef Camera_Simu  <  CameraExp & Camera
                 end
 
 
-            elseif strcmpi(obj.cycleMode,'Continuous')
+            else % Continuous
         
                 if all(app.status_hfigList == 0) && strcmpi(mode,'live') % if live mode (and not timeLapse) and nothing to display stop
                     return
@@ -255,8 +253,6 @@ classdef Camera_Simu  <  CameraExp & Camera
 
                 %assignin('base', 'liveImage', obj.Itf);
 
-            else
-                error('not a proper CycleMode input')
             end
 
 
@@ -392,13 +388,13 @@ classdef Camera_Simu  <  CameraExp & Camera
             %val = obj.hndl.dims.imagesize;
         end
     
-        function val = get.cycleMode(obj)
-            val = obj.hndl.cycleMode;
-        end
-
-        function val = get.triggerMode(obj)
-            val = obj.hndl.triggerMode;
-        end
+        % function val = get.cycleMode(obj)
+        %     val = obj.hndl.cycleMode;
+        % end
+        % 
+        % function val = get.triggerMode(obj)
+        %     val = obj.hndl.triggerMode;
+        % end
 
         function val = getROI(obj)
             val = [obj.left obj.top obj.left+obj.width-1 obj.top+obj.height-1];
