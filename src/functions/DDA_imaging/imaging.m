@@ -11,7 +11,12 @@ function IM = imaging(DIs,IL,MI,Npx)
 % DIs: array of Dipole objects, or Nanoparticle object
 % IL: Illumination object
 % MI: Objective or Microscope object, Objetive being a superclass of Microscope
-
+arguments
+    DIs
+    IL Illumination
+    MI Microscope
+    Npx double
+end
 
 if isa(MI,'Microscope')
 elseif isa(MI,'Objective')

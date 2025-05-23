@@ -28,12 +28,16 @@ kx = xx*2*pi/(Nx*pxSize);
 ky = yy*2*pi/(Ny*pxSize);
 
 k0 = 2*opt.n*pi/lambda;
-kz = real(sqrt(k0^2-kx.^2-ky.^2));
+if z>=0
+    kz = sqrt(k0^2-kx.^2-ky.^2);
+else
+    kz = real(sqrt(k0^2-kx.^2-ky.^2));
         % real part, otherwise, if one spans over kx values that exceed k0,
         % it yields complex values of kz. When defocusing in one direction,
         % it is not a problem because it gives evanescent waves, but when
         % defocusing in the other direction, it yields divergences,
         % even if the image Fimage has no information in this frequency range.
+end
 
 for iz = 1:Nz
     Prop = exp(1i*kz*z(iz)) .* exp(1i*kx*opt.dx*pxSize) .* exp(1i*ky*opt.dy*pxSize);

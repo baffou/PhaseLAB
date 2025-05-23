@@ -132,8 +132,12 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
                 obj.fileName = [];
             end
             if nargin==3
-                obj.RL = RelayLens(1); % By default, when a custom CG is used, a relay lens is used as well.
-                obj.RL.zoom = varargin{3};
+                if isa(varargin{3},'RelayLens')
+                    obj.RL = varargin{3};
+                else % Z
+                    obj.RL = RelayLens(1); % By default, when a custom CG is used, a relay lens is used as well.
+                    obj.RL.zoom = varargin{3};
+                end
             end
 
         end

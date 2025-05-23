@@ -656,6 +656,90 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
 
+
+
+        
+        
+        
+        function IMout = imaging(obj)
+            % Compute the image of an ImageEM object defined at the object plane,
+            % applying the blurring effect due to the NA of the detection
+            
+            IL = obj.Illumination;
+            MI = obj.Microscope;
+            % imaging(DIs,IL,MI[,ImSize,Npx])
+            % DIs: array of Dipole objects, or Nanoparticle object
+            % IL: Illumination object
+            % MI: Objective or Microscope object, Objetive being a superclass of Microscope
+            
+            fEx = fftshift(fft2(obj.Ex));
+            fEy = fftshift(fft2(obj.Ey));
+            fE0x = fftshift(fft2(obj.Einc.Ex));
+            fE0y = fftshift(fft2(obj.Einc.Ey));
+            
+            
+            if isa(MI,'Microscope')
+            elseif isa(MI,'Objective')
+                MI = Microscope(MI);
+            else
+                error('The third input must be either an Objective or a Microscope object')
+            end
+            
+            pxSize = MI.pxSize;
+            ImSize = [obj.Ny, obj.Nx]*pxSize;
+            
+            %% Microscope paramaters
+            
+            if isempty(IL.n)
+                error('A medium object needs to be assigned to the Illumination object for this kind of calculation. Please use Illumination(lambda,ME), not just Illumination(lambda).')
+            end
+            
+            if MI.NA>IL.nS
+                error('NA should be smaller than n')
+            end
+            
+            %% excitation field
+            
+            k0 = IL.k0;            % wavevector in vacuum
+            
+            %r12 = (n-nS)/(n+nS);           % reflection coefficient at the interface
+            kmaxy = pi*obj.Ny/ImSize(1);
+            kmaxx = pi*obj.Nx/ImSize(2);
+            
+            %dk = kmax/(Npx);        % other valid expression
+            dkx = 2*pi/ImSize(2);        % pixel size in Fourier space
+            dky = 2*pi/ImSize(1);        % pixel size in Fourier space
+            kxx = -kmaxx:dkx:kmaxx-dkx; % x component of wavevector
+            kyy = -kmaxy:dky:kmaxy-dky; % y component of wavevector
+            
+            
+            [Kx,Ky] = meshgrid(kxx, kyy);
+            
+            %% Computation of the scattered field at Fourier plane
+            
+            mask = sqrt(Kx.*Kx + Ky.*Ky) < MI.NA*k0;     % cutoff filter; taking into account the numerical aperture of the objective
+            
+            fEx = fEx.*mask;
+            fEy = fEy.*mask;
+            fE0x = fE0x.*mask;
+            fE0y = fE0y.*mask;
+            
+            ex = ifft2(ifftshift(fEx));
+            ey = ifft2(ifftshift(fEy));
+            e0x = ifft2(ifftshift(fE0x));
+            e0y = ifft2(ifftshift(fE0y));
+            
+            IMout = ImageEM(ex, ey, obj.Ez, e0x, e0y, obj.Einc.Ez, "Microscope", obj.Microscope, "Illumination", obj.Illumination);
+            
+
+        end
+
+
+
+
+
+
+
         function save(objList,folder,varargin)
             % save T and/or OPD images as jpg and txt images
             % IM.save('_postprocess')  save only the OPD image
