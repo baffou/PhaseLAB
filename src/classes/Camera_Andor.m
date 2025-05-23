@@ -23,12 +23,8 @@ classdef Camera_Andor  <  CameraExp & Camera
         top
         left
         stride
-        transformImage
     end
 
-    properties(SetAccess = {?LIVE})
-        mode (1,:) char {mustBeMember(mode,{'live','stop','snap','timeLapse','ref','burst','external'})} = 'stop'
-    end
     
     methods
 
@@ -118,202 +114,45 @@ classdef Camera_Andor  <  CameraExp & Camera
 
         end
 
-        function startAcquisition(obj,app)
-            arguments
-                obj
-                app
-                %mode char {mustBeMember(mode,{'live','burst','snap','timeLapse','ref'})} = 'snap'
-            end
-            % call the full app to have access to hList, but also to the
-            % mode property that can suddenly change in app if the user
-            % clicks stop.
-
-            if strcmp(obj.mode,'ref')
-                imgType = 'Ref';
-            else
-                imgType = 'Itf';
-            end
-
-            app.lampState('Running')
-
-            %%
-
-
-            if ~strcmp(obj.mode,'live') && ~strcmp(obj.mode,'timeLapse')% Camera Cyclemode: Fixed
-
-                app.Cam.setMode('Fixed', 'Internal',"expTime",app.expTime,"Nim",app.refAvgEditField.Value)
-                [rc] = AT_Command(obj.hndl,'AcquisitionStart');
-                AT_CheckWarning(rc);
-
-                if strcmp(obj.mode, 'ref')
-                    Nim = app.refAvgEditField.Value;
-                elseif  strcmp(obj.mode, 'snap') || strcmp(obj.mode, 'burst')
-                    Nim = app.snapAvgEditField.Value;
-                end
-                rc = AT_SetFloat(obj.hndl, 'ExposureTime', app.expTime);
-
-                AT_SetInt(obj.hndl,'FrameCount',Nim);
-                AT_CheckWarning(rc);
-                
-%                [rc] = AT_Command(obj.hndl,'SoftwareTrigger');
-%                AT_CheckWarning(rc);
-                buf = zeros([obj.width, obj.height, Nim]);
-                for ii = 1:Nim
-                    [rc] = AT_QueueBuffer(obj.hndl,obj.imagesize);
-                    AT_CheckWarning(rc);
-                    [rc,buf0] = AT_WaitBuffer(obj.hndl,10000);
-                    AT_CheckWarning(rc);
-                    [rc, buf(:,:,ii)] = AT_ConvertMono16ToMatrix(buf0,obj.height,obj.width,obj.stride);
-                    AT_CheckWarning(rc);
-                end
-                dt = datetime('now');
-
-                if strcmpi(obj.mode,'burst')
-                    app.([imgType '0']) = buf;
-                    
-                else % snap or timeLapse => average the Itfs
-                    app.([imgType '0']) = mean(buf, 3);   % app.Itf0 or app.Ref0
-                end
-
-                app.(imgType).setParams("timeStamp",dt,...
-                                  "expTime",app.expTime, ...
-                                  "Navg",size(buf,3), ...
-                                  "ROI",app.Cam.getROI())
-                    
-                if ~strcmp(imgType,'Ref') && any( app.status_hfigList )
-                    app.computeImages(obj.mode)
-                    app.updateImages()
-                end
-
-
-            else % Camera Cyclemode: Continous
-
-                app.Cam.setMode('Continuous', 'Software',"expTime",app.expTime,"Nim",app.refAvgEditField.Value)
-                [rc] = AT_Command(obj.hndl,'AcquisitionStart');
-                AT_CheckWarning(rc);
-                
-        
-                if all(app.status_hfigList == 0) && strcmpi(obj.mode,'live') % if live mode (and not timeLapse) and nothing to display stop
-                    return
-                end
-
-        
-                % if all(app.status_hfigList == 0)
-                %     return
-                % end
-
-                disp('Live acquisition in progress...');
-                k = 0;
-                while(~strcmp(obj.mode,'stop')) % as long as it is not stop, run live
-
-                    tic
-                    [rc] = AT_QueueBuffer(obj.hndl,obj.imagesize);
-                    AT_CheckWarning(rc);
-                    [rc] = AT_Command(obj.hndl,'SoftwareTrigger');
-                    AT_CheckWarning(rc);
-                    [rc,buf] = AT_WaitBuffer(obj.hndl,10000);
-                    AT_CheckWarning(rc);
-
-                    [rc,app.([imgType '0'])] = AT_ConvertMono16ToMatrix(buf,obj.height,obj.width,obj.stride);
-                    % LA IL FAUDRAIT MOYENNER LES IMAGES RECUES. EST CE QUE
-                    % BUF EST UNE Nx*Ny*Nim matrice ?
-                    AT_CheckWarning(rc);
-
-                    app.(imgType).setParams("timeStamp",datetime('now'),...
-                                      "expTime",obj.expTime, ...
-                                      "Navg",1, ...      % TO BE MODIFIED BY THE NUMBER OF AVERAGED IMAGES
-                                      "ROI",app.Cam.getROI())                    
-
-                    drawnow
-                    
-                    % in case the camera mode changed to
-                    % timeLapse, ref or snap during live
-
-                    switch obj.mode
-                        case 'timeLapse'
-                            if ~exist('appTL','var')
-                                appTL = timeLapsePanel(app);
-                            elseif ~isvalid(appTL)
-                                appTL = timeLapsePanel(app);
-                            end
-                            
-                            if ~isempty(appTL.t0) % if the time t0 has been created by pressing the start button of the appTL panel
-                                if k == 0 % first time, first image
-                                    nextTime = appTL.t0;
-                                    dt = appTL.dt;
-                                    % Parameters
-                                    dt = seconds(dt);         % Interval between successive images
-                                end
-                                if isvalid(appTL)
-                                    appTL.setNextImageTime(nextTime)
-                                end
-                                if datetime('now') >= nextTime && k<appTL.N
-                                    k = k+1;
-                                    nextTime = appTL.t0 + k*dt;
-                                    app.saveCurrentImage()
-                                    if isvalid(appTL)
-                                        appTL.setImageNumber(k)
-                                    end
-                                elseif k>=appTL.N
-                                    k=0;
-                                    if isvalid(appTL)
-                                        appTL.setImageNumber(k)
-                                    end
-                                    appTL.setNextImageTime('0')
-                                    if all(app.status_hfigList == 0) % if all the windows are closed
-                                        app.setAcqMode('stop')
-                                    else
-                                        app.setAcqMode('live')
-                                    end
-                                    app.toggleSavePanel(true)
-                                    appTL.t0 = [];
-                                    appTL.toogleStartButton('start')
-
-                                end
-                            end
-                        case 'ref'
-                            obj.stopAcquisition(app)
-                            app.Cam.startAcquisition(app)
-                            app.Cam.stopAcquisition(app)
-                            app.setAcqMode('live')
-                            app.Cam.setMode('Continuous', 'Software',"expTime",app.expTime,"Nim",app.refAvgEditField.Value)
-                            [rc] = AT_Command(obj.hndl,'AcquisitionStart');
-                            AT_CheckWarning(rc);
-
-                        case 'snap'
-                            obj.stopAcquisition(app)
-                            app.Cam.startAcquisition(app)
-                            app.setAcqMode('stop')
-                    end
-
-                    if any( app.status_hfigList ) 
-                        app.computeImages()
-                        app.updateImages()
-                    else
-                        drawnow
-                    end
-
-                    app.HzEditField.Value = round(1/toc,1);
-                    toc
-                end
-                app.HzEditField.Value = double.empty();
-
-            end
-
-
+        function startAcquisition(obj)            
+            [rc] = AT_Command(obj.hndl,'AcquisitionStart');
+            AT_CheckWarning(rc);
         end
         
-        function stopAcquisition(obj, app)
-            disp('Acquisition complete');
+        function stopAcquisition(obj)
             [rc] = AT_Command(obj.hndl,'AcquisitionStop');
             AT_CheckWarning(rc);
+            
             [rc] = AT_Flush(obj.hndl);
             AT_CheckWarning(rc);
-
-            app.lampState('On')
         end
 
+        function buf = acquire_continuous(obj,app)
+            [rc] = AT_QueueBuffer(obj.hndl,obj.imagesize);
+            AT_CheckWarning(rc);
 
+            [rc] = AT_Command(obj.hndl,'SoftwareTrigger');
+            AT_CheckWarning(rc);
+            
+            [rc,buf] = AT_WaitBuffer(obj.hndl,10000);
+            AT_CheckWarning(rc);
+
+            [rc,buf] = AT_ConvertMono16ToMatrix(buf,obj.height,obj.width,obj.stride);
+            AT_CheckWarning(rc);
+        end
+
+        function buf = acquire_fixed(obj, Nim, app)
+            buf = zeros([obj.width, obj.height, Nim]);
+            for ii = 1:Nim
+                [rc] = AT_QueueBuffer(obj.hndl,obj.imagesize);
+                AT_CheckWarning(rc);
+                [rc,buf0] = AT_WaitBuffer(obj.hndl,10000);
+                AT_CheckWarning(rc);
+                [rc, buf(:,:,ii)] = AT_ConvertMono16ToMatrix(buf0,obj.height,obj.width,obj.stride);
+                AT_CheckWarning(rc);
+            end
+        end
+        
         function setImageDimensions(obj,varargin)
             if nargin == 2 && ischar(varargin{1}) % setImageDimensions('2560 x 2160')
 
@@ -447,16 +286,6 @@ classdef Camera_Andor  <  CameraExp & Camera
             AT_CheckWarning(rc);
         end
 
-        % function val = get.cycleMode(obj)
-        %     [rc,val] = AT_GetEnumStringByIndex(obj.hndl,'CycleMode',1,30);
-        %     AT_CheckWarning(rc);
-        % end
-        % 
-        % function val = get.triggerMode(obj)
-        %     [rc,val] = AT_GetEnumStringByIndex(obj.hndl,'TriggerMode',1,30);
-        %     AT_CheckWarning(rc);
-        % end
-        % 
         function val = getROI(obj)
             val = [obj.left obj.top obj.left+obj.width-1 obj.top+obj.height-1];
         end

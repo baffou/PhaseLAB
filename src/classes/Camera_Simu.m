@@ -14,6 +14,8 @@ classdef Camera_Simu  <  CameraExp & Camera
         hndl
         %CData double
         imageDimensionsList
+
+        IM0 = []  % raw numerical interferogram
     end
 
     properties(Dependent, SetAccess = private)
@@ -24,8 +26,9 @@ classdef Camera_Simu  <  CameraExp & Camera
         top
         left
         stride
-        transformImage
     end
+
+
 
     methods
 
@@ -87,25 +90,26 @@ classdef Camera_Simu  <  CameraExp & Camera
 
         end
 
-        function startAcquisition(obj,app,imgType,mode)
-            arguments
-                obj
-                app
-                imgType (1,3) char {mustBeMember(imgType,{'Ref','Itf'})}
-                mode char {mustBeMember(mode,{'live','burst','snap','timeLapse'})} = 'snap'
+        function startAcquisition(obj)
+
+        end
+
+        function stopAcquisition(obj)
+
+        end
+
+        function buf = acquire_continuous(obj,app)
+
+            if isempty(obj.IM0)
+                processIM0 = 1;
+            elseif obj.IM0.Nx ~= obj.height || obj.IM0.Ny ~= obj.width
+                processIM0 = 1;
+            else
+                processIM0 = 0;
             end
-            % call the full app to have access to hList, but also to the
-            % liveOn property that can suddenly change in app if the user
-            % clicks stop.
 
-            app.lampState('Running')
-
-            %% Image simulation
-
+            if processIM0
                     
-                    
-            if strcmp(imgType,'Itf')
-
                 system = 'NP';
                 switch system
                     case 'NP'
@@ -114,9 +118,9 @@ classdef Camera_Simu  <  CameraExp & Camera
                         DI = [DI0.moveBy('x',1e-6), DI0.moveBy('x',-1.4e-6,'y',0.7e-6,'z',-0.6e-6), DI0.moveBy('x',3e-6,'y',-3e-6)];
                         DI  =  DI.shine(app.IL);
             
-                        IM0 = imaging(DI,app.IL,app.MI,obj.height);
+                        obj.IM0 = imaging(DI,app.IL,app.MI,obj.height);
                     case 'noise'
-                        IM0(il) = ImageQLSI(ones(Npx),zeros(Npx),MI,IL(il));
+                        obj.IM0(il) = ImageQLSI(ones(Npx),zeros(Npx),MI,IL(il));
                     case 'Gaussian'
                         IMref = ImageQLSI(ones(obj.height,obj.width),zeros(obj.height,obj.width),app.MI,app.IL);
                         Gampl  =  100e-9; % Gaussian profile amplitude [m]
@@ -127,142 +131,43 @@ classdef Camera_Simu  <  CameraExp & Camera
                         Gauss = exp(-(X.^2+Y.^2)/Gradius.^2);
                         OPD  =  Gampl*Gauss; % (Fig 2f)
                         T = 1-0.1*Gauss;
-                        IM0 = ImageEM(ImageQLSI(sqrt(T),OPD,app.MI,app.IL),ImageEM(IMref));
+                        obj.IM0 = ImageEM(ImageQLSI(sqrt(T),OPD,app.MI,app.IL),ImageEM(IMref));
                         
                 end            
-                    
-            else  % imType == Ref
+
+            end
+       
+            Itf = CGMinSilico(obj.IM0,shotNoise = 1,Nimages = 1);
+            buf = Itf.Itf; % app.Itf0 or app.Ref0
+        
+        end
+        
+        function buf = acquire_fixed(obj,Nim,app)
+            arguments
+                obj
+                Nim
+                app
+            end
+            if strcmpi(obj.mode,'ref')
                 radius = 0.001e-9;
                 DI0 = Dipole('Au',radius);
                 DI = [DI0.moveBy('x',1e-6), DI0.moveBy('x',-1.4e-6,'y',0.7e-6,'z',-0.6e-6), DI0.moveBy('x',3e-6,'y',-3e-6)];
                 DI = DI.shine(app.IL);
-    
-                IM0 = imaging(DI,app.IL,app.MI,obj.height);
+
+                IM = imaging(DI,app.IL,app.MI,obj.height);
+
+            else
+                IM = obj.IM0;
             end
-                    
-
-            if ~strcmp(mode,'live') % Fixed
-
-                if strcmp(imgType,'Ref')
-                    Nim = app.refAvgEditField.Value;
-                else % snap or time Lapse
-                    Nim = app.snapAvgEditField.Value;
-                end                    
-
-                if strcmpi(mode,'burst')
-                    Itf = CGMinSilico(repmat(IM0,obj.hndl.Nim,1),shotNoise = 1);
-                    dt = datetime('now');
-                    ItfArray = zeros(IM0.Ny,IM0.Nx,obj.hndl.Nim);
-                    for ii = 1:obj.hndl.Nim
-                        ItfArray(:,:,ii) = Itf(ii).Itf;
-                        app.([imgType '0']) = ItfArray; % normally app.Itf0, never app.Ref0
-                    end
-                else % snap or timeLapse => average the Itfs
-                    Itf = CGMinSilico(IM0,shotNoise = 1,Nimages = Nim);
-                    dt = datetime('now');
-                    app.([imgType '0']) = Itf(1).Itf/Nim;   % app.Itf0 or app.Ref0
-                end
-
-                app.(imgType).setParams("timeStamp",dt,...
-                                  "expTime",obj.hndl.expTime, ...
-                                  "Navg",obj.hndl.Nim, ...
-                                  "ROI",app.Cam.getROI())
-                    
-                if ~strcmp(imgType,'Ref') && any( app.status_hfigList )
-                    app.computeImages(mode)
-                    app.updateImages()
-                end
-
-
-            else % Continuous
-        
-                if all(app.status_hfigList == 0) && strcmpi(mode,'live') % if live mode (and not timeLapse) and nothing to display stop
-                    return
-                end
-
-                if strcmpi(mode,'timeLapse')
-                    appTL = timeLapsePanel();
-                    if ~isvalid(appTL)
-                        return
-                    end
-                    N = appTL.N;
-                    dt = appTL.dt;
-                    % Parameters
-                    dt = seconds(dt);         % Interval between successive images
-                end
-    
-        
-                % if all(app.status_hfigList == 0)
-                %     return
-                % end
-
-                disp('Live acquisition in progress...');
-                k = 0;
-                while(app.liveOn)
-                    tic
-                    %himList.raw.CData = rand(obj.width,obj.height);
-                    Itf = CGMinSilico(IM0,shotNoise = 1,Nimages = app.liveAvgEditField.Value);
-                    app.([imgType '0']) = Itf.Itf; % app.Itf0 or app.Ref0
-                    app.(imgType).setParams("timeStamp",datetime('now'),...
-                                      "expTime",obj.hndl.expTime, ...
-                                      "Navg",obj.hndl.Nim, ...
-                                      "ROI",app.Cam.getROI())
-
-                    % app.Itf.timeStamp = datetime('now');
-                    % app.Itf.ROI = app.Cam.getROI();
-                    % app.Itf.expTime = obj.hndl.expTime;
-                    % app.Itf.Navg = obj.hndl.Nim;
-
-                    %app.himList.raw.CData =Itf.Itf;
-
-                    if strcmpi(mode,'timeLapse')
-                        if ~exist('t0','var')
-                            t0 = datetime('now');
-                            nextTime = t0;
-                        end
-                        if isvalid(appTL)
-                            appTL.setNextImageTime(nextTime)
-                        end
-                        if datetime('now') >= nextTime && k<N
-                            k = k+1;
-                            nextTime = t0 + k*dt;
-                            app.saveCurrentImage()
-                            if isvalid(appTL)
-                                appTL.setImageNumber(k)
-                            end
-                        elseif k>=N
-                            if isvalid(appTL)
-                                appTL.setImageNumber(k)
-                            end
-                            appTL.setNextImageTime('0')
-                            app.liveOn = 0;
-                        end
-                    end
-
-                    if any( app.status_hfigList ) 
-                        app.computeImages()
-                        app.updateImages()
-                    else
-                        drawnow
-                    end
-                                        
-
-                    app.HzEditField.Value = round(1/toc,1);
-                end
-                app.HzEditField.Value = double.empty();
-
-                %assignin('base', 'liveImage', obj.Itf);
-
+           
+            Itf = CGMinSilico(repmat(IM,Nim,1),shotNoise = 1);
+            ItfArray = zeros(IM.Ny,IM.Nx,obj.hndl.Nim);
+            for ii = 1:obj.hndl.Nim
+                ItfArray(:,:,ii) = Itf(ii).Itf;
+                buf = ItfArray; % normally app.Itf0, never app.Ref0
             end
-
-
-
         end
-
-        function stopAcquisition(obj,app)
-            app.lampState('On')
-        end
-
+        
         function setImageDimensions(obj,varargin)
             if nargin == 2 && ischar(varargin{1}) % setImageDimensions('2560 x 2160')
 
@@ -333,6 +238,7 @@ classdef Camera_Simu  <  CameraExp & Camera
             end
             obj.hndl.expTime = val;
         end
+
 
         % get/set methods
 

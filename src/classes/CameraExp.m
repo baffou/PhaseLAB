@@ -16,18 +16,24 @@ classdef (Abstract) CameraExp < handle
         top
         left
         stride
-        transformImage
     end
     
+    properties(SetAccess = {?LIVE})
+        mode (1,:) char {mustBeMember(mode,{'live','stop','snap','timeLapse','ref','burst','external'})} = 'stop'
+    end
+
+
     methods(Abstract)
         rc = turn(obj,val)
-        setExpTime(obj)
         setMode(obj,cycleMode, triggerMode,opt)
-        startAcquisition(obj,him)
+        startAcquisition(obj)
         stopAcquisition(obj)
+        acquire_continuous(obj)
+        acquire_fixed(obj,Nim)
         setImageDimensions(obj,str)
+        setExpTime(obj)
+        getROI(obj)
         setupSDK()
-        getROI()
     end
 
 end
