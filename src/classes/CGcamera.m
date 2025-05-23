@@ -68,6 +68,8 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
                                     Ny = str2double(line(colPos+1:end));
                                 elseif strcmp(parameter,'CGdepth')
                                     CGdepth = str2double(line(colPos+1:end));
+                                elseif strcmp(parameter,'bitDepth')
+                                    bitDepth = str2double(line(colPos+1:end));
                                 elseif strcmp(parameter,'CGangle')
                                     CGangle = str2double(line(colPos+1:end));
                                 elseif strcmp(parameter,'distance')
@@ -78,6 +80,7 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
 
                             cam = Camera(dxSize,Nx,Ny);
                             cam.brand = camBrand;
+                            cam.bitDepth = bitDepth;
                             CrGr = CrossGrating(Gamma=Gamma,depth=CGdepth);
                             if strcmpi(fileName(1:3),'sC8')
                                 CrGr.name = 'sC8';

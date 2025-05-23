@@ -4,5 +4,6 @@ Gamma:39e-6
 Nx:2560
 Ny:2160
 distance:	8.989701e-04
+bitDepth: 16
 CGdepth: 550e-9
 CGangle: 59.1438

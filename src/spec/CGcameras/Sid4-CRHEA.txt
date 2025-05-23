@@ -1,5 +1,6 @@
 dexel size:	7.4e-6
 phase pixel binning:	4
 MHM angle
+bitDepth: 16
 CGdepth: 550e-9
 CGangle: 0

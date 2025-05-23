@@ -4,6 +4,7 @@ Gamma:	19.5e-6
 relaylens zoom:	-2
 Nx:2560
 Ny:2160
+bitDepth: 16
 CGdepth: 550e-9
 CGangle: 0
 phase factor:	chromatic

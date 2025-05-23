@@ -294,6 +294,7 @@ classdef Camera_Andor  <  CameraExp & Camera
                     end
 
                     app.HzEditField.Value = round(1/toc,1);
+                    toc
                 end
                 app.HzEditField.Value = double.empty();
 
