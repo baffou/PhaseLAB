@@ -5,6 +5,7 @@
 "Nx": 2028,
 "Ny": 2028,
 "fullWellCapacity": 40000,
+"bitDepth": 16,
 "offset":0,
 "colorChannels":1
 }

@@ -86,7 +86,8 @@ classdef Camera_Andor  <  CameraExp & Camera
                     if nargout
                         rcout = rc;
                     end
-                    disp('Camera shutdown');     
+                    obj.hndl = [];
+                    disp('Camera shutdown');
             end
         end
 

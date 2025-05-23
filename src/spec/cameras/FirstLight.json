@@ -5,6 +5,7 @@
 "Nx": 5328,
 "Ny": 4608,
 "fullWellCapacity": 9530,
+"bitDepth": 16,
 "offset":0,
 "colorChannels":1
 }

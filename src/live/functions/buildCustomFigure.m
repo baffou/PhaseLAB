@@ -272,22 +272,27 @@ end
         hf.SizeChangedFcn = [];
 
         hf.UserData.twinImageType = event.NewValue.Tag;
-        switch event.NewValue.Tag
-            case 'none'
-                ax = findobj(hf, 'Type', 'axes');
-                if numel(ax) == 2
-                    delete(ax(1));
-                    hf.Position(3) = hf.Position(3)/2;
-                end
-                hf.UserData.twinAx = matlab.graphics.axis.Axes.empty();
-
-            otherwise
-                hf.UserData.twinAx = addTwinFigure(hf);
-                hf.UserData.twinAx.XColor = 'w';
-                hf.UserData.twinAx.YColor = 'w';
-                xlim(hf.UserData.twinAx,[0,2^16])
-
+        ax = findobj(hf, 'Type', 'axes');
+        % Shut down the 2nd image in any case before, possibly, opening a new one
+        if numel(ax) == 2
+            delete(hf.UserData.twinAx);
+            hf.Position(3) = hf.Position(3)/2;
+            hf.UserData.twinAx = matlab.graphics.axis.Axes.empty();
         end
+
+        ax = findobj(hf, 'Type', 'axes');
+        
+        switch event.NewValue.Tag
+            case {'histo','crosscut'}
+                hf.UserData.twinAx = addTwinFigure(hf);
+                plot(1,1)
+            case 'FFT'
+                hf.UserData.twinAx = addTwinFigure(hf);
+                imagesc(zeros(size(ax.Children.CData)))
+        end
+
+        hf.UserData.twinAx.XColor = 'w';
+        hf.UserData.twinAx.YColor = 'w';
 
         hf.SizeChangedFcn = initFunc;
 

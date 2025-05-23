@@ -8,6 +8,7 @@ classdef Camera  <  handle & matlab.mixin.Copyable
         offset (1,1) double = 100
         brand char
         model char
+        bitDepth double
         colorChannels double {mustBeInteger, mustBeGreaterThan(colorChannels,0),...
                               mustBeLessThan(colorChannels,3)} = 1 % number of colors of the camera sensor
                                          % For the moment, working only for
