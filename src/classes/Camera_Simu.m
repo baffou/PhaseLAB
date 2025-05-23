@@ -98,8 +98,7 @@ classdef Camera_Simu  <  CameraExp & Camera
 
         end
 
-        function buf = acquire_continuous(obj,app)
-
+        function updateIM0(obj,app)
             if isempty(obj.IM0)
                 processIM0 = 1;
             elseif obj.IM0.Nx ~= obj.height || obj.IM0.Ny ~= obj.width
@@ -136,6 +135,13 @@ classdef Camera_Simu  <  CameraExp & Camera
                 end            
 
             end
+        end
+
+
+        function buf = acquire_continuous(obj,app)
+            % create or update IM0 if it does not exist, or has the wrong
+            % dimensions
+            obj.updateIM0(app)
        
             Itf = CGMinSilico(obj.IM0,shotNoise = 1,Nimages = 1);
             buf = Itf.Itf; % app.Itf0 or app.Ref0
@@ -148,6 +154,9 @@ classdef Camera_Simu  <  CameraExp & Camera
                 Nim
                 app
             end
+
+            obj.updateIM0(app)
+
             if strcmpi(obj.mode,'ref')
                 radius = 0.001e-9;
                 DI0 = Dipole('Au',radius);
