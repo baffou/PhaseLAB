@@ -32,8 +32,9 @@ hfig = figure('Name', 'Custom GUI', ...
     'Units', 'pixels', ...
     'Position', [xPos yPos figWidth figWidth]);
 
-% future handles of the ffft and histogram axes
+% future handles of the fft and histogram axes
 hfig.UserData.twinImageType = [];
+hfig.UserData.twinAx = matlab.graphics.axis.Axes.empty();
 hfig.Name = tag;
 hfig.NumberTitle = 'off';
 
@@ -278,9 +279,14 @@ end
                     delete(ax(1));
                     hf.Position(3) = hf.Position(3)/2;
                 end
+                hf.UserData.twinAx = matlab.graphics.axis.Axes.empty();
 
             otherwise
-                addTwinFigure(hf);
+                hf.UserData.twinAx = addTwinFigure(hf);
+                hf.UserData.twinAx.XColor = 'w';
+                hf.UserData.twinAx.YColor = 'w';
+                xlim(hf.UserData.twinAx,[0,2^16])
+
         end
 
         hf.SizeChangedFcn = initFunc;

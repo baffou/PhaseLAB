@@ -17,8 +17,6 @@ classdef (Abstract) CameraExp < handle
         left
         stride
         transformImage
-        cycleMode
-        triggerMode
     end
     
     methods(Abstract)
