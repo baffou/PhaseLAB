@@ -11,7 +11,6 @@ classdef Camera_Andor  <  CameraExp & Camera
 
     properties(SetAccess = private)
         hndl  % Camera handle. Contains all the properties of the live camera (number of pixels, exp time, trigger mode, etc...)
-        %CData double
         imageDimensionsList = { '2560 x 2160','2064 x 2048','1920 x 1080','1392 x 1040','528 x 512','240 x 256','144 x 128', '2560 x 304'};
     end
 
@@ -53,8 +52,7 @@ classdef Camera_Andor  <  CameraExp & Camera
 
             switch val
                 case {'on','On'} % turn on the camera
-                    addpath(genpath("C:\Program Files\Andor SDK3\")) % AndorSDK installation folder
-                    addpath(genpath(matlabroot+"\toolbox\AndorSDK3\")) % AndorSDK MATLAB toolbox
+                    obj.setupSDK()
 
                     try
                         [rc] = AT_InitialiseLibrary();
@@ -83,7 +81,7 @@ classdef Camera_Andor  <  CameraExp & Camera
                         rcout = rc;
                     end
                     obj.hndl = [];
-                    disp('Camera shutdown');
+                    disp('Camera shut down');
             end
         end
 
@@ -294,15 +292,15 @@ classdef Camera_Andor  <  CameraExp & Camera
     methods(Static)
         function setupSDK()
             % ge the root directory of Matlab
-            matlabRootPath = matlabroot;
         
+            addpath(genpath("C:\Program Files\Andor SDK3\")) % AndorSDK installation folder
+            addpath(genpath(matlabroot+"\toolbox\AndorSDK3\")) % AndorSDK MATLAB toolbox
             % Detection of the OS
             if ispc
-                % bBuild the path for Windows
-                sdkPath = fullfile(matlabRootPath, 'toolbox', 'AndorSDK3');
+                error('unsupported OS');
             elseif ismac
                 % Build the path for Mac
-                sdkPath = fullfile(matlabRootPath, 'toolbox', 'AndorSDK3');
+                sdkPath = fullfile(matlabroot, 'toolbox', 'AndorSDK3');
             else
                 error('unsupported OS');
             end
