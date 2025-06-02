@@ -31,7 +31,7 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
             %CGcamera('Zyla','P4',zoom)
 
             if nargin==0 % CGcamera()
-                obj = CGcamera('Zyla');
+                obj = CGcamera('Zyla5.5');
             end
             if nargin==1 % CGcamera('sc8-830') or %CGcamera('Zyla')
                 if istext(varargin{1})
