@@ -297,7 +297,7 @@ classdef Camera_Andor  <  CameraExp & Camera
             addpath(genpath(matlabroot+"\toolbox\AndorSDK3\")) % AndorSDK MATLAB toolbox
             % Detection of the OS
             if ispc
-                error('unsupported OS');
+                sdkPath = fullfile(matlabroot, 'toolbox', 'AndorSDK3');
             elseif ismac
                 % Build the path for Mac
                 sdkPath = fullfile(matlabroot, 'toolbox', 'AndorSDK3');
