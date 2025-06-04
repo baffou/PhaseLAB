@@ -39,6 +39,10 @@ classdef Camera_Hamamatsu  <  CameraExp & Camera
             end        
 
 
+            if cam.model == "OrcaFlash"
+                obj.imageDimensionsList = { '2048 x 2048','1728 x 1728','1440x 1440','1024 x 1024','768 x 768','512 x 512','256 x 256','144 x 144'};
+            end
+
         end
 
         function rcout = turn(obj,val)
