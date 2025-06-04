@@ -38,6 +38,11 @@ classdef Camera_Andor  <  CameraExp & Camera
                 obj.(propList{ip}) = cam.(propList{ip});
             end        
 
+            if cam.model == "Zyla4.2"
+                obj.imageDimensionsList = { '2048 x 2048','1920 x 1080','1392 x 1040','528 x 512','240 x 256','144 x 128', '2028 x 304'};
+            elseif cam.model == "Zyla5.5"
+                obj.imageDimensionsList = { '2560 x 2160','2064 x 2048','1920 x 1080','1392 x 1040','528 x 512','240 x 256','144 x 128', '2560 x 304'};
+            end
 
         end
 
