@@ -53,7 +53,7 @@ classdef Camera_GenTL  <  CameraExp & Camera
                     try
                         obj.hndl = videoinput('gentl',1,'Mono16');
                     catch
-                        warning('SDK not properly installed, or not properly linked')
+                        error('SDK not properly installed, or camera not plugged')
                         rcout = -5;
                         return
                     end
@@ -63,6 +63,7 @@ classdef Camera_GenTL  <  CameraExp & Camera
                 case {'off','Off'}        
                     delete(obj.hndl)
                     obj.hndl = [];
+                    imaqreset
                     disp('Camera shut down');
             end
         end
@@ -240,7 +241,7 @@ classdef Camera_GenTL  <  CameraExp & Camera
     
     methods(Static)
         function setupSDK()
-
+            imaqreset
         end
     end
 
