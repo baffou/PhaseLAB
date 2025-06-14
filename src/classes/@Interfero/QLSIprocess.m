@@ -1,6 +1,6 @@
 % Method of the Interfero class.
 
-function [IM,DWx,DWy,W,T] = QLSIprocess(Itf,IL,opt)
+function [IM,DWx,DWy,W,T,FIm] = QLSIprocess(Itf,IL,opt)
 % field contains T or W. Useful when IM is not an ouput because not T and W need to be both computed, so IM cannot be constructed : [~, DWx, DWy, field]
 arguments
     Itf Interfero
@@ -396,7 +396,7 @@ for ii = 1:Nf
                 N = 13;
                 Tikh = 1e-5;
             else
-                N = 3;
+                N = 13; % previously was N = 3 ; but this can result in a "grid artifact"
                 Tikh = 1e-5;
             end
     
