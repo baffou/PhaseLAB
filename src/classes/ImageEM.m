@@ -176,6 +176,9 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             if isempty(obj.Einc) % if already an indicent field
                 pha_x = angle(obj.Ex);% phase image of the x-polarized wavefront
                 pha_y = angle(obj.Ey);% phase image of the y-polarized wavefront
+            elseif all(obj.Einc.Ex(:) == 0) && all(obj.Einc.Ey(:) == 0)  % If Einc became 0, eg due to the positioning of polarizing plates
+                pha_x = angle(obj.Ex);% phase image of the x-polarized wavefront
+                pha_y = angle(obj.Ey);% phase image of the y-polarized wavefront
             else
                 pha_x = angle(obj.Ex.*conj(obj.Einc.Ex));% phase image of the x-polarized wavefront
                 pha_y = angle(obj.Ey.*conj(obj.Einc.Ey));% phase image of the y-polarized wavefront

@@ -91,7 +91,7 @@ classdef CGmatrix
         function M = redimension(M,camPxSize,pxRatio)
 %            fac = M.pxSize/(camPxSize);
             fac = abs(pxRatio);
-            M.im = imresize(M.im,fac);
+            M.im = imresize(M.im,round(size(M.im)*fac));
             M.pxSize = abs(camPxSize);
         end
         
