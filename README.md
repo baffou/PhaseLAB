@@ -5,6 +5,7 @@ Welcome to the PhaseLAB toolbox, created to help you deal with wavefront and pha
 You need at Matlab version 2023a or later, to run this toolbox.
 You need the following Matlab packages:
 - Image processing toolbox
+- Image acquisition toolbox (for live imaging using Hamamatsu cameras, and others. Not required for Andor cameras) 
 - Statistics and machine learning toolboox (for the poissrnd function when using in Silico module)
 
 

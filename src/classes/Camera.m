@@ -108,6 +108,8 @@ classdef Camera  <  handle & matlab.mixin.Copyable
                     obj2 = Camera_Simu(obj);
                 case 'Pixelink'
                     obj2 = Camera_Pixelink(obj);
+                case {'FLIR', 'LUCID Vision Labs'}
+                    obj2 = Camera_GenTL(obj);
                 otherwise
                     disp(obj.brand+" not implemented")
             end
