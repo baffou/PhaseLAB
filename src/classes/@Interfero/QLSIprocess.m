@@ -392,13 +392,8 @@ for ii = 1:Nf
             W = intgrad2(DWx,DWy);
         elseif strcmpi(opt.method,'Tikhonov')
     
-            if strcmpi(opt.definition,'low')
-                N = 13;
-                Tikh = 1e-5;
-            else
-                N = 13; % previously was N = 3 ; but this can result in a "grid artifact"
-                Tikh = 1e-5;
-            end
+        N = 13;
+        Tikh = 1e-5;
     
             if (size(DWx,1)~=Nx0 || size(DWy,2)~=Ny0) && isempty(opt.Smatrix)  % if first time S calculation (Nx0 and Ny0 not yet defined), but not if S already exists because specified by the user
                 x = (1:size(DWx,2))';
