@@ -64,7 +64,7 @@ classdef Medium <  handle & matlab.mixin.Copyable
             if isnumeric(obj.nS0)
                 val = obj.nS0;
             else % is char
-                mat = obj.n0;
+                mat = obj.nS0;
                 if strcmpi(mat,'glass') || strcmpi(mat,'BK7')
                     val = 1.51;
                 elseif strcmpi(mat,'water')

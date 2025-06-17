@@ -106,8 +106,6 @@ else
             h=figure;imagegb(imgaussfilt(im(1).Itf,4),opt.colormap) % imgaussfilt to remove the fringe and better see
             h.UserData.Axes = gca;
             fullscreen
-    
-        
         end
     end
     
