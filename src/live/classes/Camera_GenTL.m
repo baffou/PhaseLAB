@@ -52,6 +52,7 @@ classdef Camera_GenTL  <  CameraExp & Camera
 
                     try
                         obj.hndl = videoinput('gentl',1,'Mono16');
+                        rcout = 0;
                     catch
                         error('SDK not properly installed, or camera not plugged')
                         rcout = -5;
@@ -65,6 +66,7 @@ classdef Camera_GenTL  <  CameraExp & Camera
                     obj.hndl = [];
                     imaqreset
                     disp('Camera shut down');
+                    rcout = 0;
             end
         end
 
@@ -73,13 +75,13 @@ classdef Camera_GenTL  <  CameraExp & Camera
                 obj
                 cycleMode   {mustBeMember(cycleMode,   {'Fixed','Continuous','Burst'})}
                 triggerMode {mustBeMember(triggerMode, {'Internal','External','Software'})} = 'Internal'
-                opt.expTime = []
+                opt.expTime = [] % in [s]
                 opt.Nim = 1 % number of images to be acquiredin Fixed mode
             end
             src = getselectedsource(obj.hndl);
 
             if ~isempty(opt.expTime)
-                src.ExposureTime = opt.expTime;
+                src.ExposureTime = opt.expTime*1e6;
             end
 
             if strcmpi(cycleMode,'Fixed')
@@ -107,7 +109,7 @@ classdef Camera_GenTL  <  CameraExp & Camera
 
         function buf = acquire_fixed(obj, Nim, app)
             trigger(obj.hndl)
-            buf = getdata(obj.hndl, Nim);
+            buf = squeeze(getdata(obj.hndl, Nim));
         end
         
         function setImageDimensions(obj,varargin)
@@ -177,10 +179,10 @@ classdef Camera_GenTL  <  CameraExp & Camera
         function setExpTime(obj,val)
             arguments
                 obj
-                val  % in [ms]
+                val  % in [s]
             end
             src = getselectedsource(obj.hndl);
-            src.ExposureTime = val*1e3; % converted in us
+            src.ExposureTime = val*1e6; % converted in us
         end
 
  
@@ -189,7 +191,7 @@ classdef Camera_GenTL  <  CameraExp & Camera
 
         function val = get.expTime(obj)
             src = getselectedsource(obj.hndl);
-            val = src.ExposureTime;
+            val = src.ExposureTime*1e-6;
         end
 
         function set.width(obj, val)
@@ -197,7 +199,8 @@ classdef Camera_GenTL  <  CameraExp & Camera
         end
 
         function val = get.width(obj)
-            [~ , ~, val, ~] = obj.hndl.ROIposition;
+            vec = obj.hndl.ROIposition;
+            val = vec(3);
         end
 
         function set.height(obj, val)
@@ -205,7 +208,8 @@ classdef Camera_GenTL  <  CameraExp & Camera
         end
         
         function val = get.height(obj)
-            [~ , ~, ~, val] = obj.hndl.ROIposition;
+            vec = obj.hndl.ROIposition;
+            val = vec(4);
         end
 
         function set.top(obj, val)
@@ -213,7 +217,8 @@ classdef Camera_GenTL  <  CameraExp & Camera
         end
         
         function val = get.top(obj)
-            [~ , val, ~, ~] = obj.hndl.ROIposition;
+            vec = obj.hndl.ROIposition;
+            val = vec(2);
         end
         
         function set.left(obj, val)
@@ -221,7 +226,8 @@ classdef Camera_GenTL  <  CameraExp & Camera
         end
         
         function val = get.left(obj)
-            [val, ~ , ~, ~] = obj.hndl.ROIposition;
+            vec = obj.hndl.ROIposition;
+            val = vec(1);
         end
         
         function val = get.stride(obj)
