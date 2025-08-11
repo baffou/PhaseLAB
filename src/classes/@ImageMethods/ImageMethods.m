@@ -18,7 +18,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
     end
 
     properties(Dependent)
-        Rytov
         dmd
     end
 
@@ -124,18 +123,12 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             end
         end
 
-        function set.Microscope(objList,MI)
-            No=numel(objList);
-            for io=1:No
-                objList(io).Microscope=MI;
-            end
+        function set.Microscope(obj,MI)
+            obj.Microscope = MI;
         end
 
-        function set.Illumination(objList,IL)
-            No=numel(objList);
-            for io=1:No
-                objList(io).Illumination=IL;
-            end
+        function set.Illumination(obj,IL)
+            obj.Illumination = IL;
         end
 
         function add(IMlist0,IM,pos)
@@ -610,14 +603,14 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             else
                 obj=obj0;
             end
-
+            Np = size(obj,2); % in case many color or polar images, crop them all the same way
             sizeIm = [0 0];
-            for io = 1:numel(obj)
-                if sum(sizeIm ~= size(obj(io).OPD)) || opt.redo % redo the crop, if the size of the image is not the same as the previous one, or if the redo option is specified
+            for io = 1:size(obj,1)
+                if sum(sizeIm ~= size(obj(io,1).OPD)) || opt.redo % redo the crop, if the size of the image is not the same as the previous one, or if the redo option is specified
                     if ~isempty(opt.app)
                         boxObj = opt.app;
                     else
-                        boxObj = obj(io);
+                        boxObj = obj(io,:);
                     end
 
                     [x1, x2, y1, y2] = boxSelection(boxObj, ...
@@ -640,7 +633,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
                 end
 
-                sizeIm = size(obj(io).OPD);
+                sizeIm = size(obj(io,1).OPD);
 
 
                 % Check if the box does not exceed the image boundaries
@@ -666,35 +659,62 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 end
 
 
-                if isa (obj,'ImageQLSI')
-                    temp = obj(io).T(y1:y2,x1:x2); % temp variable to avoid importing the matrix twice for the calculation of Nx and Ny when it is stored in a file.
-                    obj(io).T   = temp;
-                    obj(io).OPD = obj(io).OPD(y1:y2,x1:x2);
-                    if ~isempty(obj(io).DWx0)
-                        obj(io).DWx0=obj(io).DWx(y1:y2,x1:x2);
-                        obj(io).DWy0=obj(io).DWy(y1:y2,x1:x2);
+                for ip = 1:Np
+                    if isa (obj,'ImageQLSI')
+                        temp = obj(io,ip).T(y1:y2,x1:x2); % temp variable to avoid importing the matrix twice for the calculation of Nx and Ny when it is stored in a file.
+                        obj(io,ip).T   = temp;
+                        obj(io,ip).OPD = obj(io,ip).OPD(y1:y2,x1:x2);
+                        if ~isempty(obj(io,ip).DWx0)
+                            obj(io,ip).DWx0=obj(io,ip).DWx(y1:y2,x1:x2);
+                            obj(io,ip).DWy0=obj(io,ip).DWy(y1:y2,x1:x2);
+                        end
+                    elseif isa (obj,'ImageEM')
+                        obj(io,ip).Ex = obj0(io,ip).Ex(y1:y2,x1:x2);
+                        obj(io,ip).Ey = obj0(io,ip).Ey(y1:y2,x1:x2);
+                        obj(io,ip).Ez = obj0(io,ip).Ez(y1:y2,x1:x2);
+                        obj(io,ip).Einc = copy(obj(io,ip).Einc);
+                        obj(io,ip).Einc.Ex = obj0(io,ip).Einc.Ex(y1:y2,x1:x2);
+                        obj(io,ip).Einc.Ey = obj0(io,ip).Einc.Ey(y1:y2,x1:x2);
+                        obj(io,ip).Einc.Ez = obj0(io,ip).Einc.Ez(y1:y2,x1:x2);
+                    elseif isa (obj,'ImageT')
+                        obj(io,ip).T = obj0(io,ip).T(y1:y2,x1:x2);
+                        obj(io,ip).OPD = obj0(io,ip).OPD(y1:y2,x1:x2);
+                        obj(io,ip).HSD = obj0(io,ip).HSD(y1:y2,x1:x2);
+                        obj(io,ip).TMP = obj0(io,ip).TMP(y1:y2,x1:x2);
                     end
-                elseif isa (obj,'ImageEM')
-                    obj(io).Ex = obj0(io).Ex(y1:y2,x1:x2);
-                    obj(io).Ey = obj0(io).Ey(y1:y2,x1:x2);
-                    obj(io).Ez = obj0(io).Ez(y1:y2,x1:x2);
-                    obj(io).Einc = copy(obj(io).Einc);
-                    obj(io).Einc.Ex = obj0(io).Einc.Ex(y1:y2,x1:x2);
-                    obj(io).Einc.Ey = obj0(io).Einc.Ey(y1:y2,x1:x2);
-                    obj(io).Einc.Ez = obj0(io).Einc.Ez(y1:y2,x1:x2);
-                elseif isa (obj,'ImageT')
-                    obj(io).T = obj0(io).T(y1:y2,x1:x2);
-                    obj(io).OPD = obj0(io).OPD(y1:y2,x1:x2);
-                    obj(io).HSD = obj0(io).HSD(y1:y2,x1:x2);
-                    obj(io).TMP = obj0(io).TMP(y1:y2,x1:x2);
                 end
             end
 
 
         end
 
-        function im = get.Rytov(obj)
-            im = obj.lambda*obj.Illumination.n/pi*abs( log(obj.T)/2 + 1i*obj.Ph ).^2;
+        function im = Rytov(obj,yrange,xrange)
+            arguments
+                obj
+                yrange = []
+                xrange = []
+            end
+            if size(obj,1) > 1
+                error('The Rytov function cannot be used for arrays of images')
+            end
+            Np = size(obj,2);
+            im = 0;
+            if isempty(yrange) && isempty(xrange)
+
+                for ip = 1:Np % average the Np polarisation or color images
+                    im = im + obj(1,ip).lambda*obj(1,ip).Illumination.n/pi*abs( log(obj(1,ip).T)/2 + 1i*obj(1,ip).Ph ).^2;
+                end
+
+            elseif ~isempty(yrange) && ~isempty(xrange)
+
+                for ip = 1:Np % average the Np polarisation or color images
+                    im = im + obj(1,ip).lambda*obj(1,ip).Illumination.n/pi*abs( log(obj(1,ip).T(yrange,xrange))/2 + 1i*obj(1,ip).Ph(yrange,xrange) ).^2;
+                end
+
+            else
+                error('Both y and x arguments must be specified')
+            end
+
         end
 
         function IM = adjustPolarOffsets2(IM0)
@@ -814,7 +834,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 IM0
                 method {mustBeMember(method,{'manual','auto','Manual','Auto'})} = 'Auto'
                 opt.pause = false
-                opt.polarized logical = true
             end
 
             [Nim, Nch] = size(IM0);
@@ -841,15 +860,14 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     Phi3 = IM(ii,3).Ph;
                     Phi4 = IM(ii,4).Ph;
     
-                    S3 = 2*imag(IM(1).Illumination.polar(1)*IM(1).Illumination.polar(2)');
-                    if opt.polarized
-                        if S3 <0
-                            C = 0.5*(T2-T4)./sqrt(T1.*T3);
-                        else
-                            C = -0.5*(T2-T4)./sqrt(T1.*T3);
-                        end
+                    if ~IM(ii,1).Illumination.isCircular
+                        warning('the illumination is not circularly polarized')
+                    end
+                    S3 = IM(ii,1).Illumination.S3;
+                    if S3 <0
+                        C = 0.5*(T2-T4)./sqrt(T1.*T3);
                     else
-                            C = -3.4 * -0.5*(T3-T1)./sqrt(T2.*T4);                    
+                        C = -0.5*(T2-T4)./sqrt(T1.*T3);
                     end
 
                     if opt.pause

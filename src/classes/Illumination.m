@@ -30,6 +30,10 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
         E0              % incident electric field vector
         k0              % wavevector in vacuum
         tr              % transmission coefficient through the interface
+        S0
+        S1
+        S2
+        S3
     end
 
     properties(Hidden)
@@ -263,8 +267,35 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
             ILs.polar = [pol(1) pol(2) 0];
         end
 
+        function val = get.S0(obj)
+            % 1st Stokes component
+            val = abs(obj.polar(1)).^2 + abs(obj.polar(2)).^2;
+        end
+
+        function val = get.S1(obj)
+            % 2nd Stokes component
+            val = abs(obj.polar(1)).^2 - abs(obj.polar(2)).^2 ;
+        end
+
+        function val = get.S2(obj)
+            % 3nd Stokes component
+            val = 2*real(obj.polar(1).*obj.polar(2)');
+        end
+
+        function val = get.S3(obj)
+            val = 2*imag(obj.polar(1)*obj.polar(2)');
+        end
+
+        function bool = isCircular(obj)
+            if obj.S1 == 0 && obj.S2 == 0 && obj.S3 == obj.S0
+                bool = true;
+            else
+                bool = false;
+            end
+        end
+
         function onLambdaSet(obj)
-            % Tobe overloaded in the daughter class monochromator
+            % To be overloaded in the daughter class monochromator
             % Does not any anything special here, but does action the
             % monochromator in the class Monochromator
         end

@@ -49,7 +49,7 @@ if opt.margin ~= 0
     x1 = 1  + opt.margin;
     x2 = Nx - opt.margin;
     y1 = 1  + opt.margin;
-    y2 = Ny - opt.margin;    
+    y2 = Ny - opt.margin;
 elseif ~isempty(opt.xy1) && ~isempty(opt.xy2)  % crop('xy1', [a,b], 'xy2', [a,b])
     if numel(opt.xy1)~=2
         error('First input must be a 2-vector (x,y)')
@@ -87,7 +87,7 @@ else
             h = app.UIFigure;
             % Check Matlab version, throw error if prior to r2020b
             %assert(~verLessThan('Matlab', '9.9'), 'ginput not supported prior to Matlab r2020b.')
-        
+
             % Set up figure handle visibility, run ginput, and return state
             fhv = app.UIFigure.HandleVisibility;        % Current status
             app.UIFigure.HandleVisibility = 'callback'; % Temp change (or, 'on')
@@ -95,11 +95,19 @@ else
             h.UserData.Axes = [app.AxesLeft, app.AxesRight];
             axes(app.AxesLeft)
         elseif isa(im,'ImageMethods')
+            Np = size(im,2);
             if opt.displayT
-                h=figure;imagegb(im(1).T,opt.colormap)
+                imS = 0;
+                for ip = 1:Np
+                    imS = imS+im(1,ip).T/4;
+                end
             else
-                h=figure;imagegb(im(1).OPD,opt.colormap)
+                imS = 0;
+                for ip = 1:Np
+                    imS = imS+im(1,ip).OPD/4;
+                end
             end
+            h=figure;imagegb(imS,opt.colormap)
             fullscreen
             h.UserData.Axes = gca;
         elseif isa(im,'Interfero')
@@ -108,8 +116,8 @@ else
             fullscreen
         end
     end
-    
-    
+
+
     if opt.twoPoints
         if isapp
             app.displayMessage('Draw a rectangle')
@@ -120,8 +128,8 @@ else
         x2 = round(roi.Position(1)+roi.Position(3)-0.5);
         y1 = round(roi.Position(2)-0.5);
         y2 = round(roi.Position(2)+roi.Position(4)-0.5);
-        
-    
+
+
         if isapp
             app.displayMessage('Wait...',"color",app.warnColor)
             if strcmp(app.scaleButton.SelectedObject.Text,'µm')
@@ -131,9 +139,9 @@ else
                 y2=app.um2px(y2);
             end
         end
-    
-    
-        
+
+
+
     else % if not twopoints
         if isnumeric(opt.Center) % crop('Center',[300, 200])
             if numel(opt.Center)==2
@@ -144,17 +152,17 @@ else
             end
         elseif strcmpi(opt.Center,'Manual') % crop('Center','Manual')
             h.Visible = true;
-    
+
             [xc_px,yc_px] = ginput(1);
-    
+
             if isapp
-    
+
                 if strcmp(app.scaleButton.SelectedObject.Text,'µm')
                     [xc_px,yc_px]=app.um2px([xc_px, yc_px]);
                 end
-    
+
             end
-    
+
         else
             xc_px = Nx/2;
             yc_px = Ny/2;
@@ -162,7 +170,7 @@ else
         if strcmpi(opt.Size,'Manual') % crop('Center','Manual')
             h.Visible = true;
             h.UserData.getPoint = 0;
-    
+
             rr = rectangle(h.UserData.Axes(1),'EdgeColor',[0.3 0.5 1], LineWidth=2);
             if isapp
                 set (h, 'WindowButtonMotionFcn', @(src,event)drawRect(app,rr,xc_px,yc_px,opt.shape))
@@ -170,23 +178,23 @@ else
                 set (h, 'WindowButtonMotionFcn', @(src,event)drawRect(h,rr,xc_px,yc_px,opt.shape))
             end
             set (h, 'WindowButtonDownFcn', @(src,event)getPoint(h))
-    
+
             % while loop
             while h.UserData.getPoint==0
                 pause(0.1)
             end
             set (h, 'WindowButtonMotionFcn', char.empty())
             set (h, 'WindowButtonDownFcn', char.empty())
-    
-    
+
+
             Size_px = h.UserData.side_px;
             Size_units = h.UserData.side_units;
             if length(Size_px)==1
                 Size_units=[Size_units, Size_units];
                 Size_px=[Size_px, Size_px];
             end
-    
-    
+
+
         elseif isnumeric(opt.Size)
             if isapp
                 if  strcmpi(app.scale,'µm')
@@ -200,9 +208,9 @@ else
                 Size_px = opt.Size;
                 Size_units = opt.Size;
             end
-    
-    
-    
+
+
+
             if length(Size_px)==1
                 Size_px = [Size_px, Size_px];
                 Size_units = [Size_units, Size_units];
@@ -223,33 +231,33 @@ else
                     Size_units(ii) = Size_px(ii);
                 end
             end
-    
+
         end
         x1 = floor(xc_px-Size_px(1)/2+1);
         x2 = floor(xc_px-Size_px(1)/2+Size_px(1));
         y1 = floor(yc_px-Size_px(2)/2+1);
         y2 = floor(yc_px-Size_px(2)/2+Size_px(2));
-    
+
         if displayOn
             if ~isapp
                 pause(0.5)
                 close(h)
             else
                 app.UIFigure.HandleVisibility = fhv;    % return original state
-            end        
-        end    
-    
+            end
+        end
+
         if exist('rr','var')
             delete(rr)
         end
     end
 end
-    if opt.colorImage % shift the image by one pixel right, to make sure the bottom-left pixel keeps the same color as in the original image
-        if ~isSameParity(x1,y1)
-            x1=x1+1;
-            x2=x2+1;
-        end
+if opt.colorImage % shift the image by one pixel right, to make sure the bottom-left pixel keeps the same color as in the original image
+    if ~isSameParity(x1,y1)
+        x1=x1+1;
+        x2=x2+1;
     end
+end
 
 if opt.polarImage % shift the image by one pixel right, to make sure the bottom-left pixel keeps the same color as in the original image
     if isEven(x1)
@@ -267,7 +275,7 @@ if opt.polarImage % shift the image by one pixel right, to make sure the bottom-
         else
             y2=y2+1;
         end
-    end        
+    end
 end
 
 

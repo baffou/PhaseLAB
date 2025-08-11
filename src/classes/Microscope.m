@@ -217,13 +217,13 @@ classdef Microscope  <  handle & matlab.mixin.Copyable
         function sigma = sigmaTheo(MI)
             % returns the theoretical noise standard deviation expected on the OPD image with this particular microscope.
             Z = abs(MI.CGcam.zoom);
-            Lambda = MI.CGcam.CG.Gamma;
+            Gamma = MI.CGcam.CG.Gamma;
             d = MI.CGcam.distance();
             w = MI.CGcam.Camera.fullWellCapacity;
             Nim = 1;
             Npx = MI.CGcam.Camera.Nx;
             p = MI.CGcam.Camera.dxSize;
-            sigma = p*Lambda/(Z*d) * sqrt(2/(Nim*w)) * sqrt(log10(Npx*Npx))/(8*sqrt(2));
+            sigma = p*Gamma/(Z*d) * sqrt(2/(Nim*w)) * sqrt(log10(Npx*Npx))/(8*sqrt(2));
         end
         
     end

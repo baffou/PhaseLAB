@@ -296,6 +296,7 @@ elseif strcmpi(acquisitionSoftware,'polarCGMcontrol')
         if Nrf ~= 0
             minIndex = find(ItfFileNames{ii}=='_',1,'last');
             maxIndex = find(ItfFileNames{ii}=='.',1,'last')-1;
+
             tag = tags.("r"+ItfFileNames{ii}(minIndex:maxIndex));
             try
                 INT(ii).Reference(REF(tag));

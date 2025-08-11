@@ -64,17 +64,17 @@ classdef ImageQLSI   <   ImageMethods
                 opt.imageNumber =[]
             end
 
-            if isa(INT,'ImageEM')
-                Nim = numel(INT);
-                obj = repmat(ImageQLSI(1),size(INT));
-                objEM=INT;
-                for ii = 1:Nim
-                    obj(ii) = ImageQLSI(objEM(ii).T,objEM(ii).OPD,objEM(ii).Microscope,objEM(ii).Illumination);
-                    obj(ii).imageNumber = opt.imageNumber;
-                end
+            % if isa(INT,'ImageEM')
+            %     Nim = numel(INT);
+            %     obj = repmat(ImageQLSI(1),size(INT));
+            %     objEM=INT;
+            %     for ii = 1:Nim
+            %         obj(ii) = ImageQLSI(objEM(ii).T,objEM(ii).OPD,objEM(ii).Microscope,objEM(ii).Illumination);
+            %         obj(ii).imageNumber = opt.imageNumber;
+            %     end
                 
 
-            elseif nargin==1 %ImageQLSI(n)
+            if nargin==1 %ImageQLSI(n)
                 if isnumeric(INT)
                     n=INT;
                     obj = repmat(ImageQLSI(),n,1);
@@ -445,31 +445,35 @@ classdef ImageQLSI   <   ImageMethods
                 opt.Tsum logical = false
             end
             % computes the average image of a list of ImageQLSI objects.
-            Nim = numel(IM);
-            OPDsum = 0;
-            intsum = 0;
-            DWxsum = 0;
-            DWysum = 0;
-            for ii = 1:Nim
-                intsum = intsum+IM(ii).T;
-                OPDsum = OPDsum+IM(ii).OPD;
-                DWxsum = DWysum+IM(ii).DWx;
-                DWysum = DWxsum+IM(ii).DWy;
+            Nim = size(IM,1);
+            No = size(IM,2);
+            IMout = ImageQLSI(No)';
+            for io = 1:No
+                OPDsum = 0;
+                intsum = 0;
+                DWxsum = 0;
+                DWysum = 0;
+                for ii = 1:Nim
+                    intsum = intsum+IM(ii,io).T;
+                    OPDsum = OPDsum+IM(ii,io).OPD;
+                    DWxsum = DWxsum+IM(ii,io).DWx;
+                    DWysum = DWysum+IM(ii,io).DWy;
+                end
+                if opt.Tsum % sum the intensities in case QLSIprocess was used with the option Tnormalisation='subtraction'
+                    INT = intsum;
+                else
+                    INT = intsum/Nim;
+                end
+                OPDn = OPDsum/Nim;
+                DWxn = DWxsum/Nim;
+                DWyn = DWysum/Nim;
+                IMout(io) = ImageQLSI(INT,OPDn,IM(1).Microscope,IM(1).Illumination);
+                IMout(io).DWx0 = DWxn;
+                IMout(io).DWy0 = DWyn;
+                IMout(io).Microscope = IM.Microscope;
+                IMout(io).TfileName = 'Average images';
+                IMout(io).OPDfileName = 'Average images';
             end
-            if opt.Tsum % sum the intensities in case QLSIprocess was used with the option Tnormalisation='subtraction'
-                INT = intsum;
-            else
-                INT = intsum/Nim;
-            end
-            OPDn = OPDsum/Nim;
-            DWxn = DWxsum/Nim;
-            DWyn = DWysum/Nim;
-            IMout = ImageQLSI(INT,OPDn,IM(1).Microscope,IM(1).Illumination);
-            IMout.DWx0 = DWxn;
-            IMout.DWy0 = DWyn;
-            IMout.Microscope = IM.Microscope;
-            IMout.TfileName = 'Average images';
-            IMout.OPDfileName = 'Average images';
         end
 
         function objList2 = square(objList)
@@ -915,28 +919,39 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
-        function IMout = ImageEM(IM,IMref)
+        function IMout = ImageEM(IM,IMref,opt)
             % converts a polarization resolved, experimental set of QLSI
             % images into a ImageEM object.
             arguments
                 IM (:,4) ImageQLSI
                 IMref  = []
+                opt.handedness (1,:) char {mustBeMember(opt.handedness,{'left','right','none'})} = 'none'
             end
             Nim = size(IM,1);
             IMout = ImageEM(Nim);
 
             % ref field
-                
+            if strcmp(opt.handedness,'right')
+                hand = 1i;
+            elseif strcmp(opt.handedness,'left')
+                hand = -1i;
+            else
+                hand = 1;
+                if isempty(IMref)
+                    warning('Illumination with linear polarization considered')
+                end
+            end
+
             for ii = 1:Nim
-                Ex = IM(ii,1).E.*exp(1i*IM(ii,1).Ph);
-                Ey = IM(ii,3).E.*exp(1i*IM(ii,3).Ph);
+                Ex =      IM(ii,1).E.*exp(1i*IM(ii,1).Ph);
+                Ey = hand*IM(ii,3).E.*exp(1i*IM(ii,3).Ph); % Assumes here a given handedness, but could be the opposite
                 Ez = Ey*0;
                 if isempty(IMref)
                     IMout(ii) = ImageEM(Ex, Ey, Ez);
                 else
                     dphx = exp(1i*angle(IMref.Ex));
                     dphy = exp(1i*angle(IMref.Ey));
-                    IMout(ii) = ImageEM(Ex.*dphx, Ey.*dphy, Ez, IMref.Ex, IMref.Ey, IMref.Ez); % multiply by the Eref because each image has been normalized so that the phase is close to zero in average on each image, even with a ciruclar polarization.
+                    IMout(ii) = ImageEM(Ex.*dphx./abs(IMref.Ex), Ey.*dphy./abs(IMref.Ex), Ez, IMref.Ex, IMref.Ey, IMref.Ez); % multiply by the Eref because each image has been normalized so that the phase is close to zero in average on each image, even with a ciruclar polarization.
                 end
                 IMout(ii).Microscope = IM(ii,1).Microscope;
                 IMout(ii).Illumination = IM(ii,1).Illumination;

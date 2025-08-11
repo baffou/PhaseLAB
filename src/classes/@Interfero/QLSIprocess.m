@@ -299,6 +299,10 @@ for ii = 1:Nf
 
         alpha = corr*MI.CGcam.alpha(IL(ii).lambda)*Itfi.binningFactor;
         
+        if isinf(alpha)
+            error('the grating distance is zero')
+        end
+
         if opt.noRef
             DW1 = -anglefun(Im_DW1)* alpha;
             DW2 = -anglefun(Im_DW2)* alpha;

@@ -1,4 +1,10 @@
-function [profile, w, cx, cy] = radialAverage0(IMG, center, Rmax)
+function [profile, w, cx, cy] = radialAverage0(IMG, center, Rmax, opt)
+    arguments
+        IMG
+        center
+        Rmax
+        opt.centerMethod (1,:) {mustBeMember(opt.centerMethod,{'1pixel','9pixelAverage'})} = '9pixelAverage'
+    end
     % computes the radial average of the image IMG around the cx,cy point
     % w is the vector of radii starting from zero
     [Ny,Nx] = size(IMG);
@@ -15,12 +21,12 @@ function [profile, w, cx, cy] = radialAverage0(IMG, center, Rmax)
             pause(0.1)
         end
     elseif nargin==2
-        cx = center(1);
-        cy = center(2);
+        cx = round(center(1));
+        cy = round(center(2));
         w = 1:floor(0.9*sqrt(Nx*Nx+Ny*Ny)/2);
     elseif nargin==3
-        cx = center(1);
-        cy = center(2);
+        cx = round(center(1));
+        cy = round(center(2));
         
         w = 0:Rmax;
     end
@@ -37,7 +43,11 @@ function [profile, w, cx, cy] = radialAverage0(IMG, center, Rmax)
         values = IMG(mask); % without smooth
         profile(ii) = mean( values(:) );
     end
-    profile(1) = mean(mean(IMG(cy-1:cy+1,cx-1:cx+1)));
+    if strcmp(opt.centerMethod, '1pixel')
+        profile(1) = IMG(cy,cx);
+    else
+        profile(1) = mean(mean(IMG(cy-1:cy+1,cx-1:cx+1)));
+    end
 end
 
 

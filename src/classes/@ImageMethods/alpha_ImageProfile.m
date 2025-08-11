@@ -40,6 +40,7 @@ arguments
     opt.output = Data()
 end
 
+
 hfigInit = [];
 if isempty(opt.figure)
     %    app = PhaseLABgui(IMlist);
@@ -64,24 +65,27 @@ Dz = opt.Dz;
 n_bkg0 = opt.nBkg;
 step = opt.step;
 
-[Nim, Np] = size(IMlist);
+[Nim, Npol] = size(IMlist);
 
 opt.output.data.names = ["#image","#NP","#polar"];
 opt.output.data.inputs = [Nim,NNP,4];
 
 if ~isfield(opt.output.data,'alpha') % if there is no info yet in the data
-    opt.output.data.alpha = zeros(Nim,NNP,Np);
-    opt.output.data.OV  = zeros(Nim,NNP,Np);
-    opt.output.data.OVw = zeros(Nim,NNP,Np);
+    opt.output.data.alpha = zeros(Nim,NNP,Npol);
+    opt.output.data.OV  = zeros(Nim,NNP,Npol);
+    opt.output.data.OVw = zeros(Nim,NNP,Npol);
 end
 
 
-for io = 1:Nim
+xList = zeros(NNP,1);
+yList = zeros(NNP,1);
+
+for iim = 1:Nim
 
     if ~isempty(opt.posList)
         if iscell(opt.posList) % transform the cell array into a matrix
             if numel(opt.posList) == Nim
-                posList = opt.posList{io};
+                posList = opt.posList{iim};
             else
                 error('there should be as posList as number of images')
             end
@@ -92,7 +96,7 @@ for io = 1:Nim
         posList = opt.posList;
     end
 
-    IM = IMlist(io,:);
+    IM = IMlist(iim,:);
 
     if isa(IM,'ImageEM')
         if norm(IM(1).EE0)==0
@@ -109,17 +113,15 @@ for io = 1:Nim
     taillePx = IM(1).pxSize;
 
 
-    xList = zeros(NNP,1);
-    yList = zeros(NNP,1);
 
     for iNP = 1:NNP
-        for ip = 1:Np
-            imOPD = IM(ip).OPD;
-            imT = IM(ip).T; %./imTref; %intensity normalization
+        for ipol = 1:Npol
+            imOPD = IM(ipol).OPD;
+            imT = IM(ipol).T; %./imTref; %intensity normalization
 
             fprintf(['Nanoparticle #' num2str(iNP) '/' num2str(NNP) '\n'])
 
-            if ( ~opt.keepPoint || io==1 ) && ip == 1
+            if ( ~opt.keepPoint || iim==1 ) && ipol == 1
                 if  isempty(app)
                     figure(hfigInit);
                     imagesc(imT),colormap(gray),colorbar
@@ -150,13 +152,13 @@ for io = 1:Nim
             button = 0;
 
             if nmax0 == 0  % sum over the whole image
-                opt.output.data.alpha(io,iNP,ip) = IM(1).alpha(); %TODO: this method does not exist anymore
-                realphamean = real(opt.output.data.alpha(io,iNP,ip));
-                imalphamean = imag(opt.output.data.alpha(io,iNP,ip));
+                opt.output.data.alpha(iim,iNP,ipol) = IM(1).alpha(); %TODO: this method does not exist anymore
+                realphamean = real(opt.output.data.alpha(iim,iNP,ipol));
+                imalphamean = imag(opt.output.data.alpha(iim,iNP,ipol));
             else
                 while(button ~= 1)
-                    if (~opt.keepPoint || io==1)
-                        if  ip ~= 1
+                    if (~opt.keepPoint || iim==1)
+                        if  ipol ~= 1
                             %do nothing to keep x_px and y_px unchanged
                         elseif isempty(posList)
                             if isempty(app)
@@ -187,6 +189,11 @@ for io = 1:Nim
                         nmax = min(IM(1).Ny-round(y_px)-1,nmax);
                         nmax = min(IM(1).Nx-round(x_px)-1,nmax);
 
+                    end
+
+                    if opt.keepPoint
+                        x_px = xList(iNP);
+                        y_px = yList(iNP);                       
                     end
 
                     imOPDcrop = imOPD(round(y_px)-nmax:round(y_px)+nmax,round(x_px)-nmax:round(x_px)+nmax); %crop OPD image
@@ -272,9 +279,9 @@ for io = 1:Nim
                     %% mean value of alpha and error bares
                     %pxmin = input('valeur de pxmin'); %faire la moyene de alpha entre pxmin et pxmax
                     %pxmax = input('valeur de pxmax');
-                    if  ip ~= 1
+                    if  ipol ~= 1
                         button = 1;
-                    elseif ~opt.keeppminmax || (io == 1 && iNP == 1)
+                    elseif ~opt.keeppminmax || (iim == 1 && iNP == 1)
                         hfig2 = figure(MenuBar="none",ToolBar="none",Name="Particle selection",NumberTitle="off");
                         plot(coo,realpha)
                         %save -ascii realpha_p250 realpha
@@ -311,9 +318,9 @@ for io = 1:Nim
                 %argalphamean = mean(angalpha(pxmin:pxmax));
                 %argalphaerror = std(angalpha(pxmin:pxmax));
                 %            realphamean+1i*imalphamean;
-                opt.output.data.alpha(io,iNP,ip) = realphamean+1i*imalphamean;
-                opt.output.data.OV(io,iNP,ip) = mean(OV(pxmin:pxmax));
-                opt.output.data.OVw(io,iNP,ip) = mean(OVw(pxmin:pxmax));
+                opt.output.data.alpha(iim,iNP,ipol) = realphamean+1i*imalphamean;
+                opt.output.data.OV(iim,iNP,ipol) = mean(OV(pxmin:pxmax));
+                opt.output.data.OVw(iim,iNP,ipol) = mean(OVw(pxmin:pxmax));
                 %close(hfig)
             end %if nmax==0
         end %ip
@@ -323,12 +330,12 @@ for io = 1:Nim
         else
             fprintf('%d\t(%.4g+1i*%.4g)\n',iNP,1e21*realphamean,1e21*imalphamean);
         end
-        fprintf('=COMPLEX(%.4g,%.4g)\n',1e21*realphamean,1e21*imalphamean);
-        clipboard('copy',sprintf('=COMPLEX(%.4g,%.4g)',1e21*realphamean,1e21*imalphamean))
+        fprintf('=COMPLEX(%.4g;%.4g)\n',1e21*realphamean,1e21*imalphamean);
+        clipboard('copy',sprintf('=COMPLEX(%.4g;%.4g)',1e21*realphamean,1e21*imalphamean))
         fprintf('OV [x10^-21]:')
-        fprintf('\t%.4g\n',1e21*opt.output.data.OV(io,iNP,1));
+        fprintf('\t%.4g\n',1e21*opt.output.data.OV(iim,iNP,1));
         fprintf('OVw [x10^-21]:')
-        fprintf('\t%.4g\n',1e21*opt.output.data.OVw(io,iNP,1));
+        fprintf('\t%.4g\n',1e21*opt.output.data.OVw(iim,iNP,1));
 
         if isempty(app)
             hfigInit.UserData{10} = opt.output.data.alpha;
@@ -343,18 +350,18 @@ for io = 1:Nim
                 end
             end
         else
-            app.saveData('tech','radial','alpha',realphamean + 1i*imalphamean,'OV',opt.output.data.OV(io,iNP,1),'writeData',app.autoSave)
+            app.saveData('tech','radial','alpha',realphamean + 1i*imalphamean,'OV',opt.output.data.OV(iim,iNP,1),'writeData',app.autoSave)
         end
 
     end %iNP
 
 
     if NNP > 1
-        hc = cplot(opt.output.data.alpha(io,:,1));
+        hc = cplot(opt.output.data.alpha(iim,:,1));
     end
 
     if ~isempty(hfigInit) && ~isempty(hfigInit.UserData{8})
-        if io~=Nim
+        if iim~=Nim
             figure_callback(hfigInit,IMlist(1+str2double(get(hfigInit.UserData{8}.UIk,'String'))),hfigInit.UserData{2},hfigInit.UserData{3},hfigInit.UserData{4},str2double(get(hfigInit.UserData{8}.UIk,'String'))+1)
         end
     end
@@ -377,3 +384,4 @@ if opt.display % makes sense only for multiple measurments
     legend({'real alpha','imag alpha','OV','OV weighted'})
 end
 
+params.profiles = [coo',realpha,imalpha] ;

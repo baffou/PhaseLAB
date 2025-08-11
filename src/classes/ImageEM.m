@@ -38,18 +38,16 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         S1
         S2
         S3
-        I   % S0
-        Q   % S1
-        U   % S2
-        V   % S3
         L   % Q + 1i*U
         absL % |L|
         A   % long radius of the ellipse
         B   % short radius of the ellipse
-        theta   % tilt of the ellipse
-        thetabar % theta*absL
+        thetaEllipse   % tilt of the ellipse [rad]
+        thetaEllipseDeg   % tilt of the ellipse; [°]
+        thetaEllipsebar % theta*absL
+        rgbImage        % theta*absL
         h   % handedness sign(V)
-        e   % excentricity
+        e2  % eccentricity
     end
 
     methods
@@ -108,6 +106,22 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             if ~isempty(opt.Illumination)
                 obj.Illumination=opt.Illumination;
             end
+        end
+
+        function obj2 = ImageQLSI(obj,opt)
+            % transforms an ImageEM object into an ImageQLSI object
+            arguments
+                obj ImageEM
+                opt.imageNumber = []
+            end
+
+            Nim = numel(obj);
+            obj2 = repmat(ImageQLSI(1),size(obj));
+            for ii = 1:Nim
+                obj2(ii) = ImageQLSI(obj(ii).T,obj(ii).OPD,obj(ii).Microscope,obj(ii).Illumination);
+                obj2(ii).imageNumber = opt.imageNumber;
+            end
+            
         end
 
         function objs = plus(obj1,obj2) % coherent sum of the fields
@@ -184,7 +198,9 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 pha_y = angle(obj.Ey.*conj(obj.Einc.Ey));% phase image of the y-polarized wavefront
             end
 
-            val = (pha_x.*Ex_norm + pha_y.*Ey_norm) ./ (Ex_norm+Ey_norm);% weighted average of the phase images
+        %    val = (pha_x.*Ex_norm + pha_y.*Ey_norm) ./ (Ex_norm+Ey_norm);% weighted average of the phase images
+            val  = angle(Ex_norm.*exp(1i*pha_x)  + Ey_norm.*exp(1i*pha_y));
+        
         end
 
         function val = get.OPD(obj)
@@ -212,72 +228,62 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 if norm(obj.EE0)==0 % happens when using crossed polarizers that kill E0 on the image plane.
                     val = obj.E2; % Transmittance
                 else
-                    val = obj.E2 ./ obj.Einc.E2; % Transmittance
+                    if isprop(obj,'Einc')
+                        val = obj.E2 ./ obj.Einc.E2; % Transmittance
+                    else
+                        val = obj.E2;
+                    end
                 end
             end
         end
 
         function val = get.S0(obj)
             % 1st Stokes component
-            val = abs(obj.Ex).^2 + abs(obj.Ey).^2;
+            val = (abs(obj.Ex).^2 + abs(obj.Ey).^2) ./ (abs(obj.Einc.Ex).^2 + abs(obj.Einc.Ey).^2);
         end
 
         function val = get.S1(obj)
             % 2nd Stokes component
-            val = abs(obj.Ex).^2 - abs(obj.Ey).^2;
+            val = (abs(obj.Ex).^2 - abs(obj.Ey).^2) ./ (abs(obj.Einc.Ex).^2 + abs(obj.Einc.Ey).^2);
         end
 
         function val = get.S2(obj)
             % 3nd Stokes component
-            val = 2*real(obj.Ex.*conj(obj.Ey));
+            val = (2*real(obj.Ex.*conj(obj.Ey))) ./ (abs(obj.Einc.Ex).^2 + abs(obj.Einc.Ey).^2);
         end
 
         function val = get.S3(obj)
             % 4th Stokes component
-            val = -2*imag(obj.Ex.*conj(obj.Ey));
+            val = (-2*imag(obj.Ex.*conj(obj.Ey))) ./ (abs(obj.Einc.Ex).^2 + abs(obj.Einc.Ey).^2);
         end
 
-        function val = get.I(obj)
-            % 1st Stokes component
-            val = abs(obj.Ex).^2 + abs(obj.Ey).^2;
-        end
-
-        function val = get.Q(obj)
-            % 2nd Stokes component
-            val = abs(obj.Ex).^2 - abs(obj.Ey).^2;
-        end
-
-        function val = get.U(obj)
-            % 3nd Stokes component
-            val = 2*real(obj.Ex.*conj(obj.Ey));
-        end
-
-        function val = get.V(obj)
-            % 4th Stokes component
-            val = -2*imag(obj.Ex.*conj(obj.Ey));
-        end
+            
 
         function val = get.L(obj)
-            val = obj.Q + 1i*obj.U;
+            val = obj.S1 + 1i*obj.S2;
         end
 
         function val = get.absL(obj)
-            val = abs(obj.Q + 1i*obj.U);
+            val = abs(obj.S1 + 1i*obj.S2);
         end
 
         function val = get.A(obj)
-            val = sqrt(0.5*(obj.I+abs(obj.L)));
+            val = sqrt(0.5*(obj.S0+abs(obj.L)));
         end
 
         function val = get.B(obj)
-            val = sqrt(0.5*(obj.I-abs(obj.L)));
+            val = sqrt(0.5*(obj.S0-abs(obj.L)));
         end
 
-        function val = get.theta(obj)
-            val = 0.5*angle(obj.L);
+        function val = get.thetaEllipse(obj)
+            val = mod(0.5*angle(obj.L),pi);
         end
 
-        function val = get.thetabar(obj)
+        function val = get.thetaEllipseDeg(obj)
+            val = mod(0.5*angle(obj.L)*180/pi,180);
+        end
+
+        function val = get.thetaEllipsebar(obj)
 
             retardanceMax =1e-10;
             black = 1;
@@ -288,7 +294,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 corr = 0;
             end
             hsvImage = zeros(obj.Ny, obj.Nx, 3);
-            hsvImage(:,:,1) = obj.theta/pi;
+            hsvImage(:,:,1) = obj.thetaEllipse/pi;
             hsvImage(:,:,2+corr) = 1/retardanceMax*obj.absL * obj.Illumination.lambda/(2*pi);
             hsvImage(:,:,3-corr) = ones(obj.Ny,obj.Nx);
 
@@ -296,13 +302,17 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         
         end
 
-        function val = get.h(obj)
-            val = sign(obj.V);
+        function val = get.rgbImage(obj)
+            val = obj.thetaEllipsebar(obj);
         end
 
-        function val = get.e(obj)
+        function val = get.h(obj)
+            val = sign(obj.S3);
+        end
+
+        function val = get.e2(obj)
             % excentricity
-            val = sqrt(abs(1-obj.B.^2./obj.A.^2));
+            val = 1-(obj.B./obj.A).^2;
         end
 
         function val = zoom(obj)
@@ -388,7 +398,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 [E_x, E_y, mat] = Jones0(IM(iim).Ex, IM(iim).Ey, varargin);
                 [Einc_x, Einc_y] = Jones0(IM(iim).Einc.Ex, IM(iim).Einc.Ey, mat);
 
-                IMs(iim) = ImageEM(E_x,E_y,IM.Ez*0,Einc_x,Einc_y,IM.Ez*0);
+                IMs(iim) = ImageEM(E_x,E_y,IM(iim).Ez*0,Einc_x,Einc_y,IM(iim).Ez*0);
                 IMs(iim).Microscope = IM(iim).Microscope;
                 IMs(iim).Illumination = IM(iim).Illumination;
                 IMs(iim).comment = IM(iim).comment;
