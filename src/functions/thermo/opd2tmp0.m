@@ -180,7 +180,7 @@ if nLoop>1 % display the comparison figure
     title('Calculated OPD')
     xlabel('x (px)') % x-axis label
     ylabel('y (px)')   % y-axis label
-    caxis([min(DexpBig(:)) max(DexpBig(:))])
+    clim([min(DexpBig(:)) max(DexpBig(:))])
 end
 
 for loop = 1:nLoop
@@ -250,7 +250,7 @@ for loop = 1:nLoop
         end
         subplot(1,2,2), imagegb(DcalcBig)
         title(['Calculated OPD, loop #' int2str(loop) '/' int2str(nLoop) '' ])
-        caxis([min(DexpBig(:)) max(DexpBig(:))])
+        clim([min(DexpBig(:)) max(DexpBig(:))])
         pause(1)
 
     end %if nLoop>1
@@ -259,7 +259,7 @@ end %for loop
 
 if nLoop>1
     cd('_postprocess')
-    saveas(fid_comp,['comp_exp_calc_' textk(im) '.png'])
+    saveas(fid_comp,'comp_exp_calc.png')
     cd('..')
 end
 

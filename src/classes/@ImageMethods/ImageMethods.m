@@ -861,7 +861,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                     Phi4 = IM(ii,4).Ph;
     
                     if ~IM(ii,1).Illumination.isCircular
-                        warning('the illumination is not circularly polarized')
+                        error('the illumination is not circularly polarized')
                     end
                     S3 = IM(ii,1).Illumination.S3;
                     if S3 <0

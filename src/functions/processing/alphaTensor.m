@@ -72,5 +72,5 @@ ax  = 0.5*(SL + DL*exp(2*1i*theta));
 ay  = 0.5*(SL - DL*exp(2*1i*theta));
 
 if opt.ordering
-%    if abs(ax)
+    %abs(ax)>abs(ay)
 end

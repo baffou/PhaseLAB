@@ -287,7 +287,7 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
         end
 
         function bool = isCircular(obj)
-            if obj.S1 == 0 && obj.S2 == 0 && obj.S3 == obj.S0
+            if obj.S1 == 0 && obj.S2 == 0 && abs(obj.S3) == obj.S0
                 bool = true;
             else
                 bool = false;

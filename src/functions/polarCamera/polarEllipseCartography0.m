@@ -6,6 +6,7 @@ arguments
     opt.Size (1,1) double = 1 % Scaling factor of the ellipses
     opt.color = [0 1 1]
     opt.ABmin = []
+    opt.axis = []
 end
 
 IMe = ImageEM(pIm.IM);
@@ -43,18 +44,22 @@ else
     ABmin = opt.ABmin;
 end
 
-figure
+if isempty(axis)
+    ax = axes;
+else
+    ax = opt.axis;
+end
 hold on
 for iy = 1:Ny
     for ix = 1:Nx
         %theta0 = pIm.theta0(posListY(iy),posListX(ix));
-        theta0 = IMe.theta(iy,ix);
+        theta0 = IMe.thetaEllipse(iy,ix);
         A = Aim(iy,ix);
         B = Bim(iy,ix);
-        he = drawellipse(...
+        he = drawellipse(ax, ...
             'Center',[posListX(ix),posListY(iy)], ...
             'SemiAxes',[A-ABmin,B-ABmin]/(ABmax-ABmin)*Np/2*opt.Size, ...
-            'RotationAngle',theta0, ...
+            'RotationAngle',theta0*180/pi, ...
             'Color',opt.color, ...
             'FaceAlpha',0.2, ...
             'LineWidth',2);
@@ -63,7 +68,6 @@ for iy = 1:Ny
     end
 end
 
-xlim([0 pIm.Nx])
-ylim([0 pIm.Ny])
-set(gca,'DataAspectRatio',[1 1 1])
-
+xlim(ax,[0 pIm.Nx])
+ylim(ax,[0 pIm.Ny])
+set(ax,'DataAspectRatio',[1 1 1])

@@ -38,6 +38,9 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         S1
         S2
         S3
+        s1
+        s2
+        s3
         L   % Q + 1i*U
         absL % |L|
         A   % long radius of the ellipse
@@ -239,22 +242,38 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
         function val = get.S0(obj)
             % 1st Stokes component
-            val = (abs(obj.Ex).^2 + abs(obj.Ey).^2) ./ (abs(obj.Einc.Ex).^2 + abs(obj.Einc.Ey).^2);
+            val = abs(obj.Ex).^2 + abs(obj.Ey).^2;
         end
 
         function val = get.S1(obj)
             % 2nd Stokes component
-            val = (abs(obj.Ex).^2 - abs(obj.Ey).^2) ./ (abs(obj.Einc.Ex).^2 + abs(obj.Einc.Ey).^2);
+            val = abs(obj.Ex).^2 - abs(obj.Ey).^2;
         end
 
         function val = get.S2(obj)
             % 3nd Stokes component
-            val = (2*real(obj.Ex.*conj(obj.Ey))) ./ (abs(obj.Einc.Ex).^2 + abs(obj.Einc.Ey).^2);
+            val = 2*real(obj.Ex.*conj(obj.Ey));
         end
 
         function val = get.S3(obj)
             % 4th Stokes component
-            val = (-2*imag(obj.Ex.*conj(obj.Ey))) ./ (abs(obj.Einc.Ex).^2 + abs(obj.Einc.Ey).^2);
+            val = -2*imag(obj.Ex.*conj(obj.Ey));
+        end
+
+            
+        function val = get.s1(obj)
+            % 2nd normalized Stokes component
+            val = obj.S1./obj.S0;
+        end
+
+        function val = get.s2(obj)
+            % 3nd normalized Stokes component
+            val = obj.S2./obj.S0;
+        end
+
+        function val = get.s3(obj)
+            % 4th normalized Stokes component
+            val = obj.S3./obj.S0;
         end
 
             

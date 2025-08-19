@@ -14,10 +14,6 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
     properties
         rgb_bg0 char {mustBeMember(rgb_bg0,{'white','black'})} = 'black'  % smoothed if smoothing ≠ 0
     end
-    properties(Hidden)
-        Microscope
-        Illumination
-    end
 
     properties (Access = {?Methods})
         IM0 (1,4) ImageQLSI % raw image
@@ -69,15 +65,11 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                 if Nim == 1
                     obj.IM0 = IM; % copy of the handle. No duplication.
                     obj.retardanceMax = opt.retMax;
-                    obj.Illumination = IM(1).Illumination;
-                    obj.Microscope = IM(1).Microscope;
 
                 else
                     obj = repmat(ImagePolar(),Nim,1);
                     for nim = 1:Nim
                         obj(nim) = ImagePolar(IM(nim,:), 'retMax', opt.retMax); % copy of the handle. No duplication.
-                        obj(nim).Illumination = IM(nim,:).Illumination;
-                        obj(nim).Microscope = IM(nim,:).Microscope;
                     end
                 end
                 obj.updateIM() % apply the IM, that includes the smoothing
@@ -89,7 +81,8 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         end
 
         function val = get.Ey(obj)
-            val = 1i * sqrt(obj.IM(3).T).*exp(1i*obj.IM(3).Ph);
+            s = -sign(obj.Illumination.S3/obj.Illumination.S0); % negative sign, because it seems that this way the ellipse turns in the right direction, according to the rotation of the sample
+            val = s * 1i * sqrt(obj.IM(3).T).*exp(1i*obj.IM(3).Ph);
         end
 
         function val = get.S0(obj)
@@ -97,11 +90,14 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         end
         
         function val = get.S1(obj)
-            val = abs(obj.Ex).^2 - abs(obj.Ey).^2;
+%            val = abs(obj.Ex).^2 - abs(obj.Ey).^2;
+            val = obj.IM(1).T - obj.IM(3).T;
         end
         
         function val = get.S2(obj)
-            val =  2*real(obj.Ex.*conj(obj.Ey));
+            %val =  2*real(obj.Ex.*conj(obj.Ey));
+            val = obj.IM(2).T - obj.IM(4).T;
+            
         end
         
         function val = get.S3(obj)
@@ -153,6 +149,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         
         function val = get.e2(obj)
             val = 1-(obj.B./obj.A).^2;
+%           val = 2*abs(obj.L)./(obj.S0+abs(obj.L));
         end
         
         function img = get.phibar(obj)
@@ -292,6 +289,14 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             end
         end
 
+        function val = Illumination(obj)
+            val = obj.IM(1).Illumination;
+        end
+
+        function val = Microscope(obj)
+            val = obj.IM(1).Microscope;
+        end
+        
         function export(obj,path,opt)
             arguments
                 obj

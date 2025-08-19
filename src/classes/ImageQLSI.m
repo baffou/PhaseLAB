@@ -919,21 +919,20 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
-        function IMout = ImageEM(IM,IMref,opt)
+        function IMout = ImageEM(IM,IMref)
             % converts a polarization resolved, experimental set of QLSI
             % images into a ImageEM object.
             arguments
                 IM (:,4) ImageQLSI
                 IMref  = []
-                opt.handedness (1,:) char {mustBeMember(opt.handedness,{'left','right','none'})} = 'none'
             end
             Nim = size(IM,1);
             IMout = ImageEM(Nim);
 
             % ref field
-            if strcmp(opt.handedness,'right')
+            if IM(1).Illumination.S3<0  % right
                 hand = 1i;
-            elseif strcmp(opt.handedness,'left')
+            elseif IM(1).Illumination.S3>0  % left
                 hand = -1i;
             else
                 hand = 1;

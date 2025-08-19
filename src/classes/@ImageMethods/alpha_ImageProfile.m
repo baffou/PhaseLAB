@@ -282,6 +282,8 @@ for iim = 1:Nim
                     if  ipol ~= 1
                         button = 1;
                     elseif ~opt.keeppminmax || (iim == 1 && iNP == 1)
+                        drawnow
+                        pause(1)
                         hfig2 = figure(MenuBar="none",ToolBar="none",Name="Particle selection",NumberTitle="off");
                         plot(coo,realpha)
                         %save -ascii realpha_p250 realpha

@@ -1,5 +1,5 @@
 %% Example of that imports and processes CGM measurements on bacteria.
-
+clear
 %% BUILDING OF THE MEDIUM -- ME=Medium(n,nS);
 ME = Medium('water','glass');
 
