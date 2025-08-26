@@ -8,6 +8,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
     properties(GetAccess = public, SetAccess = private)
         retardanceMax (1,1) double = 20 % max amplitude of the retardance on the color map of theta
         e2Max (1,1) double = 0.1 % max amplitude of the squared ellipticity on the color map of thetaEllipse
+        dichroMax (1,1) double = 0.1
         smoothing (1,1) double {mustBeGreaterThanOrEqual(smoothing,0)} = 0 % Gaussian filter of the OPD images. None if  = 0
     end
 
@@ -45,6 +46,9 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         theta0
         phibar
         dphi
+        Tbar
+        dichroism
+        thetaT
         Wbar
         retardance
         dW
@@ -126,16 +130,14 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
 
         function val = get.rgbImageEllipse(obj)
 
-            black = 1;
-
-            if black == 1
+            if strcmp(obj.rgb_bg0,'black')
                 corr = 1;
             else
                 corr = 0;
             end
             hsvImage = zeros(obj.Ny, obj.Nx, 3);
             hsvImage(:,:,1) = obj.thetaEllipse/pi;
-            hsvImage(:,:,2+corr) = obj.e2/obj.e2Max;
+            hsvImage(:,:,2+corr) = sqrt(obj.e2/obj.e2Max);
             hsvImage(:,:,3-corr) = ones(obj.Ny,obj.Nx);
 
             val = hsv2rgb(hsvImage);
@@ -162,6 +164,16 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
 
         end
 
+        function img = get.Tbar(obj)
+            arguments
+                obj
+            end
+
+            img = (obj.IM(1).T + obj.IM(2).T ...
+                 + obj.IM(3).T + obj.IM(4).T)/4;
+
+        end
+
         function img = get.theta0(obj)
             arguments
                 obj
@@ -169,6 +181,16 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
 
             img = mod(0.5*angle((obj.IM(1).Ph-obj.IM(3).Ph) ...
                    + 1i*(obj.IM(2).Ph-obj.IM(4).Ph)),pi);
+
+        end
+
+        function img = get.thetaT(obj)
+            arguments
+                obj
+            end
+
+            img = mod(0.5*angle((obj.IM(1).T-obj.IM(3).T) ...
+                   + 1i*(obj.IM(2).T-obj.IM(4).T)),pi);
 
         end
 
@@ -181,6 +203,18 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                          .*(obj.IM(2).Ph-phib) ...
                          + (obj.IM(3).Ph-phib) ...
                          .*(obj.IM(1).Ph-phib)));
+
+        end
+
+        function img = get.dichroism(obj)
+            arguments
+                obj
+            end
+            Tb = obj.Tbar;
+            img = sqrt(abs((obj.IM(4).T-Tb) ...
+                         .*(obj.IM(2).T-Tb) ...
+                         + (obj.IM(3).T-Tb) ...
+                         .*(obj.IM(1).T-Tb)));
 
         end
 
@@ -278,10 +312,6 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             val = obj.IM.Ny;
         end
 
-        function val = Tbar(obj)
-            val = (obj.IM(1).T+obj.IM(2).T+obj.IM(3).T+obj.IM(4).T)/4;
-        end
-
         function rgb_bg(obj, val)
             Nim = numel(obj);
             for ii = 1:Nim
@@ -301,8 +331,8 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             arguments
                 obj
                 path
-                opt.formats string {mustBeMember(opt.formats,["eps","png","jpg","fig","txt"])}
-                opt.types string {mustBeMember(opt.types,["OPDmean","retardance","rgbImage","Wbar","phibar","theta0","dphi","dW"])}
+                opt.formats string {mustBeMember(opt.formats,["eps","png","jpg","fig","txt","pdf"])}
+                opt.types string {mustBeMember(opt.types,["OPDmean","retardance","rgbImage","e2","rgbImageEllipse","Wbar","phibar","theta0","thetaEllipse","dphi","dW"])}
                 opt.num = []
                 opt.colormap = parula
                 opt.clim = []
@@ -316,7 +346,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             for im = 1:numel(obj)
                 for iif = 1:numel(opt.formats)
                     switch opt.formats(iif)
-                        case {"eps","png","jpg","fig","epsc"}
+                        case {"eps","png","jpg","fig","epsc","pdf"}
                             if opt.formats(iif) == "eps",opt.formats(iif)="epsc";end
                             ext = char(opt.formats(iif));
                             Nt = numel(opt.types);

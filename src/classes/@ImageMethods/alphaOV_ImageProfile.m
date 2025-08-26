@@ -14,6 +14,7 @@ arguments
     opt.fullscreen (1,1) logical = false
     opt.posList = []
     opt.pList = []
+    opt.step (1,1) double = 0.25
 end
 
 %alpha_ImageProfile(IM,hfigInit)
@@ -133,9 +134,9 @@ for iNP = 1:NNP
             %if strcmp(IM.processingSoftware,'PhaseLAB')
             %    dcoo=1;
             %else
-            dcoo = 0.25;
+            step = opt.step;
             %end
-            coo = 0:dcoo:nmax; % integration radius
+            coo = 0:step:nmax; % integration radius
             Noo = numel(coo);
             sizeX = 2*nmax+1;
             sizeY = 2*nmax+1;
@@ -221,8 +222,8 @@ for iNP = 1:NNP
         end
         
         
-        pxmin(iNP) = round(min(xp/dcoo));
-        pxmax(iNP) = min(round(max(xp/dcoo)),length(realpha)); % in case the user clicks too far in x
+        pxmin(iNP) = round(min(xp/step));
+        pxmax(iNP) = min(round(max(xp/step)),length(realpha)); % in case the user clicks too far in x
         realphamean = mean(realpha(pxmin(iNP):pxmax(iNP)));
         %realphaerror = std(realpha(pxmin:pxmax));
         imalphamean = mean(imalpha(pxmin(iNP):pxmax(iNP)));
@@ -278,8 +279,8 @@ end
 %end
 posList.x = xList;
 posList.y = yList;
-pList.min = pxmin*dcoo;
-pList.max = pxmax*dcoo;
+pList.min = pxmin*step;
+pList.max = pxmax*step;
 
 
 end

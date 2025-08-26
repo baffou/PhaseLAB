@@ -50,141 +50,122 @@ classdef Nanoparticle
     end
     
     methods
-        function obj = Nanoparticle(mat,varargin)
+        function obj = Nanoparticle(mat, geom, dims, opt)
+            arguments
+                mat
+                geom {mustBeTextScalar}
+                dims (1,:) double
+                opt.meshParam = []
+            end
             % mat : material or refractive index
-            if nargin>1
-                if ischar(varargin{1})
-                    obj.geom = varargin{1};
-                else
-                    error('The geometry specification must be a string.')
-                end
-                if strcmp(obj.geom,'sphere')
-                    if nargin==2
-                        error('The sphere radius must be defined as a 3rd input')
+            obj.geom = geom;
+            switch obj.geom
+                case 'sphere'
+                    if numel(dims) == 1
+                        obj.params(1) = dims; % Rsphere
+                    else
+                        error('The dimension parameter must be a scalar, the sphere radius')
                     end
-                    if varargin{2}>1
-                        warning('The radius you specified does not look to be in m, rather in nm. Make sure this is what you want.')
-                    end
-                    obj.params(1) = varargin{2}; % Rsphere
-                    obj.V = 4*pi/3*varargin{2}^3;
-                    if nargin==3 % no mesh_parameter specified
+                    obj.V = 4*pi/3*dims^3;
+                    if isempty(opt.meshParam) % no mesh_parameter specified
                         a = obj.params(1)/4;
                         pos = spher(obj.params(1),a);
-                    elseif nargin==4
-                        a = varargin{3}; % Lattice parameter of the meshing.
+                    else
+                        a = opt.meshParam; % Lattice parameter of the meshing.
                         pos = spher(obj.params(1),a);
-                    elseif nargin==5
-                        a = varargin{3}; % Lattice parameter of the meshing.
-                        pos = spher(obj.params(1),a,varargin{4});
-                    else                        
-                        error('Not the proper number of arguments for a sphere.')
                     end
                     a_adjusted = (4*pi/3/size(pos,1))^(1/3)*obj.params(1);
                     pos = pos*a_adjusted/a;
                     a = a_adjusted;
-                elseif strcmp(obj.geom,'ellipsoid')
-                    if nargin==2
-                        error('The sphere radius must be defined as a 3rd input')
+                case 'ellipsoid'
+                    if numel(dims) ~=3
+                        error('An ellipsoid demands a parameter that is a 3-vector')
                     end
-                    if length(varargin{2})~=3
-                        error('A ellipsoid demands a parameter that is a 3-vector')
-                    end
-                    obj.params(1) = varargin{2}(1); % Rsphere
-                    obj.params(2) = varargin{2}(2); % Rsphere
-                    obj.params(3) = varargin{2}(3); % Rsphere
+                    obj.params(1) = dims(1);
+                    obj.params(2) = dims(2);
+                    obj.params(3) = dims(3);
                     obj.V = 4*pi/3*obj.params(1)*obj.params(2)*obj.params(3);
-                    if nargin==3
+                    if isempty(opt.meshParam)
                         a = obj.params(1)/4;
                         pos = ellipsoid(obj.params,a);
-                    elseif nargin==4
-                        a = varargin{3}; % Lattice parameter of the meshing.
+                    else
+                        a = opt.meshParam; % Lattice parameter of the meshing.
                         pos = ellipsoid(obj.params,a);
-                    elseif nargin==5
-                        a = varargin{3}; % Lattice parameter of the meshing.
-                        pos = ellipsoid(obj.params,a,varargin{4});
-                    else                        
-                        error('Not the proper number of arguments for a sphere.')
                     end
                     a_adjusted = (4*pi/3/size(pos,1))^(1/3)*obj.params(1);
                     pos = pos*a_adjusted/a;
                     a = a_adjusted;
-                elseif  strcmp(obj.geom,'cube')
-                    obj.params = varargin{2}; % Side length of the cube
-                    if nargin==3
+                case 'cube'
+                    if numel(dims) == 1
+                        obj.params(1) = dims; % Rsphere
+                    else
+                        error('The dimension parameter must be a scalar, the cube edge size')
+                    end
+                    if isempty(opt.meshParam)
                         a = obj.params/4;
                         pos = cube(obj.params,a);
-                    elseif nargin==4
-                        a = varargin{3};
-                        pos = cube(obj.params,a);
-                    elseif nargin==5
-                        a = varargin{3};
-                        pos = cube(obj.params,a,varargin{4});
                     else
-                        error('Not the proper number of arguments for a cube.')
+                        a = opt.meshParam;
+                        pos = cube(obj.params,a);
                     end
                     obj.V = obj.params^3;
-                elseif  strcmp(obj.geom,'cuboid')
-                    obj.params(1) = varargin{2}(1); % x Side length
-                    obj.params(2) = varargin{2}(2); % y Side length
-                    obj.params(3) = varargin{2}(3); % z Side length
-                    if nargin==3
+                case 'cuboid'
+                    if numel(dims) ~=3
+                        error('A cuboid demands a parameter that is a 3-vector')
+                    end
+                    obj.params(1) = dims(1);
+                    obj.params(2) = dims(2);
+                    obj.params(3) = dims(3);
+                    if isempty(opt.meshParam)
                         a = min(obj.params)/4;
                         pos = cuboid(obj.params,a);
-                    elseif nargin==4
-                        a = varargin{3};
-                        pos = cuboid(obj.params,a);
-                    elseif nargin==5
-                        a = varargin{3};
-                        pos = cuboid(obj.params,a,varargin{4});
                     else
-                        error('Not the proper number of arguments for a cube.')
+                        a = opt.meshParam;
+                        pos = cuboid(obj.params,a);
                     end
                     obj.V = obj.params(1)*obj.params(2)*obj.params(3);
-                elseif  strcmp(obj.geom,'cylinder')
-                    obj.params(1) = varargin{2}(1); % diameter in px
-                    obj.params(2) = varargin{2}(2); % thickness in px
-                    if nargin==3
+                case 'cylinder'
+                    if numel(dims) ~=2
+                        error('A cylinder demands a parameter that is a 2-vector')
+                    end
+                    obj.params(1) = dims(1); % diameter in px
+                    obj.params(2) = dims(2); % thickness in px
+                    if isempty(opt.meshParam)
                         a = min(obj.params)/4;
                         pos = cylinder(obj.params,a);
-                    elseif nargin==4
-                        a = varargin{3};
-                        pos = cylinder(obj.params,a);
-                    elseif nargin==5
-                        a = varargin{3};
-                        pos = cylinder(obj.params,a,varargin{4});
                     else
-                        error('Not the proper number of arguments for a cube.')
+                        a = opt.meshParam;
+                        pos = cylinder(obj.params,a);
                     end
                     obj.V = pi*(obj.params(1))^2*obj.params(2);
-                elseif  strcmp(obj.geom,'rod')
-                    obj.params(1) = varargin{2}(1); % Total longitudinal length of the rod (along x)
-                    obj.params(2) = varargin{2}(2); % transverse radius
+                case 'rod'
+                    if numel(dims) ~=2
+                        error('A cylinder demands a parameter that is a 2-vector')
+                    end
+                    obj.params(1) = dims(1); % diameter in px
+                    obj.params(2) = dims(2); % thickness in px
                     L0 = obj.params(1);
                     r0 = obj.params(2);
-                    a = varargin{3}; % Lattice parameter of the meshing.
-                    if nargin==3
+                    if isempty(opt.meshParam)
                         a = min(obj.params)/4; %No lattice param specified
                         pos = rod(obj.params,a);
-                    elseif nargin==4
-                        pos = rod(obj.params,a);
-                    elseif nargin==5
-                        pos = rod(obj.params,a,varargin{4});
                     else
-                        error('Not the proper number of arguments for a cube.')
+                        a = opt.meshParam;
+                        pos = rod(obj.params,a);
                     end                
                     obj.V = 4/3*pi*r0^3+pi*r0^2*(L0-2*r0);
-                else
-                    error(['The geometry ''' varargin{1} ''' is not known.'])
-                end
-                obj.DIs = repmat(Dipole(mat,a/2),size(pos,1),1);
-                for ip = 1:obj.N
-                    obj.DIs(ip).pos = pos(ip,:);
-                end
-                obj.a = a;
-                fprintf(['Meshing with ' num2str(size(pos,1)) ' cells.\n'])
+                otherwise
+                    error(['The geometry ''' obj.geom ''' is not known.'])
             end
-
+            obj.DIs = repmat(Dipole(mat,a/2),size(pos,1),1);
+            for ip = 1:obj.N
+                obj.DIs(ip).pos = pos(ip,:);
+            end
+            obj.a = a;
+            fprintf(['Meshing with ' num2str(size(pos,1)) ' cells.\n'])
         end
+
+
 
         function val = get.pos(obj)
             val = zeros(obj.N,3);

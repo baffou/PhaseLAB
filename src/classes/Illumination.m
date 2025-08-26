@@ -68,9 +68,9 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
                     obj.Medium = ME;
                         obj.I = I;
                     if numel(polar) == 2
-                        obj.polar = [polar(:)' 0];
+                        obj.polar = [polar(:).' 0];
                     elseif numel(polar) ==  3
-                        obj.polar = polar(:)';
+                        obj.polar = polar(:).';
                     else
                         error('not a good expression for a polarization')
                     end
@@ -205,8 +205,8 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
                 else
                     error('Rotation of Illumination should be around ''X'' or ''Y'' or ''Z''')
                 end
-                obj2.direct = (RotMat*obj.direct(:))';
-                obj2.polar = (RotMat*obj.polar(:))';
+                obj2.direct = (RotMat*obj.direct(:)).';
+                obj2.polar = (RotMat*obj.polar(:)).';
             end
 
 

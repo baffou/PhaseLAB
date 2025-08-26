@@ -33,9 +33,10 @@ arguments
     opt.Dz   (1,1) double = 0
     opt.NNP  (1,1) {mustBeInteger} = 1
     opt.zoom = 1
-    opt.step (1,1) {mustBeInteger} = 1
+    opt.step (1,1) = 0.25
     opt.keepPoint   logical = false  % keep the same clicking center point from one image to another
     opt.keeppminmax logical = false  % keep the same clicking pmin and pmax from one image to another
+    opt.pminpmax = []
     opt.display     logical = false
     opt.output = Data()
 end
@@ -281,6 +282,9 @@ for iim = 1:Nim
                     %pxmax = input('valeur de pxmax');
                     if  ipol ~= 1
                         button = 1;
+                    elseif ~isempty(opt.pminpmax)
+                        xp = opt.pminpmax;
+                        button=1;
                     elseif ~opt.keeppminmax || (iim == 1 && iNP == 1)
                         drawnow
                         pause(1)
@@ -372,7 +376,8 @@ end
 
 %params.center = [x_px,y_px];
 opt.output.data.posList = [xList, yList];
-
+opt.output.data.profiles = [coo',realpha,imalpha] ;
+opt.output.data.pminpmax = xp;
 params = opt.output.data;
 
 
@@ -386,4 +391,3 @@ if opt.display % makes sense only for multiple measurments
     legend({'real alpha','imag alpha','OV','OV weighted'})
 end
 
-params.profiles = [coo',realpha,imalpha] ;
