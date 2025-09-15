@@ -27,28 +27,28 @@ h.UserData.nm = []; % n*m is the image pattern (n times m subplot images)
 for ii = 1:Npanels
     switch varargin{2*ii-1}
         case 'ph'
-            h.UserData.fun{ii} = @imageph;
+            h.UserData.dispfun{ii} = @imageph;
         case 'gb'
-            h.UserData.fun{ii} = @imagegb;
+            h.UserData.dispfun{ii} = @imagegb;
         case 'tf'
-            h.UserData.fun{ii} = @imagetf;
+            h.UserData.dispfun{ii} = @imagetf;
         case 'jet'
-            h.UserData.fun{ii} = @imagejet;
+            h.UserData.dispfun{ii} = @imagejet;
         case 'hot'
-            h.UserData.fun{ii} = @imagehot;
+            h.UserData.dispfun{ii} = @imagehot;
         case {'bk','gr','bw'}
-            h.UserData.fun{ii} = @imagebk;
+            h.UserData.dispfun{ii} = @imagebk;
         case {'fl'}
-            h.UserData.fun{ii} = @imagefl;
+            h.UserData.dispfun{ii} = @imagefl;
         case {'dx'}
-            h.UserData.fun{ii} = @opendx0;
+            h.UserData.dispfun{ii} = @opendx0;
         case {'hsv'}
-            h.UserData.fun{ii} = @imagehsv;
+            h.UserData.dispfun{ii} = @imagehsv;
         case {'Pr'} % Pradeep
-            h.UserData.fun{ii} = @imagePr;
+            h.UserData.dispfun{ii} = @imagePr;
 %        case 'dx'  % does not work
-%            h.UserData.fun{ii} = @(x) opendx(x,"theta",0,"phi",0,"persp",1,"colorMap",jet);
-        case 'titles'
+%            h.UserData.dispfun{ii} = @(x) opendx(x,"theta",0,"phi",0,"persp",1,"colorMap",jet);
+        case {'titles', 'title', 'Title','Titles'}
             h.UserData.titleList = varargin{2*ii};
             notAdisplay = notAdisplay + 1;
         case {'pattern','nm'}
@@ -56,6 +56,9 @@ for ii = 1:Npanels
             notAdisplay = notAdisplay + 1;
         case {'range','zrange','clim'}
             h.UserData.range = varargin{2*ii};
+            notAdisplay = notAdisplay + 1;
+        case {'functions','function','Function','Functions','Func','func','Fun','fun'}
+            h.UserData.function = varargin{2*ii};
             notAdisplay = notAdisplay + 1;
         otherwise
             error("This keyword is not recognized: "+varargin{2*ii-1})
@@ -72,6 +75,34 @@ if isnumeric(h.UserData.range)
     h.UserData.range = repmat({h.UserData.range}, Npanels, 1);
 end
 
+
+if ~isfield(h.UserData,'function')
+    h.UserData.function = repmat({@(x) x},Npanels, 1);
+elseif isa(h.UserData.function,'function_handle')
+    h.UserData.function = repmat({h.UserData.function}, Npanels, 1);
+elseif istext(h.UserData.function)
+    h.UserData.function = str2func(varargin{2*ii});
+    h.UserData.function = repmat({h.UserData.function}, Npanels, 1);
+elseif iscell(h.UserData.function)
+    if numel(h.UserData.function) == 1
+        h.UserData.function = repmat(h.UserData.function, Npanels, 1);
+    elseif numel(h.UserData.function) ~= Npanels
+        error('Not the proper number of functions')
+    end
+    for ip = 1:Npanels
+        if isa(h.UserData.function{ip},'function_handle')
+            % nothing to be done
+        elseif istext(h.UserData.function{ip})
+            h.UserData.function{ip} = str2func(h.UserData.function{ip});
+        elseif isempty(h.UserData.function{ip}) % [] means identity function
+            h.UserData.function{ip} = @(x) x;
+        else
+            error('wrong function format')
+        end
+    end
+
+end
+
 % extraction of the images from the objects
 h.UserData.imageList = cell(Npanels,1);
 if isempty(h.UserData.titleList{1})
@@ -79,7 +110,7 @@ if isempty(h.UserData.titleList{1})
 end
 
 for ii = 1:Npanels
-    h.UserData.ax(ii)=subplot(1,Npanels,ii);
+    h.UserData.ax(ii) = subplot(1,Npanels,ii);
     switch class(varargin{2*ii})
         case 'Interfero'
             h.UserData.imageList{ii} = {varargin{2*ii}.Itf};
@@ -93,15 +124,15 @@ for ii = 1:Npanels
         %     end
 
         case {'double','gpuArray'}
-            Nim = size(varargin{2*ii},3);
-            if Nim == 1  % 2D image
+            %Nim = size(varargin{2*ii},3);
+            %if Nim == 1  % 2D image
                 h.UserData.imageList{ii} = varargin(2*ii);
-            else   % stack of 2D image
-                h.UserData.imageList{ii} = cell(Nim,1);
-                for im = 1:Nim
-                    h.UserData.imageList{ii}{im} = varargin{2*ii}(:,:,im);
-                end
-            end
+            %else   % stack of 2D image
+            %    h.UserData.imageList{ii} = cell(Nim,1);
+            %    for im = 1:Nim
+            %        h.UserData.imageList{ii}{im} = varargin{2*ii}(:,:,im);
+            %    end
+            %end
 
     end
 end
@@ -153,7 +184,7 @@ function updateImages(h)
     ny = h.UserData.nm(1);
     for ip = 1:Npanels
         subplot(ny,nx,ip);
-        h.UserData.fun{ip}(h.UserData.imageList{ip}{nIm}) % imagesc(...
+        h.UserData.dispfun{ip}(h.UserData.function{ip}(h.UserData.imageList{ip}{nIm})) % imagesc(...
         title(h.UserData.titleList{ip})
         if ~isempty(h.UserData.range)
             clim(h.UserData.range{ip})

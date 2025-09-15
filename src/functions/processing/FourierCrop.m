@@ -72,7 +72,7 @@ if isempty(Fcrops.R) && (isempty(Fcrops.x) || isempty(Fcrops.y)) % No parameter 
     h = drawCrop(x1,y1,R,h);
     drawnow
     close(h)
-    cropParamsout = FcropParameters(x1,y1,R,Nx,Ny);
+    cropParamsout = FcropParameters(x1,y1,R,Nx,Ny,'zeta',zeta);
 elseif isempty(Fcrops.R) % The center of the crop is specified, but not the radius.
     if dispFig
         h = figure;
@@ -112,7 +112,7 @@ elseif isempty(Fcrops.R) % The center of the crop is specified, but not the radi
         close(h)
     end
 
-    cropParamsout = FcropParameters(x1,y1,R,Nx,Ny);
+    cropParamsout = FcropParameters(x1,y1,R,Nx,Ny,'zeta',zeta);
     
     
 elseif isempty(Fcrops.x) || isempty(Fcrops.y) % no center position, but R determined
@@ -147,7 +147,7 @@ elseif isempty(Fcrops.x) || isempty(Fcrops.y) % no center position, but R determ
     end    
     
     
-    cropParamsout = FcropParameters(x1,y1,R,Nx,Ny);
+    cropParamsout = FcropParameters(x1,y1,R,Nx,Ny,'zeta',zeta);
     
 else % The center and the radius are specified, so we just plot the crop and thats it.
     x0 = Fcrops.x;
@@ -156,7 +156,7 @@ else % The center and the radius are specified, so we just plot the crop and tha
     x1 = x0;
     y1 = y0;
     R = r0;
-    cropParamsout = FcropParameters(x1,y1,R,Nx,Ny);
+    cropParamsout = FcropParameters(x1,y1,R,Nx,Ny,'zeta',zeta);
 end
 
 if strcmp(definition,'high')  % High definition (full image size)

@@ -11,6 +11,7 @@ arguments
     opt.app = [] % figure uifigure object to be considered in case the image is already open
     opt.displayT logical = false
     opt.colormap = parula
+    opt.even = true % image dimensions are even
 end
 
 if isempty(opt.params)
@@ -23,7 +24,8 @@ if isempty(opt.params)
         'params',opt.params, ...
         'shape',opt.shape, ...
         'displayT',opt.displayT, ...
-        'colormap',opt.colormap);
+        'colormap',opt.colormap, ...
+        'even',opt.even);
     params=[x1, x2, y1, y2];
 else
     x1 = opt.params(1);

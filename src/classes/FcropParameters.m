@@ -1,19 +1,20 @@
 classdef FcropParameters < matlab.mixin.Copyable  %parameters of the crop in the Fourier plane
     
     properties
-        x          double
-        y          double
-        R           double
-        Nx          {mustBeInteger,mustBePositive}
-        Ny          {mustBeInteger,mustBePositive}
+        x          double % center of the crop
+        y          double % center of the crop
+        R           double % radius of the crop
+        Nx          {mustBeInteger,mustBePositive} % size of the image
+        Ny          {mustBeInteger,mustBePositive} % size of the image
         definition  char {mustBeMember(definition,{'high', 'low'})}    = 'high'
         FcropShape  char {mustBeMember(FcropShape,{'disc', 'square'})} = 'disc'
+        zetaTheo double % theoretical value of the zeta parameter. Used to set the cropped image dimension exactly.
     end
     properties(Dependent)
         shiftx
         shifty
         angle
-        zeta
+        zeta % measured zeta parameter
     end
     
     methods
@@ -27,6 +28,7 @@ classdef FcropParameters < matlab.mixin.Copyable  %parameters of the crop in the
                 Ny = []
                 opt.definition ='high'
                 opt.FcropShape ='disc'
+                opt.zeta = []
             end
             obj.Nx = Nx;
             obj.Ny = Ny;
@@ -35,6 +37,7 @@ classdef FcropParameters < matlab.mixin.Copyable  %parameters of the crop in the
             obj.R = R;
             obj.definition = opt.definition;
             obj.FcropShape = opt.FcropShape;
+            obj.zetaTheo = opt.zeta;
         end
         
         function obj = set.x(obj,x0)
@@ -90,7 +93,7 @@ classdef FcropParameters < matlab.mixin.Copyable  %parameters of the crop in the
             
             x2 = x2/Nratio;
            
-            obj2 = FcropParameters(x2, y2, obj.R, obj.Nx, obj.Ny, definition = obj.definition, FcropShape = obj.FcropShape);
+            obj2 = FcropParameters(x2, y2, obj.R, obj.Nx, obj.Ny, definition = obj.definition, FcropShape = obj.FcropShape,zeta = obj.zetaTheo);
         end
         
         function obj2 = rotate180(obj)
@@ -102,7 +105,7 @@ classdef FcropParameters < matlab.mixin.Copyable  %parameters of the crop in the
             x2 = x0 - dx;
             y2 = y0 - dy;
             
-            obj2 = FcropParameters(x2, y2, obj.R, obj.Nx, obj.Ny, definition = obj.definition, FcropShape = obj.FcropShape);
+            obj2 = FcropParameters(x2, y2, obj.R, obj.Nx, obj.Ny, definition = obj.definition, FcropShape = obj.FcropShape,zeta = obj.zetaTheo);
         end
 
         function obj2 = zero2first(obj,theta)
@@ -123,13 +126,13 @@ classdef FcropParameters < matlab.mixin.Copyable  %parameters of the crop in the
 
         function xx = xrange(obj,index)
             % x values of the image are kept in the case of loz definition
-            if length(obj.R)==1
-                rx = obj.R;
-            else
-                rx = obj.R(1);
-            end
-        
-            rxn = round(rx);
+            % if length(obj.R)==1
+            %     rx = obj.R;
+            % else
+            %     rx = obj.R(1);
+            % end        
+            % rxn = round(rx);
+            rxn = obj.Nx/(2*obj.zetaTheo);
             xx = round(obj.x-rxn : obj.x+rxn-1);
             if nargin == 2
                 xx = xx(index);
@@ -138,12 +141,13 @@ classdef FcropParameters < matlab.mixin.Copyable  %parameters of the crop in the
 
         function yy = yrange(obj,index)
             % y values of the image are kept in the case of loz definition
-            if length(obj.R)==1
-                ry = obj.R;
-            else
-                ry = obj.R(2);
-            end
-            ryn = round(ry);
+            % if length(obj.R)==1
+            %     ry = obj.R;
+            % else
+            %     ry = obj.R(2);
+            % end
+            % ryn = round(ry);
+            ryn = obj.Ny/(2*obj.zetaTheo);
             yy = round(obj.y-ryn : obj.y+ryn-1);
             if nargin == 2
                 yy = yy(index);

@@ -309,6 +309,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 opt.app = []; % figure uifigure object to be considered in case the image is already open
                 opt.channel = false % true if 2-color interfero
                 opt.roi = []
+                opt.margin = 0
             end
             if nargout>=1
                 obj=copy(obj0);
@@ -325,7 +326,8 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     'roi',opt.roi, ...
                     'params',opt.params, ...
                     'shape',opt.shape, ...
-                    'colorImage',opt.channel);
+                    'colorImage',opt.channel,...
+                    'margin',opt.margin);
                 params=[x1, x2, y1, y2];
             else
                 x1 = opt.params(1);
@@ -350,6 +352,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     obj(io).Ref = copy(obj(io).Ref);
                     obj(io).Ref.Itf0 = Ref0im(y1:y2,x1:x2);
                     obj(io).Ref.TF = fftshift(fft2(obj(io).Ref.Itf));
+                    obj(io).clearFcrops;
                 end
             end
 
@@ -880,7 +883,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             % Uses interpolation to keep the same number of pixels
             arguments
                 Im Interfero
-                opt.interpolation {mustBeMember(opt.interpolation,{'regionfill','linear'})} = 'linear'
+                opt.method {mustBeMember(opt.method,{'regionfill','linear','demosaic'})} = 'demosaic'
             end
             disp('Split polar')
             Ni = numel(Im);
@@ -889,6 +892,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             Im45 = Interfero(Ni);
             Im90 = Interfero(Ni);
             Im135= Interfero(Ni);
+            
             for io = 1:Ni
                 printLoop(io, Ni)
                 Im00(io) = copy(Im(io)); % not duplicate to keep the MI.
@@ -896,16 +900,16 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 Im90(io) = copy(Im(io)); % not duplicate to keep the MI.
                 Im135(io) = copy(Im(io));
 
-                Im00(io).Itf0 = polarInterpolation(Im(io).Itf,0, opt.interpolation);
+                Im00(io).Itf0 = polarInterpolation(Im(io).Itf,0, opt.method);
                 Im00(io).channel = '0';
 
-                Im45(io).Itf0 = polarInterpolation(Im(io).Itf,45, opt.interpolation);
+                Im45(io).Itf0 = polarInterpolation(Im(io).Itf,45, opt.method);
                 Im45(io).channel = '45';
 
-                Im90(io).Itf0 = polarInterpolation(Im(io).Itf,90, opt.interpolation);
+                Im90(io).Itf0 = polarInterpolation(Im(io).Itf,90, opt.method);
                 Im90(io).channel = '90';
 
-                Im135(io).Itf0 = polarInterpolation(Im(io).Itf,135, opt.interpolation);
+                Im135(io).Itf0 = polarInterpolation(Im(io).Itf,135, opt.method);
                 Im135(io).channel = '135';
 
             end
@@ -915,7 +919,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 [RefIndep, refPosList] = independentObjects([Im.Ref]);
     
                 % split the polars of these list of independent references
-                [Ref0,Ref45,Ref90,Ref135] = splitPolars(RefIndep);
+                [Ref0,Ref45,Ref90,Ref135] = splitPolars(RefIndep,"method",opt.method);
     
                 % Re-assign the proper Ref to all the interferograms
                 Im00.Reference(Ref0(refPosList));

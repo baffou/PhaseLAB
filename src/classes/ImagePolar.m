@@ -62,6 +62,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             arguments
                 IM  ImageQLSI = ImageQLSI.empty()
                 opt.retMax = 10e-9 % 10 nm of retardance
+                opt.e2Max = 0.05 % 10 nm of retardance
             end
             if nargin % else, create an empty object
 
@@ -69,11 +70,12 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                 if Nim == 1
                     obj.IM0 = IM; % copy of the handle. No duplication.
                     obj.retardanceMax = opt.retMax;
+                    obj.e2Max = opt.e2Max;
 
                 else
                     obj = repmat(ImagePolar(),Nim,1);
                     for nim = 1:Nim
-                        obj(nim) = ImagePolar(IM(nim,:), 'retMax', opt.retMax); % copy of the handle. No duplication.
+                        obj(nim) = ImagePolar(IM(nim,:), 'retMax', opt.retMax, 'e2Max', opt.e2Max); % copy of the handle. No duplication.
                     end
                 end
                 obj.updateIM() % apply the IM, that includes the smoothing

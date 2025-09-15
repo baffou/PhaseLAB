@@ -1,9 +1,9 @@
-function ImOut=polarInterpolation(Im,polar,method)
+function ImOut = polarInterpolation(Im,polar,method)
 % Function that interpolates the image of a 4-polar interferogram into one of the 4 polar images.
 arguments
     Im double % image to interpolate
     polar double
-    method {mustBeMember(method,{'regionfill','linear'})} = 'linear'
+    method {mustBeMember(method,{'regionfill','linear','demosaic'})}
 end
 
 % Check if x is a member of valid_values
@@ -32,6 +32,21 @@ end
 
 if strcmp(method,'regionfill')
     ImOut = regionfill(Im,mask);
+elseif strcmp(method,'demosaic')
+    switch polar
+        case 0
+            Im1 = demosaic(uint16(Im),'rggb');
+            ImOut = Im1(:,:,3);
+        case 45
+            Im1 = demosaic(uint16(Im),'gbrg');
+            ImOut = Im1(:,:,1);
+        case 90
+            Im1 = demosaic(uint16(Im),'rggb');
+            ImOut = Im1(:,:,1);
+        case 135
+            Im1 = demosaic(uint16(Im),'gbrg');
+            ImOut = Im1(:,:,3);
+    end
 elseif strcmp(method,'linear')
     % 0
     ImOut = Im.*(1-mask);

@@ -603,9 +603,12 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             else
                 obj=obj0;
             end
+            No = size(obj,1);
+            params.xy = zeros(No,4);
+            params.Center = zeros(No,2);
             Np = size(obj,2); % in case many color or polar images, crop them all the same way
-            sizeIm = [0 0];
-            for io = 1:size(obj,1)
+            sizeIm = [0 0]; % [Ny Nx] image size initialization
+            for io = 1:No
                 if sum(sizeIm ~= size(obj(io,1).OPD)) || opt.redo % redo the crop, if the size of the image is not the same as the previous one, or if the redo option is specified
                     if ~isempty(opt.app)
                         boxObj = opt.app;
@@ -613,11 +616,35 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                         boxObj = obj(io,:);
                     end
 
+                    if isnumeric(opt.Center)
+                        if size(opt.Center,1) == 1
+                            cntr = opt.Center;
+                        elseif size(opt.Center,1) == No
+                            cntr = opt.Center(io,:);
+                        else
+                            error('not a proper size for the Center input')
+                        end
+                    else
+                        cntr = opt.Center;
+                    end
+
+                    if isnumeric(opt.Size)
+                        if size(opt.Size,1) == 1
+                            sz = opt.Size;
+                        elseif size(opt.Center,1) == No
+                            sz = opt.Size(io);
+                        else
+                            error('not a proper size for the Center input')
+                        end
+                    else
+                        sz = opt.Size;
+                    end
+
                     [x1, x2, y1, y2] = boxSelection(boxObj, ...
                         'xy1',opt.xy1, ...
                         'xy2',opt.xy2, ...
-                        'Center',opt.Center, ...
-                        'Size',opt.Size, ...
+                        'Center',cntr, ...
+                        'Size',sz, ...
                         'twoPoints',opt.twoPoints, ...
                         'params',opt.params, ...
                         'shape',opt.shape, ...
@@ -628,7 +655,8 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                         'margin',opt.margin, ...
                         'params', opt.params);
 
-                    params = [x1, x2, y1, y2];
+                        params.xy(io,:) = [x1, x2, y1, y2];
+                        params.Center(io,:) = [(x1+x2-1)/2, (y1+y2-1)/2];
 
 
                 end

@@ -232,8 +232,12 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                     val = obj.E2; % Transmittance
                 else
                     if isprop(obj,'Einc')
-                        val = obj.E2 ./ obj.Einc.E2; % Transmittance
-                    else
+                        if ~isempty(obj.Einc)
+                            val = obj.E2 ./ obj.Einc.E2; % Transmittance
+                        else
+                            val = obj.E2;
+                        end
+                        else
                         val = obj.E2;
                     end
                 end
@@ -675,19 +679,6 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
             bool = logical(val);
         end
-
-        function obj2 = crop(obj,roi_x,roi_y)
-            obj2    = copy(obj);
-            obj2.Ex = obj.Ex(roi_y, roi_x);
-            obj2.Ey = obj.Ey(roi_y, roi_x);
-            obj2.Ez = obj.Ez(roi_y, roi_x);
-            obj2.Einc    = copy(obj.Einc);
-            obj2.Einc.Ex = obj.Einc.Ex(roi_y, roi_x);
-            obj2.Einc.Ey = obj.Einc.Ey(roi_y, roi_x);
-            obj2.Einc.Ez = obj.Einc.Ez(roi_y, roi_x);
-        end
-
-
 
 
         

@@ -513,7 +513,7 @@ classdef ImageQLSI   <   ImageMethods
         function obj2 = binning(obj,n)
             arguments
                 obj
-                n {mustBeInteger,mustBeGreaterThan(n,1),mustBeLessThan(n,4)} = 3
+                n {mustBeInteger,mustBeGreaterThan(n,1),mustBeLessThan(n,5)} = 3
             end
             if nargout
                 obj2=copy(obj);
@@ -524,6 +524,8 @@ classdef ImageQLSI   <   ImageMethods
                 binningFunc = @binning3x3;
             elseif n == 2
                 binningFunc = @binning2x2;
+            elseif n == 4
+                binningFunc = @binning4x4;
             else
                 error('not a proper binning dimension. Should be 2 or 3.')
             end

@@ -20,7 +20,7 @@ DexpBig=zeros(2*Ny,2*Nx);
 DexpBig(1+floor(Ny/2):Ny+floor(Ny/2),1+floor(Nx/2):Nx+floor(Nx/2))=Dexp;
 
 if Ny/2~=floor(Ny/2) || Nx/2~=floor(Nx/2)        %This programs works only for even (pair) sizes
-    Ny_et_Nx_doivent_etre_pairs
+    error('Ny_et_Nx_doivent_etre_pairs')
 end
 
 %% computation of the boundary vectors

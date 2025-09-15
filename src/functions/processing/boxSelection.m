@@ -21,6 +21,7 @@ arguments
     opt.colormap = parula
     opt.params = [] % [x1, x2, y1, y2]
     opt.margin double {mustBeInteger} = 0
+    opt.even = true % image dimensions must be even
     %    opt.figure = []; % figure uifigure object to be considered in case the image is already open
 end
 
@@ -164,8 +165,8 @@ else
             end
 
         else
-            xc_px = Nx/2;
-            yc_px = Ny/2;
+            xc_px = (Nx+1)/2;
+            yc_px = (Ny+1)/2;
         end
         if strcmpi(opt.Size,'Manual') % crop('Center','Manual')
             h.Visible = true;
@@ -218,20 +219,22 @@ else
         else % opt.Size == 'Auto'
             Size_px = [Nx, Ny];
         end
-        for ii=1:2 % makes sure all the dimenions of the image size are even
-            if mod(Size_px(ii),2)==1
-                Size_px(ii)=Size_px(ii)-1;
-                if isapp
-                    if strcmpi(app.scale,'µm')
-                        Size_units(ii) = app.px2um(Size_px(ii));
+        if opt.even
+            for ii=1:2 % makes sure all the dimenions of the image size are even
+                if mod(Size_px(ii),2)==1
+                    Size_px(ii)=Size_px(ii)-1;
+                    if isapp
+                        if strcmpi(app.scale,'µm')
+                            Size_units(ii) = app.px2um(Size_px(ii));
+                        else
+                            Size_units(ii) = Size_px(ii);
+                        end
                     else
                         Size_units(ii) = Size_px(ii);
                     end
-                else
-                    Size_units(ii) = Size_px(ii);
                 end
+    
             end
-
         end
         x1 = floor(xc_px-Size_px(1)/2+1);
         x2 = floor(xc_px-Size_px(1)/2+Size_px(1));

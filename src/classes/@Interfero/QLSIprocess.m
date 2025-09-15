@@ -7,7 +7,7 @@ arguments
     IL % Illumination object or wavelength
     opt.Fcrops = []
     opt.crop = []
-    opt.method     char {mustBeMember(opt.method,     {'Tikhonov','Errico','CPM'})} = 'Tikhonov'
+    opt.method     char {mustBeMember(opt.method,     {'Tikhonov','Errico','CPM','ASDI'})} = 'Tikhonov'
     opt.definition char {mustBeMember(opt.definition, {'high','low'})} = 'high'
     opt.Fcropshape char {mustBeMember(opt.Fcropshape, {'disc','square'})} = 'disc'
     opt.Smatrix = []
@@ -31,6 +31,9 @@ arguments
 end
 
 Nf = numel(Itf);
+
+zetaTheo = round(Itf(1).Microscope.CGcam.zeta,1);
+
 %% Shaping of the Illumination object(s)
 if isa(IL,'Illumination')
 elseif isnumeric(IL) % if IL is a wavelength
@@ -84,9 +87,9 @@ elseif ~isempty(Itf(1).Ref) && ~isempty(Itf(1).Ref.Fcrops(1).Nx) % if the ref al
     cropParam2 = Itf(1).Ref.Fcrops(3);
 else % if crops are not defined anywhere
     updateRefFcrop = 1;
-    cropParam0 = FcropParameters(Itf(1).Nx/2+1,Itf(1).Ny/2+1,[],Itf(1).Nx,Itf(1).Ny);
-    cropParam1 = FcropParameters([],[],[],Itf(1).Nx,Itf(1).Ny);
-    cropParam2 = FcropParameters([],[],[],Itf(1).Nx,Itf(1).Ny);
+    cropParam0 = FcropParameters(Itf(1).Nx/2+1,Itf(1).Ny/2+1,[],Itf(1).Nx,Itf(1).Ny,'zeta',zetaTheo);
+    cropParam1 = FcropParameters([],[],[],Itf(1).Nx,Itf(1).Ny,'zeta',zetaTheo);
+    cropParam2 = FcropParameters([],[],[],Itf(1).Nx,Itf(1).Ny,'zeta',zetaTheo);
 end
 Nx0 = 0;
 Ny0 = 0;
@@ -170,16 +173,18 @@ for ii = 1:Nf
     Nx = Itfi.Nx;
     Ny = Itfi.Ny;
     if Nx~=cropParam0.Nx || Ny~=cropParam0.Ny % check if the image size changed compared with the previous one, and reinitialize the parameters in case it did.
-        cropParam0 = FcropParameters(Nx/2+1,Ny/2+1,[],Nx,Ny);
-        cropParam1 = FcropParameters([],[],[],Nx,Ny);
-        cropParam2 = FcropParameters([],[],[],Nx,Ny);
+        zetaTheo = round(Itf(ii).Microscope.CGcam.zeta,1);
+        cropParam0 = FcropParameters(Nx/2+1,Ny/2+1,[],Nx,Ny,'zeta',zetaTheo);
+        cropParam1 = FcropParameters([],[],[],Nx,Ny,'zeta',zetaTheo);
+        cropParam2 = FcropParameters([],[],[],Nx,Ny,'zeta',zetaTheo);
         opt.Smatrix=[];
     end
 
     if opt.resetCrops % force to reset the crops between each simulations, for instance when the angle of the grating changes, which cannot be detected by looking only at MI.
-        cropParam0 = FcropParameters(Nx/2+1,Ny/2+1,[],Nx,Ny);
-        cropParam1 = FcropParameters([],[],[],Nx,Ny);
-        cropParam2 = FcropParameters([],[],[],Nx,Ny);
+        zetaTheo = round(Itf(ii).Microscope.CGcam.zeta,1);
+        cropParam0 = FcropParameters(Nx/2+1,Ny/2+1,[],Nx,Ny,'zeta',zetaTheo);
+        cropParam1 = FcropParameters([],[],[],Nx,Ny,'zeta',zetaTheo);
+        cropParam2 = FcropParameters([],[],[],Nx,Ny,'zeta',zetaTheo);
     end
     
 
@@ -315,17 +320,21 @@ for ii = 1:Nf
 
     elseif opt.darkZoneCorrection == 1 % Bing Xu
         % from Optics Communications 402 (2017) 276–284
+
+        if strcmpi(opt.definition,'low')
+            error('darkZoneCorrection only works in high definition')
+        end
         zeta = Itfi.Microscope.CGcam.zeta;
         if strcmpi(opt.definition,'low')
             ItfNew = Itfi.normalize(imresize(T,zeta*size(T)));
         else
             ItfNew = Itfi.normalize(T);
         end
-        [~,DWx_error,DWy_error] = QLSIprocess(ItfNew,IL(ii).lambda,"displayCrop",false); %Add options? 
+        [~,DWx_error,DWy_error] = QLSIprocess(ItfNew,IL(ii).lambda,"displayCrop",false,"definition","high","computeT",0,"computeW",0); %Add options? 
 
         IM_Ph0 = ImageQLSI(T,T*0,MI,IL(ii).lambda); % Zero phase
         Itf_Ph0 = CGMinSilico(IM_Ph0);
-        [~,DWx_Ph0,DWy_Ph0] = QLSIprocess(Itf_Ph0,IL(ii).lambda,"displayCrop",false);
+        [~,DWx_Ph0,DWy_Ph0] = QLSIprocess(Itf_Ph0,IL(ii).lambda,"displayCrop",false,"definition","high","computeT",0,"computeW",0);
         DWx = DWx_error - DWx_Ph0;
         DWy = DWy_error - DWy_Ph0;
         figure
@@ -340,6 +349,7 @@ for ii = 1:Nf
         imagegb(DWx_Ph0)
         clim([minc, maxc])
         title('zero W gradients')
+        drawnow
     else % opt.darkZoneCorrection ∈ ]0, 1[ is the threshold
         % method that sets dWX and dWy to 0
         dzc = opt.darkZoneCorrection;
@@ -394,10 +404,17 @@ for ii = 1:Nf
             W = intgrad_CPM(DWx,DWy);
         elseif strcmpi(opt.method,'Errico')
             W = intgrad2(DWx,DWy);
+        elseif strcmpi(opt.method,'ASDI')
+            mg = 0; % margin
+            DWxLarge = [-DWx(end-mg:-1:1+mg,end-mg:-1:1+mg),-DWx(end-mg:-1:1+mg,1+mg:end-mg) ;
+                         DWx(1+mg:end-mg,end-mg:-1:1+mg) ,   DWx(1+mg:end-mg,   1+mg:end-mg)];
+            DWyLarge = [-DWy(end-mg:-1:1+mg,end-mg:-1:1+mg), DWy(end-mg:-1:1+mg,1+mg:end-mg) ;
+                        -DWy(1+mg:end-mg,end-mg:-1:1+mg) ,   DWy(1+mg:end-mg,   1+mg:end-mg)];
+            WLarge = intgrad_CPM(DWxLarge,DWyLarge);
+            W = WLarge(size(DWxLarge,1)/2+1:end,size(DWxLarge,2)/2+1:end);  
         elseif strcmpi(opt.method,'Tikhonov')
-    
-        N = 13;
-        Tikh = 1e-5;
+            N = 13;
+            Tikh = 1e-5;
     
             if (size(DWx,1)~=Nx0 || size(DWy,2)~=Ny0) && isempty(opt.Smatrix)  % if first time S calculation (Nx0 and Ny0 not yet defined), but not if S already exists because specified by the user
                 x = (1:size(DWx,2))';
