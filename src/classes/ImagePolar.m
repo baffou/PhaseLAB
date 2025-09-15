@@ -326,7 +326,18 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         function val = Microscope(obj)
             val = obj.IM(1).Microscope;
         end
-        
+
+        function adjustPolarOffsets(obj,method,opt)
+            arguments
+                obj
+                method {mustBeMember(method,{'manual','auto','Manual','Auto'})} = 'Auto'
+                opt.pause = false
+            end
+
+            obj.IM.adjustPolarOffsets(method,'pause',opt.pause)
+
+        end
+
         function export(obj,path,opt)
             arguments
                 obj
