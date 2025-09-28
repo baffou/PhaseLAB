@@ -8,7 +8,7 @@ arguments
     opt.twoPoints logical = false
     opt.params double = double.empty()
     opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
-    opt.app = [] % figure uifigure object to be considered in case the image is already open
+    opt.hfig matlab.ui.Figure = matlab.ui.Figure.empty() % figure object to be considered in case the image is already open
     opt.displayT logical = false
     opt.colormap = parula
     opt.even = true % image dimensions are even
@@ -25,7 +25,8 @@ if isempty(opt.params)
         'shape',opt.shape, ...
         'displayT',opt.displayT, ...
         'colormap',opt.colormap, ...
-        'even',opt.even);
+        'even',opt.even, ...
+        'hfig', opt.hfig);
     params=[x1, x2, y1, y2];
 else
     x1 = opt.params(1);
