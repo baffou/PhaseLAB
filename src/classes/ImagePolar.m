@@ -14,6 +14,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
 
     properties
         rgb_bg0 char {mustBeMember(rgb_bg0,{'white','black'})} = 'black'  % smoothed if smoothing ≠ 0
+        calcSjMode  char {mustBeMember(calcSjMode,{'Tj','Ej'})} = 'Tj'
     end
 
     properties (Access = {?Methods})
@@ -91,23 +92,52 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             val = s * 1i * sqrt(obj.IM(3).T).*exp(1i*obj.IM(3).Ph);
         end
 
+        function setCalcSjMode(obj,val)
+            arguments
+                obj
+                val char {mustBeMember(val,{'Tj','Ej'})} = 'Tj'
+            end
+            Nim = numel(obj);
+            for ii = 1:Nim
+                obj(ii).calcSjMode = val;
+            end
+        end
+
         function val = get.S0(obj)
-            val = abs(obj.Ex).^2 + abs(obj.Ey).^2;
+            switch obj.calcSjMode
+                case 'Tj'
+                    val = obj.IM(1).T + obj.IM(3).T;
+                case 'Ej'
+                    val = abs(obj.Ex).^2 + abs(obj.Ey).^2;
+            end
         end
         
         function val = get.S1(obj)
-%            val = abs(obj.Ex).^2 - abs(obj.Ey).^2;
-            val = obj.IM(1).T - obj.IM(3).T;
+            switch obj.calcSjMode
+                case 'Tj'
+                    val = obj.IM(1).T - obj.IM(3).T;
+                case 'Ej'
+                    val = abs(obj.Ex).^2 - abs(obj.Ey).^2;
+            end
         end
         
         function val = get.S2(obj)
-            %val =  2*real(obj.Ex.*conj(obj.Ey));
-            val = obj.IM(2).T - obj.IM(4).T;
-            
+            switch obj.calcSjMode
+                case 'Tj'
+                    val = obj.IM(2).T - obj.IM(4).T;
+                case 'Ej'
+                    val = 2*real(obj.Ex.*conj(obj.Ey));
+            end
         end
         
         function val = get.S3(obj)
-            val = -2*imag(obj.Ex.*conj(obj.Ey));
+            switch obj.calcSjMode
+                case 'Tj'
+                    hel = -sign(obj.IM0(1).Illumination.S3);
+                    val = hel*sqrt(obj.S0.^2-obj.S1.^2-obj.S2.^2);
+                case 'Ej'
+                    val = -2*imag(obj.Ex.*conj(obj.Ey));
+            end
         end
         
         function val = get.L(obj)

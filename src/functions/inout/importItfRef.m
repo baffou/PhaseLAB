@@ -122,6 +122,9 @@ else % Automatic selection
         end
     elseif strcmpi(acquisitionSoftware,'polarCGMcontrol')
         ItfFileList = dir([folder opt.nickname 'ITF*.tif']);
+        if isempty(ItfFileList)
+            ItfFileList= dir([folder opt.nickname 'ITF*.txt']);
+        end
         ItfFileNames0 = {ItfFileList.name};
         Nif = numel(ItfFileNames0);
 

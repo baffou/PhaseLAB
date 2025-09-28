@@ -15,6 +15,7 @@ arguments
     opt.remotePath = []
     opt.Tnormalisation = true % or false or 'subtraction'. To be false for a fluorescence image for instance
     opt.RemoveCameraOffset = false
+    opt.darkImage = 0 % dark Image to be removed
     opt.darkZoneCorrection = false
     opt.auto = true % Find automatically the spot of highest intensity
     opt.noRef = false % Do not consider the Ref interferogram to compute the DW and OPD images
@@ -107,13 +108,38 @@ for ii = 1:Nf
         fprintf('Interfero %d / %d, ',ii,Nf)
     end
 
-    % cancels the offset of the camera
+    % handling the offset option
     if isnumeric(opt.RemoveCameraOffset) && opt.RemoveCameraOffset~=1 % an offset is set manually
         offset = opt.RemoveCameraOffset;
     elseif opt.RemoveCameraOffset % if true
         offset = Itf(1).Microscope.CGcam.Camera.offset;
     else
         offset = 0;
+    end
+
+    % handling the darkimage option
+    if any(opt.darkImage ~=0) % if a darkImage has been specified
+        offset = 0; % don't substract the camera offset if a dark image is already subtracted
+        if isa(opt.darkImage,'Interfero')
+            if numel(opt.darkImage) == 1 % if darkImage consists of 1 interfero
+                opt.darkImage = opt.darkImage.Itf; % take the Itf property once and for all
+                darkImage = opt.darkImage;
+            else % if darkImage consists of multiple interferos, typically for Np = 2 or 4
+                if size(opt.darkImage) ~= size(Itf,2)
+                    error('The number of dark interferograms should equal the number of parallel interferos')
+                else
+                    Nd = size(Itf,2);
+                    jj = ceil(ii*Nd/Nf);
+                    darkImage = opt.darkImage(jj).Itf;
+                end
+            end
+        elseif isnumeric(opt.darkImage)
+            % fine
+        else
+            error('Not a proper type for darkImage')
+        end
+    else
+        darkImage = 0;
     end
 
 
@@ -201,18 +227,19 @@ for ii = 1:Nf
         % FIm = fftshift(fft2(Itfi.Itf.*mask));
 
         % 2.
-        FIm = fftshift(fft2(apodization0(Itfi.Itf,apoNpx)));
+        FIm = fftshift(fft2(apodization0(Itfi.Itf-darkImage-offset,apoNpx)));
 
 
 
         if Itfi.Ref.TFapo == apoNpx  % if the apo TF has already been calculated for Ref and matches the one of the Itf
             FRf = Itfi.Ref.TF;
         else   % else calculate the TF of the Ref with apodization
-            Itfi.Ref.computeTF(apoNpx)
+            Itfi.Ref.computeTF(apoNpx,darkImage+offset)
             FRf = Itfi.Ref.TF;
         end
 
     else
+        apoNpx = 0;
         FIm = fftshift(fft2(Itfi.Itf));
         if ~opt.noRef
             FRf = Itfi.Ref.TF;
@@ -222,7 +249,7 @@ for ii = 1:Nf
     end
 
     if isempty(FRf) && ~opt.noRef
-        computeTF(Itfi.Ref);
+        computeTF(Itfi.Ref,apoNpx,darkImage+offset)
         if ~opt.noRef
             FRf = Itfi.Ref.TF;
         else
@@ -253,11 +280,11 @@ for ii = 1:Nf
         Rf_int = ifft2(ifftshift(FRfc));
     
         if strcmpi(opt.Tnormalisation(ii),'subtraction')
-            T = abs(Im_int-offset) - abs(Rf_int-offset);
+            T = abs(Im_int) - abs(Rf_int);
         elseif opt.Tnormalisation(ii)
-            T = abs(Im_int-offset)./abs(Rf_int-offset);
+            T = abs(Im_int)./abs(Rf_int);
         else
-            T = abs(Im_int-offset);
+            T = abs(Im_int);
         end
 
     else

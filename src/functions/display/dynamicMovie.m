@@ -4,7 +4,7 @@
 %% Inputs
 %
 %   h           : handle of the figure previously created by the dynamicFigure function
-%   videoName   : name of the video file to be created
+%   videoName   : name of the video file to be created, mp4 or avi
 %
 % For instance:
 % % Generation of the dynamic figure
@@ -22,6 +22,7 @@
 % % or
 % 
 % dynamicMovie(h,'movieOPD.avi', 'period', 0.02)
+% dynamicMovie(h,'movieOPD.mp4', 'period', 1)
 % 
 
 function dynamicMovie(h, videoName, opt)
@@ -38,7 +39,12 @@ if ~isempty(opt.period)
 end
 
 % create the video writer with 1 fps
-writerObj = VideoWriter(videoName);
+[~, ~, ext] = fileparts(videoName);
+if strcmpi(ext,'mp4')
+    writerObj = VideoWriter(videoName,'MPEG-4');
+else 
+    writerObj = VideoWriter(videoName);
+end
 writerObj.FrameRate = opt.rate;
 % open the video writer
 open(writerObj);

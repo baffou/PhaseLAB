@@ -436,18 +436,23 @@ classdef Interfero < handle & matlab.mixin.Copyable
             else
                 error('The number of Ref interferos does not match the number of interferos')
             end
-            if isempty(obj(1).Ref.TF)
-                %obj(1).Ref.TF = fftshift(fft2(obj(1).Ref.Itf));
-                obj(1).Ref.computeTF();
-            end
+            %if isempty(obj(1).Ref.TF)
+            %    %obj(1).Ref.TF = fftshift(fft2(obj(1).Ref.Itf));
+            %    obj(1).Ref.computeTF();
+            %end
 
         end
 
-        function obj=computeTF(obj,apoNpx) % Computes the TF of an interfero and store it in the TF property
-            if nargin == 1
-                obj.TF = fftshift(fft2(obj.Itf));
-            elseif nargin == 2
-                obj.TF = fftshift(fft2(apodization0(obj.Itf,apoNpx)));
+        function obj=computeTF(obj,apoNpx,darkImage) % Computes the TF of an interfero and store it in the TF property
+            arguments
+                obj
+                apoNpx = 0
+                darkImage = 0
+            end
+            if apoNpx == 0
+                obj.TF = fftshift(fft2(obj.Itf-darkImage));
+            else
+                obj.TF = fftshift(fft2(apodization0(obj.Itf-darkImage,apoNpx)));
                 obj.TFapo=apoNpx;
             end
         end
@@ -883,7 +888,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             % Uses interpolation to keep the same number of pixels
             arguments
                 Im Interfero
-                opt.method {mustBeMember(opt.method,{'regionfill','linear','demosaic'})} = 'demosaic'
+                opt.method {mustBeMember(opt.method,{'regionfill','linear','demosaic'})} = 'linear'
             end
             disp('Split polar')
             Ni = numel(Im);
@@ -1081,6 +1086,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 RefList.removeOffset(val)
             end
         end
+        
 
         function obj = plus(obj1,obj2)
             obj=copy(obj1);
