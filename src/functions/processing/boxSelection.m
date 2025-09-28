@@ -22,6 +22,7 @@ arguments
     opt.params = [] % [x1, x2, y1, y2]
     opt.margin double {mustBeInteger} = 0
     opt.even = true % image dimensions must be even
+    opt.hfig matlab.ui.Figure = matlab.ui.Figure.empty()
     %    opt.figure = []; % figure uifigure object to be considered in case the image is already open
 end
 
@@ -80,10 +81,15 @@ else
 
     if displayOn
         if isnumeric(im)
-            h=figure;
-            imagegb(im,opt.colormap)
-            h.UserData.Axes = gca;
-            fullscreen
+            if isempty(opt.hfig)
+                h=figure;
+                imagegb(im,opt.colormap)
+                h.UserData.Axes = gca;
+                fullscreen
+            else
+                h = opt.hfig;
+            end
+
         elseif isapp % is im an app, PhaseLABgui, or PhaseLABgui_multiCanal
             h = app.UIFigure;
             % Check Matlab version, throw error if prior to r2020b
@@ -242,11 +248,13 @@ else
         y2 = floor(yc_px-Size_px(2)/2+Size_px(2));
 
         if displayOn
-            if ~isapp
-                pause(0.5)
+            if ~isapp && isempty(opt.hfig)
+                pause(0.1)
                 close(h)
             else
-                app.UIFigure.HandleVisibility = fhv;    % return original state
+                if isempty(opt.hfig)
+                    app.UIFigure.HandleVisibility = fhv;    % return original state
+                end
             end
         end
 

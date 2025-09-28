@@ -183,7 +183,7 @@ function updateImages(h)
     nx = h.UserData.nm(2);
     ny = h.UserData.nm(1);
     for ip = 1:Npanels
-        subplot(ny,nx,ip);
+        h.UserData.Axes(ip) = subplot(ny,nx,ip);
         h.UserData.dispfun{ip}(h.UserData.function{ip}(h.UserData.imageList{ip}{nIm})) % imagesc(...
         title(h.UserData.titleList{ip})
         if ~isempty(h.UserData.range)

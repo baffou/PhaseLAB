@@ -509,7 +509,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.timeUnit char {mustBeMember(opt.timeUnit,{'s','min','h'})} = 's'
                 opt.timeFontSize = []
                 opt.timeFontColor = [0, 0, 0]
-                opt.timeSize
             end
 
             % create the video writer with 1 fps
