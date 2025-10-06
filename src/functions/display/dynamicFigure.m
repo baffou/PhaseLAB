@@ -190,7 +190,7 @@ function updateImages(h)
             clim(h.UserData.range{ip})
         end
     end
-    h.Name = num2str(nIm);
+    h.Name = num2str(nIm)+"/"+num2str(h.UserData.Nim);
 
 end
 

@@ -944,8 +944,8 @@ classdef ImageQLSI   <   ImageMethods
             end
 
             for ii = 1:Nim
-                Ex =      IM(ii,1).E.*exp(1i*IM(ii,1).Ph);
-                Ey = hand*IM(ii,3).E.*exp(1i*IM(ii,3).Ph); % Assumes here a given handedness, but could be the opposite
+                Ex =      IM(ii,1).E.*exp(1i*IM(ii,1).Ph) * norm(IM(1).Illumination.polar(1));
+                Ey = hand*IM(ii,3).E.*exp(1i*IM(ii,3).Ph) * norm(IM(1).Illumination.polar(1)); % Assumes here a given handedness, but could be the opposite
                 Ez = Ey*0;
                 if isempty(IMref)
                     IMout(ii) = ImageEM(Ex, Ey, Ez);

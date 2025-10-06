@@ -298,7 +298,10 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             obj.retardanceMax = convert_nm(val);
         end
 
-
+        function set.dichroMax(obj, val)
+            % converts in [m] in case the norm factor is entered in [nm]
+            obj.dichroMax = val;
+        end
 
         function set_retMax(obj, val)
             if val >1e-3 % value in [nm]
@@ -314,6 +317,13 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             Nim = numel(obj);
             for nim = 1:Nim
                 obj(nim).e2Max = val;
+            end
+        end
+
+        function set_dichroMax(obj, val)
+            Nim = numel(obj);
+            for nim = 1:Nim
+                obj(nim).dichroMax = val;
             end
         end
 
