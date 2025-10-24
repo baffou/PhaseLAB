@@ -146,7 +146,96 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             objs.Einc.Ex = obj1.Einc.Ex + obj2.Einc.Ex;
             objs.Einc.Ey = obj1.Einc.Ey + obj2.Einc.Ey;
             objs.Einc.Ez = obj1.Einc.Ez + obj2.Einc.Ez;
+            IL1 = obj1.Illumination;
+            IL2 = obj2.Illumination;
+            objs.Illumination = Illumination(IL1(1).lambda,IL1(1).Medium,IL1.I+IL2.I,IL1.polar+IL2.polar);
         end
+
+        function objs = mtimes(obj1,obj2)
+            % coherent sum of the fields, with a phase shift of pi/2 for the second field
+            % or simple multiplication by a scalar            
+            if isnumeric(obj1)
+                objs = copy(obj2);
+                val = obj1;
+                objs.Ex = val*obj2.Ex;
+                objs.Ey = val*obj2.Ey;
+                objs.Ez = val*obj2.Ez;
+                objs.Einc = copy(obj2.Einc);
+                objs.Einc.Ex = val*obj2.Einc.Ex;
+                objs.Einc.Ey = val*obj2.Einc.Ey;
+                objs.Einc.Ez = val*obj2.Einc.Ez;
+                objs.Illumination = copy(obj2.Illumination);
+                objs.Illumination.I = obj2.Illumination.I*val;
+            elseif isnumeric(obj2)
+                objs = copy(obj1);
+                val = obj2;
+                objs.Ex = val*obj1.Ex;
+                objs.Ey = val*obj1.Ey;
+                objs.Ez = val*obj1.Ez;
+                objs.Einc = copy(obj1.Einc);
+                objs.Einc.Ex = val*obj1.Einc.Ex;
+                objs.Einc.Ey = val*obj1.Einc.Ey;
+                objs.Einc.Ez = val*obj1.Einc.Ez;
+                objs.Illumination = copy(obj1.Illumination);
+                objs.Illumination.I = obj1.Illumination.I*val;
+            else
+                objs = copy(obj1);
+                objs.Ex = obj1.Ex + 1i*obj2.Ex;
+                objs.Ey = obj1.Ey + 1i*obj2.Ey;
+                objs.Ez = obj1.Ez + 1i*obj2.Ez;
+                objs.Einc = copy(obj1.Einc);
+                objs.Einc.Ex = obj1.Einc.Ex + 1i*obj2.Einc.Ex;
+                objs.Einc.Ey = obj1.Einc.Ey + 1i*obj2.Einc.Ey;
+                objs.Einc.Ez = obj1.Einc.Ez + 1i*obj2.Einc.Ez;
+                IL1 = obj1.Illumination;
+                IL2 = obj2.Illumination;
+                objs.Illumination = Illumination(IL1(1).lambda,IL1(1).Medium,IL1.I+IL2.I,IL1.polar+1i*IL2.polar);
+            end
+        end
+
+
+        function objs = mrdivide(obj1,obj2)
+            % coherent sum of the fields, with a phase shift of -pi/2 for the second field
+            % or simple division by a scalar
+            if isnumeric(obj1)
+                objs = copy(obj2);
+                val = obj1;
+                objs.Ex = obj2.Ex/val;
+                objs.Ey = obj2.Ey/val;
+                objs.Ez = obj2.Ez/val;
+                objs.Einc = copy(obj2.Einc);
+                objs.Einc.Ex = obj2.Einc.Ex/val;
+                objs.Einc.Ey = obj2.Einc.Ey/val;
+                objs.Einc.Ez = obj2.Einc.Ez/val;
+                objs.Illumination = copy(obj2.Illumination);
+                objs.Illumination.I = obj2.Illumination.I/val;
+            elseif isnumeric(obj2)
+                objs = copy(obj1);
+                val = obj2;
+                objs.Ex = obj1.Ex/val;
+                objs.Ey = obj1.Ey/val;
+                objs.Ez = obj1.Ez/val;
+                objs.Einc = copy(obj1.Einc);
+                objs.Einc.Ex = obj1.Einc.Ex/val;
+                objs.Einc.Ey = obj1.Einc.Ey/val;
+                objs.Einc.Ez = obj1.Einc.Ez/val;
+                objs.Illumination = copy(obj1.Illumination);
+                objs.Illumination.I = obj1.Illumination.I/val;
+            else
+                objs = copy(obj1);
+                objs.Ex = obj1.Ex - 1i*obj2.Ex;
+                objs.Ey = obj1.Ey - 1i*obj2.Ey;
+                objs.Ez = obj1.Ez - 1i*obj2.Ez;
+                objs.Einc = copy(obj1.Einc);
+                objs.Einc.Ex = obj1.Einc.Ex - 1i*obj2.Einc.Ex;
+                objs.Einc.Ey = obj1.Einc.Ey - 1i*obj2.Einc.Ey;
+                objs.Einc.Ez = obj1.Einc.Ez - 1i*obj2.Einc.Ez;
+                IL1 = obj1.Illumination;
+                IL2 = obj2.Illumination;
+                objs.Illumination = Illumination(IL1(1).lambda,IL1(1).Medium,IL1.I+IL2.I,IL1.polar-1i*IL2.polar);
+            end
+        end
+
 
         function objs = sum(objList) % coherent sum of the fields
             objs = copy(objList(1));

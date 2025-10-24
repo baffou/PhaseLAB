@@ -447,6 +447,10 @@ classdef ImageQLSI   <   ImageMethods
             % computes the average image of a list of ImageQLSI objects.
             Nim = size(IM,1);
             No = size(IM,2);
+            if Nim == 1
+                IMout = mean(IM');
+                return
+            end
             IMout = ImageQLSI(No)';
             for io = 1:No
                 OPDsum = 0;
@@ -658,7 +662,96 @@ classdef ImageQLSI   <   ImageMethods
                 val = median(bound);
             end
         end        
-       
+
+        function [obj, params] = normT(obj0,opt)
+            % applies a factor to the T image so that the average value of
+            % the selected area is 1.
+            arguments
+                obj0
+                opt.method (1,:) char {mustBeMember(opt.method,{'mean','average','median','boundaryMedian'})}= 'mean'
+                % parameters for boxSelection()
+                opt.xy1 = []
+                opt.xy2 = []
+                opt.Center = 'Auto' % 'Auto', 'Manual' or [x, y]
+                opt.Size = 'Auto' % 'Auto', 'Manual', d or [dx, dy]
+                opt.twoPoints logical = false
+                opt.params double = double.empty() % = [x1, x2, y1, y2]
+                opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'Rectangle'
+                opt.app matlab.apps.AppBase = PhaseLABgui.empty()
+            end
+
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+
+            sizeIm = [0 0]; 
+            for io = 1:numel(obj)
+                if ~isempty(opt.app)
+                    opt.app.displayMessage(io+"/"+numel(obj),"color",opt.app.warnColor)
+                else
+                    printLoop(io,numel(obj))
+                end
+                if sum(sizeIm ~= size(obj(io).OPD)) % if the size of the image is not the same as the previous one
+                    if isempty(opt.params)
+                        if numel(obj)>1
+                            opt.imNumber = io;
+                        end
+                        if ~isempty(opt.app)
+                            boxObj = opt.app;
+                        else
+                            boxObj = obj;
+                        end
+
+                        [x1, x2, y1, y2] = boxSelection(boxObj,'xy1',opt.xy1, ...
+                                                            'xy2',opt.xy2, ...
+                                                            'Center',opt.Center, ...
+                                                            'Size',opt.Size, ...
+                                                            'twoPoints',opt.twoPoints, ...
+                                                            'params',opt.params, ...
+                                                            'shape',opt.shape, ...
+                                                            'axes','Right');
+                        params=[x1, x2, y1, y2];
+                    else
+                        x1 = opt.params(1);
+                        x2 = opt.params(2);
+                        y1 = opt.params(3);
+                        y2 = opt.params(4);
+                        params=opt.params;
+                    end
+                end
+
+                sizeIm = size(obj(io).OPD);
+
+                if strcmpi(opt.method,'mean') || strcmpi(opt.method,'average')
+                    normFunction = @(im) mean(im(:));
+                elseif strcmpi(opt.method,'median')
+                    normFunction = @(im) median(im(:));
+                elseif strcmpi(opt.method,'boundaryMedian')
+                    normFunction = @(im) boundaryMedian(im);
+                else
+                    error('unkown option')
+                end
+
+                obj(io).T = obj(io).T/normFunction(obj(io).T(y1:y2,x1:x2));
+                if ~isempty(opt.app)
+                    opt.app.updateImages()
+                end
+
+            end
+
+            function val = boundaryMedian(im)
+                top=im(end,:);
+                bottom=im(1,:);
+                left=im(2:end-1,1);
+                right=im(2:end-1,end);
+                bound=[top(:);bottom(:);left(:);right(:)];
+                val = median(bound);
+            end
+        end        
+
+
         function IMout = plus(IM1,IM2)
 
             avg1 = IM1.avgIm;

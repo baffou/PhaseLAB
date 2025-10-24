@@ -152,16 +152,18 @@ classdef Dipole
         end
 
         function  val = get.alphaTensor(obj) 
-            if length(obj.alpha) == 1
+            if numel(obj.alpha) == 1
                 tens = [obj.alpha 0 0
                         0 obj.alpha 0
                         0 0 obj.alpha];
-            elseif length(obj.alpha) == 3
+            elseif numel(obj.alpha) == 3
                 tens = [obj.alpha(1) 0 0
                         0 obj.alpha(2) 0
                         0 0 obj.alpha(3)];
+            elseif numel(obj.alpha) == 9
+                tens = obj.alpha;
             end
-            val = obj.RotMat*tens*transpose(obj.RotMat);
+            val = transpose(obj.RotMat)*tens*obj.RotMat;
         end
 
         function  val = get.eps(obj)
@@ -275,16 +277,16 @@ classdef Dipole
             end
         end
 
-        function obj = rotate(obj,theta,opt)
+        function obj = rotate(obj,thetad,opt)
             %obj.rotate(thetaDeg,axis,point)
             arguments
                 obj
-                theta double
+                thetad double
                 opt.axis {mustBeMember(opt.axis,["x","y","z"])} = "z"
                 opt.center = []
             end
 
-            if theta*1000 ~= round(theta*1000)
+            if thetad*1000 ~= round(thetad*1000)
                 warning('The rotation angle input must be in degrees, not in radians. Are you sure it is?')
             end
 
@@ -299,17 +301,17 @@ classdef Dipole
                 case 'x'
                     R = ...
                     [1 0           0
-                     0 cosd(theta) -sind(theta)
-                     0 sind(theta)  cosd(theta)];
+                     0 cosd(thetad) -sind(thetad)
+                     0 sind(thetad)  cosd(thetad)];
                 case 'y'
                     R = ...
-                    [cosd(theta) 0 sind(theta)
+                    [cosd(thetad) 0 sind(thetad)
                      0          1 0
-                    -sind(theta) 0 cosd(theta)];
+                    -sind(thetad) 0 cosd(thetad)];
                 case 'z'
                     R = ...
-                    [cosd(theta) -sind(theta) 0
-                     sind(theta)  cosd(theta) 0
+                    [cosd(thetad) -sind(thetad) 0
+                     sind(thetad)  cosd(thetad) 0
                      0           0          1];
             end
             obj = obj.moveBy(-opt.center);

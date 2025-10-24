@@ -187,7 +187,9 @@ function updateImages(h)
         h.UserData.dispfun{ip}(h.UserData.function{ip}(h.UserData.imageList{ip}{nIm})) % imagesc(...
         title(h.UserData.titleList{ip})
         if ~isempty(h.UserData.range)
-            clim(h.UserData.range{ip})
+            if ~isempty(h.UserData.range{ip})
+                clim(h.UserData.range{ip})
+            end
         end
     end
     h.Name = num2str(nIm)+"/"+num2str(h.UserData.Nim);

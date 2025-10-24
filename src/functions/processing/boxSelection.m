@@ -23,6 +23,7 @@ arguments
     opt.margin double {mustBeInteger} = 0
     opt.even = true % image dimensions must be even
     opt.hfig matlab.ui.Figure = matlab.ui.Figure.empty()
+    opt.axes char {mustBeMember(opt.axes,{'Left','Right'})} = 'Left'
     %    opt.figure = []; % figure uifigure object to be considered in case the image is already open
 end
 
@@ -100,7 +101,7 @@ else
             app.UIFigure.HandleVisibility = 'callback'; % Temp change (or, 'on')
             set(0, 'CurrentFigure', app.UIFigure)       % Make fig current
             h.UserData.Axes = [app.AxesLeft, app.AxesRight];
-            axes(app.AxesLeft)
+            axes(app.("Axes"+opt.axes))
         elseif isa(im,'ImageMethods')
             Np = size(im,2);
             if opt.displayT

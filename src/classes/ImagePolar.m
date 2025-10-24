@@ -43,6 +43,9 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         e2 % squared eccentricity
         rgbImageEllipse
 
+        ex
+        ey
+
         % biref/retardance params
         theta0
         phibar
@@ -84,7 +87,12 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         end
 
         function val = get.Ex(obj)
-            val =      sqrt(obj.IM(1).T).*exp(1i*obj.IM(1).Ph);
+           switch obj.calcSjMode
+                case 'Tj'
+                    val = obj.IM(1).T + obj.IM(3).T;
+                case 'Ej'
+                    val = sqrt(obj.IM(1).T).*exp(1i*obj.IM(1).Ph);
+           end
         end
 
         function val = get.Ey(obj)
@@ -139,6 +147,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                     val = -2*imag(obj.Ex.*conj(obj.Ey));
             end
         end
+
         
         function val = get.L(obj)
             val = obj.S1 + 1i*obj.S2;
