@@ -46,20 +46,10 @@ elseif size(alphaL,2) ~= 2
     error('the alpha values must have 2 or 4 components')
 end
 
-exL = alphaR(1);
-eyL = alphaR(2);
-exR = alphaL(1);
-eyR = alphaL(2);
-
-% DL = exL-1i*eyL;
-% SL = exL+1i*eyL;
-% DR = exR-1i*eyR;
-% SR = exR+1i*eyR;
-
-SL = exL+eyL;
-DL = exL-eyL;
-DR = exR-eyR;
-SR = exR+eyR;
+SR = alphaR(1)+alphaR(2);
+DR = alphaR(1)-alphaR(2);
+DL = alphaL(1)-alphaL(2);
+SL = alphaL(1)+alphaL(2);
 
 % SL-DR = -1i*2*sin(2*theta)*(sx - sy)
 % SL+DR =     2*cos(2*theta)*(sx - sy)

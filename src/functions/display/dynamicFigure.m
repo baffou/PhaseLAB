@@ -19,7 +19,10 @@ Npanels = Np2/2; % number of panels
 
 h = figure(WindowKeyPressFcn=@figureCallback);
 h.UserData.titleList = cell(1,1);
+h.UserData.sgtitleList = cell(1,1);
 h.UserData.range = cell.empty();
+
+h.UserData.axesVisibility = 'none';
 
 % defining the list of display functions
 notAdisplay = 0; % Number of keywords that are not a display, such a 'titles'
@@ -51,6 +54,9 @@ for ii = 1:Npanels
         case {'titles', 'title', 'Title','Titles'}
             h.UserData.titleList = varargin{2*ii};
             notAdisplay = notAdisplay + 1;
+        case {'sgtitles', 'sgtitle', 'sgTitle','sgTitles','headTitles','headTitle'}
+            h.UserData.sgtitleList = varargin{2*ii};
+            notAdisplay = notAdisplay + 1;
         case {'pattern','nm'}
             h.UserData.nm = varargin{2*ii};
             notAdisplay = notAdisplay + 1;
@@ -59,6 +65,13 @@ for ii = 1:Npanels
             notAdisplay = notAdisplay + 1;
         case {'functions','function','Function','Functions','Func','func','Fun','fun'}
             h.UserData.function = varargin{2*ii};
+            notAdisplay = notAdisplay + 1;
+        case {'AxesVisible'}
+            if strcmpi(varargin{2*ii},'none') || strcmpi(varargin{2*ii},'off')
+                h.UserData.axesVisibility = 'none';
+            else
+                h.UserData.axesVisibility = [0.15 0.15 0.15];
+            end
             notAdisplay = notAdisplay + 1;
         otherwise
             error("This keyword is not recognized: "+varargin{2*ii-1})
@@ -191,8 +204,13 @@ function updateImages(h)
                 clim(h.UserData.range{ip})
             end
         end
+        h.UserData.Axes(ip).XColor = h.UserData.axesVisibility;
+        h.UserData.Axes(ip).YColor = h.UserData.axesVisibility;
     end
     h.Name = num2str(nIm)+"/"+num2str(h.UserData.Nim);
+    if ~isempty(h.UserData.sgtitleList{1})
+        sgtitle(h.UserData.sgtitleList{nIm})
+    end
 
 end
 

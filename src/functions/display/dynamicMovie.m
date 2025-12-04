@@ -32,6 +32,7 @@ arguments
     videoName
     opt.rate = 1.5
     opt.period = []
+    opt.labels = []
 end
 
 if ~isempty(opt.period)
@@ -40,7 +41,7 @@ end
 
 % create the video writer with 1 fps
 [~, ~, ext] = fileparts(videoName);
-if strcmpi(ext,'mp4')
+if strcmpi(ext,'mp4') || strcmpi(ext,'.mp4')
     writerObj = VideoWriter(videoName,'MPEG-4');
 else 
     writerObj = VideoWriter(videoName);
@@ -56,6 +57,14 @@ for u=1:numel(IM)
     drawnow
     writeVideo(writerObj, frame);
     h.UserData.changeImage(h,+1)
+    if ~isempty(opt.labels)
+        hsg = sgtitle(opt.labels{u});
+    end
     drawnow
 
 end
+
+if ~isempty(opt.labels)
+    delete(hsg);
+end
+

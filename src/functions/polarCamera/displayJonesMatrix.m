@@ -2,7 +2,6 @@ function hfig0 = displayJonesMatrix(J,opt)
 arguments
     J double
     opt.Name = 'J matrix'
-
 end
 
 if numel(size(J)) == 2

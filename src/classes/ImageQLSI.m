@@ -445,9 +445,14 @@ classdef ImageQLSI   <   ImageMethods
                 opt.Tsum logical = false
             end
             % computes the average image of a list of ImageQLSI objects.
+            if numel(IM) == 1
+                IMout = copy(IM);
+                return
+            end
+
             Nim = size(IM,1);
             No = size(IM,2);
-            if Nim == 1
+            if Nim == 1 % transform into column vector
                 IMout = mean(IM');
                 return
             end
@@ -474,7 +479,9 @@ classdef ImageQLSI   <   ImageMethods
                 IMout(io) = ImageQLSI(INT,OPDn,IM(1).Microscope,IM(1).Illumination);
                 IMout(io).DWx0 = DWxn;
                 IMout(io).DWy0 = DWyn;
-                IMout(io).Microscope = IM.Microscope;
+                IMout(io).Microscope = IM(1,io).Microscope;
+                IMout(io).pxSizeCorrection = IM(1,io).pxSizeCorrection;
+                IMout(io).binningFactor = IM(1,io).binningFactor;
                 IMout(io).TfileName = 'Average images';
                 IMout(io).OPDfileName = 'Average images';
             end
@@ -647,9 +654,9 @@ classdef ImageQLSI   <   ImageMethods
                 end
 
                 obj(io).OPD = obj(io).OPD-offsetFunction(obj(io).OPD(y1:y2,x1:x2)) + opt.value;
-                if ~isempty(opt.app)
-                    opt.app.updateImages()
-                end
+                %if ~isempty(opt.app)
+                %    opt.app.updateImages()
+                %end
 
             end
 
@@ -735,9 +742,9 @@ classdef ImageQLSI   <   ImageMethods
                 end
 
                 obj(io).T = obj(io).T/normFunction(obj(io).T(y1:y2,x1:x2));
-                if ~isempty(opt.app)
-                    opt.app.updateImages()
-                end
+                % if ~isempty(opt.app)
+                %     opt.app.updateImages()
+                % end
 
             end
 
@@ -928,6 +935,7 @@ classdef ImageQLSI   <   ImageMethods
 
         function [objList2,mask0] = removeFringes(objList,mask)
             No = numel(objList);
+            
             if nargout
                 objList2 = copy(objList);
             else
@@ -1014,12 +1022,13 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
-        function IMout = ImageEM(IM,IMref)
+        function IMout = ImageEM(IM,IMref,opt)
             % converts a polarization resolved, experimental set of QLSI
             % images into a ImageEM object.
             arguments
                 IM (:,4) ImageQLSI
-                IMref  = []
+                IMref = []
+                opt.ph = 1 % phase correction, just to test a misdetermination of the grating camera distance
             end
             Nim = size(IM,1);
             IMout = ImageEM(Nim);
@@ -1037,11 +1046,11 @@ classdef ImageQLSI   <   ImageMethods
             end
 
             for ii = 1:Nim
-                Ex =      IM(ii,1).E.*exp(1i*IM(ii,1).Ph) * norm(IM(1).Illumination.polar(1));
-                Ey = hand*IM(ii,3).E.*exp(1i*IM(ii,3).Ph) * norm(IM(1).Illumination.polar(1)); % Assumes here a given handedness, but could be the opposite
+                Ex =      IM(ii,1).E.*exp(1i*IM(ii,1).Ph*opt.ph) * norm(IM(1).Illumination.polar(1));
+                Ey = hand*IM(ii,3).E.*exp(1i*IM(ii,3).Ph*opt.ph) * norm(IM(1).Illumination.polar(1)); % Assumes here a given handedness, but could be the opposite
                 Ez = Ey*0;
                 if isempty(IMref)
-                    IMout(ii) = ImageEM(Ex, Ey, Ez);
+                    IMout(ii) = ImageEM(Ex, Ey, Ez, [1,hand,0]/sqrt(2));
                 else
                     dphx = exp(1i*angle(IMref.Ex));
                     dphy = exp(1i*angle(IMref.Ey));

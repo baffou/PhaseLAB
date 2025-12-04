@@ -15,6 +15,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
     properties
         rgb_bg0 char {mustBeMember(rgb_bg0,{'white','black'})} = 'black'  % smoothed if smoothing ≠ 0
         calcSjMode  char {mustBeMember(calcSjMode,{'Tj','Ej'})} = 'Tj'
+        dphi0 = 1 % artificial phase shift on both axes to simulated a missdetermination of the grating camera distance
     end
 
     properties (Access = {?Methods})
@@ -87,17 +88,17 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         end
 
         function val = get.Ex(obj)
-           switch obj.calcSjMode
-                case 'Tj'
-                    val = obj.IM(1).T + obj.IM(3).T;
-                case 'Ej'
-                    val = sqrt(obj.IM(1).T).*exp(1i*obj.IM(1).Ph);
-           end
+           % switch obj.calcSjMode
+           %      case 'Tj'
+           %          val = obj.IM(1).T + obj.IM(3).T;
+           %      case 'Ej'
+                    val = sqrt(obj.IM(1).T).*exp(1i*obj.IM(1).Ph*obj.dphi0);
+           % end
         end
 
         function val = get.Ey(obj)
             s = -sign(obj.Illumination.S3/obj.Illumination.S0); % negative sign, because it seems that this way the ellipse turns in the right direction, according to the rotation of the sample
-            val = s * 1i * sqrt(obj.IM(3).T).*exp(1i*obj.IM(3).Ph);
+            val = s * 1i * sqrt(obj.IM(3).T).*exp(1i*obj.IM(3).Ph*obj.dphi0);
         end
 
         function setCalcSjMode(obj,val)
@@ -114,27 +115,27 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         function val = get.S0(obj)
             switch obj.calcSjMode
                 case 'Tj'
-                    val = obj.IM(1).T + obj.IM(3).T;
+                    val = (obj.IM(1).T + obj.IM(3).T)/2;
                 case 'Ej'
-                    val = abs(obj.Ex).^2 + abs(obj.Ey).^2;
+                    val = (abs(obj.Ex).^2 + abs(obj.Ey).^2)/2;
             end
         end
         
         function val = get.S1(obj)
             switch obj.calcSjMode
                 case 'Tj'
-                    val = obj.IM(1).T - obj.IM(3).T;
+                    val = (obj.IM(1).T - obj.IM(3).T)/2;
                 case 'Ej'
-                    val = abs(obj.Ex).^2 - abs(obj.Ey).^2;
+                    val = (abs(obj.Ex).^2 - abs(obj.Ey).^2)/2;
             end
         end
         
         function val = get.S2(obj)
             switch obj.calcSjMode
                 case 'Tj'
-                    val = obj.IM(2).T - obj.IM(4).T;
+                    val = (obj.IM(2).T - obj.IM(4).T)/2;
                 case 'Ej'
-                    val = 2*real(obj.Ex.*conj(obj.Ey));
+                    val = (2*real(obj.Ex.*conj(obj.Ey)))/2;
             end
         end
         
@@ -144,7 +145,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                     hel = -sign(obj.IM0(1).Illumination.S3);
                     val = hel*sqrt(obj.S0.^2-obj.S1.^2-obj.S2.^2);
                 case 'Ej'
-                    val = -2*imag(obj.Ex.*conj(obj.Ey));
+                    val = -2*imag(obj.Ex.*conj(obj.Ey))/2;
             end
         end
 
@@ -178,7 +179,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             end
             hsvImage = zeros(obj.Ny, obj.Nx, 3);
             hsvImage(:,:,1) = obj.thetaEllipse/pi;
-            hsvImage(:,:,2+corr) = sqrt(obj.e2/obj.e2Max);
+            hsvImage(:,:,2+corr) = obj.e2/obj.e2Max;
             hsvImage(:,:,3-corr) = ones(obj.Ny,obj.Nx);
 
             val = hsv2rgb(hsvImage);
@@ -201,7 +202,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             end
 
             img = (obj.IM(1).Ph + obj.IM(2).Ph ...
-                 + obj.IM(3).Ph + obj.IM(4).Ph)/4;
+                 + obj.IM(3).Ph + obj.IM(4).Ph)/4*obj.dphi0;
 
         end
 
@@ -220,8 +221,8 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                 obj
             end
 
-            img = mod(0.5*angle((obj.IM(1).Ph-obj.IM(3).Ph) ...
-                   + 1i*(obj.IM(2).Ph-obj.IM(4).Ph)),pi);
+            img = mod(0.5*angle((obj.IM(1).Ph*obj.dphi0-obj.IM(3).Ph*obj.dphi0) ...
+                   + 1i*(obj.IM(2).Ph*obj.dphi0-obj.IM(4).Ph*obj.dphi0)),pi);
 
         end
 
@@ -240,10 +241,10 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                 obj
             end
             phib = obj.phibar;
-            img = sqrt(abs((obj.IM(4).Ph-phib) ...
-                         .*(obj.IM(2).Ph-phib) ...
-                         + (obj.IM(3).Ph-phib) ...
-                         .*(obj.IM(1).Ph-phib)));
+            img = sqrt(abs((obj.IM(4).Ph*obj.dphi0-phib) ...
+                         .*(obj.IM(2).Ph*obj.dphi0-phib) ...
+                         + (obj.IM(3).Ph*obj.dphi0-phib) ...
+                         .*(obj.IM(1).Ph*obj.dphi0-phib)));
 
         end
 
@@ -271,7 +272,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             end
             hsvImage = zeros(obj.Ny, obj.Nx, 3);
             hsvImage(:,:,1) = obj.theta0/pi;
-            hsvImage(:,:,2+corr) = 1/obj.retardanceMax*obj.dphi * obj.Illumination.lambda/(2*pi);
+            hsvImage(:,:,2+corr) = 1/obj.retardanceMax*obj.dphi0 * obj.Illumination.lambda/(2*pi);
             hsvImage(:,:,3-corr) = ones(obj.Ny,obj.Nx);
 
             img = hsv2rgb(hsvImage);
@@ -412,7 +413,9 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                             if opt.formats(iif) == "eps",opt.formats(iif)="epsc";end
                             ext = char(opt.formats(iif));
                             Nt = numel(opt.types);
-                            if Nt > 1
+                            if Nt == 0
+                                error('You must select at least one output type')
+                            elseif Nt > 1
                                 if ~exist('hfig','var')
                                     hfig = figure;
                                     Nt = numel(opt.types);

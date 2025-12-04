@@ -154,30 +154,34 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         function objs = mtimes(obj1,obj2)
             % coherent sum of the fields, with a phase shift of pi/2 for the second field
             % or simple multiplication by a scalar            
-            if isnumeric(obj1)
+            if isnumeric(obj1)                        
                 objs = copy(obj2);
                 val = obj1;
-                objs.Ex = val*obj2.Ex;
-                objs.Ey = val*obj2.Ey;
-                objs.Ez = val*obj2.Ez;
-                objs.Einc = copy(obj2.Einc);
-                objs.Einc.Ex = val*obj2.Einc.Ex;
-                objs.Einc.Ey = val*obj2.Einc.Ey;
-                objs.Einc.Ez = val*obj2.Einc.Ez;
-                objs.Illumination = copy(obj2.Illumination);
-                objs.Illumination.I = obj2.Illumination.I*val;
+                for ip = 1:numel(objs)
+                    objs(ip).Ex = val*obj2(ip).Ex;
+                    objs(ip).Ey = val*obj2(ip).Ey;
+                    objs(ip).Ez = val*obj2(ip).Ez;
+                    objs(ip).Einc = copy(obj2(ip).Einc);
+                    objs(ip).Einc.Ex = val*obj2(ip).Einc.Ex;
+                    objs(ip).Einc.Ey = val*obj2(ip).Einc.Ey;
+                    objs(ip).Einc.Ez = val*obj2(ip).Einc.Ez;
+                    objs(ip).Illumination = copy(obj2(ip).Illumination);
+                    objs(ip).Illumination.I = obj2(ip).Illumination.I*abs(val)^2;
+                end
             elseif isnumeric(obj2)
                 objs = copy(obj1);
                 val = obj2;
-                objs.Ex = val*obj1.Ex;
-                objs.Ey = val*obj1.Ey;
-                objs.Ez = val*obj1.Ez;
-                objs.Einc = copy(obj1.Einc);
-                objs.Einc.Ex = val*obj1.Einc.Ex;
-                objs.Einc.Ey = val*obj1.Einc.Ey;
-                objs.Einc.Ez = val*obj1.Einc.Ez;
-                objs.Illumination = copy(obj1.Illumination);
-                objs.Illumination.I = obj1.Illumination.I*val;
+                for ip = 1:numel(objs)
+                    objs(ip).Ex = val*obj1(ip).Ex;
+                    objs(ip).Ey = val*obj1(ip).Ey;
+                    objs(ip).Ez = val*obj1(ip).Ez;
+                    objs(ip).Einc = copy(obj1(ip).Einc);
+                    objs(ip).Einc.Ex = val*obj1(ip).Einc.Ex;
+                    objs(ip).Einc.Ey = val*obj1(ip).Einc.Ey;
+                    objs(ip).Einc.Ez = val*obj1(ip).Einc.Ez;
+                    objs(ip).Illumination = copy(obj1(ip).Illumination);
+                    objs(ip).Illumination.I = obj1(ip).Illumination.I*abs(val)^2;
+                end
             else
                 objs = copy(obj1);
                 objs.Ex = obj1.Ex + 1i*obj2.Ex;
@@ -192,6 +196,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 objs.Illumination = Illumination(IL1(1).lambda,IL1(1).Medium,IL1.I+IL2.I,IL1.polar+1i*IL2.polar);
             end
         end
+
 
 
         function objs = mrdivide(obj1,obj2)
@@ -665,8 +670,39 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 obj(io).Einc.Ez=obj0(io).Einc.Ez(:,end:-1:1);
             end
 
-        end            
-    
+        end     
+
+        function obj = rotField45(obj0,orientation)
+            % rotate the vectors by 45°. Amounts to changing from (u1,u3)
+            % basis to (u2,u4) (or reciprocally)
+            arguments
+                obj0
+                orientation (1,1) double {mustBeMember(orientation, [-1 1])} = 1
+            end
+
+            if nargout
+                obj = copy(obj0);
+                obj.Einc = copy(obj0.Einc);
+            else
+                obj = obj0;
+            end
+            for io=1:numel(obj0)
+                Ex2 = (obj(io).Ex+obj(io).Ey)/sqrt(2);
+                Ey2 = (-orientation*obj(io).Ex+obj(io).Ey)/sqrt(2);
+                obj(io).Ex = Ex2;
+                obj(io).Ey = Ey2;
+                obj(io).Ez = obj0(io).Ez;
+                if ~isempty(obj(io).Einc)
+                    Ex2 = (obj(io).Einc.Ex+obj(io).Einc.Ey)/sqrt(2);
+                    Ey2 = (-orientation*obj(io).Einc.Ex+obj(io).Einc.Ey)/sqrt(2);
+                    obj(io).Einc.Ex = Ex2;
+                    obj(io).Einc.Ey = Ey2;
+                    obj(io).Einc.Ez = obj0(io).Einc.Ez;
+                end
+            end
+
+        end   
+
         function objList = applyPhaseShift(objList0,phi)
             % applies a phase shift to all the components of a field, but
             % not to its Einc. Useful to articially simulate SLIM imaging.

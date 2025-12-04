@@ -29,6 +29,7 @@ arguments
     opt.computeW = true
     opt.computeT = true
     opt.computeIM = true % false if we only wish to get T, W, DWx, ..., but not the object
+    opt.sizeMustBeEven logical = true
 end
 
 Nf = numel(Itf);
@@ -502,6 +503,15 @@ for ii = 1:Nf
 
     if Nf > 1
         fprintf('\n')
+    end
+
+    if opt.sizeMustBeEven
+        if ~isEven(IM(ii).Nx)
+            IM(ii).crop("xy1",[1,1],"xy2",[IM(ii).Nx-1,IM(ii).Ny]);
+        end
+        if ~isEven(IM(ii).Ny)
+            IM(ii).crop("xy1",[1,1],"xy2",[IM(ii).Nx,IM(ii).Ny-1]);
+        end
     end
 
 end

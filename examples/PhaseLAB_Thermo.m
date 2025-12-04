@@ -27,9 +27,9 @@ IM = Im.QLSIprocess(IL,'definition','low');  % low definition
 
 %% Creation of the temperature medium
 clear Med
-Med(1) = MediumT('BK7',   1e-3, 'progressive');
-Med(2) = MediumT('water', 1e-3, 'progressive');
-Med(3) = MediumT('water',1e-3,'progressive');
+Med(1) = MediumT('BK7',   1e-3, 'progressive',500);
+Med(2) = MediumT('water', 1e-3, 'progressive',500);
+%Med(3) = MediumT('water',1e-3,'progressive');
 
 Med = mesher(Med,MI);
 

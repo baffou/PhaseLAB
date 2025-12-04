@@ -17,7 +17,7 @@ arguments
     opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
     opt.displayT logical = false
     opt.colorImage = false % if it is true, keeps the same color in pixel (1,1) after cropping, for a 2-color camera
-    opt.polarImage = false % if it is true, keeps the same polar in pixel (1,1) after cropping, for a 4-polar camera
+    opt.polarImage = true % if it is true, keeps the same polar in pixel (1,1) after cropping, for a 4-polar camera
     opt.colormap = parula
     opt.params = [] % [x1, x2, y1, y2]
     opt.margin double {mustBeInteger} = 0
