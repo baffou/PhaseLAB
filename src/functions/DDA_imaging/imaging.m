@@ -6,7 +6,7 @@
 % date: Jul 29, 2019
 
 
-function IM = imaging(DIs,IL,MI,Npx)
+function IM = imaging(DIs,IL,MI,Npx,opt)
 % imaging(DIs,IL,MI[,ImSize,Npx])
 % DIs: array of Dipole objects, or Nanoparticle object
 % IL: Illumination object
@@ -16,7 +16,10 @@ arguments
     IL Illumination
     MI Microscope
     Npx double
+    opt.norm logical = false % considers IL.e0 as the field at the image plane
 end
+
+norm0 = opt.norm;
 
 if isa(MI,'Microscope')
 elseif isa(MI,'Objective')
@@ -39,15 +42,6 @@ if isa(DIs(1),'Nanoparticle')
     if isempty(NP.p)
         error('The Nanoparticle must be illuminated before imaging')
     end
-    % clear DIs
-    % Nd = numel(NP.pos)/3;
-    % DI0 = Dipole(NP.mat,NP.a/2);
-    % DIs = repmat(DI0,Nd,1);
-    % for id = 1:Nd
-    %     DIs(id) = DIs(id).setp(NP.p(id,:));
-    %     DIs(id) = DIs(id).moveTo(NP.pos(id,1),NP.pos(id,2),NP.pos(id,3));
-    %     DIs(id).Illumination = NP.Illumination;
-    % end
     DIs = NP.DIs;
 end
 
@@ -76,8 +70,8 @@ end
 
 %% excitation field
 
-k0 = IL.k0;            % wavevector in vacuum
-tr = IL.tr;            % transmission coefficient through the interface
+k0 = IL.k0;  % wavevector in vacuum
+tr = IL.tr;  % transmission coefficient through the interface
 e0 = IL.e0;  % incident electic field
 
 %r12 = (n-nS)/(n+nS);           % reflection coefficient at the interface
@@ -116,9 +110,7 @@ for id = 1:NDI
     end
     
     %% Dipole created by a nanosphere
-    % Polarization of the dipole (Ex: alpha = pi/2, betha = 0 --> the dipole
-    % oriented according to x direction)
-    
+    % Polarization of the dipole    
     Q = DI.p.';
     
     %% defocus and position of the dipole
@@ -190,19 +182,12 @@ for id = 1:NDI
                     pb = cross(kvb,sb)/norm(pb1);
                 end
 
-%                 if ikx==202 && iky==201
-%                     s
-%                     p
-%                     sgfdghf
-%                 end
-
                 Q1 = Q-dot(conj(kvb),Q)*kvb; % radiated field of the dipole
                 Qs = ts*dot(conj(Q1),sb)*s;  % transmission of s component of the radiated field
                 Qp = tp*dot(conj(Q1),pb)*p;  % transmission of p component of the radiated field
                 % Le problème est avec Qp qui vaut zéro dans le cas
                 % pol=[010] if pour k normal à la surface
-
-                
+               
                 eps0 = 8.8541878128e-12;     % vacuum permittivity
                 % planewave expantion of the radiated electric field
                 %Eka = 1i*k0*k0/(8*pi*pi*eps0)*(1/gab)*(Qs+Qp)*exp(-1i*gab*zQ+1i*ga*zo);
@@ -292,7 +277,14 @@ Ezpp = (1/M)*fftshift(fft2(ifftshift(Ekprimez)))*dk*dk;
 eexim = tr/M*sqrt(nS)*e0*exp(1i*nS*k0*zo)*IL.polar; % excitation field image plane
 Eixtot = eexim(1)+Expp;
 Eiytot = eexim(2)+Eypp;
-IM = ImageEM(Eixtot,Eiytot,Ezpp,eexim);
+if norm0
+    cst = tr/M*sqrt(nS)*e0;
+    IM = ImageEM(Eixtot/cst,Eiytot/cst,Ezpp/cst,eexim/cst);
+    
+else
+    IM = ImageEM(Eixtot,Eiytot,Ezpp,eexim);
+end
+
 IM.Illumination = IL;
 IM.Microscope = MI;
 

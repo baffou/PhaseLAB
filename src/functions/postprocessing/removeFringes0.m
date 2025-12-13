@@ -4,6 +4,10 @@ function [img,mask0] = removeFringes0(img0,mask)
 
 [Ny, Nx] = size(img0);
 
+if ~isEven(Nx) || ~isEven(Ny)
+    error('Image sizes muxt be even to use the removeFringes function')
+end
+
 if nargin==1 % no predefined mask
 
 

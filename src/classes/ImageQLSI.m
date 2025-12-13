@@ -445,8 +445,17 @@ classdef ImageQLSI   <   ImageMethods
                 opt.Tsum logical = false
             end
             % computes the average image of a list of ImageQLSI objects.
+            if numel(IM) == 1
+                IMout = copy(IM);
+                return
+            end
+
             Nim = size(IM,1);
             No = size(IM,2);
+            if Nim == 1 % transform into column vector
+                IMout = mean(IM');
+                return
+            end
             IMout = ImageQLSI(No)';
             for io = 1:No
                 OPDsum = 0;
@@ -470,7 +479,9 @@ classdef ImageQLSI   <   ImageMethods
                 IMout(io) = ImageQLSI(INT,OPDn,IM(1).Microscope,IM(1).Illumination);
                 IMout(io).DWx0 = DWxn;
                 IMout(io).DWy0 = DWyn;
-                IMout(io).Microscope = IM.Microscope;
+                IMout(io).Microscope = IM(1,io).Microscope;
+                IMout(io).pxSizeCorrection = IM(1,io).pxSizeCorrection;
+                IMout(io).binningFactor = IM(1,io).binningFactor;
                 IMout(io).TfileName = 'Average images';
                 IMout(io).OPDfileName = 'Average images';
             end
@@ -643,9 +654,9 @@ classdef ImageQLSI   <   ImageMethods
                 end
 
                 obj(io).OPD = obj(io).OPD-offsetFunction(obj(io).OPD(y1:y2,x1:x2)) + opt.value;
-                if ~isempty(opt.app)
-                    opt.app.updateImages()
-                end
+                %if ~isempty(opt.app)
+                %    opt.app.updateImages()
+                %end
 
             end
 
@@ -658,7 +669,96 @@ classdef ImageQLSI   <   ImageMethods
                 val = median(bound);
             end
         end        
-       
+
+        function [obj, params] = normT(obj0,opt)
+            % applies a factor to the T image so that the average value of
+            % the selected area is 1.
+            arguments
+                obj0
+                opt.method (1,:) char {mustBeMember(opt.method,{'mean','average','median','boundaryMedian'})}= 'mean'
+                % parameters for boxSelection()
+                opt.xy1 = []
+                opt.xy2 = []
+                opt.Center = 'Auto' % 'Auto', 'Manual' or [x, y]
+                opt.Size = 'Auto' % 'Auto', 'Manual', d or [dx, dy]
+                opt.twoPoints logical = false
+                opt.params double = double.empty() % = [x1, x2, y1, y2]
+                opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'Rectangle'
+                opt.app matlab.apps.AppBase = PhaseLABgui.empty()
+            end
+
+            if nargout
+                obj=copy(obj0);
+            else
+                obj=obj0;
+            end
+
+            sizeIm = [0 0]; 
+            for io = 1:numel(obj)
+                if ~isempty(opt.app)
+                    opt.app.displayMessage(io+"/"+numel(obj),"color",opt.app.warnColor)
+                else
+                    printLoop(io,numel(obj))
+                end
+                if sum(sizeIm ~= size(obj(io).OPD)) % if the size of the image is not the same as the previous one
+                    if isempty(opt.params)
+                        if numel(obj)>1
+                            opt.imNumber = io;
+                        end
+                        if ~isempty(opt.app)
+                            boxObj = opt.app;
+                        else
+                            boxObj = obj;
+                        end
+
+                        [x1, x2, y1, y2] = boxSelection(boxObj,'xy1',opt.xy1, ...
+                                                            'xy2',opt.xy2, ...
+                                                            'Center',opt.Center, ...
+                                                            'Size',opt.Size, ...
+                                                            'twoPoints',opt.twoPoints, ...
+                                                            'params',opt.params, ...
+                                                            'shape',opt.shape, ...
+                                                            'axes','Right');
+                        params=[x1, x2, y1, y2];
+                    else
+                        x1 = opt.params(1);
+                        x2 = opt.params(2);
+                        y1 = opt.params(3);
+                        y2 = opt.params(4);
+                        params=opt.params;
+                    end
+                end
+
+                sizeIm = size(obj(io).OPD);
+
+                if strcmpi(opt.method,'mean') || strcmpi(opt.method,'average')
+                    normFunction = @(im) mean(im(:));
+                elseif strcmpi(opt.method,'median')
+                    normFunction = @(im) median(im(:));
+                elseif strcmpi(opt.method,'boundaryMedian')
+                    normFunction = @(im) boundaryMedian(im);
+                else
+                    error('unkown option')
+                end
+
+                obj(io).T = obj(io).T/normFunction(obj(io).T(y1:y2,x1:x2));
+                % if ~isempty(opt.app)
+                %     opt.app.updateImages()
+                % end
+
+            end
+
+            function val = boundaryMedian(im)
+                top=im(end,:);
+                bottom=im(1,:);
+                left=im(2:end-1,1);
+                right=im(2:end-1,end);
+                bound=[top(:);bottom(:);left(:);right(:)];
+                val = median(bound);
+            end
+        end        
+
+
         function IMout = plus(IM1,IM2)
 
             avg1 = IM1.avgIm;
@@ -835,6 +935,7 @@ classdef ImageQLSI   <   ImageMethods
 
         function [objList2,mask0] = removeFringes(objList,mask)
             No = numel(objList);
+            
             if nargout
                 objList2 = copy(objList);
             else
@@ -921,12 +1022,13 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
-        function IMout = ImageEM(IM,IMref)
+        function IMout = ImageEM(IM,IMref,opt)
             % converts a polarization resolved, experimental set of QLSI
             % images into a ImageEM object.
             arguments
                 IM (:,4) ImageQLSI
-                IMref  = []
+                IMref = []
+                opt.ph = 1 % phase correction, just to test a misdetermination of the grating camera distance
             end
             Nim = size(IM,1);
             IMout = ImageEM(Nim);
@@ -944,11 +1046,11 @@ classdef ImageQLSI   <   ImageMethods
             end
 
             for ii = 1:Nim
-                Ex =      IM(ii,1).E.*exp(1i*IM(ii,1).Ph);
-                Ey = hand*IM(ii,3).E.*exp(1i*IM(ii,3).Ph); % Assumes here a given handedness, but could be the opposite
+                Ex =      IM(ii,1).E.*exp(1i*IM(ii,1).Ph*opt.ph) * norm(IM(1).Illumination.polar(1));
+                Ey = hand*IM(ii,3).E.*exp(1i*IM(ii,3).Ph*opt.ph) * norm(IM(1).Illumination.polar(1)); % Assumes here a given handedness, but could be the opposite
                 Ez = Ey*0;
                 if isempty(IMref)
-                    IMout(ii) = ImageEM(Ex, Ey, Ez);
+                    IMout(ii) = ImageEM(Ex, Ey, Ez, [1,hand,0]/sqrt(2));
                 else
                     dphx = exp(1i*angle(IMref.Ex));
                     dphy = exp(1i*angle(IMref.Ey));

@@ -1,7 +1,9 @@
 function [phi0, beta, pb] = unitary_to_birefringence_vectorized0(U)
     detU = U(1,1, :, :).*U(2,2, :, :) - U(1,2, :, :).*U(2,1, :, :);
-    phi0 = angle(detU);
-    Ub = U .* exp(-1i * phi0 / 2);
+    % phi0 = angle(detU);
+    % Ub = U .* exp(-1i * phi0 / 2);
+    phi0 = angle(detU) / 2;
+    Ub = U .* exp(-1i * phi0);
     cosbeta2 = 0.5 * (real(Ub(1,1, :, :)) + real(Ub(2,2, :, :)));
     beta = squeeze(2 * acos(cosbeta2));
     Ubc = Ub * (-1i);

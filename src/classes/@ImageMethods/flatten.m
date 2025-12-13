@@ -64,15 +64,16 @@ for io = 1:No
             type = opt.params.type;
         end
 
+        objMean = obj(io,:).mean();
         switch type
             case 'gradients'
-                mask = computeSegmentationMasks(obj(io,1).DWx, obj(io,1).DWy, ...
+                mask = computeSegmentationMasks(objMean.DWnorm, ...
                     "threshold", opt.threshold, "smoothing", smoothing, "cut", cut, "invert", invert,"type",type);
             case 'OPD'
-                mask = computeSegmentationMasks(obj(io,1).OPD, ...
+                mask = computeSegmentationMasks(objMean.OPD, ...
                     "threshold", opt.threshold, "smoothing", smoothing, "cut", cut, "invert", invert,"type",type);
             case 'T'
-                mask = computeSegmentationMasks(obj(io,1).T, ...
+                mask = computeSegmentationMasks(objMean.T, ...
                     "threshold", opt.threshold, "smoothing", smoothing, "cut", cut, "invert", invert,"type",type);
         end
 

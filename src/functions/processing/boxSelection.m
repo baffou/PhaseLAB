@@ -17,12 +17,13 @@ arguments
     opt.shape char {mustBeMember(opt.shape,{'square','rectangle','Square','Rectangle'})}= 'square'
     opt.displayT logical = false
     opt.colorImage = false % if it is true, keeps the same color in pixel (1,1) after cropping, for a 2-color camera
-    opt.polarImage = false % if it is true, keeps the same polar in pixel (1,1) after cropping, for a 4-polar camera
+    opt.polarImage = true % if it is true, keeps the same polar in pixel (1,1) after cropping, for a 4-polar camera
     opt.colormap = parula
     opt.params = [] % [x1, x2, y1, y2]
     opt.margin double {mustBeInteger} = 0
     opt.even = true % image dimensions must be even
     opt.hfig matlab.ui.Figure = matlab.ui.Figure.empty()
+    opt.axes char {mustBeMember(opt.axes,{'Left','Right'})} = 'Left'
     %    opt.figure = []; % figure uifigure object to be considered in case the image is already open
 end
 
@@ -100,7 +101,7 @@ else
             app.UIFigure.HandleVisibility = 'callback'; % Temp change (or, 'on')
             set(0, 'CurrentFigure', app.UIFigure)       % Make fig current
             h.UserData.Axes = [app.AxesLeft, app.AxesRight];
-            axes(app.AxesLeft)
+            axes(app.("Axes"+opt.axes))
         elseif isa(im,'ImageMethods')
             Np = size(im,2);
             if opt.displayT
