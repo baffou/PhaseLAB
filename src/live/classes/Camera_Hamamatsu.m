@@ -181,7 +181,7 @@ classdef Camera_Hamamatsu  <  CameraExp & Camera
             expInfos = propinfo(obj.hndl.Source,'ExposureTime');
            
             expLims = expInfos.ConstraintValue;
-            if exposureTime > expLims(1) && exposureTime < expLims(2)
+            if val > expLims(1) && val < expLims(2)
                 obj.hndl.Source.ExposureTime = val;
             else
                 warning('ExposureTime is out of bound - thus not modified')
