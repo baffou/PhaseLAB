@@ -29,12 +29,12 @@ elseif ~isempty(timeStamp) && ~isempty(crop)
     for ii = 1:Nf
 
         info = imfinfo(folder+"/"+RefFileList(ii).name);
-        MakeTag = info(1).Make;
-        DateTimeTag = info(1).DateTime;
-        if strcmp(DateTimeTag, datetime2str(timeStamp)) && strcmp(MakeTag, ROI2str(crop))
-            fileName  = RefFileList(ii).name;
-            return
-        end
+        % MakeTag = info(1).Make;
+        % DateTimeTag = info(1).DateTime;
+        % if strcmp(DateTimeTag, datetime2str(timeStamp)) && strcmp(MakeTag, ROI2str(crop))
+        %     fileName  = RefFileList(ii).name;
+        %     return
+        % end
 
     end
 

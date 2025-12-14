@@ -16,7 +16,11 @@ else
 end
 
 if isempty(opt.expTime)
-    opt.expTime = Itf.expTime;
+    try
+        opt.expTime = Itf.expTime;
+    catch
+        disp('issue 1')
+    end
 end
 
 t = Tiff(fileName, 'w');
