@@ -7,7 +7,7 @@ arguments
     opt.smoothing
     opt.cut
     opt.invert
-    opt.type char {mustBeMember(opt.type,{'OPD','T','gradients'})} = 'gradients'
+    opt.type char {mustBeMember(opt.type,{'OPD','T','gradients','DWnorm','Rytov','OPDnm'})} = 'gradients'
 end
 
 if opt.threshold == 0
@@ -18,10 +18,10 @@ else
 
 
     switch opt.type
-        case {'OPD','gradients'}
-            mask1 = abs(img-min(img(:))) < opt.threshold; % subtract the min of the image because supposed to be an OPD image, with negative values
-        otherwise % 'T'
+        case {'T'}
             mask1 = abs(img) < opt.threshold;
+        otherwise % 'OPD','gradients','Rytov'
+            mask1 = abs(img-min(img(:))) < opt.threshold; % subtract the min of the image because supposed to be an OPD image, with negative values
     end
 
 

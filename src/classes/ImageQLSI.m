@@ -587,7 +587,7 @@ classdef ImageQLSI   <   ImageMethods
             % selected area is zero (or opt.value).
             arguments
                 obj0
-                opt.method (1,:) char {mustBeMember(opt.method,{'mean','average','median','boundaryMedian'})}= 'mean'
+                opt.method (1,:) char {mustBeMember(opt.method,{'mean','average','median','boundaryMedian','histogram','histo'})}= 'mean'
                 % parameters for boxSelection()
                 opt.xy1 = []
                 opt.xy2 = []
@@ -649,6 +649,8 @@ classdef ImageQLSI   <   ImageMethods
                     offsetFunction = @(im) median(im(:));
                 elseif strcmpi(opt.method,'boundaryMedian')
                     offsetFunction = @(im) boundaryMedian(im);
+                elseif strcmpi(opt.method,'histogram') || strcmpi(opt.method,'histo')
+                    offsetFunction = @(im) histrogramMedian(im);
                 else
                     error('unkown option')
                 end
@@ -668,6 +670,19 @@ classdef ImageQLSI   <   ImageMethods
                 bound=[top(:);bottom(:);left(:);right(:)];
                 val = median(bound);
             end
+
+            function val = histrogramMedian(im)
+                % histogram
+                [N, edges] = histcounts(im(:), 512);   % 512 bins
+                
+                % pic index
+                [~, idx] = max(N);
+                
+                % associated value
+                binCenters = (edges(1:end-1) + edges(2:end)) / 2;
+                val = binCenters(idx);
+            end
+
         end        
 
         function [obj, params] = normT(obj0,opt)
@@ -933,7 +948,15 @@ classdef ImageQLSI   <   ImageMethods
 
         end
 
-        function [objList2,mask0] = removeFringes(objList,mask)
+        function [objList2,mask0] = removeFringes(objList,opt)
+            arguments
+                objList
+                opt.mask
+                opt.props {mustBeMember(opt.props,{'OPD','T'})} = 'OPD'
+            end
+
+            prop = string(opt.props);
+
             No = numel(objList);
             
             if nargout
@@ -946,15 +969,15 @@ classdef ImageQLSI   <   ImageMethods
             obj = objList(io);
 
             if nargin == 1
-                [objList2(io).OPD0, mask0] = removeFringes0(obj.OPD);
+                [objList2(io).(prop+0), mask0] = removeFringes0(obj.(prop));
             else % mask specified
-                objList2(io).OPD0 = removeFringes0(obj.OPD,mask);
-                mask0 = mask;
+                objList2(io).(prop+0) = removeFringes0(obj.(prop),opt.mask);
+                mask0 = opt.mask;
             end
 
             for io = 2:No
                 obj = objList(io);
-                objList2(io).OPD0 = removeFringes0(obj.OPD,mask0);
+                objList2(io).(prop+0) = removeFringes0(obj.(prop),mask0);
             end
         end
 
@@ -1127,6 +1150,7 @@ classdef ImageQLSI   <   ImageMethods
         function write(obj,obj_in)
             Methods.obj2obj(obj,obj_in)
         end
+        
 
 
     end
