@@ -24,7 +24,8 @@ arguments
     opt.unwrap (1,1) logical = false % use unwrapping. Slows down a bit the processing.
     opt.displayCrop (1,1) logical = true % display the crops, even when automatic
     opt.displayBar (1,1) logical = true % display the progression bar in case of multiple images
-    opt.Rfactor (1,1) double = 1 % multiplies the distance of the crop from the center of the image by Rfactor. Useful to crop the spots at 45°, by just setting R=sqrt(2)
+    opt.Rdistance (1,1) double = 1 % multiplies the distance of the crop from the center of the image by Rfactor. Useful to crop the spots at 45°, by just setting R=sqrt(2)
+    opt.Rfactor (1,1) double = 1 % Crop radius factor
     opt.saveGradients = false
     opt.computeW = true
     opt.computeT = true
@@ -274,6 +275,7 @@ for ii = 1:Nf
         'FcropShape',opt.Fcropshape, ...
         'auto',opt.auto, ...
         'display',opt.displayCrop, ...
+        'Rdistance',opt.Rdistance, ...
         'Rfactor',opt.Rfactor);
     
     if opt.computeT
@@ -302,6 +304,7 @@ for ii = 1:Nf
         'FcropShape',opt.Fcropshape, ...
         'auto',opt.auto, ...
         'display',opt.displayCrop, ...
+        'Rdistance',opt.Rdistance, ...
         'Rfactor',opt.Rfactor);
     
     Im_DW1 = ifft2(ifftshift(FImc));
@@ -314,6 +317,7 @@ for ii = 1:Nf
         'definition',opt.definition, ...
         'FcropShape',opt.Fcropshape, ...
         'display',opt.displayCrop, ...
+        'Rdistance',opt.Rdistance, ...
         'Rfactor',opt.Rfactor);
     
     Im_DW2 = ifft2(ifftshift(FImc));
@@ -444,7 +448,7 @@ for ii = 1:Nf
             N = 13;
             Tikh = 1e-5;
     
-            if (size(DWx,1)~=Nx0 || size(DWy,2)~=Ny0) && isempty(opt.Smatrix)  % if first time S calculation (Nx0 and Ny0 not yet defined), but not if S already exists because specified by the user
+            if (size(DWx,1)~=Nx0 || size(DWy,2)~=Ny0) || isempty(opt.Smatrix)  % if first time S calculation (Nx0 and Ny0 not yet defined), but not if S already exists because specified by the user
                 x = (1:size(DWx,2))';
                 y = (1:size(DWy,1))';
                 opt.Smatrix = g2sTikhonovRTalpha(x,y,N);
@@ -469,6 +473,7 @@ for ii = 1:Nf
         else
             IM(ii) = ImageQLSI(T,W,MI,Methods.duplicate(IL(ii)),"remotePath",opt.remotePath,"fileName",removeExtension(Itfi.fileName),imageNumber=Itfi.imageNumber);
         end
+        IM(ii).Interfero = Itfi;
     
         IM(ii).Microscope = Methods.duplicate(MI); % copy of MI because, as an handle object, MI may change for some reason after the computation of the image.
         IM(ii).binningFactor = Itf(ii).binningFactor;

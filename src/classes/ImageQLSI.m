@@ -25,6 +25,7 @@ classdef ImageQLSI   <   ImageMethods
         OPD0
         DWx0
         DWy0
+        Interfero (1,1) Interfero
         % comment
     end
 
@@ -32,6 +33,7 @@ classdef ImageQLSI   <   ImageMethods
         ItfFileName
         channel (1,:) char {mustBeMember(channel,{'R','G','0','45','90','135','none'})} = 'none'
     end
+
 
     properties(GetAccess = public, SetAccess={?ImageMethods,?ImageT,?Methods})
         TfileName
@@ -607,6 +609,7 @@ classdef ImageQLSI   <   ImageMethods
             end
 
             sizeIm = [0 0]; 
+            obj = obj'; % just to treat ip before io, so that is the size of the image changes at some point, it does not do in in the middle of an ip.
             for io = 1:numel(obj)
                 if ~isempty(opt.app)
                     opt.app.displayMessage(io+"/"+numel(obj),"color",opt.app.warnColor)

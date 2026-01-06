@@ -8,7 +8,13 @@ arguments
     fileName
     opt.colormap = parula
     opt.clim = []
+    opt.imresize = []
 end
+
+if ~isempty(opt.imresize)
+    A = imresize(A, opt.imresize, 'nearest');
+end
+
 %[path, fileName0, ext] = fileparts(fileName); % file name without the extension
 h = figure('Position',[560   428   size(A,2)   size(A,1)]);
 
