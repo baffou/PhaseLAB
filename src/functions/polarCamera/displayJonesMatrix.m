@@ -1,54 +1,39 @@
 function hfig0 = displayJonesMatrix(J,opt)
+% J : 2*2 or 2*2*Ny*Nx matrix or JonesMatrix object
 arguments
-    J double
-    opt.Name = 'J matrix'
+    J % double or cell array or JonesMatrix
+    opt.func {mustBeMember(opt.func,{'abs','real','imag','angle'})} = 'abs' % Functions to be applied to the Jij
 end
 
-if numel(size(J)) == 2
-    J0 = J;
-    J = zeros(size(J,1), size(J,2), 1, 1);
-    J(:,:,1,1) = J0;
+if isnumeric(J)
+    J = JonesMatrix(J);
+elseif iscell(J)
+    J0 = JonesMatrix(No);
+    for io = 1:No
+        J0(io) = JonesMatrix(J{io});
+    end
+    J = J0;
+    clear J0
+elseif ~isa(J,'JonesMatrix')
+    error('Wrong input type. Should be cell, numeric or JonesMatrix.')
+end
+
+switch opt.func
+    case 'abs'
+        titleList = {"|Jxx|","|Jxy|","|Jyx|","|Jyy|"};
+    case 'real'
+        titleList = {"Re(Jxx)","Re(Jxy)","Re(Jyx)","Re(Jyy)"};
+    case 'imag'
+        titleList = {"Im(Jxx)","Im(Jxy)","Im(Jyx)","Im(Jyy)"};
+    case 'angle'
+        titleList = {"Arg(Jxx)","Arg(Jxy)","Arg(Jyx)","Arg(Jyy)"};
 end
 
 
-
-hfig = figure;
-subplot(2,4,1)
-imagegb(abs(squeeze(J(1,1,:,:))))
-title('|Jxx|')
-subplot(2,4,2)
-imagegb(abs(squeeze(J(1,2,:,:))))
-title('|Jxy|')
-subplot(2,4,3)
-imagegb(abs(squeeze(J(2,1,:,:))))
-title('|Jyx|')
-subplot(2,4,4)
-imagegb(abs(squeeze(J(2,2,:,:))))
-title('|Jyy|')
-
-tM = 2;
-subplot(2,4,5)
-imagehsv(mod(pi/2+angle(squeeze(J(1,1,:,:))),pi)-pi/2)
-clim([-tM/4, tM/4])
-title('arg(Jxx)')
-subplot(2,4,6)
-imagehsv(mod(pi/2+angle(squeeze(J(1,2,:,:))),pi)-pi/2)
-clim([-tM, tM])
-title('arg(Jxy)')
-subplot(2,4,7)
-imagehsv(mod(pi/2+angle(squeeze(J(2,1,:,:))),pi)-pi/2)
-clim([-tM, tM])
-title('arg(Jyx)')
-subplot(2,4,8)
-imagehsv(mod(pi/2+angle(squeeze(J(2,2,:,:))),pi)-pi/2)
-clim([-tM/4, tM/4])
-title('arg(Jyy)')
-linkAxes
-
-fullwidth
-
-hfig.Name = opt.Name;
-hfig.NumberTitle = "off";
+hfig = dynamicFigure("gb",{J.xx},"gb",{J.xy},"gb",{J.yx},"gb",{J.yy}, ...
+                     'nm',[2 2], ...
+                     'titles',titleList, ...
+                     'func',opt.func);
 
 if nargout
     hfig0 = hfig;

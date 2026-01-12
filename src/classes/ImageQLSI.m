@@ -77,9 +77,12 @@ classdef ImageQLSI   <   ImageMethods
                 
 
             if nargin==1 %ImageQLSI(n)
-                if isnumeric(INT)
+                if isnumeric(INT) && numel(INT) == 1
                     n=INT;
                     obj = repmat(ImageQLSI(),n,1);
+                    for ii = 1:n % To make sure they are not identical handles
+                        obj(ii) = ImageQLSI();
+                    end
                 else
                     error('wrong input type')
                 end
@@ -1055,35 +1058,48 @@ classdef ImageQLSI   <   ImageMethods
                 IM (:,4) ImageQLSI
                 IMref = []
                 opt.ph = 1 % phase correction, just to test a misdetermination of the grating camera distance
+                opt.pointingToIM (1,1) logical = true
             end
-            Nim = size(IM,1);
-            IMout = ImageEM(Nim);
 
-            % ref field
-            if IM(1).Illumination.S3<0  % right
-                hand = 1i;
-            elseif IM(1).Illumination.S3>0  % left
-                hand = -1i;
-            else
-                hand = 1;
-                if isempty(IMref)
-                    warning('Illumination with linear polarization considered')
-                end
-            end
+            Nim = size(IM,1);
+            IMout = ImageEM(n=Nim);
+
 
             for ii = 1:Nim
-                Ex =      IM(ii,1).E.*exp(1i*IM(ii,1).Ph*opt.ph) * norm(IM(1).Illumination.polar(1));
-                Ey = hand*IM(ii,3).E.*exp(1i*IM(ii,3).Ph*opt.ph) * norm(IM(1).Illumination.polar(1)); % Assumes here a given handedness, but could be the opposite
-                Ez = Ey*0;
-                if isempty(IMref)
-                    IMout(ii) = ImageEM(Ex, Ey, Ez, [1,hand,0]/sqrt(2));
+                if opt.pointingToIM
+                    IMout(ii) = ImageEM();
+                    IMout(ii).IM = IM(ii,:); % Dès que j'en modifie un, ça les modifie tous
+                    IMout(ii).Microscope = IM(ii,1).Microscope;
+                    IMout(ii).Illumination = IM(ii,1).Illumination;
+                    IMout(ii).pxSizeCorrection = IM(ii,1).pxSizeCorrection;
+                    IMout(ii).binningFactor = IM(ii,1).binningFactor;
                 else
-                    dphx = exp(1i*angle(IMref.Ex));
-                    dphy = exp(1i*angle(IMref.Ey));
-                    IMout(ii) = ImageEM(Ex.*dphx./abs(IMref.Ex), Ey.*dphy./abs(IMref.Ex), Ez, IMref.Ex, IMref.Ey, IMref.Ez); % multiply by the Eref because each image has been normalized so that the phase is close to zero in average on each image, even with a ciruclar polarization.
+                    % ref field
+                    if IM(ii,1).Illumination.S3<0  % right
+                        hand = 1i;
+                    elseif IM(ii,1).Illumination.S3>0  % left
+                        hand = -1i;
+                    else
+                        hand = 1;
+                        if isempty(IMref)
+                            warning('Illumination with linear polarization considered')
+                        end
+                    end
+                    Ex =      IM(ii,1).E.*exp(1i*IM(ii,1).Ph*opt.ph) * norm(IM(1).Illumination.polar(1));
+                    Ey = hand*IM(ii,3).E.*exp(1i*IM(ii,3).Ph*opt.ph) * norm(IM(1).Illumination.polar(1)); % Assumes here a given handedness, but could be the opposite
+                    Ez = Ey*0;
+                    if isempty(IMref)
+                        IMout(ii) = ImageEM(Ex, Ey, Ez, [1,hand,0]/sqrt(2));
+                    else
+                        dphx = exp(1i*angle(IMref.Ex));
+                        dphy = exp(1i*angle(IMref.Ey));
+                        IMout(ii) = ImageEM(Ex.*dphx./abs(IMref.Ex), Ey.*dphy./abs(IMref.Ex), Ez, IMref.Ex, IMref.Ey, IMref.Ez); % multiply by the Eref because each image has been normalized so that the phase is close to zero in average on each image, even with a ciruclar polarization.
+                    end
                 end
                 IMout(ii).Microscope = IM(ii,1).Microscope;
                 IMout(ii).Illumination = IM(ii,1).Illumination;
+                IMout(ii).pxSizeCorrection = IM(ii,1).pxSizeCorrection;
+                IMout(ii).binningFactor = IM(ii,1).binningFactor;
             end
         end
 

@@ -2,18 +2,17 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
     % class to deal with polar QLSI images
     
     properties(GetAccess = public, SetAccess = {?Methods})
-        IM (1,4) ImageQLSI  % smoothed if smoothing ≠ 0
+        IM (1,4) ImageQLSI
     end
     
     properties(GetAccess = public, SetAccess = private)
         retardanceMax (1,1) double = 20 % max amplitude of the retardance on the color map of theta
         e2Max (1,1) double = 0.1 % max amplitude of the squared ellipticity on the color map of thetaEllipse
         dichroMax (1,1) double = 0.1
-        smoothing (1,1) double {mustBeGreaterThanOrEqual(smoothing,0)} = 0 % Gaussian filter of the OPD images. None if  = 0
     end
 
     properties
-        rgb_bg0 char {mustBeMember(rgb_bg0,{'white','black'})} = 'black'  % smoothed if smoothing ≠ 0
+        rgb_bg0 char {mustBeMember(rgb_bg0,{'white','black'})} = 'black'
         calcSjMode  char {mustBeMember(calcSjMode,{'Tj','Ej'})} = 'Tj'
         dphi0 = 1 % artificial phase shift on both axes to simulated a missdetermination of the grating camera distance
     end
@@ -83,7 +82,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                         obj(nim) = ImagePolar(IM(nim,:), 'retMax', opt.retMax, 'e2Max', opt.e2Max); % copy of the handle. No duplication.
                     end
                 end
-                obj.updateIM() % apply the IM, that includes the smoothing
+                obj.updateIM()
             end
         end
 
@@ -284,9 +283,9 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
 
         function app = figure(obj)
             if nargout
-                app = figurePolar(obj);
+                app = figurePolarGUI(obj);
             else
-                figurePolar(obj)
+                figurePolarGUI(obj)
             end
         end
 
@@ -337,22 +336,10 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             end
         end
 
-        function set_smoothing(obj, val)
-            Nim = numel(obj);
-            for nim = 1:Nim
-                obj(nim).smoothing = val;
-                obj(nim).updateIM()
-            end
-        end
-
         function updateIM(obj)
             Nim = numel(obj);
             for nim = 1:Nim
-                if obj(nim).smoothing ~= 0
-                    obj(nim).IM = obj(nim).IM0.flatten("Gaussian","nGauss",obj.smoothing,"display",0);
-                else
-                    obj(nim).IM = obj(nim).IM0;
-                end
+                obj(nim).IM = obj(nim).IM0;
             end
         end
 

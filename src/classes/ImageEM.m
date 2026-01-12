@@ -7,10 +7,24 @@
 
 classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
-    properties(GetAccess = public , SetAccess={?ImageMethods, ?Interfero})
+    properties(Dependent, GetAccess = public , SetAccess={?ImageMethods, ?Interfero})
         Ex
         Ey
         Ez
+    end
+
+    properties (SetAccess = {?Methods,?ImageQLSI})
+        % data:
+         % either
+        Ex0 (:,:) double
+        Ey0 (:,:) double
+        Ez0 (:,:) double
+         % or
+        IM (1,4) ImageQLSI % The difference with an ImageEM object is here. The info of an ImagePolar object is contained within this embedded ImageQLSI object.
+                            % A normal ImageEM object could have been made  from the ImageQLSI image, but it would have  duplicate some info in the RAM. And when  working with 100s of image, it is a problem.
+    end
+    
+    properties(GetAccess = public , SetAccess={?ImageMethods, ?Interfero})
         channel (1,:) char {mustBeMember(channel,{'R','G','0','45','90','135','none'})} = 'none'
     end
 
@@ -20,6 +34,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         %Illumination, inherited from ImageMethods
         %comment, inherited from ImageMethods
     end
+
 
     properties(Dependent)
         Nx
@@ -51,10 +66,45 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         rgbImage        % theta*absL
         h   % handedness sign(V)
         e2  % eccentricity
+        rgbImageEllipse
+
+        ex
+        ey
+
+        % biref/retardance params
+        theta0
+        phibar
+        dphi
+        Tbar
+        dichroism
+        thetaT
+        Wbar
+        retardance
+        dW
+        %rgbImage
+        OPDmean
+    end
+
+    properties(GetAccess = public, SetAccess = private)
+        retardanceMax (1,1) double = 20 % max amplitude of the retardance on the color map of theta
+        e2Max (1,1) double = 0.1 % max amplitude of the squared ellipticity on the color map of thetaEllipse
+        dichroMax (1,1) double = 0.1
+    end
+
+    properties
+        rgb_bg0 char {mustBeMember(rgb_bg0,{'white','black'})} = 'black'
+        calcSjMode  char {mustBeMember(calcSjMode,{'Tj','Ej'})} = 'Tj'
+        dphi0 = 1 % artificial phase shift on both axes to simulated a missdetermination of the grating camera distance
     end
 
     methods
         function obj = ImageEM(Ex,Ey,Ez,Eincx,Eincy,Eincz,opt)
+            %ImageEM()
+            %ImageEM(n=n)
+            %ImageEM(Eincx,Eincy,Eincz)
+            %ImageEM(Ex,Ey,Ez,Einc||EE0)
+            %ImageEM(Ex,Ey,Ez,Eincx,Eincy,Eincz)
+            %ImageEM(... ,"Microscope",MI,"Illumination",IL)
             arguments
                 Ex {mustBeNumeric} = []
                 Ey {mustBeNumeric} = []
@@ -66,19 +116,24 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 opt.Microscope Microscope = Microscope.empty()
                 opt.Illumination Illumination = Illumination.empty()
             end
-            %ImageEM()
-            %ImageEM(n=n)
-            %ImageEM(Eincx,Eincy,Eincz)
-            %ImageEM(Ex,Ey,Ez,Einc||EE0)
-            %ImageEM(Ex,Ey,Ez,Eincx,Eincy,Eincz)
             if nargin==0
                 if ~isempty(opt.n) % ImageEM(n=N)
                     obj = repmat(ImageEM(),opt.n,1);
+                    for ii = 1:opt.n % to force them to not be identical handles
+                        obj(ii) = ImageEM();
+                    end
                 else % ImageEM()     1 empty object
                     % do nothing
                 end
             elseif nargin==1 % ImageEM(n)    n empty objects
-                obj = repmat(ImageEM,Ex,1);
+                if isnumeric(Ex) && numel(Ex) == 1
+                    obj = repmat(ImageEM,Ex,1);
+                    for ii = 1:opt.n % to force them to not be identical handles
+                        obj(ii) = ImageEM();
+                    end
+                else
+                    error('wrong input parameter')
+                end
             elseif nargin<=3 % ImageEM(Eincx,Eincy,Eincz) typically when defining an incident field
                 obj.Ex = Ex;
                 obj.Ey = Ey;
@@ -109,6 +164,29 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             if ~isempty(opt.Illumination)
                 obj.Illumination=opt.Illumination;
             end
+        end
+
+        function set.Ex(obj, val)
+            %obj.Ex0 = val;
+            obj.setE(val,'x');
+        end
+        function set.Ey(obj, val)
+            %obj.Ey0 = val;
+            obj.setE(val,'y');
+        end
+        function set.Ez(obj, val)
+            %obj.Ez0 = val;
+            obj.setE(val,'z');
+        end
+
+        function val = get.Ex(obj)
+            val = obj.getE('x');
+        end
+        function val = get.Ey(obj)
+            val = obj.getE('y');
+        end
+        function val = get.Ez(obj)
+            val = obj.getE('z');
         end
 
         function obj2 = ImageQLSI(obj,opt)
@@ -339,25 +417,18 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
         function val = get.S0(obj)
-            % 1st Stokes component
-            val = abs(obj.Ex).^2 + abs(obj.Ey).^2;
+            val = obj.getS(0);
         end
-
         function val = get.S1(obj)
-            % 2nd Stokes component
-            val = abs(obj.Ex).^2 - abs(obj.Ey).^2;
+            val = obj.getS(1);
         end
-
         function val = get.S2(obj)
-            % 3nd Stokes component
-            val = 2*real(obj.Ex.*conj(obj.Ey));
+            val = obj.getS(2);
         end
-
         function val = get.S3(obj)
-            % 4th Stokes component
-            val = -2*imag(obj.Ex.*conj(obj.Ey));
+            val = obj.getS(3);
         end
-
+        
             
         function val = get.s1(obj)
             % 2nd normalized Stokes component
@@ -375,6 +446,22 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
             
+        function val = get.A(obj)
+            val = sqrt(0.5*(obj.S0+abs(obj.L)));
+        end
+        
+        function val = get.B(obj)
+            val = sqrt(0.5*(obj.S0-abs(obj.L)));
+        end
+        
+        function val = get.thetaEllipse(obj)
+            val = mod(0.5*angle(obj.L),pi);
+        end
+
+        function val = get.thetaEllipseDeg(obj)
+            val = obj.thetaEllipse*180/pi;
+        end
+
 
         function val = get.L(obj)
             val = obj.S1 + 1i*obj.S2;
@@ -384,21 +471,6 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             val = abs(obj.S1 + 1i*obj.S2);
         end
 
-        function val = get.A(obj)
-            val = sqrt(0.5*(obj.S0+abs(obj.L)));
-        end
-
-        function val = get.B(obj)
-            val = sqrt(0.5*(obj.S0-abs(obj.L)));
-        end
-
-        function val = get.thetaEllipse(obj)
-            val = mod(0.5*angle(obj.L),pi);
-        end
-
-        function val = get.thetaEllipseDeg(obj)
-            val = mod(0.5*angle(obj.L)*180/pi,180);
-        end
 
         function val = get.thetaEllipsebar(obj)
 
@@ -419,9 +491,24 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         
         end
 
-        function val = get.rgbImage(obj)
-            val = obj.thetaEllipsebar(obj);
+        function img = get.rgbImage(obj)
+            arguments
+                obj
+            end
+
+            if strcmp(obj.rgb_bg0,'black')
+                corr = 1;
+            else
+                corr = 0;
+            end
+            hsvImage = zeros(obj.Ny, obj.Nx, 3);
+            hsvImage(:,:,1) = obj.theta0/pi;
+            hsvImage(:,:,2+corr) = 1/obj.retardanceMax*obj.dphi0 * obj.Illumination.lambda/(2*pi);
+            hsvImage(:,:,3-corr) = ones(obj.Ny,obj.Nx);
+
+            img = hsv2rgb(hsvImage);
         end
+
 
         function val = get.h(obj)
             val = sign(obj.S3);
@@ -806,6 +893,13 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
 
+        function app = figurePolar(obj)
+            if nargout
+                app = figurePolarGUI(obj);
+            else
+                figurePolarGUI(obj)
+            end
+        end
         
         
         
@@ -884,8 +978,136 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
 
 
 
+        function val = get.Wbar(obj)
+            val = obj.phibar*obj.Illumination.lambda/(2*pi); 
+        end
+
+        function val = get.retardance(obj)
+            val = obj.dphi*obj.Illumination.lambda/(2*pi); 
+        end
+
+        function val = get.dW(obj)
+            val = obj.retardance; 
+        end
 
 
+
+        function val = get.rgbImageEllipse(obj)
+
+            if strcmp(obj.rgb_bg0,'black')
+                corr = 1;
+            else
+                corr = 0;
+            end
+            hsvImage = zeros(obj.Ny, obj.Nx, 3);
+            hsvImage(:,:,1) = obj.thetaEllipse/pi;
+            hsvImage(:,:,2+corr) = obj.e2/obj.e2Max;
+            hsvImage(:,:,3-corr) = ones(obj.Ny,obj.Nx);
+
+            val = hsv2rgb(hsvImage);
+        
+        end
+
+
+                
+        function img = get.phibar(obj)
+            arguments
+                obj
+            end
+
+            img = (obj.IM(1).Ph + obj.IM(2).Ph ...
+                 + obj.IM(3).Ph + obj.IM(4).Ph)/4*obj.dphi0;
+
+        end
+
+        function img = get.Tbar(obj)
+            arguments
+                obj
+            end
+
+            img = (obj.IM(1).T + obj.IM(2).T ...
+                 + obj.IM(3).T + obj.IM(4).T)/4;
+
+        end
+
+        function img = get.theta0(obj)
+            arguments
+                obj
+            end
+
+            img = mod(0.5*angle((obj.IM(1).Ph*obj.dphi0-obj.IM(3).Ph*obj.dphi0) ...
+                   + 1i*(obj.IM(2).Ph*obj.dphi0-obj.IM(4).Ph*obj.dphi0)),pi);
+
+        end
+
+        function img = get.thetaT(obj)
+            arguments
+                obj
+            end
+
+            img = mod(0.5*angle((obj.IM(1).T-obj.IM(3).T) ...
+                   + 1i*(obj.IM(2).T-obj.IM(4).T)),pi);
+
+        end
+
+        function img = get.dphi(obj)
+            arguments
+                obj
+            end
+            phib = obj.phibar;
+            img = sqrt(abs((obj.IM(4).Ph*obj.dphi0-phib) ...
+                         .*(obj.IM(2).Ph*obj.dphi0-phib) ...
+                         + (obj.IM(3).Ph*obj.dphi0-phib) ...
+                         .*(obj.IM(1).Ph*obj.dphi0-phib)));
+
+        end
+
+        function img = get.dichroism(obj)
+            arguments
+                obj
+            end
+            Tb = obj.Tbar;
+            img = sqrt(abs((obj.IM(4).T-Tb) ...
+                         .*(obj.IM(2).T-Tb) ...
+                         + (obj.IM(3).T-Tb) ...
+                         .*(obj.IM(1).T-Tb)));
+
+        end
+
+
+        function set.retardanceMax(obj, val)
+            % converts in [m] in case the norm factor is entered in [nm]
+            obj.retardanceMax = convert_nm(val);
+        end
+
+        function set.dichroMax(obj, val)
+            % converts in [m] in case the norm factor is entered in [nm]
+            obj.dichroMax = val;
+        end
+
+        function set_retMax(obj, val)
+            if val >1e-3 % value in [nm]
+                val = val*1e-9; % conversion in [m]
+            end
+            Nim = numel(obj);
+            for nim = 1:Nim
+                obj(nim).retardanceMax = val;
+            end
+        end
+
+        function set_e2Max(obj, val)
+            Nim = numel(obj);
+            for nim = 1:Nim
+                obj(nim).e2Max = val;
+            end
+        end
+
+        function set_dichroMax(obj, val)
+            Nim = numel(obj);
+            for nim = 1:Nim
+                obj(nim).dichroMax = val;
+            end
+        end
 
 
         function save(objList,folder,varargin)
@@ -938,7 +1160,89 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
         end
 
+    end
 
+    methods(Access = protected)
+
+        function setE(obj,val,ax)
+            arguments
+                obj
+                val
+                ax {mustBeMember(ax,{'x','y','z'})}
+            end
+            switch ax
+                case 'x'
+                    obj.Ex0 = val;
+                case 'y'
+                    obj.Ey0 = val;
+                case 'z'
+                    obj.Ez0 = val;
+            end
+        end
+
+        function val = getE(obj,ax)
+            if obj.IM(1).Nx == 0 % no embedded ImageQLSI object IM
+                switch ax
+                    case 'x'
+                        val = obj.Ex0;
+                    case 'y'
+                        val = obj.Ey0;
+                    case 'z'
+                        val = obj.Ez0;
+                end
+            else % embedded IM object
+                switch ax
+                    case 'x'
+                        val = sqrt(obj.IM(1).T).*exp(1i*obj.IM(1).Ph*obj.dphi0);
+                    case 'y'
+                    s = -sign(obj.Illumination.S3/obj.Illumination.S0); % negative sign, because it seems that this way the ellipse turns in the right direction, according to the rotation of the sample
+                    val = s * 1i * sqrt(obj.IM(3).T).*exp(1i*obj.IM(3).Ph*obj.dphi0);
+                    case 'z'
+                        val = obj.IM(1).T*0;
+                end
+            end                
+        end
+
+
+    
+        function val = getS(obj,num)
+    
+            arguments
+                obj
+                num {mustBeMember(num,[0,1,2,3])}
+            end
+            if num == 0  % 1st Stokes component
+                switch obj.calcSjMode
+                    case 'Tj'
+                        val = (obj.IM(1).T + obj.IM(3).T)/2;
+                    case 'Ej'
+                        val = (abs(obj.Ex).^2 + abs(obj.Ey).^2)/2;
+                end
+            elseif num == 1 % 2nd Stokes component
+                switch obj.calcSjMode
+                    case 'Tj'
+                        val = (obj.IM(1).T - obj.IM(3).T)/2;
+                    case 'Ej'
+                        val = (abs(obj.Ex).^2 - abs(obj.Ey).^2)/2;
+                end            
+            elseif num == 2 % 3nd Stokes component
+                switch obj.calcSjMode
+                    case 'Tj'
+                        val = (obj.IM(2).T - obj.IM(4).T)/2;
+                    case 'Ej'
+                        val = real(obj.Ex.*conj(obj.Ey));
+                end
+            elseif num == 3 % 4th Stokes component
+                switch obj.calcSjMode
+                    case 'Tj'
+                        hel = -sign(obj.IM(1).Illumination.S3);
+                        val = hel*sqrt(obj.S0.^2-obj.S1.^2-obj.S2.^2);
+                    case 'Ej'
+                        val = -imag(obj.Ex.*conj(obj.Ey));
+                end
+            end
+
+        end
     end
 
 end

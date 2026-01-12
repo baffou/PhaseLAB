@@ -46,7 +46,12 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
         end
 
         function val = lambda(obj)
-            val = obj.Illumination.lambda;
+            if ~isempty(obj.Illumination)
+                val = obj.Illumination.lambda;
+            else
+                val = 600e-9
+                warning('no Illumination method define for this object. lambda returns 600 nm by default this time.')
+            end
         end
 
         function val = dxSize(obj)
