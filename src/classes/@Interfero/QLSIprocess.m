@@ -1,6 +1,6 @@
 % Method of the Interfero class.
 
-function [IM,DWx,DWy,W,T,FIm] = QLSIprocess(Itf,IL,opt)
+function [IM,DWx,DWy,W,T,FIm,cropParam0,cropParam1,cropParam2] = QLSIprocess(Itf,IL,opt)
 % field contains T or W. Useful when IM is not an ouput because not T and W need to be both computed, so IM cannot be constructed : [~, DWx, DWy, field]
 arguments
     Itf Interfero
