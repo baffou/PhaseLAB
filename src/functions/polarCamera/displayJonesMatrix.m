@@ -3,6 +3,7 @@ function hfig0 = displayJonesMatrix(J,opt)
 arguments
     J % double or cell array or JonesMatrix
     opt.func {mustBeMember(opt.func,{'abs','real','imag','angle'})} = 'abs' % Functions to be applied to the Jij
+    opt.clim = []
 end
 
 if isnumeric(J)
@@ -29,9 +30,15 @@ switch opt.func
         titleList = {"Arg(Jxx)","Arg(Jxy)","Arg(Jyx)","Arg(Jyy)"};
 end
 
+if iscell(opt.clim)
+    if numel(opt.clim) == 2
+        opt.clim = [opt.clim(1) opt.clim(2) opt.clim(2) opt.clim(1)];
+    end
+end
 
 hfig = dynamicFigure("gb",{J.xx},"gb",{J.xy},"gb",{J.yx},"gb",{J.yy}, ...
                      'nm',[2 2], ...
+                     'range', opt.clim, ...
                      'titles',titleList, ...
                      'func',opt.func);
 

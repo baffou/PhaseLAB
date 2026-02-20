@@ -1,4 +1,4 @@
-function Tm = Schurr_to_Tm(Um, Vm)
+function Tm = Schur_to_Tm(Um, Vm)
 
 for ith = 1:numel(Um)
     Tm.to(ith) = Vm{ith}(1,1);

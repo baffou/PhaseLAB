@@ -14,11 +14,11 @@ arguments
     opt.apodization = false        % true, 1, or the width of the apodization in px
     opt.remotePath = []
     opt.Tnormalisation = true % or false or 'subtraction'. To be false for a fluorescence image for instance
-    opt.RemoveCameraOffset = false
+    opt.RemoveCameraOffset logical = false
     opt.darkImage = 0 % dark Image to be removed
-    opt.darkZoneCorrection = false
+    opt.darkZoneCorrection logical = false
     opt.auto = true % Find automatically the spot of highest intensity
-    opt.noRef = false % Do not consider the Ref interferogram to compute the DW and OPD images
+    opt.noRef logical = false % Do not consider the Ref interferogram to compute the DW and OPD images
     opt.CGdistanceList = []  % the grating distance was varied during the acquisition of the images list
     opt.resetCrops   logical = false % reset crops between each image calculation, to make sure the algorithm enable the user to click for each image, or force the detection of the spot for each image in the auto mode.
     opt.unwrap (1,1) logical = false % use unwrapping. Slows down a bit the processing.
@@ -474,7 +474,7 @@ for ii = 1:Nf
             else
                 IM(ii,ip) = ImageQLSI(T,W,MI,Methods.duplicate(IL(ii)),"remotePath",opt.remotePath,"fileName",removeExtension(Itfi.fileName),imageNumber=Itfi.imageNumber);
             end
-            IM(ii,ip).Interfero = Itfi;
+%            IM(ii,ip).Interfero = Itfi;
 
             IM(ii,ip).Microscope = Methods.duplicate(MI); % copy of MI because, as an handle object, MI may change for some reason after the computation of the image.
             IM(ii,ip).binningFactor = Itf(ii,ip).binningFactor;

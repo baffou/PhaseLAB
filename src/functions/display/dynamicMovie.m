@@ -43,8 +43,10 @@ end
 [~, ~, ext] = fileparts(videoName);
 if strcmpi(ext,'mp4') || strcmpi(ext,'.mp4')
     writerObj = VideoWriter(videoName,'MPEG-4');
-else 
+elseif strcmpi(ext,'avi') || strcmpi(ext,'.avi')
     writerObj = VideoWriter(videoName);
+else
+    error('The format must be mp4 or avi')
 end
 writerObj.FrameRate = opt.rate;
 % open the video writer

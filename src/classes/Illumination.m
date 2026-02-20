@@ -66,7 +66,14 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
                 else
                     obj.lambda = lambda;
                     obj.Medium = ME;
-                        obj.I = I;
+                    obj.I = I;
+                    if istext(polar)
+                        if string(polar) == 'L' || string(polar) == "Left" || string(polar) == "left"
+                            polar = [1 1i];
+                        elseif  string(polar) == 'R' || string(polar) == "Right" || string(polar) == "right"
+                            polar = [1 -1i];
+                        end
+                    end
                     if numel(polar) == 2
                         obj.polar = [polar(:).' 0];
                     elseif numel(polar) ==  3
@@ -213,7 +220,7 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
         end
 
         function ILs = Jones(IL,varargin)
-            % Jones('P', 45, 'QWP',90, 'HWP',30, ...). Applies of series of polarieing plates.
+            % Jones('P', 45, 'QWP',90, 'HWP',30, 'J', {J, 45}, ...). Applies of series of polarieing plates.
             Nvar = numel(varargin);
             if mod(Nvar,2)
                 error('Must have an even number of inputs')
@@ -237,7 +244,7 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
             mat = eye(2,2);
             for ii = 1:2:Nvar
                 if ~ischar(varargin{ii})
-                    error('this input must be text: ''P'', ''QWP'' or ''HWP''')
+                    error('this input must be text: ''P'', ''QWP'', ''HWP'', or ''J''')
                 elseif ~isnumeric(varargin{ii+1})
                     error('this inpust must be a number')
                 end
@@ -248,6 +255,8 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
                         mat = R(varargin{ii+1})*QWP*R(-varargin{ii+1})*mat;
                     case 'HWP'
                         mat = R(varargin{ii+1})*HWP*R(-varargin{ii+1})*mat;
+                    case 'J'
+                        R(varargin{ii+1}{2})*varargin{ii+1}{1}*R(-varargin{ii+1}{2})*mat;
                 end
             end
             ILs.Jones0(mat);

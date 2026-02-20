@@ -1,4 +1,4 @@
-function [Um, Vm] = meanSchurr(U,V,masks)
+function [Um, Vm] = meanSchur(U,V,masks)
 
 Nth = numel(masks);
 

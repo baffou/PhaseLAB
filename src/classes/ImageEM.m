@@ -64,8 +64,9 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         thetaEllipseDeg   % tilt of the ellipse; [°]
         thetaEllipsebar % theta*absL
         rgbImage        % theta*absL
-        h   % handedness sign(V)
-        e2  % eccentricity
+        h   % handedness sign(S3)
+        e  % ellipticity
+        chi % ellipticity angle
         rgbImageEllipse
 
         ex
@@ -514,9 +515,16 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             val = sign(obj.S3);
         end
 
-        function val = get.e2(obj)
+        function val = get.e(obj)
             % excentricity
-            val = 1-(obj.B./obj.A).^2;
+%            val = 1-(obj.B./obj.A).^2;
+            val = obj.h*obj.B./obj.A;
+        end
+
+        function val = get.chi(obj)
+            % ellipticity angle
+            %  tan(chi) = e
+            val = atan(obj.e);
         end
 
         function val = zoom(obj)
@@ -594,15 +602,36 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
         end
 
+        function obj2 = FFT(obj)
+            obj2 = Methods.duplicate(obj);
+            obj2.Ex0 = ifftshift(fft2(obj.Ex));
+            obj2.Ey0 = ifftshift(fft2(obj.Ey));
+            obj2.Ez0 = ifftshift(fft2(obj.Ez));
+            obj2.Ex0(end/2+1,end/2+1) = 0.25*(obj2.Ex0(end/2,end/2+1)+obj2.Ex0(end/2+2,end/2+1) + obj2.Ex0(end/2+1,end/2)+obj2.Ex0(end/2+1,end/2+2));
+            obj2.Ey0(end/2+1,end/2+1) = 0.25*(obj2.Ey0(end/2,end/2+1)+obj2.Ey0(end/2+2,end/2+1) + obj2.Ey0(end/2+1,end/2)+obj2.Ey0(end/2+1,end/2+2));
+            obj2.Ez0(end/2+1,end/2+1) = 0.25*(obj2.Ez0(end/2,end/2+1)+obj2.Ez0(end/2+2,end/2+1) + obj2.Ez0(end/2+1,end/2)+obj2.Ez0(end/2+1,end/2+2));
+            if ~isempty(obj2.Einc)
+                obj2.Einc.Ex0 = ifftshift(fft2(obj.Einc.Ex));
+                obj2.Einc.Ey0 = ifftshift(fft2(obj.Einc.Ey));
+                obj2.Einc.Ez0 = ifftshift(fft2(obj.Einc.Ez));
+                obj2.Einc.Ex0(end/2+1,end/2+1) = 0.25*(obj2.Einc.Ex0(end/2,end/2+1)+obj2.Einc.Ex0(end/2+2,end/2+1) + obj2.Einc.Ex0(end/2+1,end/2)+obj2.Einc.Ex0(end/2+1,end/2+2));
+                obj2.Einc.Ey0(end/2+1,end/2+1) = 0.25*(obj2.Einc.Ey0(end/2,end/2+1)+obj2.Einc.Ey0(end/2+2,end/2+1) + obj2.Einc.Ey0(end/2+1,end/2)+obj2.Einc.Ey0(end/2+1,end/2+2));
+                obj2.Einc.Ez0(end/2+1,end/2+1) = 0.25*(obj2.Einc.Ez0(end/2,end/2+1)+obj2.Einc.Ez0(end/2+2,end/2+1) + obj2.Einc.Ez0(end/2+1,end/2)+obj2.Einc.Ez0(end/2+1,end/2+2));
+            end                
+        end
+
         function [IMs,mat] = Jones(IM,varargin)
             
             Nim = numel(IM);
             IMs = ImageEM(Nim);
             for iim = 1:Nim
                 [E_x, E_y, mat] = Jones0(IM(iim).Ex, IM(iim).Ey, varargin);
-                [Einc_x, Einc_y] = Jones0(IM(iim).Einc.Ex, IM(iim).Einc.Ey, mat);
-
-                IMs(iim) = ImageEM(E_x,E_y,IM(iim).Ez*0,Einc_x,Einc_y,IM(iim).Ez*0);
+                if ~isempty(IM(iim).Einc)
+                    [Einc_x, Einc_y] = Jones0(IM(iim).Einc.Ex, IM(iim).Einc.Ey, mat);
+                    IMs(iim) = ImageEM(E_x,E_y,IM(iim).Ez*0,Einc_x,Einc_y,IM(iim).Ez*0);
+                else
+                    IMs(iim) = ImageEM(E_x,E_y,IM(iim).Ez*0);
+                end
                 IMs(iim).Microscope = IM(iim).Microscope;
                 IMs(iim).Illumination = IM(iim).Illumination;
                 IMs(iim).comment = IM(iim).comment;
@@ -1001,7 +1030,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             end
             hsvImage = zeros(obj.Ny, obj.Nx, 3);
             hsvImage(:,:,1) = obj.thetaEllipse/pi;
-            hsvImage(:,:,2+corr) = obj.e2/obj.e2Max;
+            hsvImage(:,:,2+corr) = obj.e/obj.e2Max;
             hsvImage(:,:,3-corr) = ones(obj.Ny,obj.Nx);
 
             val = hsv2rgb(hsvImage);
@@ -1015,9 +1044,9 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
                 obj
             end
 
-            img = (obj.IM(1).Ph + obj.IM(2).Ph ...
-                 + obj.IM(3).Ph + obj.IM(4).Ph)/4*obj.dphi0;
-
+            % img = (obj.IM(1).Ph + obj.IM(2).Ph ...
+            %      + obj.IM(3).Ph + obj.IM(4).Ph)/4*obj.dphi0;
+            img = angle(sqrt(obj.Ex.*obj.Ey));
         end
 
         function img = get.Tbar(obj)
@@ -1235,7 +1264,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             elseif num == 3 % 4th Stokes component
                 switch obj.calcSjMode
                     case 'Tj'
-                        hel = -sign(obj.IM(1).Illumination.S3);
+                        hel = -sign(obj.Illumination.S3);
                         val = hel*sqrt(obj.S0.^2-obj.S1.^2-obj.S2.^2);
                     case 'Ej'
                         val = -imag(obj.Ex.*conj(obj.Ey));

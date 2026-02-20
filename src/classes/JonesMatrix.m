@@ -9,6 +9,7 @@ classdef JonesMatrix
     properties(Dependent)
         Nx
         Ny
+        mat
     end
 
     properties(SetAccess = private)
@@ -82,7 +83,7 @@ classdef JonesMatrix
                 
         end
 
-        function val = Jcat(obj)
+        function val = get.mat(obj)
             % returns the 2*2*Ny*Nx matrix
             val = zeros([2,2,size(obj.xx)]);
             val (1,1,:,:) = obj.c(1,1);

@@ -25,7 +25,7 @@ classdef ImageQLSI   <   ImageMethods
         OPD0
         DWx0
         DWy0
-        Interfero (1,1) Interfero
+        Interfero Interfero
         % comment
     end
 
