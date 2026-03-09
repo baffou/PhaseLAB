@@ -598,7 +598,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 opt.displayT logical = false
                 opt.colormap = parula
                 opt.colorImage = false
-                opt.polarImage = false
+                opt.polarImage = true
                 opt.redo logical = false % in the case of a series of objects, dont apply the same crop for each image, and ask again the crop for each image
             end
 

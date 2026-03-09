@@ -12,7 +12,7 @@ T.phib = cell(Nth,1);
 % vectorized algorithm of the retrieval of biref and diatt properties, from J
 
 for ith = 1:Nth
-    [bir, diatt] = jones_decomposition_vectorized0(J{ith}, 'HU');
+    [bir, diatt] = jones_decomposition_vectorized0(J(ith), 'HU');
     T.phid{ith} = angle(diatt.pd(:,:,1)+1i*diatt.pd(:,:,2))/2;
     T.phib{ith} = angle(bir.pb(:,:,1)+1i*bir.pb(:,:,2))/2;
     T.phi{ith} = angle(exp(1i*T.phib{ith}*4)+exp(1i*T.phid{ith}*4))/4;
