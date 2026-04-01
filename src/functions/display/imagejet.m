@@ -4,6 +4,8 @@ arguments
     Amin = []
     Amax = []
     opt.ax = gca
+    opt.reverseColor = false
+
 end
 
 
@@ -15,7 +17,11 @@ end
 colorbar(opt.ax)
 set(gca,'YDir','normal')
 
-colormap(opt.ax,jet(1024))
+if opt.reverseColor
+    colormap(opt.ax,flipud(jet(1024)))
+else
+    colormap(opt.ax,jet(1024))
+end
 
 
 if nargin==2

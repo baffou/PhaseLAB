@@ -258,6 +258,7 @@ for loop = 1:nLoop
 end %for loop
 
 if nLoop>1
+    mkdir('_postprocess')
     cd('_postprocess')
     saveas(fid_comp,'comp_exp_calc.png')
     cd('..')

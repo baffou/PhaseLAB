@@ -14,10 +14,13 @@ arguments
     opt.definition = 'high'
     opt.auto = true
     opt.display (1,1) logical = true
-    opt.Rfactor (1,1) double = 1 % multiplies the distance of the crop from the center of the image by Rfactor. Useful to crop the spots at 45°, by just setting R=sqrt(2)
+    opt.Rdistance (1,1) double = 1 % multiplies the distance of the crop from the center of the image by Rfactor. Useful to crop the spots at 45°, by just setting R=sqrt(2)
+    opt.Rfactor (1,1) = [] % multiplies the racdius of the cropby Rfactor.
 end
 
-
+if isempty(opt.Rfactor)
+    opt.Rfactor = opt.Rdistance;
+end
 
 dispFig = opt.display || ~opt.auto;
 
@@ -89,7 +92,7 @@ elseif isempty(Fcrops.R) % The center of the crop is specified, but not the radi
     R(1) = Nx/(2*zeta);
     R(2) = Nx/(2*zeta)/ex;
     
-    if dispFig, h = drawCrop(x1,y1,R,h);drawnow,end
+    if dispFig, h = drawCrop(x1,y1,R*opt.Rfactor,h);drawnow,end
 
     if ~opt.auto
         button = 0;
@@ -106,7 +109,7 @@ elseif isempty(Fcrops.R) % The center of the crop is specified, but not the radi
     end
 
     if dispFig
-        h = drawCrop(x1,y1,R,h);
+        h = drawCrop(x1,y1,R*opt.Rfactor,h);
         drawnow
         pause(0.5)
         close(h)
@@ -123,11 +126,11 @@ elseif isempty(Fcrops.x) || isempty(Fcrops.y) % no center position, but R determ
     end
 %    Fs = 8192;t = 0:1/Fs:1;y=sin(2*pi*440*erf(t));soundsc(y)
     if opt.auto % auto selection of the first order
-        [XX, YY]=meshgrid(1:Nx,1:Ny);
-        XX=ceil(XX-mean(XX(:)));
-        YY=ceil(YY-mean(YY(:)));
-        RR=opt.Rfactor*sqrt(XX.*XX+YY.*YY*(Fcrops.R(1)/Fcrops.R(2))^2);
-        [x1,y1]=maxPix(abs(FItf).*(XX>0).*(YY>=0).*double((RR>1.8*Fcrops.R(1))).*double((RR<2.2*Fcrops.R(1))));
+        [XX, YY] = meshgrid(1:Nx,1:Ny);
+        XX = ceil(XX-mean(XX(:)));
+        YY = ceil(YY-mean(YY(:)));
+        RR = opt.Rdistance*sqrt(XX.*XX+YY.*YY*(Fcrops.R(1)/Fcrops.R(2))^2);
+        [x1,y1] = maxPix(abs(FItf).*(XX>0).*(YY>=0).*double((RR>1.8*Fcrops.R(1))).*double((RR<2.2*Fcrops.R(1))));
     else
         title('Zoom in on the order of interest, and click enter')
         zoom on
@@ -138,8 +141,8 @@ elseif isempty(Fcrops.x) || isempty(Fcrops.y) % no center position, but R determ
 
     R = Fcrops.R;
     if dispFig
-        h = drawCrop(x1,y1,R,h);
-        h = drawCrop(size(FItf,2)/2,size(FItf,1)/2,R,h);
+        h = drawCrop(x1,y1,R*opt.Rfactor,h);
+        h = drawCrop(size(FItf,2)/2,size(FItf,1)/2,R*opt.Rfactor,h);
         zoom out
         drawnow
         pause(1)
@@ -174,7 +177,7 @@ if strcmp(definition,'high')  % High definition (full image size)
         [xx,yy] = meshgrid(1:Nx, 1:Ny);
 
         R2C = (xx  -Nx/2-1-cropParamsout.shiftx).^2/rx^2 + (yy - Ny/2-1-cropParamsout.shifty).^2/ry^2;
-        circle = (R2C < 1); %mask circle for each iteration
+        circle = (R2C < opt.Rfactor^2); %mask circle for each iteration
 
         % demodulation in the Fourier space
         Imout = FItf.*circle;
@@ -184,8 +187,8 @@ if strcmp(definition,'high')  % High definition (full image size)
 
         X2 = (xx  -Nx/2-1-cropParamsout.shiftx).^2/rx^2;
         Y2 = (yy - Ny/2-1-cropParamsout.shifty).^2/ry^2;
-        bandX = (X2 < 1); %mask circle for each iteration
-        bandY = (Y2 < 1); %mask circle for each iteration
+        bandX = (X2 < opt.Rfactor^2); %mask circle for each iteration
+        bandY = (Y2 < opt.Rfactor^2); %mask circle for each iteration
 
         % demodulation in the Fourier space
         Imout = FItf.*bandX.*bandY;
@@ -214,7 +217,7 @@ elseif strcmp(definition,'low')
         [xx,yy] = meshgrid(1:size(SImout,2), 1:size(SImout,1));
 
         R2C = (xx  -size(SImout,2)/2-1).^2/rx^2 + (yy - size(SImout,1)/2-1).^2/ry^2;
-        circle = (R2C < 1); %mask circle for each iteration
+        circle = (R2C < opt.Rfactor^2); %mask circle for each iteration
 
         % demodulation in the Fourier space
         SImout = SImout.*circle;

@@ -1,0 +1,9 @@
+brand:'SILIOS'
+dexel size:	5.5e-6
+Gamma:	33e-6
+Nx:2560
+Ny:2160
+distance:	7.44e-04
+bitDepth: 16
+CGdepth: 550e-9
+CGangle: 54.6616

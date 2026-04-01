@@ -2,18 +2,16 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
     % class to deal with polar QLSI images
     
     properties(GetAccess = public, SetAccess = {?Methods})
-        IM (1,4) ImageQLSI  % smoothed if smoothing ≠ 0
+        IM (1,4) ImageQLSI
     end
     
     properties(GetAccess = public, SetAccess = private)
         retardanceMax (1,1) double = 20 % max amplitude of the retardance on the color map of theta
-        e2Max (1,1) double = 0.1 % max amplitude of the squared ellipticity on the color map of thetaEllipse
+        eLim (1,1) double = 0.1 % min ellipiticity to be displayed
         dichroMax (1,1) double = 0.1
-        smoothing (1,1) double {mustBeGreaterThanOrEqual(smoothing,0)} = 0 % Gaussian filter of the OPD images. None if  = 0
     end
 
     properties
-        rgb_bg0 char {mustBeMember(rgb_bg0,{'white','black'})} = 'black'  % smoothed if smoothing ≠ 0
         calcSjMode  char {mustBeMember(calcSjMode,{'Tj','Ej'})} = 'Tj'
         dphi0 = 1 % artificial phase shift on both axes to simulated a missdetermination of the grating camera distance
     end
@@ -41,7 +39,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         thetaEllipse
         thetaEllipseDeg
         h
-        e2 % squared eccentricity
+        e % ellipticity
         rgbImageEllipse
 
         ex
@@ -59,6 +57,9 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         dW
         rgbImage
         OPDmean
+
+        Illumination
+        Microscope
     end
 
     methods
@@ -67,7 +68,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             arguments
                 IM  ImageQLSI = ImageQLSI.empty()
                 opt.retMax = 10e-9 % 10 nm of retardance
-                opt.e2Max = 0.05 % 10 nm of retardance
+                opt.eLim = 0.05 % 10 nm of retardance
             end
             if nargin % else, create an empty object
 
@@ -75,15 +76,15 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                 if Nim == 1
                     obj.IM0 = IM; % copy of the handle. No duplication.
                     obj.retardanceMax = opt.retMax;
-                    obj.e2Max = opt.e2Max;
+                    obj.eLim = opt.eLim;
 
                 else
                     obj = repmat(ImagePolar(),Nim,1);
                     for nim = 1:Nim
-                        obj(nim) = ImagePolar(IM(nim,:), 'retMax', opt.retMax, 'e2Max', opt.e2Max); % copy of the handle. No duplication.
+                        obj(nim) = ImagePolar(IM(nim,:), 'retMax', opt.retMax, 'eLim', opt.eLim); % copy of the handle. No duplication.
                     end
                 end
-                obj.updateIM() % apply the IM, that includes the smoothing
+                obj.updateIM()
             end
         end
 
@@ -142,10 +143,10 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         function val = get.S3(obj)
             switch obj.calcSjMode
                 case 'Tj'
-                    hel = -sign(obj.IM0(1).Illumination.S3);
+                    hel = sign(obj.IM0(1).Illumination.S3);
                     val = hel*sqrt(obj.S0.^2-obj.S1.^2-obj.S2.^2);
                 case 'Ej'
-                    val = -2*imag(obj.Ex.*conj(obj.Ey))/2;
+                    val = imag(obj.Ex.*conj(obj.Ey));
             end
         end
 
@@ -172,18 +173,25 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
 
         function val = get.rgbImageEllipse(obj)
 
-            if strcmp(obj.rgb_bg0,'black')
-                corr = 1;
-            else
-                corr = 0;
-            end
             hsvImage = zeros(obj.Ny, obj.Nx, 3);
-            hsvImage(:,:,1) = obj.thetaEllipse/pi;
-            hsvImage(:,:,2+corr) = obj.e2/obj.e2Max;
-            hsvImage(:,:,3-corr) = ones(obj.Ny,obj.Nx);
+
+            if obj.Illumination.S3 < 0 % S3 < 0, e < 0
+                cmin = -1;
+                cmax = -obj.eLim;
+                corr = 1;
+                hsvImage(:,:,1) = obj.thetaEllipse/pi;
+                hsvImage(:,:,2+corr) = (obj.e-cmin)/(cmax-cmin);
+                hsvImage(:,:,3-corr) = ones(obj.Ny,obj.Nx);
+            else % S3 > 0, e > 0
+                cmax = 1;
+                cmin = obj.eLim;
+                corr = 0;
+                hsvImage(:,:,1) = obj.thetaEllipse/pi;
+                hsvImage(:,:,2+corr) = 1-(obj.e-cmin)/(cmax-cmin);
+                hsvImage(:,:,3-corr) = ones(obj.Ny,obj.Nx);
+            end
 
             val = hsv2rgb(hsvImage);
-        
         end
 
 
@@ -191,8 +199,8 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             val = sign(obj.S3);
         end
         
-        function val = get.e2(obj)
-            val = 1-(obj.B./obj.A).^2;
+        function val = get.e(obj)
+            val = sign(obj.S3).*obj.B./obj.A;
 %           val = 2*abs(obj.L)./(obj.S0+abs(obj.L));
         end
         
@@ -265,7 +273,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                 obj
             end
 
-            if strcmp(obj.rgb_bg0,'black')
+            if obj.Illumination.S3 < 0
                 corr = 1;
             else
                 corr = 0;
@@ -284,9 +292,9 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
 
         function app = figure(obj)
             if nargout
-                app = figurePolar(obj);
+                app = figurePolarGUI(obj);
             else
-                figurePolar(obj)
+                figurePolarGUI(obj)
             end
         end
 
@@ -323,10 +331,10 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             end
         end
 
-        function set_e2Max(obj, val)
+        function set_eLim(obj, val)
             Nim = numel(obj);
             for nim = 1:Nim
-                obj(nim).e2Max = val;
+                obj(nim).eLim = val;
             end
         end
 
@@ -337,22 +345,10 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             end
         end
 
-        function set_smoothing(obj, val)
-            Nim = numel(obj);
-            for nim = 1:Nim
-                obj(nim).smoothing = val;
-                obj(nim).updateIM()
-            end
-        end
-
         function updateIM(obj)
             Nim = numel(obj);
             for nim = 1:Nim
-                if obj(nim).smoothing ~= 0
-                    obj(nim).IM = obj(nim).IM0.flatten("Gaussian","nGauss",obj.smoothing,"display",0);
-                else
-                    obj(nim).IM = obj(nim).IM0;
-                end
+                obj(nim).IM = obj(nim).IM0;
             end
         end
 
@@ -364,18 +360,11 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             val = obj.IM.Ny;
         end
 
-        function rgb_bg(obj, val)
-            Nim = numel(obj);
-            for ii = 1:Nim
-                obj(ii).rgb_bg0 = val;
-            end
-        end
-
-        function val = Illumination(obj)
+        function val = get.Illumination(obj)
             val = obj.IM(1).Illumination;
         end
 
-        function val = Microscope(obj)
+        function val = get.Microscope(obj)
             val = obj.IM(1).Microscope;
         end
 
@@ -395,7 +384,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                 obj
                 path
                 opt.formats string {mustBeMember(opt.formats,["eps","png","jpg","fig","txt","pdf"])}
-                opt.types string {mustBeMember(opt.types,["OPDmean","retardance","rgbImage","e2","rgbImageEllipse","Wbar","phibar","theta0","thetaEllipse","dphi","dW"])}
+                opt.types string {mustBeMember(opt.types,["OPDmean","retardance","rgbImage","e","rgbImageEllipse","Wbar","phibar","theta0","thetaEllipse","dphi","dW"])}
                 opt.num = []
                 opt.colormap = parula
                 opt.clim = []

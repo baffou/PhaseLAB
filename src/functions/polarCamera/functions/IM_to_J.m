@@ -13,7 +13,7 @@ IL_R = IMR.Illumination;
 
 Nth = size(IML,1);
 [Ny, Nx] = size(IML(1).OPD);
-J = cell(Nth,1);
+J = JonesMatrix(Nth);
 
 
 
@@ -23,9 +23,11 @@ switch selection
         E = zeros(2, 2, Ny, Nx);
         E0 = [IL_L.polar(1:2).' IL_R.polar(1:2).'];
         
-        IMLem = ImageEM(IML,'ph',opt.ph);
-        IMRem = ImageEM(IMR,'ph',opt.ph);
-        
+        if ~isa(IML,'ImageEM')
+            IMLem = ImageEM(IML,'ph',opt.ph);
+            IMRem = ImageEM(IMR,'ph',opt.ph);
+        end
+
         for ith = 1:Nth
             
             E(1,1,:,:) = IMLem(ith).Ex;%eL1;
@@ -34,7 +36,7 @@ switch selection
             E(2,2,:,:) = IMRem(ith).Ey;%eR3;
             
         %    J{ith} = pagemtimes(E,E0');
-            J{ith} = pagemtimes(pagemtimes(E,E0'),(E0*E0')^(-1));
+            J(ith) = JonesMatrix(pagemtimes(pagemtimes(E,E0'),(E0*E0')^(-1)),IL_L.lambda);
         end
             
     case '1234'
@@ -78,7 +80,7 @@ switch selection
             E(2,4,:,:) = eR3bis;%eR3;
             
         %    J{ith} = pagemtimes(E,E0');
-            J{ith} = pagemtimes(pagemtimes(E,E0'),(E0*E0')^(-1));
+            J(ith) = JonesMatrix(pagemtimes(pagemtimes(E,E0'),(E0*E0')^(-1)));
         end
 
     case '24'
@@ -110,7 +112,7 @@ switch selection
             E(2,1,:,:) = eL3bis;%eL3;
             E(2,2,:,:) = eR3bis;%eR3;
             
-            J{ith} = pagemtimes(pagemtimes(E,E0'),(E0*E0')^(-1));
+            J(ith) = JonesMatrix(pagemtimes(pagemtimes(E,E0'),(E0*E0')^(-1)));
         end
 
 

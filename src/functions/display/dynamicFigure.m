@@ -94,7 +94,7 @@ if ~isfield(h.UserData,'function')
 elseif isa(h.UserData.function,'function_handle')
     h.UserData.function = repmat({h.UserData.function}, Npanels, 1);
 elseif istext(h.UserData.function)
-    h.UserData.function = str2func(varargin{2*ii});
+    h.UserData.function = str2func(h.UserData.function);
     h.UserData.function = repmat({h.UserData.function}, Npanels, 1);
 elseif iscell(h.UserData.function)
     if numel(h.UserData.function) == 1

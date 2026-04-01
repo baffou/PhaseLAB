@@ -34,13 +34,14 @@ k0 = norm(kk);
 chi = NPout.chiTensor*a*a*a;
 
 %% incoming electric field
-r12 = (n-nS)/(n+nS);
-EE0 = zeros(3*N,1);
-for ii = 1:N
-    %EE0(3*ii-2:3*ii) = E0*exp(1i*n*kk*pos(ii,:)');
-    EE0(3*ii-2:3*ii) = E0*exp(1i*n*kk*pos(ii,:)') + r12*E0*exp(-1i*n*kk*pos(ii,:)');
-end
+% r12 = (n-nS)/(n+nS);
+% EE0 = zeros(3*N,1);
+% for ii = 1:N
+%     %EE0(3*ii-2:3*ii) = E0*exp(1i*n*kk*pos(ii,:)');
+%     EE0(3*ii-2:3*ii) = E0*exp(1i*n*kk*pos(ii,:)') + r12*E0*exp(-1i*n*kk*pos(ii,:)');
+% end
 
+EE0 = Eincident(IL,pos,'reshape',false);
 %% Construction of the Matrix to be inverted
 Id = eye(3);
 S0 = zeros(3*N,3*N);

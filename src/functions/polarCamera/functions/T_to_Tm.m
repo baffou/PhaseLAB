@@ -1,4 +1,4 @@
-function [Tm] = Tm_from_T(T, masks)
+function [Tm] = T_to_Tm(T, masks)
 
 Nth = numel(T.to);
 

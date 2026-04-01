@@ -443,7 +443,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         end
 
-        function obj=computeTF(obj,apoNpx,darkImage) % Computes the TF of an interfero and store it in the TF property
+        function obj2=computeTF(obj,apoNpx,darkImage) % Computes the TF of an interfero and store it in the TF property
             arguments
                 obj
                 apoNpx = 0
@@ -454,6 +454,9 @@ classdef Interfero < handle & matlab.mixin.Copyable
             else
                 obj.TF = fftshift(fft2(apodization0(obj.Itf-darkImage,apoNpx)));
                 obj.TFapo=apoNpx;
+            end
+            if nargout
+                obj2 = obj;
             end
         end
 

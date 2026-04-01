@@ -10,7 +10,7 @@ end
 
 Nvar = numel(varargin);
 
-if Nvar > 1  % Jones0(im1, im2, 'P', 45, 'QWP', 30', ...)
+if Nvar > 1  % Jones0(im1, im2, 'P', 45, 'QWP', 30', 'J', {J, 45} ...)
     %angles in degrees
 
     % Quarter waveplate
@@ -34,9 +34,7 @@ if Nvar > 1  % Jones0(im1, im2, 'P', 45, 'QWP', 30', ...)
                 error('Must have an even number of inputs')
             end
             if ~ischar(varargin{ii})
-                error('this input must be text: ''P'', ''QWP'' or ''HWP''')
-            elseif ~isnumeric(varargin{ii+1})
-                error('this input must be a number')
+                error('this input must be text: ''P'', ''QWP'', ''HWP'', or ''J''')
             end
             switch varargin{ii}
                 case 'P'
@@ -45,6 +43,8 @@ if Nvar > 1  % Jones0(im1, im2, 'P', 45, 'QWP', 30', ...)
                     mat = R(varargin{ii+1})*QWP*R(-varargin{ii+1})*mat;
                 case 'HWP'
                     mat = R(varargin{ii+1})*HWP*R(-varargin{ii+1})*mat;
+                case 'J'
+                    mat = R(varargin{ii+1}{2})*varargin{ii+1}{1}*R(-varargin{ii+1}{2})*mat;
             end
         end
     end

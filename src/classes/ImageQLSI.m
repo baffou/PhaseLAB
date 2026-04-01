@@ -25,6 +25,7 @@ classdef ImageQLSI   <   ImageMethods
         OPD0
         DWx0
         DWy0
+        Interfero Interfero
         % comment
     end
 
@@ -32,6 +33,7 @@ classdef ImageQLSI   <   ImageMethods
         ItfFileName
         channel (1,:) char {mustBeMember(channel,{'R','G','0','45','90','135','none'})} = 'none'
     end
+
 
     properties(GetAccess = public, SetAccess={?ImageMethods,?ImageT,?Methods})
         TfileName
@@ -75,9 +77,12 @@ classdef ImageQLSI   <   ImageMethods
                 
 
             if nargin==1 %ImageQLSI(n)
-                if isnumeric(INT)
+                if isnumeric(INT) && numel(INT) == 1
                     n=INT;
                     obj = repmat(ImageQLSI(),n,1);
+                    for ii = 1:n % To make sure they are not identical handles
+                        obj(ii) = ImageQLSI();
+                    end
                 else
                     error('wrong input type')
                 end
@@ -587,7 +592,7 @@ classdef ImageQLSI   <   ImageMethods
             % selected area is zero (or opt.value).
             arguments
                 obj0
-                opt.method (1,:) char {mustBeMember(opt.method,{'mean','average','median','boundaryMedian'})}= 'mean'
+                opt.method (1,:) char {mustBeMember(opt.method,{'mean','average','median','boundaryMedian','histogram','histo'})}= 'mean'
                 % parameters for boxSelection()
                 opt.xy1 = []
                 opt.xy2 = []
@@ -607,6 +612,7 @@ classdef ImageQLSI   <   ImageMethods
             end
 
             sizeIm = [0 0]; 
+            obj = obj'; % just to treat ip before io, so that is the size of the image changes at some point, it does not do in in the middle of an ip.
             for io = 1:numel(obj)
                 if ~isempty(opt.app)
                     opt.app.displayMessage(io+"/"+numel(obj),"color",opt.app.warnColor)
@@ -649,6 +655,8 @@ classdef ImageQLSI   <   ImageMethods
                     offsetFunction = @(im) median(im(:));
                 elseif strcmpi(opt.method,'boundaryMedian')
                     offsetFunction = @(im) boundaryMedian(im);
+                elseif strcmpi(opt.method,'histogram') || strcmpi(opt.method,'histo')
+                    offsetFunction = @(im) histrogramMedian(im);
                 else
                     error('unkown option')
                 end
@@ -668,6 +676,19 @@ classdef ImageQLSI   <   ImageMethods
                 bound=[top(:);bottom(:);left(:);right(:)];
                 val = median(bound);
             end
+
+            function val = histrogramMedian(im)
+                % histogram
+                [N, edges] = histcounts(im(:), 512);   % 512 bins
+                
+                % pic index
+                [~, idx] = max(N);
+                
+                % associated value
+                binCenters = (edges(1:end-1) + edges(2:end)) / 2;
+                val = binCenters(idx);
+            end
+
         end        
 
         function [obj, params] = normT(obj0,opt)
@@ -933,7 +954,15 @@ classdef ImageQLSI   <   ImageMethods
 
         end
 
-        function [objList2,mask0] = removeFringes(objList,mask)
+        function [objList2,mask0] = removeFringes(objList,opt)
+            arguments
+                objList
+                opt.mask
+                opt.props {mustBeMember(opt.props,{'OPD','T'})} = 'OPD'
+            end
+
+            prop = string(opt.props);
+
             No = numel(objList);
             
             if nargout
@@ -946,15 +975,15 @@ classdef ImageQLSI   <   ImageMethods
             obj = objList(io);
 
             if nargin == 1
-                [objList2(io).OPD0, mask0] = removeFringes0(obj.OPD);
+                [objList2(io).(prop+0), mask0] = removeFringes0(obj.(prop));
             else % mask specified
-                objList2(io).OPD0 = removeFringes0(obj.OPD,mask);
-                mask0 = mask;
+                objList2(io).(prop+0) = removeFringes0(obj.(prop),opt.mask);
+                mask0 = opt.mask;
             end
 
             for io = 2:No
                 obj = objList(io);
-                objList2(io).OPD0 = removeFringes0(obj.OPD,mask0);
+                objList2(io).(prop+0) = removeFringes0(obj.(prop),mask0);
             end
         end
 
@@ -1029,35 +1058,48 @@ classdef ImageQLSI   <   ImageMethods
                 IM (:,4) ImageQLSI
                 IMref = []
                 opt.ph = 1 % phase correction, just to test a misdetermination of the grating camera distance
+                opt.pointingToIM (1,1) logical = true
             end
-            Nim = size(IM,1);
-            IMout = ImageEM(Nim);
 
-            % ref field
-            if IM(1).Illumination.S3<0  % right
-                hand = 1i;
-            elseif IM(1).Illumination.S3>0  % left
-                hand = -1i;
-            else
-                hand = 1;
-                if isempty(IMref)
-                    warning('Illumination with linear polarization considered')
-                end
-            end
+            Nim = size(IM,1);
+            IMout = ImageEM(n=Nim);
+
 
             for ii = 1:Nim
-                Ex =      IM(ii,1).E.*exp(1i*IM(ii,1).Ph*opt.ph) * norm(IM(1).Illumination.polar(1));
-                Ey = hand*IM(ii,3).E.*exp(1i*IM(ii,3).Ph*opt.ph) * norm(IM(1).Illumination.polar(1)); % Assumes here a given handedness, but could be the opposite
-                Ez = Ey*0;
-                if isempty(IMref)
-                    IMout(ii) = ImageEM(Ex, Ey, Ez, [1,hand,0]/sqrt(2));
+                if opt.pointingToIM
+                    IMout(ii) = ImageEM();
+                    IMout(ii).IM = IM(ii,:); % Dès que j'en modifie un, ça les modifie tous
+                    IMout(ii).Microscope = IM(ii,1).Microscope;
+                    IMout(ii).Illumination = IM(ii,1).Illumination;
+                    IMout(ii).pxSizeCorrection = IM(ii,1).pxSizeCorrection;
+                    IMout(ii).binningFactor = IM(ii,1).binningFactor;
                 else
-                    dphx = exp(1i*angle(IMref.Ex));
-                    dphy = exp(1i*angle(IMref.Ey));
-                    IMout(ii) = ImageEM(Ex.*dphx./abs(IMref.Ex), Ey.*dphy./abs(IMref.Ex), Ez, IMref.Ex, IMref.Ey, IMref.Ez); % multiply by the Eref because each image has been normalized so that the phase is close to zero in average on each image, even with a ciruclar polarization.
+                    % ref field
+                    if IM(ii,1).Illumination.S3<0  % right
+                        hand = 1i;
+                    elseif IM(ii,1).Illumination.S3>0  % left
+                        hand = -1i;
+                    else
+                        hand = 1;
+                        if isempty(IMref)
+                            warning('Illumination with linear polarization considered')
+                        end
+                    end
+                    Ex =      IM(ii,1).E.*exp(1i*IM(ii,1).Ph*opt.ph) * norm(IM(1).Illumination.polar(1));
+                    Ey = hand*IM(ii,3).E.*exp(1i*IM(ii,3).Ph*opt.ph) * norm(IM(1).Illumination.polar(1)); % Assumes here a given handedness, but could be the opposite
+                    Ez = Ey*0;
+                    if isempty(IMref)
+                        IMout(ii) = ImageEM(Ex, Ey, Ez, [1,hand,0]/sqrt(2));
+                    else
+                        dphx = exp(1i*angle(IMref.Ex));
+                        dphy = exp(1i*angle(IMref.Ey));
+                        IMout(ii) = ImageEM(Ex.*dphx./abs(IMref.Ex), Ey.*dphy./abs(IMref.Ex), Ez, IMref.Ex, IMref.Ey, IMref.Ez); % multiply by the Eref because each image has been normalized so that the phase is close to zero in average on each image, even with a ciruclar polarization.
+                    end
                 end
                 IMout(ii).Microscope = IM(ii,1).Microscope;
                 IMout(ii).Illumination = IM(ii,1).Illumination;
+                IMout(ii).pxSizeCorrection = IM(ii,1).pxSizeCorrection;
+                IMout(ii).binningFactor = IM(ii,1).binningFactor;
             end
         end
 
@@ -1127,6 +1169,7 @@ classdef ImageQLSI   <   ImageMethods
         function write(obj,obj_in)
             Methods.obj2obj(obj,obj_in)
         end
+        
 
 
     end

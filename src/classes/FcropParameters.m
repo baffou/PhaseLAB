@@ -40,7 +40,7 @@ classdef FcropParameters < matlab.mixin.Copyable  %parameters of the crop in the
             obj.zetaTheo = opt.zeta;
         end
         
-        function obj = set.x(obj,x0)
+        function set.x(obj,x0)
             if ~isempty(x0)
                 if x0 >= 0 && x0 <= obj.Nx
                     obj.x = x0;
@@ -50,7 +50,7 @@ classdef FcropParameters < matlab.mixin.Copyable  %parameters of the crop in the
             end
         end
         
-        function obj = set.y(obj,y0)
+        function set.y(obj,y0)
             if ~isempty(y0)
                 if y0 >= 0 && y0 <= obj.Ny
                     obj.y = y0;
