@@ -60,6 +60,7 @@ classdef Camera_Andor  <  CameraExp & Camera
                     obj.setupSDK()
 
                     try
+                        AT_FinaliseLibrary()
                         [rc] = AT_InitialiseLibrary();
                     catch
                         warning('Andor SDK not installed, or not properly linked')

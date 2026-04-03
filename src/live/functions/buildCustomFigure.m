@@ -293,12 +293,10 @@ end
                 imagesc(zeros(size(ax.Children.CData)))
         end
 
-        try
+
         hf.UserData.twinAx.XColor = 'w';
         hf.UserData.twinAx.YColor = 'w';
-        catch
-            pause(1)
-        end
+
         hf.SizeChangedFcn = initFunc;
 
         

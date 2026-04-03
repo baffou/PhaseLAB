@@ -27,7 +27,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
     end
 
     properties
-        ROI (1,4) double % returns a datetime from the char stored in timeStamp0.Avoids having a DateTime object here that Methods.duplicate would have a hard time to handle
+        ROI (1,4) double
     end
 
     properties(Access = {?Methods})
@@ -339,7 +339,11 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
             for io = 1:numel(obj)
                 printLoop(io,numel(obj))
+                try
                 obj(io).Itf0 = obj(io).Itf(y1:y2,x1:x2);
+                catch
+                    pause(1)
+                end
                 if ~isempty(obj(io).Ref)
                     if ~exist('Ref0','var')
                         Ref0 = obj(io).Ref;

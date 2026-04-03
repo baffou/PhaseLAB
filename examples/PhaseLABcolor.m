@@ -77,7 +77,7 @@ IMG=QLSIprocess(ItfGcc,IL,"Tnormalisation",false);
 IMG2=QLSIprocess(ItfGcc,IL,"Tnormalisation",'subtraction');
 
 figure, imagegb(IMG(1).T), colormap(invertedGreen())
-figure, imagegb(IMR(1).OPD), colormap(Sepia)
+figure, imagegb(IMR(1).OPD), colormap(sepia)
 
 dynamicFigure('fl',{IMG.T}, 'ph', {IMR.OPD})
 
