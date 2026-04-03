@@ -22,12 +22,13 @@ Im = importItfRef(folder,MI);
 
 
 %% INTERFEROGRAM PROCESSING -- Im.QLSIprocess(IL);
-IM = Im.QLSIprocess(IL,"saveGradients",1);
+IM = Im(1).QLSIprocess(IL,"saveGradients",1);
 
 %%
 IMf = IM(4).flatten();
-IMf.figure
+IM.figure
 
+IM
 %%
-makeMoviedx(IM,'210924-neurons.avi',rate=5, ampl=3, zrange=[-30 300])
+%makeMoviedx(IM,'210924-neurons.avi',rate=5, ampl=3, zrange=[-30 300])
 

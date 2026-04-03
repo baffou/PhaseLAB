@@ -1,14 +1,34 @@
-function him = imagebw(W,opt)
+function him = imagebw(varargin,opt)
+arguments(Repeating)
+    varargin
+end
 arguments
-    W
     opt.ax = gca
     opt.reverseColor = false
 end
 
-if nargout
-    him = imagesc(opt.ax,real(W));
+if nargin == 1
+    W = varargin{1};
+elseif nargin == 3
+    xx = varargin{1};
+    yy = varargin{2};
+    W = varargin{3};
 else
-    imagesc(opt.ax,real(W))
+    error('not the proper number of inputs')
+end
+
+if nargout
+    if nargin == 3
+        him = imagesc(opt.ax,xx,yy,real(W));
+    else
+        him = imagesc(opt.ax,real(W));
+    end        
+else
+    if nargin == 3
+        imagesc(opt.ax,xx,yy,real(W));
+    else
+        imagesc(opt.ax,real(W));
+    end        
 end
 set(opt.ax,'DataAspectRatio',[1 1 1])
 
