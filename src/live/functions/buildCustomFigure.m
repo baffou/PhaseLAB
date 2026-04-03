@@ -248,12 +248,14 @@ end
         if uic_hold.Value
             clim(hax,hax.CLim) % Fix the clim to the current value.
             if isempty(uic_min.String)
-                uic_min.String = sprintf('%.3g',(hax.CLim(1)));
+%                uic_min.String = sprintf('%.3g',(hax.CLim(1)));
+                uic_min.String = format3sig(hax.CLim(1));
             else
                 hax.CLim(1) = str2double(uic_min.String);
             end
             if isempty(uic_max.String)
-                uic_max.String = sprintf('%.3g',(hax.CLim(2)));
+%                uic_max.String = sprintf('%.3g',(hax.CLim(2)));
+                uic_max.String = format3sig(hax.CLim(2));
             else
                 hax.CLim(2) = str2double(uic_max.String);
             end
@@ -291,12 +293,28 @@ end
                 imagesc(zeros(size(ax.Children.CData)))
         end
 
+        try
         hf.UserData.twinAx.XColor = 'w';
         hf.UserData.twinAx.YColor = 'w';
-
+        catch
+            pause(1)
+        end
         hf.SizeChangedFcn = initFunc;
 
         
     end    
+
+    function s = format3sig(x)
+
+        if x == 0
+            s = '0';
+            return
+        end
+
+        n = floor(log10(abs(x)));
+        ndec = max(0, 3-n-1);
+
+        s = sprintf(['%.' num2str(ndec) 'f'],x);
+    end
    
 end
