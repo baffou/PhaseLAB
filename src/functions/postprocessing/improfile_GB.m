@@ -1,19 +1,17 @@
-function [C,CX,CY,xi,yi] = improfile(opt)
+function [zg,xg,yg,xi,yi] = improfile_GB(N, Xa, Ya, opt)
 
 arguments
-    opt.Xa
-    opt.Ya
-    opt.A
-    opt.Xi
-    opt.Yi
-    opt.N                 = [];
+    N = [];
+    Xa = []
+    Ya = []
+    opt.Image = []
+    opt.Xi = []
+    opt.Yi = []
     opt.Method char {mustBeMember(opt.Method,{'nearest','bilinear','bicubic'})} = 'nearest'
-    opt.GetN      logical = true
-    opt.GetCoords logical = false
-    opt.GetProf   logical = true
+    opt.hax = gca
 end
 
-%IMPROFILE Pixel-value cross-sections along line segments.
+%% IMPROFILE Pixel-value cross-sections along line segments.
 %   IMPROFILE computes the intensity values along a line or a multiline path
 %   in an image. IMPROFILE selects equally spaced points along the path you
 %   specify, and then uses interpolation to find the intensity value for
@@ -23,8 +21,8 @@ end
 %   If you call IMPROFILE with one of these syntaxes, it operates
 %   interactively on the image in the current axes:
 %
-%        C = IMPROFILE
-%        C = IMPROFILE(N)
+%        zg = IMPROFILE
+%        zg = IMPROFILE(N)
 %
 %   N specifies the number of points to compute intensity values for. If you
 %   do not provide this argument, IMPROFILE chooses a value for N, roughly
@@ -35,8 +33,8 @@ end
 %   selected point. A shift-click, right-click, or double-click adds a final
 %   point and ends the selection; pressing <RETURN> finishes the selection
 %   without adding a point. When you finish selecting points, IMPROFILE
-%   returns the interpolated data values in C. C is an N-by-1 vector if the
-%   input is a grayscale intensity or binary image.  C is an N-by-1-by-3
+%   returns the interpolated data values in zg. zg is an N-by-1 vector if the
+%   input is a grayscale intensity or binary image.  zg is an N-by-1-by-3
 %   array if the input image is an RGB image.
 %
 %   If you omit the output argument, IMPROFILE displays a plot of the
@@ -48,25 +46,23 @@ end
 %
 %   You can also specify the path noninteractively, using these syntaxes:
 %
-%        C = IMPROFILE(I,xi,yi)
-%        C = IMPROFILE(I,xi,yi,N)
+%        zg = IMPROFILE(N,xi,yi,Image = I)
 %
 %   xi and yi are equal-length vectors specifying the spatial coordinates of
 %   the endpoints of the line segments.
 %
 %   You can use these syntaxes to return additional information:
 %
-%        [CX,CY,C] = IMPROFILE(...)
-%        [CX,CY,C,xi,yi] = IMPROFILE(...)
+%        [zg, xg, yg, xi, yi] = IMPROFILE(...)
 %
-%   CX and CY are vectors of length N, containing the spatial coordinates of
+%   xg and yg are vectors of length N, containing the spatial coordinates of
 %   the points at which the intensity values are computed.
 %
 %   To specify a nondefault spatial coordinate system for the input image,
 %   use these syntaxes:
 %
-%        [...] = IMPROFILE(x,y,I,xi,yi)
-%        [...] = IMPROFILE(x,y,I,xi,yi,N)
+%        [...] = IMPROFILE(N,x,y,Image=I,Xi=xi,Yi=yi)
+%        [...] = IMPROFILE(N,x,y,Image=I,Xi=xi,Yi=yi)
 %
 %   x and y are 2-element vectors specifying the image XData and YData.
 %
@@ -92,14 +88,16 @@ end
 %        I = imread('liftingbody.png');
 %        x = [19 427 416 77];
 %        y = [96 462 37 33];
-%        improfile(I,x,y), grid on
+%        improfile_GB(I,x,y), grid on
 %
 %   See also IMPIXEL, INTERP2
 
 %   Copyright 1993-2019 The MathWorks, Inc.
-matlab.images.internal.errorIfgpuArray(varargin{:});
-args = matlab.images.internal.stringToChar(varargin);
-[x,y,img,N,method,pCoordinates,getn,getprof] = parse_inputs(args{:});
+%matlab.images.internal.errorIfgpuArray(varargin{:});
+%args = matlab.images.internal.stringToChar(varargin);
+%%
+[x,y,img,N,method,pCoordinates,getn,getprof] = ...
+    parse_inputs(Xa,Ya,opt.Image,opt.Xi,opt.Yi,N,opt.Method,opt.hax);
 
 
 isRGB = (ndims(img)==3);
@@ -334,25 +332,8 @@ else
     xi = pCoordinates(:,1);
     yi = pCoordinates(:,2);
 
-    switch nargout
-        case 0,
-            % If zg was [], we didn't plot and ended up here
-            return
-        case 1,
-            varargout{1} = zg;
-        case 3,
-            varargout{1} = xg;
-            varargout{2} = yg;
-            varargout{3} = zg;
-        case 5,
-            varargout{1} = xg;
-            varargout{2} = yg;
-            varargout{3} = zg;
-            varargout{4} = xi;
-            varargout{5} = yi;
-        otherwise
-            error(message('images:improfile:invalidNumOutputArguments'))
-    end
+
+
 
 end
 
@@ -361,7 +342,7 @@ end
 %  Function: parse_inputs
 %
 
-function [Xa,Ya,Img,N,Method,pCoordinates,GetN,GetProf]=parse_inputs(varargin)
+function [Xa,Ya,Img,N,Method,pCoordinates,GetN,GetProf]=parse_inputs(Xa,Ya,Img,Xi,Yi,N,Method,hax)
 % Outputs:
 %     Xa           2 element vector for input image axes limits
 %     Ya           2 element vector for input image axes limits
@@ -372,127 +353,39 @@ function [Xa,Ya,Img,N,Method,pCoordinates,GetN,GetProf]=parse_inputs(varargin)
 %     GetN         Determine number of points from profile if true.
 %     GetProf      Get profile from user via mouse if true also get data
 %                  from image.
-
-
-switch nargin
-    case 0,            % improfile
-        GetProf   = true;
-        GetCoords = false;
-        GetN      = true;
-        N         = [];
-
-    case 1,            % improfile(n) or improfile('Method')
-        if ischar(varargin{1})
-            Method = varargin{1};
-            GetN      = true;
-            N         = [];
-        else
-            N    = varargin{1};
-            GetN = false;
-        end
-        GetProf   = true;
-        GetCoords = false;
-
-    case 2,            % improfile(n,'method')
-        Method    = varargin{2};
-        N         = varargin{1};
-        GetN      = false;
-        GetProf   = true;
-        GetCoords = false;
-
-    case 3,   % improfile(a,xi,yi)
-        A  = varargin{1};
-        N         = [];
-        Xi = varargin{2};
-        Yi = varargin{3};
-        GetProf   = false;
-        GetCoords = true;  %     GetCoords - Determine axis coordinates if true.
-        GetN      = true;
-
-    case 4,   % improfile(a,xi,yi,n) or improfile(a,xi,yi,'method')
-        A  = varargin{1};
-        Xi = varargin{2};
-        Yi = varargin{3};
-        if ischar(varargin{4})
-            Method = varargin{4};
-            GetN      = true;
-            N         = [];
-        else
-            N    = varargin{4};
-            GetN = false;
-        end
-        GetProf   = false;
-        GetCoords = true;  %     GetCoords - Determine axis coordinates if true.
-
-    case 5, % improfile(x,y,a,xi,yi) or improfile(a,xi,yi,n,'method')
-        if ischar(varargin{5}),
-            A      = varargin{1};
-            Xi     = varargin{2};
-            Yi     = varargin{3};
-            N      = varargin{4};
-            Method = varargin{5};
-            GetN   = false;
-            GetCoords = true;  %     GetCoords - Determine axis coordinates if true.
-        else
-            GetCoords = false;
-            GetN      = true;
-            N         = [];
-            Xa        = varargin{1};
-            Ya        = varargin{2};
-            A         = varargin{3};
-            Xi        = varargin{4};
-            Yi        = varargin{5};
-        end
-        GetProf   = false;
-
-    case 6, % improfile(x,y,a,xi,yi,n) or improfile(x,y,a,xi,yi,'method')
-        Xa = varargin{1};
-        Ya = varargin{2};
-        A  = varargin{3};
-        Xi = varargin{4};
-        Yi = varargin{5};
-        if ischar(varargin{6}),
-            Method = varargin{6};
-            GetN      = true;
-            N         = [];
-        else
-            N    = varargin{6};
-            GetN = false;
-        end
-        GetCoords = false;
-        GetProf   = false;
-
-    case 7, % improfile(x,y,a,xi,yi,n,'method')
-        if ~ischar(varargin{7})
-            error(message('images:improfile:invalidInputArrangementOrNumber'))
-        end
-        Xa = varargin{1};
-        Ya = varargin{2};
-        A  = varargin{3};
-        Xi = varargin{4};
-        Yi = varargin{5};
-        N  = varargin{6};
-        Method    = varargin{7};
-        GetN      = false;
-        GetCoords = false;
-        GetProf   = false;
-
-    otherwise
-        error(message('images:improfile:invalidInputArrangementOrNumber'))
+arguments
+    Xa
+    Ya
+    Img
+    Xi
+    Yi
+    N
+    Method
+    hax
 end
 
-%error checking for Method
-if exist('Method','var')
-    validatestring(Method,{'nearest', 'bilinear', 'bicubic'},...
-        mfilename,'METHOD',nargin);
+if isempty(Xi)
+    GetProf   = true;
 else
-    Method = 'nearest';
+    GetProf   = false;
+end
+
+if isempty(Xa)
+    GetCoords   = true;
+else
+    GetCoords   = false;
+end
+
+if isempty(N)
+    GetN   = true;
+else
+    GetN   = false;
 end
 
 % set Xa and Ya if unspecified
-if (GetCoords && ~GetProf),
-    Xa = [1 size(A,2)];
-    Ya = [1 size(A,1)];
+if (GetCoords && ~GetProf)
+    Xa = [1 size(Img,2)];
+    Ya = [1 size(Img,1)];
 end
 
 % error checking for N
@@ -503,32 +396,32 @@ if ~isempty(N)
 end
 
 % Get profile from user if necessary using data from image
-if GetProf,
-    [Xa,Ya,A,state] = getimage;
+if GetProf
+    [Xa,Ya,Img,state] = getimage(hax);
     if ~state
         error(message('images:improfile:noImageinAxis'))
     end
-    pCoordinates = getline(gcf); % Get profile from user
+    pCoordinates = getline(hax); % Get profile from user
 
-else  % We already have A, Xi, and Yi
+else  % We already have Img, Xi, and Yi
     if numel(Xi) ~= numel(Yi)
         error(message('images:improfile:invalidNumberOfPointsXiYi'))
     end
     pCoordinates = [Xi(:) Yi(:)]; % [xi yi]
 end
 
-% error checking for A
-if (~isa(A,'double') && ~isa(A,'uint8') && ...
-        ~isa(A, 'uint16') && ~islogical(A)) &&...
-        ~isa(A,'single') && ~isa(A,'int16')
+% error checking for Img
+if (~isa(Img,'double') && ~isa(Img,'uint8') && ...
+        ~isa(Img, 'uint16') && ~islogical(Img)) &&...
+        ~isa(Img,'single') && ~isa(Img,'int16')
     error(message('images:improfile:invalidImage'))
 end
 
 % Promote the image to single if it is logical or if we are not using nearest.
-if islogical(A) || (~isa(A,'double') && ~strcmp(Method,'nearest'))
-    Img = single(A);
+if islogical(Img) || (~isa(Img,'double') && ~strcmp(Method,'nearest'))
+    Img = single(Img);
 else
-    Img = A;
+    Img = Img;
 end
 
 % error checking for Xa and  Ya
