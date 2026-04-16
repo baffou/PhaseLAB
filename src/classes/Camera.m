@@ -1,6 +1,6 @@
 classdef Camera  <  handle & matlab.mixin.Copyable
     
-    properties(SetAccess = {?ImageEM,?CGcamera,?ImageQLSI,?JS,?CameraExp}) % to enable modif of the dxSize due to binning or by json2obj
+    properties(SetAccess = {?ImageEM,?CGcamera,?ImageQLSI,?JS,?CameraLive}) % to enable modif of the dxSize due to binning or by json2obj
         dxSize (1,1) {mustBeNumeric} = 6.5e-6
         Nx (1,1) {mustBeInteger,mustBePositive} = 600
         Ny (1,1) {mustBeInteger,mustBePositive} = 600

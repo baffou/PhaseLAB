@@ -1,6 +1,6 @@
-classdef Camera_Andor  <  CameraExp & Camera
+classdef Camera_Andor  <  CameraLive & Camera
     % inherits from two calses, the Camera classes and the abstract
-    % CameraExp class that contains all the properties and methods for live
+    % CameraLive class that contains all the properties and methods for live
     % control of the camera.
 
     % Each camera type has a specific class, here Andor cameras.

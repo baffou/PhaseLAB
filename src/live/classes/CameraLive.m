@@ -1,4 +1,4 @@
-classdef (Abstract) CameraExp < handle
+classdef (Abstract) CameraLive < handle
 % Abstract class: template of any experimental camera that need to be
 % controlled in live
     
@@ -19,7 +19,7 @@ classdef (Abstract) CameraExp < handle
     end
     
     properties(SetAccess = {?LIVE})
-        mode (1,:) char {mustBeMember(mode,{'live','stop','snap','timeLapse','ref','burst','external'})} = 'stop'
+        status (1,:) char {mustBeMember(status,{'live','stop','snap','timeLapse','ref','burst','external'})} = 'stop'
     end
 
 

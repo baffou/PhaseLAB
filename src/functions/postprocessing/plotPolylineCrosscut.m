@@ -1,8 +1,8 @@
-function [Z, d_coords] = plotPolylineCrosscut(hax,opt)
+function [Z, d_coords, hpoly] = plotPolylineCrosscut(hax,opt)
 arguments
     hax = gca
     opt.Img = []
-    opt.polyLine
+    opt.polyLine = []
 end
 
 % plotPolylineCrosscut - Lets the user draw a polyline on an axes
@@ -20,12 +20,16 @@ if isempty(opt.Img)
     end
     I = img.CData;
 else
-    I = opt.Img
+    I = opt.Img;
 end
 
 % Ask the user to draw a polyline
-h = drawpolyline(hax, 'Color', 'r');
-pos = h.Position; % Nx2 array [x y]
+if isempty(opt.polyLine)
+    hpoly = drawpolyline(hax, 'Color', 'r');
+else
+    hpoly = opt.polyLine;
+end
+pos = hpoly.Position; % Nx2 array [x y]
 
 % Extract x and y coordinates
 x = pos(:,1);
@@ -42,13 +46,13 @@ yq = interp1(d, y, d_query);
 % Interpolate image intensities along the polyline (bilinear interpolation)
 profile = interp2(double(I), xq, yq, 'linear');
 
-% Plot the intensity profile
-figure;
-plot(d_query, profile, 'LineWidth', 1.5);
-xlabel('Distance (pixels)');
-ylabel('Intensity');
-title('Intensity profile along the polyline');
-grid on;
+% % Plot the intensity profile
+% figure;
+% plot(d_query, profile, 'LineWidth', 1.5);
+% xlabel('Distance (pixels)');
+% ylabel('Intensity');
+% title('Intensity profile along the polyline');
+% grid on;
 
 if nargout
     Z = profile;

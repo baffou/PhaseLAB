@@ -15,7 +15,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
         Ref      Interfero % interfero object corresponding to the reference image
     end
 
-    properties(SetAccess = {?Methods,?CameraExp})
+    properties(SetAccess = {?Methods,?CameraLive})
         TF        % Fourier transform of the interfero
         TFapo     = []% tells wether the TF has been calculated with an apodization (equals the width of the apodization)
         channel   (1,:) char {mustBeMember(channel,{'R','G','0','45','90','135','none'})} = 'none'
@@ -51,9 +51,10 @@ classdef Interfero < handle & matlab.mixin.Copyable
     properties(SetAccess = private)
         fileName char % Interferogram name on the computer
         path char
-        Nx {mustBeInteger,mustBePositive}% Number of pixel of the image in the horizontal direction
-        Ny {mustBeInteger,mustBePositive}% Number of pixel of the image in the vertical direction
         imageNumber
+        % Should not be dependent otherwise it slows down the calculation:
+        Nx {mustBeInteger}% Number of pixel of the image in the horizontal direction
+        Ny {mustBeInteger}% Number of pixel of the image in the vertical direction
     end
 
     properties(Dependent)

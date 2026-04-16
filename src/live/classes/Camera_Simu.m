@@ -1,6 +1,6 @@
-classdef Camera_Simu  <  CameraExp & Camera
+classdef Camera_Simu  <  CameraLive & Camera
     % inherits from two calses, the Camera classes and the abstract
-    % CameraExp class that contains all the properties and methods for live
+    % CameraLive class that contains all the properties and methods for live
     % control of the camera.
 
     % Each camera type has a specific class, here Simu cameras.
@@ -157,7 +157,7 @@ classdef Camera_Simu  <  CameraExp & Camera
 
             obj.updateIM0(app)
 
-            if strcmpi(obj.mode,'ref')
+            if strcmpi(obj.status,'ref')
                 radius = 0.001e-9;
                 DI0 = Dipole('Au',radius);
                 DI = [DI0.moveBy('x',1e-6), DI0.moveBy('x',-1.4e-6,'y',0.7e-6,'z',-0.6e-6), DI0.moveBy('x',3e-6,'y',-3e-6)];

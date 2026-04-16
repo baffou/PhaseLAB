@@ -1,4 +1,5 @@
 function saveTiffMeta(fileName, Itf, MI, opt)
+% Save the image of an Interfero object, being an Itf or Ref
 arguments
     fileName {mustBeText}
     Itf Interfero
@@ -16,11 +17,7 @@ else
 end
 
 if isempty(opt.expTime)
-    try
-        opt.expTime = Itf.expTime;
-    catch
-        disp('issue 1')
-    end
+    opt.expTime = Itf.expTime;
 end
 
 t = Tiff(fileName, 'w');

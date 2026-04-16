@@ -36,5 +36,35 @@ classdef Monochromator  <  handle  &  Illumination
             %obj.hndl.MoveTo(obj.lambda)
         end
 
+        function rc = turn(obj, state)
+            arguments
+                obj
+                state {mustBeMember(state,{'on','off'})}
+            end
+
+            switch state
+                case 'on'
+                    pause(1)
+                    rc = obj.start();
+                case 'off'
+                    pause(1)
+                    rc = obj.stop();
+            end
+        end
+
+        function rc = start(obj)
+            rc = 0;
+        end
+
+        function rc = stop(obj)
+            rc = 0;
+        end
+
+    end
+
+    methods(Static)
+        function setupSDK()
+
+        end
     end
 end

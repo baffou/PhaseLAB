@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 8.7 9.3">
+  <defs>
+    <style>
+      .cls-1 {
+        stroke: #3d893b;
+        stroke-linecap: square;
+      }
+
+      .cls-1, .cls-2 {
+        fill: none;
+        stroke-miterlimit: 10;
+        stroke-width: .4px;
+      }
+
+      .cls-2 {
+        stroke: #000;
+      }
+    </style>
+  </defs>
+  <!-- Generator: Adobe Illustrator 28.6.0, SVG Export Plug-In . SVG Version: 1.2.0 Build 709)  -->
+  <g>
+    <g id="Calque_1">
+      <rect class="cls-2" y="4.1" width="1.7" height="4.4"/>
+      <rect class="cls-2" x="1.7" y="4.8" width="1.7" height="3.7"/>
+      <rect class="cls-2" x="3.5" y=".7" width="1.7" height="7.8"/>
+      <rect class="cls-2" x="5.2" y="2.6" width="1.7" height="5.8"/>
+      <rect class="cls-2" x="7" y="5.6" width="1.7" height="2.9"/>
+      <line class="cls-1" y1="8.9" x2="8.7" y2="8.9"/>
+    </g>
+  </g>
+</svg>

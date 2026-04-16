@@ -8,7 +8,7 @@ arguments
     crop = []
 end
 
-if isempty(timeStamp) && isempty(crop)
+if isempty(timeStamp) && isempty(crop) % save itf, not ref
     k = 1;
     exst = true;
     while exst
@@ -20,7 +20,7 @@ if isempty(timeStamp) && isempty(crop)
         end
     end
 
-elseif ~isempty(timeStamp) && ~isempty(crop)
+elseif ~isempty(timeStamp) && ~isempty(crop)  % save Ref
 
     RefFileList = dir(folder+"/"+prefix+"*.tif");
 
@@ -29,12 +29,12 @@ elseif ~isempty(timeStamp) && ~isempty(crop)
     for ii = 1:Nf
 
         info = imfinfo(folder+"/"+RefFileList(ii).name);
-        % MakeTag = info(1).Make;
-        % DateTimeTag = info(1).DateTime;
-        % if strcmp(DateTimeTag, datetime2str(timeStamp)) && strcmp(MakeTag, ROI2str(crop))
-        %     fileName  = RefFileList(ii).name;
-        %     return
-        % end
+        roiTag = info(1).Make;
+        timeTag = info(1).DateTime;
+        if strcmp(timeTag, datetime2str(timeStamp)) && strcmp(roiTag, ROI2str(crop))
+            fileName  = RefFileList(ii).name;
+            return
+        end
 
     end
 
