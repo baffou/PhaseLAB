@@ -111,6 +111,7 @@ classdef Camera_pixelinkimaq  <  CameraLive & Camera
 
         function buf = acquire_continuous(obj,app)
             buf = getsnapshot(obj.hndl.vid);
+            flushdata(obj.hndl.vid);
             %buf = getdata(obj.hndl.vid);
             %preview(vid,him)
         end
@@ -118,7 +119,7 @@ classdef Camera_pixelinkimaq  <  CameraLive & Camera
         function buf = acquire_fixed(obj, Nim, app)
             wait(obj.hndl.vid)
 %            wait(obj.hndl.vid,10)
-            buf = getdata(obj.hndl.vid, Nim);
+            buf = squeeze(getdata(obj.hndl.vid, Nim));
         end
         
         function setImageDimensions(obj,varargin)
