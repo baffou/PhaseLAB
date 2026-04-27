@@ -32,7 +32,7 @@ set(opt.ax,'YDir','normal')
 if opt.reverseColor
     colormap(gca,flipud(phase1024));
 else
-    colormap(gca,Sepia);
+    colormap(gca,sepia);
 end
 
 if Amax~=0 && Amin==0

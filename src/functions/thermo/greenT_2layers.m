@@ -12,7 +12,7 @@
 % affiliation: CNRS, Institut Fresnel
 % date: Feb 1, 2018
 
-function Green=greenT_2layers(universe,nx,ny,MI,z0)
+function Green=greenT_2layers(universe,nx,ny,pxSize,z0)
 
 if length(universe)==3
     warning('Something''s wrong, you are trying to compute a 2-layer Green''s function while your system has 3 layers')
@@ -23,7 +23,6 @@ k1 = universe(1).kappa;
 
 kappa = (k1+k2)/2;
 
-pxSize = MI.pxSize;
 
 
 Rbig.x = ( (1:2*nx)-nx-0.5 )*pxSize ;

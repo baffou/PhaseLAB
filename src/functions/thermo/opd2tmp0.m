@@ -15,9 +15,13 @@ arguments
     opt.GreenOPD (:,:) double
     opt.GreenT_z0 (:,:) double
     opt.GreenT_3D (:,:) double
+    opt.pxSize = []
 end
-
-pxSize = MI.pxSize;
+if isempty(opt.pxSize)
+    pxSize = MI.pxSize;
+else
+    pxSize = opt.pxSize;
+end
 nLoop = opt.nLoop;
 gain = opt.g;
 T0 = opt.T0;
@@ -72,20 +76,20 @@ if isempty(opt.GreenOPD)
         for iz = 1:Nz
             fprintf('iz:%d/%d\n',iz,Nz)
             tic
-            GreenT_3D(:,:,iz) = transformR2XY(RHO,GreenTRHOZ(iz,:),nx,ny,MI.pxSize);
+            GreenT_3D(:,:,iz) = transformR2XY(RHO,GreenTRHOZ(iz,:),nx,ny,pxSize);
             toc
         end
         if opt.zT==0
             GreenT_z0 = GreenT_3D(:,:,ME(1).mesh.npx);
         else
             GreenTRHOZ_z0 = greenT_3layers(RHO.z,0*RHO.z,opt.zT*(0*RHO.z+1),ME);
-            GreenT_z0 = transformR2XY(RHO,GreenTRHOZ_z0,nx,ny,MI.pxSize);
+            GreenT_z0 = transformR2XY(RHO,GreenTRHOZ_z0,nx,ny,pxSize);
         end
     else % 2 layers
         if nLoop>1
-            GreenT_3D = greenT_2layers(ME,nx,ny,MI);  % analytical expression for 2 layers
+            GreenT_3D = greenT_2layers(ME,nx,ny,pxSize);  % analytical expression for 2 layers
         end
-        GreenT_z0 = greenT_2layers(ME,nx,ny,MI,opt.zT);
+        GreenT_z0 = greenT_2layers(ME,nx,ny,pxSize,opt.zT);
     end
 
     %% construction of the OPD Green's function
@@ -146,7 +150,8 @@ ima = ima+0.1*mean(mean(ima(round(ny/2)-20:round(ny/2)+20,round(nx/2)-20:round(n
 ima = ima/(MI.refl+1); % divide the phase image by a factor of two if in reflection mode.
 
 if opt.imExpander == 1
-    DexpBig = expandImage(ima);
+    %DexpBig = expandImage(ima);
+    DexpBig = apodizePaddingHermite(ima);
 else
     DexpBig = zeros(2*ny,2*nx);
     DexpBig(1+floor(ny/2):ny+floor(ny/2),1+floor(nx/2):nx+floor(nx/2))=ima;
@@ -170,17 +175,29 @@ GreenDbigF = fft2(GreenDbig);
 
 if nLoop>1 % display the comparison figure
     screensize = get( groot, 'Screensize' );
-    fid_comp=figure('name','comparison calculed OPD image and experimental OPD image','Position',[screensize(3)-900 screensize(4)-300 900 300]);
-    subplot(1,2,1)
-    imagegb(DexpBig)
+    fid_comp = figure('name','comparison calculed OPD image and experimental OPD image','Position',[screensize(3)-900 screensize(4)-300 900 300]);
+    ha1 = subplot(1,3,1);
+    hi1 = imagegb(DexpBig);
     title('Experimental OPD')
     xlabel('x (px)') % x-axis label
     ylabel('y (px)')   % y-axis label
-    subplot(1,2,2), imagegb(DcalcBig)
+    ha2 = subplot(1,3,2);
+    hi2 = imagegb(DcalcBig);
     title('Calculated OPD')
     xlabel('x (px)') % x-axis label
     ylabel('y (px)')   % y-axis label
     clim([min(DexpBig(:)) max(DexpBig(:))])
+
+    ha3 = subplot(1,3,3);
+    hold on
+    plot(DexpBig(end/2,:),'k--')
+    xlabel('x (px)') % x-axis label
+    ylabel('y (px)')   % y-axis label    subplot(2,2,4)
+    hl3 = plot(DcalcBig(end/2,:),'r-','LineWidth',2);
+    xlabel('x (px)') % x-axis label
+    ylabel('y (px)')   % y-axis label
+    drawnow
+%    ylim([min(DexpBig(:)) max(DexpBig(:))])
 end
 
 for loop = 1:nLoop
@@ -248,11 +265,9 @@ for loop = 1:nLoop
                 TrBig0 = TrBig1;
             end
         end
-        subplot(1,2,2), imagegb(DcalcBig)
-        title(['Calculated OPD, loop #' int2str(loop) '/' int2str(nLoop) '' ])
-        clim([min(DexpBig(:)) max(DexpBig(:))])
-        pause(1)
-
+        hi2.CData = DcalcBig;
+        hl3.YData = DcalcBig(end/2,:);
+        drawnow
     end %if nLoop>1
 
 end %for loop

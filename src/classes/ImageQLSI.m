@@ -1023,7 +1023,7 @@ classdef ImageQLSI   <   ImageMethods
             end
 
             No = numel(obj);
-            objT = repmat(ImageT,No,1);
+            objT = repmat(ImageT(),No,1);
 
             for io = 1:No
                 [tmp, hsd, GreenFunction,GreenT_z0] = opd2tmp0(obj(io).OPD,obj(io).Microscope,Med,'g',opt.g,'nLoop',...
@@ -1031,10 +1031,12 @@ classdef ImageQLSI   <   ImageMethods
                     'imExpander',opt.imExpander,'T0',opt.T0,'zT',opt.zT, ...
                     'GreenOPD',opt.GreenOPD, ...
                     'GreenT_z0', opt.GreenT_z0, ...
-                    'GreenT_3D', opt.GreenT_3D);
+                    'GreenT_3D', opt.GreenT_3D, ...
+                    'pxSize',obj(io).pxSize);
                 objT(io) = ImageT(obj(io).OPD, tmp, hsd,obj(io).T);
                 objT(io).Microscope = obj(io).Microscope;
                 objT(io).Illumination = obj(io).Illumination;
+                objT(io).pxSizeCorrection = obj(io).pxSizeCorrection;
             end
 
         end
@@ -1043,9 +1045,9 @@ classdef ImageQLSI   <   ImageMethods
             No=numel(objList);
             obj2List=ImageQLSI(No);
             for io = 1:No
-                obj2List(io)=copy(objList(io));
-                obj2List(io).T0=objList(io).T;
-                obj2List(io).OPD0=objList(io).OPD;
+                obj2List(io) = copy(objList(io));
+                obj2List(io).T0 = objList(io).T;
+                obj2List(io).OPD0 = objList(io).OPD;
                 %obj2List(io).DWx0=objList(io).DWx;
                 %obj2List(io).DWy=objList(io).DWy;
             end

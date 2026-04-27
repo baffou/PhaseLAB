@@ -3,6 +3,7 @@ arguments
     hax = gca
     opt.Img = []
     opt.polyLine = []
+    opt.color = 'r'
 end
 
 % plotPolylineCrosscut - Lets the user draw a polyline on an axes
@@ -25,7 +26,7 @@ end
 
 % Ask the user to draw a polyline
 if isempty(opt.polyLine)
-    hpoly = drawpolyline(hax, 'Color', 'r');
+    hpoly = drawpolyline(hax, 'Color', opt.color);
 else
     hpoly = opt.polyLine;
 end
