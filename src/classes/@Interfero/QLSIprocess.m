@@ -499,7 +499,7 @@ for ii = 1:Nf
         if ~opt.noRef
             Itfi.Ref.Fcrops = [cropParam0; cropParam1; cropParam2];
         end
-        if cropParam1.zeta - MI.CGcam.zeta>0.05
+        if abs(cropParam1.zeta - MI.CGcam.zeta)>0.05
             warning('the zeta measured and theoretical values are much different\n')
             fprintf(['Measured zeta factor: ' num2str(cropParam1.zeta) '\n'])
             fprintf(['Theo. zeta factor   : ' num2str(MI.CGcam.zeta) '\n'])

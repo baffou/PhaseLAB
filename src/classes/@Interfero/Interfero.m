@@ -288,7 +288,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             val = obj.Microscope.pxSize()*obj.binningFactor;
         end
 
-        function obj = clearFcrops(obj)
+        function clearFcrops(obj)
             Nim=numel(obj);
             for ii=1:Nim
                 obj(ii).Ref.Fcrops(1)=FcropParameters();

@@ -44,7 +44,9 @@ end
 
 %% Import the interferogram main images (not the refs)
 
-if strcmpi(opt.selection,'manual') % manual selection from a pop up window
+
+if strcmpi(opt.selection,'manual')
+    % Manual import of the itf tiff image
     [ItfFileNames0,folder] = uigetfile({'*.tif';'*.txt';'*.tiff'},'MultiSelect','on','File Selector');
     if folder==0
         error('No file has been selected')
@@ -60,102 +62,101 @@ if strcmpi(opt.selection,'manual') % manual selection from a pop up window
         error(['No file imported from the folder ' folder])
     end
 
-else % Automatic selection
-    if strcmpi(acquisitionSoftware,'phast') || strcmpi(acquisitionSoftware,'Sid4Bio')
-        ItfFileList = dir([folder 'SID ' opt.nickname '_*.tif*']);
-        ItfFileNames0 = {ItfFileList.name};
-        Nif = numel(ItfFileNames0);
+elseif strcmpi(acquisitionSoftware,'phast') || strcmpi(acquisitionSoftware,'Sid4Bio')
+    ItfFileList = dir([folder 'SID ' opt.nickname '_*.tif*']);
+    ItfFileNames0 = {ItfFileList.name};
+    Nif = numel(ItfFileNames0);
 
-        if Nif == 0
-            error(['No file imported from the folder ' folder])
-        end
-
-        if ~isempty(opt.selection)
-            if isnumeric(opt.selection)
-                if opt.selection <1
-                    if length(opt.selection)~=1
-                        error('when smaller than unity, selection must be a number, not a vector')
-                    end
-                    opt.selection = 1:round(1/opt.selection):Nif;
-                end
-                Nif = numel(opt.selection);
-                ItfFileNames = cell(Nif,1);
-                for ii = 1:Nif
-                    ItfFileNames{ii} = ItfFileNames0{opt.selection(ii)};
-                end
-            end
-        else % if not opt.selection
-            ItfFileNames = ItfFileNames0;
-        end
-    elseif strcmpi(acquisitionSoftware,'PhaseLive') || strcmpi(acquisitionSoftware,'PhaseLAB')
-        ItfFileList = dir([folder opt.nickname '_*.tif*']);
-        ItfFileNamesTemp = {ItfFileList.name};
-        ItfFileNamesTempBool = ~contains(ItfFileNamesTemp,'REF_');
-        if ~sum(ItfFileNamesTempBool) % none of the interferograms has a REF
-            ItfFileNames0 = ItfFileNamesTemp; % take them all
-        else
-            ItfFileNames0 = ItfFileNamesTemp(ItfFileNamesTempBool); % only select the ones that have been made properly with a REF by PhaseLIVE
-        end
-        Nif = numel(ItfFileNames0);
-
-        if Nif == 0
-            error(['No file imported from the folder ' folder])
-        end
-
-        if ~isempty(opt.selection)
-            if isnumeric(opt.selection)
-                if opt.selection <1
-                    if length(opt.selection)~=1
-                        error('when smaller than unity, selection must be a number, not a vector')
-                    end
-                    opt.selection = 1:round(1/opt.selection):Nif;
-                end
-                Nif = numel(opt.selection);
-                ItfFileNames = cell(Nif,1);
-                for ii = 1:Nif
-                    ItfFileNames{ii} = ItfFileNames0{opt.selection(ii)};
-                end
-            end
-        else
-            ItfFileNames = ItfFileNames0;
-            opt.selection=1:Nif;
-        end
-    elseif strcmpi(acquisitionSoftware,'polarCGMcontrol')
-        ItfFileList = dir([folder opt.nickname 'ITF*.tif']);
-        if isempty(ItfFileList)
-            ItfFileList= dir([folder opt.nickname 'ITF*.txt']);
-        end
-        ItfFileNames0 = {ItfFileList.name};
-        Nif = numel(ItfFileNames0);
-
-        if Nif == 0
-            error(['No file imported from the folder ' folder])
-        end
-
-        if ~isempty(opt.selection)
-            if isnumeric(opt.selection)
-                if opt.selection <1
-                    if length(opt.selection)~=1
-                        error('when smaller than unity, selection must be a number, not a vector')
-                    end
-                    opt.selection = 1:round(1/opt.selection):Nif;
-                end
-                Nif = numel(opt.selection);
-                ItfFileNames = cell(Nif,1);
-                for ii = 1:Nif
-                    ItfFileNames{ii} = ItfFileNames0{opt.selection(ii)};
-                end
-            end
-        else
-            ItfFileNames = ItfFileNames0;
-            opt.selection=1:Nif;
-        end
-
-    else
-        error('Please specify a software if using importItfRef')
+    if Nif == 0
+        error(['No file imported from the folder ' folder])
     end
 
+    if ~isempty(opt.selection)
+        if isnumeric(opt.selection)
+            if opt.selection <1
+                if length(opt.selection)~=1
+                    error('when smaller than unity, selection must be a number, not a vector')
+                end
+                opt.selection = 1:round(1/opt.selection):Nif;
+            end
+            Nif = numel(opt.selection);
+            ItfFileNames = cell(Nif,1);
+            for ii = 1:Nif
+                ItfFileNames{ii} = ItfFileNames0{opt.selection(ii)};
+            end
+        end
+    else % if not opt.selection
+        ItfFileNames = ItfFileNames0;
+    end
+elseif strcmpi(acquisitionSoftware,'PhaseLive') || strcmpi(acquisitionSoftware,'PhaseLAB')
+    ItfFileList = dir([folder opt.nickname '_*.tif*']);
+    ItfFileNamesTemp = {ItfFileList.name};
+    ItfFileNamesTempBool = ~contains(ItfFileNamesTemp,'REF_');
+    if ~sum(ItfFileNamesTempBool) % none of the interferograms has a REF
+        ItfFileNames0 = ItfFileNamesTemp; % take them all
+    else
+        ItfFileNames0 = ItfFileNamesTemp(ItfFileNamesTempBool); % only select the ones that have been made properly with a REF by PhaseLIVE
+    end
+    Nif = numel(ItfFileNames0);
+
+    if Nif == 0
+        error(['No file imported from the folder ' folder])
+    end
+
+    if ~isempty(opt.selection)
+        if isnumeric(opt.selection)
+            if opt.selection <1
+                if length(opt.selection)~=1
+                    error('when smaller than unity, selection must be a number, not a vector')
+                end
+                opt.selection = 1:round(1/opt.selection):Nif;
+            end
+            Nif = numel(opt.selection);
+            ItfFileNames = cell(Nif,1);
+            for ii = 1:Nif
+                ItfFileNames{ii} = ItfFileNames0{opt.selection(ii)};
+            end
+
+        end
+    else
+        ItfFileNames = ItfFileNames0;
+        opt.selection=1:Nif;
+    end
+elseif strcmpi(acquisitionSoftware,'polarCGMcontrol')
+    ItfFileList = dir([folder opt.nickname 'ITF*.tif']);
+    if isempty(ItfFileList)
+        ItfFileList= dir([folder opt.nickname 'ITF*.txt']);
+    end
+    ItfFileNames0 = {ItfFileList.name};
+    Nif = numel(ItfFileNames0);
+
+    if Nif == 0
+        error(['No file imported from the folder ' folder])
+    end
+
+    if ~isempty(opt.selection)
+        if isnumeric(opt.selection)
+            if opt.selection <1
+                if length(opt.selection)~=1
+                    error('when smaller than unity, selection must be a number, not a vector')
+                end
+                opt.selection = 1:round(1/opt.selection):Nif;
+            end
+            Nif = numel(opt.selection);
+            ItfFileNames = cell(Nif,1);
+            for ii = 1:Nif
+                ItfFileNames{ii} = ItfFileNames0{opt.selection(ii)};
+            end
+        end
+    else
+        ItfFileNames = ItfFileNames0;
+        opt.selection=1:Nif;
+    end
+
+else
+    error('Please specify a software if using importItfRef')
 end
+
 
 %% Deal with the Microscope
 if isa(MI(1),'Microscope') %Microscope already built

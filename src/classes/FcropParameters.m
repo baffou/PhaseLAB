@@ -164,5 +164,33 @@ classdef FcropParameters < matlab.mixin.Copyable  %parameters of the crop in the
                 val = obj.yrange(end)-obj.yrange(1)+1;
         end
 
+        function hout = draw(objList, hax, opt)
+            % Draw an Frop
+            arguments
+                objList
+                hax = []
+                opt.shape {mustBeMember(opt.shape,{'disc','square'})} = 'disc'
+            end
+            No = numel(objList);
+            for io = 1:No
+                if isempty(hax)
+                    figure
+                    hax = subplot(1,1,1);
+                    imagegb(zeros(objList(io).Ny,objList(io).Nx))
+                end
+
+                switch opt.shape
+                    case 'disc'
+                        drawCircle(objList(io).x,objList(io).y,objList(io).R,hax)
+                    case 'square'
+                        drawSquare(objList(io).x,objList(io).y,objList(io).R,hax)
+                end
+            end    
+            if nargout
+                hout = hax;
+            end
+        end
+
+
     end
 end

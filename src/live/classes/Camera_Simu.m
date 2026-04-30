@@ -157,7 +157,7 @@ classdef Camera_Simu  <  CameraLive & Camera
 
             obj.updateIM0(app)
 
-            if strcmpi(obj.status,'ref')
+            if strcmpi(obj.status,'Ref')
                 radius = 0.001e-9;
                 DI0 = Dipole('Au',radius);
                 DI = [DI0.moveBy('x',1e-6), DI0.moveBy('x',-1.4e-6,'y',0.7e-6,'z',-0.6e-6), DI0.moveBy('x',3e-6,'y',-3e-6)];

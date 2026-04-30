@@ -19,7 +19,7 @@ classdef (Abstract) CameraLive < handle
     end
     
     properties(SetAccess = {?LIVE})
-        status (1,:) char {mustBeMember(status,{'live','stop','snap','timeLapse','ref','burst','external'})} = 'stop'
+        status (1,:) char {mustBeMember(status,{'Live','Stop','Snap','TimeLapse','Ref','Burst','External'})} = 'Stop'
     end
 
 
