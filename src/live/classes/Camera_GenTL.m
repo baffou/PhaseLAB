@@ -160,8 +160,8 @@ classdef Camera_GenTL  <  CameraLive & Camera
                         numbers = regexp(varargin{1}, '[+-]?\d*\.?\d+', 'match');
                         dims.width  = str2double(numbers{1});
                         dims.height = str2double(numbers{2});
-                        dims.left   = 1 + floor((dims.Nx-str2double(numbers{1}))/2);
-                        dims.top    = 1 + floor((dims.Ny-str2double(numbers{2}))/2);
+                        dims.left   = 1 + floor((dims.height-str2double(numbers{1}))/2);
+                        dims.top    = 1 + floor((dims.width-str2double(numbers{2}))/2);
                 end
 
             elseif nargin == 5 && isnumeric([varargin{1:end}]) % setImageDimensions(2560,2160)
@@ -173,7 +173,7 @@ classdef Camera_GenTL  <  CameraLive & Camera
                 error('Error in the inputs of setImageDimensions')
             end
 
-            obj.hndl.ROIposition = [dims.left, dims.top, dims.width, dims.height];
+            obj.hndl.ROIposition = [dims.left-1, dims.top-1, dims.width, dims.height];
         end
 
         function setExpTime(obj,val)
