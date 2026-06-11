@@ -3,4 +3,4 @@
 *.asv
 
 src/live/configs/*
-!src/live/configs/default.json
+!src/live/configs/default.jsonPhaseLAB.zip

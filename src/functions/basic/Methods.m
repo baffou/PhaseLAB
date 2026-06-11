@@ -5,7 +5,7 @@ classdef Methods
             % create a new object from an existing object, but makes sure
             % all the copied object properties are duplicated as well, and
             % not handled.
-            if ~ isempty(obj) % isempty can happen with the Einc property of the reference Interfero. Avoids recurcivity
+            if ~ isempty(obj) && isa(obj,'matlab.mixin.Copyable') % isempty can happen with the Einc property of the reference Interfero. Avoids recurcivity
                 obj2 = copy(obj);
                 for io = 1:numel(obj)
                     % propList = fieldnamesNonDependent(obj(io));
@@ -17,8 +17,12 @@ classdef Methods
                         if isobject(prop)
                             %if isempty(prop)
                             %propList{ip}
-                            obj2(io).(propList{ip}) = Methods.duplicate(obj(io).(propList{ip}));
-                            %end
+                            try
+                                obj2(io).(propList{ip}) = Methods.duplicate(obj(io).(propList{ip}));
+                            catch
+                                obj2(io).(propList{ip}) = obj(io).(propList{ip});
+                            end
+                                %end
                         end
                     end
                 end

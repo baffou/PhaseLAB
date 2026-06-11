@@ -6,7 +6,7 @@
 % date: Jul 29, 2019
 
 
-function IM = imaging(DIs,IL,MI,Npx,opt)
+function [IM, Ekprimex, Ekprimey, Ekprimez] = imaging(DIs,IL,MI,Npx,opt)
 % imaging(DIs,IL,MI[,ImSize,Npx])
 % DIs: array of Dipole objects, or Nanoparticle object
 % IL: Illumination object
@@ -17,6 +17,7 @@ arguments
     MI Microscope
     Npx double
     opt.norm logical = false % considers IL.e0 as the field at the image plane
+    opt.rotation = true
 end
 
 norm0 = opt.norm;
@@ -133,13 +134,13 @@ for id = 1:NDI
            
             if sqrt(kx*kx+ky*ky) < NA*k0     % cutoff filter; taking into account the numerical aperture of the objective
                 
-                ga = sqrt(nS^2*k0^2-kx^2-ky^2);
+                ga  = sqrt(nS^2*k0^2-kx^2-ky^2);
                 ga0 = sqrt(nS^2*k0^2-kx^2-ky^2)/(nS*k0);
                 
-                gab = sqrt(n^2*k0^2-kx^2-ky^2);
+                gab  = sqrt(n^2*k0^2-kx^2-ky^2);
                 gab0 = sqrt(n^2*k0^2-kx^2-ky^2)/(n*k0);
                 
-                kv = [kx0;ky0;ga0];               % wavevector in the medium of refractive index n
+                kv  = [kx0;ky0;ga0];               % wavevector in the medium of refractive index n
                 kvb = [kx0;ky0;gab0];             % wavevector in the medium of refractive index nb
                 
                 % transmission coefficiens for s and p polarizations
@@ -152,7 +153,7 @@ for id = 1:NDI
                     %s = [1;0;0];
                     %s = (IL.polar).';
                     s = abs(IL.polar).';
-                    s=s/norm(s);
+                    s = s/norm(s);
                     %s = (abs(DI.p/norm(DI.p))).';% norm vector along the dipole
                     
                     p = [0;0;0];
@@ -189,88 +190,39 @@ for id = 1:NDI
                 % pol=[010] if pour k normal à la surface
                
                 eps0 = 8.8541878128e-12;     % vacuum permittivity
-                % planewave expantion of the radiated electric field
-                %Eka = 1i*k0*k0/(8*pi*pi*eps0)*(1/gab)*(Qs+Qp)*exp(-1i*gab*zQ+1i*ga*zo);
+
                 Eka = 1i*k0*k0/(8*pi*pi*eps0)*(1/gab)*(Qs+Qp)*exp(-1i*(gab*zQ+kx*xQ+ky*yQ)+1i*ga*zo) ;
-                % Computation of the electric field after rotation
-                gaprime = sqrt(k0^2-kprimex^2-kprimey^2);
-                gaprime0 = sqrt(k0^2-kprimex^2-kprimey^2)/k0;
-                kvprime = [kprimex0;kprimey0;gaprime0];
                 
-                pprime1 = cross(kvprime,s);
-                pprime = cross(kvprime,s)/norm(pprime1);
-                
-                Ekprime = sqrt(ga/gaprime)*(dot(conj(Eka),s)*s+dot(conj(Eka),p)*pprime);
-                
-%                 if (sb1==0)
-%                     1i*k0/(8*pi*pi*n*eps0)*exp(-1i*(n*k0*zQ)+1i*nS*k0*zo)*Qs;
-%                     
-%                     % these two quantities are equal:
-%                     Ekprime
-%                     1i*sqrt(nS)*k0/(8*pi*pi*n*eps0)*exp(1i*(n*k0*zQ)-1i*nS*k0*zo) * Qs;
-%                     rr=ts*dot(conj(DI.p.'),(abs(DI.p/norm(DI.p))).')*(abs(DI.p/norm(DI.p))).';
-%                     %rr=ts*dot(conj(DI.p.'),(abs(DI.p/norm(DI.p))).')*(abs(DI.p/norm(DI.p))).'
-%                     dot(conj(DI.p.'),(abs(DI.p/norm(DI.p))).')*abs(DI.p/norm(DI.p));
-%                     (DI.p(:).'*(abs(DI.p(:)/norm(DI.p))))*abs(DI.p(:)/norm(DI.p));
-%                     DI.p.';
-%                     abs(DI.p/norm(DI.p));
-%                     ss=DI.p.';
-%                     
-%                     EE0im = tr/M*sqrt(nS)*e0*exp(1i*nS*k0*zo)*IL.polar;
-%                     aa=1/(IL.eps0*norm(DI.EE0)^2)*DI.EE0'*DI.p.';
-%                     bb=1i*2*n/k0*Ekprime(1)/EE0im(1);
-%                     aa/bb;
-%                     
-%                     
-%                     %Ekprime(1)
-% 
-%                     ikxc=ikx;
-%                     ikyc=iky;
-% %                    1i*k0*k0/(8*pi*pi*eps0)*(1/(n*k0))*Qs*exp(-1i*(n*k0*zQ))*sqrt(nS)
-%                     %Ekprime0=Ekprime(1);
-% 
-%                 end
+                if opt.rotation
+                    % Computation of the electric field after rotation
+                    gaprime = sqrt(k0^2-kprimex^2-kprimey^2);
+                    gaprime0 = sqrt(k0^2-kprimex^2-kprimey^2)/k0;
+                    kvprime = [kprimex0;kprimey0;gaprime0];
+                    
+                    pprime1 = cross(kvprime,s);
+                    pprime = cross(kvprime,s)/norm(pprime1);
+                    
+                    Ekprime = sqrt(ga/gaprime)*(dot(conj(Eka),s)*s+dot(conj(Eka),p)*pprime);
+                else
+                    Ekprime = Eka;
+                end
                 Ekprimex(iky,ikx) = Ekprimex(iky,ikx) + Ekprime(1);
                 Ekprimey(iky,ikx) = Ekprimey(iky,ikx) + Ekprime(2);
                 Ekprimez(iky,ikx) = Ekprimez(iky,ikx) + Ekprime(3);
-                % if abs(Ekprimex(iky,ikx))>1e-10
-                %     pause(1)
-                % end
+
             end % if k<NA*k0
         end    % end for kyy
     end        % end for kxx
 
-    %    fprintf('Ex for the dipole #%d:',id)
-    %    Ekprimex(ikyc,ikxc)/id
 
 end  % end sum over dipoles
 if NDI>1,close(f),end
 %% Computation of the scattered field at image plane
-%Ekprimex(201,201)
-%A=fft2(ifftshift(Ekprimex));
-%sum(A(:))/(401*401)
 
 Expp = (1/M)*fftshift(fft2(ifftshift(Ekprimex)))*dk*dk;
 Eypp = (1/M)*fftshift(fft2(ifftshift(Ekprimey)))*dk*dk;
 Ezpp = (1/M)*fftshift(fft2(ifftshift(Ekprimez)))*dk*dk;
     
-    %pxSize = 2*pi/((2*Npx+1)*dk);
-%    Eim0 = tr/M*sqrt(nS)*e0*exp(1i*nS*k0*zo)*IL.polar;
-    
-    % these two quantities are equal:
-    %aa = sum(Expp(:))
-    %sumExpp = (2*pi)^2/(M*pxSize^2)*Ekprimex(201,201)
-    
-%alphaS = IM.EE0(1)*sum(1-IM.Ex(:)/IM.EE0(1))
-%     -1.292686673178455e+08 + 9.007486741265880e+07i
-% d'après alpha_Image.m :
-%alphaSn = sum(1-IM.Ex(:)/IM.EE0(1))
-%   9.928227747032447e+02 - 6.918024425499526e+02i
-%alphaS/IM.EE0(1)
-%   9.928227747032447e+02 - 6.918024425499526e+02i
-%alphaEx = -1i*2*n/k0*(sumExpp/Eim0(1))*pxSize*pxSize;
-%alphaEx = -1i*8*pi^2*n*Ekprimex(201,201)/(k0*M*Eim0(1))
-%   2.903215902323102e-19 + 4.166476858744075e-19i
     
 %% Total field image plane
 %dr = 2*pi/((2*Npx+1)*dk); %pixel size at the image plane (m)

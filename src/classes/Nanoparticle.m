@@ -366,7 +366,7 @@ classdef Nanoparticle
                         if strcmp(varargin{2*iv-1},'x')
                             if isnumeric(varargin{2*iv})
                                 for id = 1:obj.N
-                                    obj.pos(id,1) = obj.pos(id,1)+varargin{2*iv};
+                                    obj.DIs(id).pos(1) = obj.DIs(id).pos(1)+varargin{2*iv};
                                 end
                             else
                                 error('error in the method ''move'' of Dipole. Not a number.')
@@ -374,7 +374,7 @@ classdef Nanoparticle
                         elseif strcmp(varargin{2*iv-1},'y')
                             if isnumeric(varargin{2*iv})
                                 for id = 1:obj.N
-                                    obj.pos(id,2) = obj.pos(id,2)+varargin{2*iv};
+                                    obj.DIs(id).pos(2) = obj.DIs(id).pos(2)+varargin{2*iv};
                                 end
                             else
                                 error('error in the method ''move'' of Dipole. Not a number.')
@@ -382,7 +382,7 @@ classdef Nanoparticle
                         elseif strcmp(varargin{2*iv-1},'z')
                             if isnumeric(varargin{2*iv})
                                 for id = 1:obj.N
-                                    obj.pos(id,3) = obj.pos(id,3)+varargin{2*iv};
+                                    obj.DIs(id).pos(3) = obj.DIs(id).pos(3)+varargin{2*iv};
                                 end
                             else
                                 error('error in the method ''move'' of Dipole. Not a number.')

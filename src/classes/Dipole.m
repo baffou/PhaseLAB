@@ -514,7 +514,7 @@ classdef Dipole
         
         function objs = plus(obj1,obj2)
             if ~isempty(obj1(1).Illumination) && ~isempty(obj2(1).Illumination)
-                if obj1(1).Illumination.identity~=obj2(1).Illumination.identity
+                if obj1(1).Illumination ~=obj2(1).Illumination
                     error('You are trying to sum two images corresponding to two different wavelengths.')
                 end
             end
