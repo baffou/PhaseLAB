@@ -36,7 +36,7 @@ classdef PIstage < handle
 
         function obj = PIstage(serialNumber)
             arguments
-                serialNumber
+                serialNumber = []
             end
             % Constructor
             try
@@ -44,6 +44,13 @@ classdef PIstage < handle
             catch
                 addpath([getenv("ProgramFiles(x86)") '/Physik Instrumente (PI)\Software Suite\MATLAB_Driver']);
                 obj.Controller = PI_GCS_Controller();
+            end
+
+            if isempty(serialNumber)
+                serialNumbers = PIstage.serialNumbersAvailable();
+                serialNumber = serialNumbers{1};
+            elseif isnumeric(serialNumber)
+                serialNumber = num2str(serialNumber);
             end
             obj.SerialNumber = serialNumber;
         end
@@ -55,10 +62,15 @@ classdef PIstage < handle
             end
         end
 
-        function rc = connect(obj)
+        function rc = connect(obj,val)
             %Link the controller to an actual piezo
             arguments
                 obj
+                val = []
+            end
+
+            if ~isempty(val)
+                obj.SerialNumber = val;
             end
             
             obj.Controller = obj.Controller.ConnectUSB(obj.SerialNumber);
@@ -95,9 +107,9 @@ classdef PIstage < handle
             catch
                 obj.AccTunable = false;
             end
-
-            rc = 0;
-
+            if nargout
+                rc = 0;
+            end
         end
 
         function disconnect(obj)
@@ -108,6 +120,7 @@ classdef PIstage < handle
             obj.Controller.CloseConnection();
             obj.SerialNumber = [];
             obj.axes = [];
+            obj.delete()
         end
 
         function initializeAxes(obj)
@@ -309,7 +322,7 @@ classdef PIstage < handle
         function setHomePosition(obj,HomePosition)
             arguments
                 obj
-                HomePosition (1,:) double = empty(1,0)
+                HomePosition (1,:) double = double.empty(1,0)
             end
 
             if isempty(HomePosition)
@@ -336,10 +349,6 @@ classdef PIstage < handle
 
         end
     
-        function list = controllersAvailable(obj)
-            %List all the available controllers
-            list = obj.Controller.EnumerateUSB();
-        end
     end
 
     methods
@@ -424,5 +433,23 @@ classdef PIstage < handle
         end
     
     
+    end
+
+    methods(Static)
+        function list = controllersAvailable()
+            %List all the available controllers
+            obj = PI_GCS_Controller();
+            list = obj.Controller.EnumerateUSB();
+        end
+        function serialNumbers = serialNumbersAvailable()
+            %List all the available serial numbers
+            list = PIstage.controllersAvailable();
+            Nl = numel(list);
+            serialNumbers = cell(Nl,1);
+            for il = 1:Nl
+                serialNumbers{il} = regexp(list{1}, '\d+$', 'match', 'once');
+            end
+
+        end
     end
 end
