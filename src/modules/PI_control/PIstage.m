@@ -149,17 +149,19 @@ classdef PIstage < handle
     
         %%Velocity & acceleration
 
-        function [vel] = getVelocity(obj,ax)
+        function [vel] = getVelocity(obj)
             %Get the current velocity value for a given axe (X,Y,Z)
 
-            vel = obj.Controller.qVEL(obj.idAxes{obj.axNum(ax)});
+            vel = obj.Controller.qVEL(obj.idAxes{1});
         
         end
 
-        function setVelocity(obj,ax,val)
+        function setVelocity(obj,val)
             %Set the current velocity value for a given axe (X,Y,Z)
+            for ia = 1:length(obj.axes)
+                obj.Controller.VEL(obj.idAxes{ia},val);
+            end
 
-            obj.Controller.VEL(obj.idAxes(obj.axNum(ax)),val);
         
         end
 
@@ -255,10 +257,12 @@ classdef PIstage < handle
                 fieldNames = fieldnames(opt);
                 Np = numel(fieldNames);
                 for ii = 1:Np
-                    val0 = obj.(obj.axes(ii));
+                    val0 = obj.(fieldNames{ii});
                     obj.moveSingleAxisTo(fieldNames{ii},val0+opt.(fieldNames{ii}));
                 end
             end
+            
+
 
         end
         
@@ -364,11 +368,11 @@ classdef PIstage < handle
                         catch
                             obj.isJoystickUsable = false;
                         end
-                            obj.Controller.SVO(obj.idAxes{k},1);
-                        try
-                            obj.Controller.FRF(obj.idAxes{k}); %MOOVE THE PIEZO TO THE REF POSITION AT STARTUP
-                        catch
-                        end
+
+
+                        obj.Controller.SVO(obj.idAxes{k},1);
+                        obj.Controller.FRF(obj.idAxes{k}); %MOOVE THE PIEZO TO THE REF POSITION AT STARTUP
+
                     end
                 case {'off','Off',"off","Off"}
                     for k=1:length(obj.axes)
@@ -395,7 +399,7 @@ classdef PIstage < handle
             %Move a single axis to a given coordinate
             val = obj.checkPositionValidity(ax,val);
             obj.Controller.MOV(obj.idAxes{obj.axNum(ax)},val);
-            % obj.waitUntilPiezoStill() % useful ???
+            obj.waitUntilPiezoStill()
         end
 
         function okPos = checkPositionValidity(obj,ax,pos)
