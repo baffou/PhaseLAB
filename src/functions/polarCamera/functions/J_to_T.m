@@ -16,8 +16,13 @@ for ith = 1:Nth
     T.phid{ith} = angle(diatt.pd(:,:,1)+1i*diatt.pd(:,:,2))/2;
     T.phib{ith} = angle(bir.pb(:,:,1)+1i*bir.pb(:,:,2))/2;
     T.phi{ith} = angle(exp(1i*T.phib{ith}*4)+exp(1i*T.phid{ith}*4))/4;
-    T.to{ith} = diatt.h0.*exp(1i*bir.phi0).*(1+diatt.D).*exp(1i*(-bir.beta/2));
-    T.te{ith} = diatt.h0.*exp(1i*bir.phi0).*(1-diatt.D).*exp(1i*( bir.beta/2));
+
+    % sign correction in case where pd = -pd
+    sgn = sign(dot(squeeze(bir.pb),squeeze(diatt.pd)));
+    
+    % by convention, to and te are such that abs(to) > abs(te)
+    T.to{ith} = diatt.h0.*exp(1i*bir.phi0).*(1+diatt.D).*exp(1i*sgn.*(bir.beta/2)); 
+    T.te{ith} = diatt.h0.*exp(1i*bir.phi0).*(1-diatt.D).*exp(1i*sgn.*(-bir.beta/2));
 
 end
 
