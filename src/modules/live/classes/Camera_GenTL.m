@@ -52,6 +52,7 @@ classdef Camera_GenTL  <  CameraLive & Camera
 
                     try
                         obj.hndl = videoinput('gentl',1,'Mono16');
+                        set(obj.hndl,'Timeout',120);
                         rcout = 0;
                     catch
                         error('SDK not properly installed, or camera not plugged')
