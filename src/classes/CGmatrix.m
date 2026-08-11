@@ -126,9 +126,9 @@ classdef CGmatrix
             if IL.NA==0
                 Fdb2 = M;
                 Fdb2.im = M.im*0;
-                imp = imProp(M.im,M.pxSize,lambda,-L);
+                imp = propagation0(M.im,M.pxSize,lambda,-L);
                 imp2 = Grating.im.*imp;
-                imp3 = imProp(imp2,M.pxSize,lambda,L);
+                imp3 = propagation0(imp2,M.pxSize,lambda,L);
                 
                 % rajouter ici la pastille
                 if ~isempty(MI.CGcam.RL) & MI.CGcam.RL.mask==1

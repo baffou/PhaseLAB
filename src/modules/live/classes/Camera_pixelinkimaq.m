@@ -11,7 +11,7 @@ classdef Camera_pixelinkimaq  <  CameraLive & Camera
 
     properties(SetAccess = private)
         hndl  % Camera handle. Contains all the properties of the live camera (number of pixels, exp time, trigger mode, etc...)
-        imageDimensionsList = { '2448 x 2048','2048 x 2048','1920 x 1080','1392 x 1040','528 x 512','240 x 256','144 x 128', '2448 x 304'};
+        imageDimensionsList = { '5472 x 3648', '4096 x 3072', '2448 x 2048','2048 x 2048','1920 x 1080','1392 x 1040','528 x 512','240 x 256','144 x 128', '2448 x 304'};
     end
 
     properties(Dependent, SetAccess = private)

@@ -587,7 +587,7 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
-        function [obj, params] = level0(obj0,opt)
+        function [objOut, params] = level0(obj0,opt)
             % applies an offset to an image so that the average value of th
             % selected area is zero (or opt.value).
             arguments
@@ -616,8 +616,6 @@ classdef ImageQLSI   <   ImageMethods
             for io = 1:numel(obj)
                 if ~isempty(opt.app)
                     opt.app.displayMessage(io+"/"+numel(obj),"color",opt.app.warnColor)
-                else
-                    printLoop(io,numel(obj))
                 end
                 if sum(sizeIm ~= size(obj(io).OPD)) % if the size of the image is not the same as the previous one
                     if isempty(opt.params)
@@ -665,6 +663,9 @@ classdef ImageQLSI   <   ImageMethods
                 %if ~isempty(opt.app)
                 %    opt.app.updateImages()
                 %end
+                if nargout
+                    objOut=obj0;
+                end
 
             end
 
@@ -827,6 +828,13 @@ classdef ImageQLSI   <   ImageMethods
                 error('A ImageQLSI object cannot be rotated if it is remote.')
             end
 
+            if size(obj0,2) == 4
+                % if polar
+                obj = obj0(:,[2,4;1,3]);
+            elseif size(obj0,2) == 2
+                % if color image
+                obj = obj0(:,[2,1]);
+            end
         end            
     
         function obj = flipud(obj0)
@@ -902,8 +910,8 @@ classdef ImageQLSI   <   ImageMethods
                     n = opt.n;
                 end
                 image=sqrt(IM(io).T).*exp(1i*IM(io).Ph);
-                [~, Pha, Int]=imProp(image,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
-                [~, Pha0]=imProp(image*0+1,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
+                [~, Pha, Int]=propagation0(image,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
+                [~, Pha0]=propagation0(image*0+1,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
     
                 IMout(io).T0 = Int;
                 IMout(io).OPD0 = (Pha-Pha0)*IM(io).Illumination.lambda/(2*pi);
@@ -950,7 +958,7 @@ classdef ImageQLSI   <   ImageMethods
             Image1handle.CData = PDCM;
             minval = min(PDCM(:));
             maxval = max(PDCM(:));
-            caxis(hfig.UserData{7}(1),[minval maxval])
+            clim(hfig.UserData{7}(1),[minval maxval])
 
         end
 

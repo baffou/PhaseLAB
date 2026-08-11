@@ -856,13 +856,13 @@ classdef Interfero < handle & matlab.mixin.Copyable
             arguments
                 Im Interfero
             end
-            disp('Split polar')
+            %disp('Split polar')
 
             Ni = numel(Im);
 
             ImG=Interfero(Ni);
             ImR=Interfero(Ni);
-            for io=1:Ni
+            for io = 1:Ni
                 ImG(io) = copy(Im(io)); % not duplicate to keep the MI.
                 ImR(io) = copy(Im(io));
 
@@ -898,7 +898,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 Im Interfero
                 opt.method {mustBeMember(opt.method,{'regionfill','linear','demosaic'})} = 'linear'
             end
-            disp('Split polar')
+            %disp('Split polar')
             Ni = numel(Im);
 
             Im00 = Interfero(Ni);
@@ -907,7 +907,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             Im135= Interfero(Ni);
             
             for io = 1:Ni
-                printLoop(io, Ni)
+                %printLoop(io, Ni)
                 Im00(io) = copy(Im(io)); % not duplicate to keep the MI.
                 Im45(io) = copy(Im(io));
                 Im90(io) = copy(Im(io)); % not duplicate to keep the MI.

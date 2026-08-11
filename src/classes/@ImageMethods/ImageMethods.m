@@ -80,6 +80,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
                 IMlist
                 opt.numbers double = 1:numel(IMlist)
                 opt.types cell = {'OPD','T'}
+                opt.nm = []
             end
             Nim=numel(IMlist);
             Nt = numel(opt.types);
@@ -107,14 +108,19 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
             for iy=1:Nimy
                 for ix=1:Nimx
                     if iim <= Nim
-                        subplot(Nimy,Nimx,ix+Nimx*(iy-1))
+                        if isempty(opt.nm)
+                            subplot(Nimy,Nimx,ix+Nimx*(iy-1))
+                        else
+                            subplot(opt.nm(1),opt.nm(2),ix+Nimx*(iy-1))
+                        end
+
                         if mod(ix,Nt)
                             imagesc(IMlist(iim).(opt.types{2}))
                             colormap(gca,'gray(1024)')
                             title(sprintf(['T #' num2str(numbers(iim)) '\n' IMlist(iim).comment]))
                         else
                             imagesc(IMlist(iim).(opt.types{1}))
-                            colormap(gca,Sepia)
+                            colormap(gca,sepia)
                             title(sprintf(['OPD #' num2str(numbers(iim)) '\n' IMlist(iim).comment]))
                             iim=iim+1;
                         end
