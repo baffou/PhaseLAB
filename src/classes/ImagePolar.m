@@ -9,6 +9,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         retardanceMax (1,1) double = 20 % max amplitude of the retardance on the color map of theta
         eLim (1,1) double = 0.1 % min ellipiticity to be displayed
         dichroMax (1,1) double = 0.1
+        thetaShift = 0
     end
 
     properties
@@ -164,7 +165,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         end
         
         function val = get.thetaEllipse(obj)
-            val = mod(0.5*angle(obj.L),pi);
+            val = mod(0.5*angle(obj.L) + obj.thetaShift,pi);
         end
 
         function val = get.thetaEllipseDeg(obj)
@@ -319,6 +320,13 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         function set.dichroMax(obj, val)
             % converts in [m] in case the norm factor is entered in [nm]
             obj.dichroMax = val;
+        end
+
+        function setThetaShift(obj, val)
+            % converts in [m] in case the norm factor is entered in [nm]
+            for io = 1:numel(obj)
+                obj(io).thetaShift = val;
+            end
         end
 
         function set_retMax(obj, val)

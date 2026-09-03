@@ -52,6 +52,7 @@ classdef Camera_GenTL  <  CameraLive & Camera
 
                     try
                         obj.hndl = videoinput('gentl',1,'Mono16');
+                        set(obj.hndl,'Timeout',120);
                         rcout = 0;
                     catch
                         error('SDK not properly installed, or camera not plugged')
@@ -113,55 +114,38 @@ classdef Camera_GenTL  <  CameraLive & Camera
         end
         
         function setImageDimensions(obj,varargin)
-            if nargin == 2 && ischar(varargin{1}) % setImageDimensions('2560 x 2160')
+            isrun = strcmp(obj.hndl.Running,'on');
+            stop(obj.hndl)
 
+            if nargin == 2 && ischar(varargin{1}) % setImageDimensions('2560 x 2160')
                 switch varargin{1}
-                    case '2560 x 2160'
-                        dims.width  = 2560;
-                        dims.height = 2160;
+                   
+                    case '2448 x 2048'
+                        dims.width  = 2448;
+                        dims.height = 2048;
                         dims.top    = 1;
                         dims.left   = 1;
-                    case '2064 x 2048'
-                        dims.width  = 2064;
+                    case '2048 x 2048'
+                        dims.width  = 2048;
                         dims.height = 2048;
-                        dims.top    = 57;
-                        dims.left   = 265;
+                        dims.top    = 201;
+                        dims.left   = 1;
                     case '1920 x 1080'
                         dims.width  = 1920;
                         dims.height = 1080;
-                        dims.top    = 537;
-                        dims.left   = 337;
+                        dims.top    = 265;
+                        dims.left   = 485;
                     case '1392 x 1040'
                         dims.width  = 1392;
                         dims.height = 1040;
-                        dims.top    = 561;
-                        dims.left   = 601;
-                    case '528 x 512'
-                        dims.width  = 528;
-                        dims.height = 512;
-                        dims.top    = 825;
-                        dims.left   = 1033;
-                    case '240 x 256'
-                        dims.width  = 240;
-                        dims.height = 256;
-                        dims.top    = 953;
-                        dims.left   = 1177;
-                    case '144 x 128'
-                        dims.width  = 144;
-                        dims.height = 128;
-                        dims.top    = 1017;
-                        dims.left   = 1225;
-                    case '2560 x 304'
-                        dims.width  = 2560;
-                        dims.height = 304;
-                        dims.top    = 929;
-                        dims.left   = 1;
+                        dims.top    = 529;
+                        dims.left   = 505;
                     otherwise
                         numbers = regexp(varargin{1}, '[+-]?\d*\.?\d+', 'match');
                         dims.width  = str2double(numbers{1});
                         dims.height = str2double(numbers{2});
-                        dims.left   = 1 + floor((dims.height-str2double(numbers{1}))/2);
-                        dims.top    = 1 + floor((dims.width-str2double(numbers{2}))/2);
+                        dims.left   = 1 + floor(2048/2-dims.height/2);
+                        dims.top    = 1 + floor(2448/2-dims.width/2);
                 end
 
             elseif nargin == 5 && isnumeric([varargin{1:end}]) % setImageDimensions(2560,2160)
@@ -173,7 +157,10 @@ classdef Camera_GenTL  <  CameraLive & Camera
                 error('Error in the inputs of setImageDimensions')
             end
 
-            obj.hndl.ROIposition = [dims.left-1, dims.top-1, dims.width, dims.height];
+            obj.hndl.ROIposition = [dims.top-1, dims.left-1, dims.width, dims.height];
+            if isrun
+                start(obj.hndl)
+            end
         end
 
         function setExpTime(obj,val)
