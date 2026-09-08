@@ -110,9 +110,16 @@ classdef Camera_pixelinkimaq  <  CameraLive & Camera
         end
 
         function buf = acquire_continuous(obj,app)
-            buf = getsnapshot(obj.hndl.vid);
-            flushdata(obj.hndl.vid);
-            %buf = getdata(obj.hndl.vid);
+            try
+                buf = getsnapshot(obj.hndl.vid);
+                flushdata(obj.hndl.vid);
+            catch % in case of insufficient free physical memory due to Matlab memory leak, or camera
+                obj.stopAcquisition
+                obj.startAcquisition
+                buf = getsnapshot(obj.hndl.vid);
+                flushdata(obj.hndl.vid);
+            end
+                %buf = getdata(obj.hndl.vid);
             %preview(vid,him)
         end
 
