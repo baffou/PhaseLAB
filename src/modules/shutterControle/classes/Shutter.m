@@ -1,6 +1,6 @@
 classdef Shutter < handle
 
-    properties %(SetAccess = private)
+    properties (SetAccess = {?shutterControlWindow})
         portLine
         deviceID
         daqObj
@@ -12,7 +12,7 @@ classdef Shutter < handle
 
         function obj = Shutter(portLine,deviceID)
             arguments
-                portLine  % text or number
+                portLine = []  % text or number
                 deviceID = []    % text or number
             end
             % Constructor
@@ -21,6 +21,11 @@ classdef Shutter < handle
             % SH = Shutter(4,[0,0])
 
 
+            % tests
+
+            if isempty(portLine)
+                return
+            end
             if nargout == 0
                 error('you mush define an output')
             end
@@ -51,18 +56,9 @@ classdef Shutter < handle
             end
 
 
+            % connexion
+            obj.connect()
 
-            % Create DAQ object
-            obj.daqObj = daq('ni');
-
-            % Add digital output
-            obj.channel = addoutput(obj.daqObj,obj.deviceID, obj.portLine, 'Digital');
-
-            fprintf('Shutter connected successfully to %s on device %s.\n', portLine, deviceID);
-
-
-            % Initialize shutter in closed state
-            obj.close()
         end
 
 
@@ -87,6 +83,18 @@ classdef Shutter < handle
             end
             obj.isOpen = false;
 
+        end
+
+        function connect(obj)
+            % Create DAQ object
+            obj.daqObj = daq('ni');
+
+            % Add digital output
+            obj.channel = addoutput(obj.daqObj,obj.deviceID, obj.portLine, 'Digital');
+            fprintf('Shutter connected successfully to %s on device %s.\n', obj.portLine, obj.deviceID);
+
+            % Initialize shutter in closed state
+            obj.close()
         end
 
         function delete(obj)
