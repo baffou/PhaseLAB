@@ -61,7 +61,7 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
                 if Nv>1
                     obj = repmat(Illumination(), Nv, 1);
                     for iv = 1:Nv
-                        obj(iv) = Illumination(lambda(iv), ME);
+                        obj(iv) = Illumination(lambda(iv), ME,I, polar);
                     end
                 else
                     obj.lambda = lambda;

@@ -3,7 +3,7 @@ classdef ImageT   <   ImageMethods
     properties(SetAccess={?ImageMethods})
         OPD  (:,:) double
         TMP  (:,:) double
-        HSD  (:,:) double  % W/nm^2
+        HSD  (:,:) double  % W/px
         T    (:,:) double
         zT   (1,1) double = 0
     end

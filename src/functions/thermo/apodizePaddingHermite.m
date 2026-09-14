@@ -7,7 +7,7 @@ function B = apodizePaddingHermite(A, opt)
 arguments
     A double
     opt.nFit (1,1) double {mustBePositive, mustBeInteger} = ...
-        max(5, round(min(size(A))/20))
+        max(15, round(min(size(A))/20))
 end
 
 [ny, nx] = size(A);
@@ -23,6 +23,10 @@ py2 = Ny - ny - py1;
 nFitX = min(opt.nFit, nx);
 nFitY = min(opt.nFit, ny);
 
+
+%% Smoothing of the corners of A, when problems usually appear
+
+A = smoothBorders(A, nBorder=round(min(size(A))/10), sigma=10);
 %% Horizontal extension
 
 C = zeros(ny, Nx);
@@ -249,3 +253,52 @@ M(py1+1:Ny-py2, px1+1:Nx-px2) = 0;
 B = (1 - M).*B + M.*Bs;
 
 end
+
+function B = smoothBorders(A, opt)
+% Smooth all image borders over a band of thickness opt.nBorder.
+% The smoothing strength is maximum at the outer border and decreases
+% smoothly to zero toward the image interior.
+
+arguments
+    A double
+    opt.nBorder (1,1) double {mustBePositive, mustBeInteger} = 50
+    opt.sigma   (1,1) double {mustBePositive} = 10
+end
+
+[ny, nx] = size(A);
+
+n = min([opt.nBorder, floor(nx/2), floor(ny/2)]);
+
+%% Smoothed image
+
+As = imgaussfilt(A, opt.sigma, 'Padding', 'symmetric');
+
+%% Distance to the closest image border
+
+[X, Y] = meshgrid(1:nx, 1:ny);
+
+dLeft   = X - 1;
+dRight  = nx - X;
+dTop    = Y - 1;
+dBottom = ny - Y;
+
+d = min(cat(3, dLeft, dRight, dTop, dBottom), [], 3);
+
+%% Smooth blending mask
+
+M = zeros(ny, nx);
+
+insideBand = d < n;
+
+t = d(insideBand) / n;
+
+% 1 at the border, 0 at the inner edge of the smoothing band
+M(insideBand) = 1 - smootherstep(t);
+
+%% Blend
+
+B = (1-M).*A + M.*As;
+
+end
+
+

@@ -587,11 +587,12 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
-        function [obj, params] = level0(obj0,opt)
+        function [objOut, params] = level0(obj0,val,opt)
             % applies an offset to an image so that the average value of th
             % selected area is zero (or opt.value).
             arguments
                 obj0
+                val = 0 % if val ≠ 0, subtract this value, discarding all the Name Value parameters
                 opt.method (1,:) char {mustBeMember(opt.method,{'mean','average','median','boundaryMedian','histogram','histo'})}= 'mean'
                 % parameters for boxSelection()
                 opt.xy1 = []
@@ -616,56 +617,60 @@ classdef ImageQLSI   <   ImageMethods
             for io = 1:numel(obj)
                 if ~isempty(opt.app)
                     opt.app.displayMessage(io+"/"+numel(obj),"color",opt.app.warnColor)
-                else
-                    printLoop(io,numel(obj))
                 end
-                if sum(sizeIm ~= size(obj(io).OPD)) % if the size of the image is not the same as the previous one
-                    if isempty(opt.params)
-                        if numel(obj)>1
-                            opt.imNumber = io;
-                        end
-                        if ~isempty(opt.app)
-                            boxObj = opt.app;
+                if val ~= 0
+                    obj(io).OPD = obj(io).OPD - val;
+                else
+                    if sum(sizeIm ~= size(obj(io).OPD)) % if the size of the image is not the same as the previous one
+                        if isempty(opt.params)
+                            if numel(obj)>1
+                                opt.imNumber = io;
+                            end
+                            if ~isempty(opt.app)
+                                boxObj = opt.app;
+                            else
+                                boxObj = obj;
+                            end
+    
+                            [x1, x2, y1, y2] = boxSelection(boxObj,'xy1',opt.xy1, ...
+                                                                'xy2',opt.xy2, ...
+                                                                'Center',opt.Center, ...
+                                                                'Size',opt.Size, ...
+                                                                'twoPoints',opt.twoPoints, ...
+                                                                'params',opt.params, ...
+                                                                'shape',opt.shape);
+                            params=[x1, x2, y1, y2];
                         else
-                            boxObj = obj;
+                            x1 = opt.params(1);
+                            x2 = opt.params(2);
+                            y1 = opt.params(3);
+                            y2 = opt.params(4);
+                            params=opt.params;
                         end
-
-                        [x1, x2, y1, y2] = boxSelection(boxObj,'xy1',opt.xy1, ...
-                                                            'xy2',opt.xy2, ...
-                                                            'Center',opt.Center, ...
-                                                            'Size',opt.Size, ...
-                                                            'twoPoints',opt.twoPoints, ...
-                                                            'params',opt.params, ...
-                                                            'shape',opt.shape);
-                        params=[x1, x2, y1, y2];
+                    end
+    
+                    sizeIm = size(obj(io).OPD);
+    
+                    if strcmpi(opt.method,'mean') || strcmpi(opt.method,'average')
+                        offsetFunction = @(im) mean(im(:));
+                    elseif strcmpi(opt.method,'median')
+                        offsetFunction = @(im) median(im(:));
+                    elseif strcmpi(opt.method,'boundaryMedian')
+                        offsetFunction = @(im) boundaryMedian(im);
+                    elseif strcmpi(opt.method,'histogram') || strcmpi(opt.method,'histo')
+                        offsetFunction = @(im) histrogramMedian(im);
                     else
-                        x1 = opt.params(1);
-                        x2 = opt.params(2);
-                        y1 = opt.params(3);
-                        y2 = opt.params(4);
-                        params=opt.params;
+                        error('unkown option')
+                    end
+    
+                    obj(io).OPD = obj(io).OPD-offsetFunction(obj(io).OPD(y1:y2,x1:x2)) + opt.value;
+                    %if ~isempty(opt.app)
+                    %    opt.app.updateImages()
+                    %end
+                    if nargout
+                        objOut=obj0;
                     end
                 end
-
-                sizeIm = size(obj(io).OPD);
-
-                if strcmpi(opt.method,'mean') || strcmpi(opt.method,'average')
-                    offsetFunction = @(im) mean(im(:));
-                elseif strcmpi(opt.method,'median')
-                    offsetFunction = @(im) median(im(:));
-                elseif strcmpi(opt.method,'boundaryMedian')
-                    offsetFunction = @(im) boundaryMedian(im);
-                elseif strcmpi(opt.method,'histogram') || strcmpi(opt.method,'histo')
-                    offsetFunction = @(im) histrogramMedian(im);
-                else
-                    error('unkown option')
-                end
-
-                obj(io).OPD = obj(io).OPD-offsetFunction(obj(io).OPD(y1:y2,x1:x2)) + opt.value;
-                %if ~isempty(opt.app)
-                %    opt.app.updateImages()
-                %end
-
             end
 
             function val = boundaryMedian(im)
@@ -691,11 +696,12 @@ classdef ImageQLSI   <   ImageMethods
 
         end        
 
-        function [obj, params] = normT(obj0,opt)
+        function [obj, params] = normT(obj0,val,opt)
             % applies a factor to the T image so that the average value of
             % the selected area is 1.
             arguments
                 obj0
+                val = 0 % normalization by a number, all the Name Value are ignored if val ≠ 0 
                 opt.method (1,:) char {mustBeMember(opt.method,{'mean','average','median','boundaryMedian'})}= 'mean'
                 % parameters for boxSelection()
                 opt.xy1 = []
@@ -721,52 +727,57 @@ classdef ImageQLSI   <   ImageMethods
                 else
                     printLoop(io,numel(obj))
                 end
-                if sum(sizeIm ~= size(obj(io).OPD)) % if the size of the image is not the same as the previous one
-                    if isempty(opt.params)
-                        if numel(obj)>1
-                            opt.imNumber = io;
-                        end
-                        if ~isempty(opt.app)
-                            boxObj = opt.app;
-                        else
-                            boxObj = obj;
-                        end
 
-                        [x1, x2, y1, y2] = boxSelection(boxObj,'xy1',opt.xy1, ...
-                                                            'xy2',opt.xy2, ...
-                                                            'Center',opt.Center, ...
-                                                            'Size',opt.Size, ...
-                                                            'twoPoints',opt.twoPoints, ...
-                                                            'params',opt.params, ...
-                                                            'shape',opt.shape, ...
-                                                            'axes','Right');
-                        params=[x1, x2, y1, y2];
-                    else
-                        x1 = opt.params(1);
-                        x2 = opt.params(2);
-                        y1 = opt.params(3);
-                        y2 = opt.params(4);
-                        params=opt.params;
-                    end
-                end
-
-                sizeIm = size(obj(io).OPD);
-
-                if strcmpi(opt.method,'mean') || strcmpi(opt.method,'average')
-                    normFunction = @(im) mean(im(:));
-                elseif strcmpi(opt.method,'median')
-                    normFunction = @(im) median(im(:));
-                elseif strcmpi(opt.method,'boundaryMedian')
-                    normFunction = @(im) boundaryMedian(im);
+                if val ~= 0 % normalization by a number, not by a box
+                    obj(io).T = obj(io).T/val;
                 else
-                    error('unkown option')
+
+                    if sum(sizeIm ~= size(obj(io).OPD)) % if the size of the image is not the same as the previous one
+                        if isempty(opt.params)
+                            if numel(obj)>1
+                                opt.imNumber = io;
+                            end
+                            if ~isempty(opt.app)
+                                boxObj = opt.app;
+                            else
+                                boxObj = obj;
+                            end
+    
+                            [x1, x2, y1, y2] = boxSelection(boxObj,'xy1',opt.xy1, ...
+                                                                'xy2',opt.xy2, ...
+                                                                'Center',opt.Center, ...
+                                                                'Size',opt.Size, ...
+                                                                'twoPoints',opt.twoPoints, ...
+                                                                'params',opt.params, ...
+                                                                'shape',opt.shape, ...
+                                                                'axes','Right');
+                            params=[x1, x2, y1, y2];
+                        else
+                            x1 = opt.params(1);
+                            x2 = opt.params(2);
+                            y1 = opt.params(3);
+                            y2 = opt.params(4);
+                            params=opt.params;
+                        end
+                    end
+    
+                    sizeIm = size(obj(io).OPD);
+    
+                    if strcmpi(opt.method,'mean') || strcmpi(opt.method,'average')
+                        normFunction = @(im) mean(im(:));
+                    elseif strcmpi(opt.method,'median')
+                        normFunction = @(im) median(im(:));
+                    elseif strcmpi(opt.method,'boundaryMedian')
+                        normFunction = @(im) boundaryMedian(im);
+                    else
+                        error('unkown option')
+                    end
+    
+                    obj(io).T = obj(io).T/normFunction(obj(io).T(y1:y2,x1:x2));
+                    % if ~isempty(opt.app)
+                    %     opt.app.updateImages()
+                    % end
                 end
-
-                obj(io).T = obj(io).T/normFunction(obj(io).T(y1:y2,x1:x2));
-                % if ~isempty(opt.app)
-                %     opt.app.updateImages()
-                % end
-
             end
 
             function val = boundaryMedian(im)
@@ -778,7 +789,6 @@ classdef ImageQLSI   <   ImageMethods
                 val = median(bound);
             end
         end        
-
 
         function IMout = plus(IM1,IM2)
 
@@ -827,6 +837,13 @@ classdef ImageQLSI   <   ImageMethods
                 error('A ImageQLSI object cannot be rotated if it is remote.')
             end
 
+            if size(obj0,2) == 4
+                % if polar
+                obj = obj0(:,[2,4;1,3]);
+            elseif size(obj0,2) == 2
+                % if color image
+                obj = obj0(:,[2,1]);
+            end
         end            
     
         function obj = flipud(obj0)
@@ -902,8 +919,8 @@ classdef ImageQLSI   <   ImageMethods
                     n = opt.n;
                 end
                 image=sqrt(IM(io).T).*exp(1i*IM(io).Ph);
-                [~, Pha, Int]=imProp(image,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
-                [~, Pha0]=imProp(image*0+1,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
+                [~, Pha, Int]=propagation0(image,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
+                [~, Pha0]=propagation0(image*0+1,IM(io).pxSize,IM(io).Illumination.lambda,z,'n',n,'dx',opt.dx,'dy',opt.dy);
     
                 IMout(io).T0 = Int;
                 IMout(io).OPD0 = (Pha-Pha0)*IM(io).Illumination.lambda/(2*pi);
@@ -950,7 +967,7 @@ classdef ImageQLSI   <   ImageMethods
             Image1handle.CData = PDCM;
             minval = min(PDCM(:));
             maxval = max(PDCM(:));
-            caxis(hfig.UserData{7}(1),[minval maxval])
+            clim(hfig.UserData{7}(1),[minval maxval])
 
         end
 
@@ -1026,19 +1043,22 @@ classdef ImageQLSI   <   ImageMethods
             objT = repmat(ImageT(),No,1);
 
             for io = 1:No
-                [tmp, hsd, GreenFunction,GreenT_z0] = opd2tmp0(obj(io).OPD,obj(io).Microscope,Med,'g',opt.g,'nLoop',...
-                    opt.nLoop,'alpha',opt.alpha,'smoothing',opt.smoothing,...
-                    'imExpander',opt.imExpander,'T0',opt.T0,'zT',opt.zT, ...
-                    'GreenOPD',opt.GreenOPD, ...
-                    'GreenT_z0', opt.GreenT_z0, ...
-                    'GreenT_3D', opt.GreenT_3D, ...
-                    'pxSize',obj(io).pxSize);
-                objT(io) = ImageT(obj(io).OPD, tmp, hsd,obj(io).T);
-                objT(io).Microscope = obj(io).Microscope;
-                objT(io).Illumination = obj(io).Illumination;
-                objT(io).pxSizeCorrection = obj(io).pxSizeCorrection;
+                try
+                    [tmp, hsd, GreenFunction,GreenT_z0] = opd2tmp0(obj(io).OPD,obj(io).Microscope,Med,'g',opt.g,'nLoop',...
+                        opt.nLoop,'alpha',opt.alpha,'smoothing',opt.smoothing,...
+                        'imExpander',opt.imExpander,'T0',opt.T0,'zT',opt.zT, ...
+                        'GreenOPD',opt.GreenOPD, ...
+                        'GreenT_z0', opt.GreenT_z0, ...
+                        'GreenT_3D', opt.GreenT_3D, ...
+                        'pxSize',obj(io).pxSize);
+                    objT(io) = ImageT(obj(io).OPD, tmp, hsd,obj(io).T);
+                    objT(io).Microscope = obj(io).Microscope;
+                    objT(io).Illumination = obj(io).Illumination;
+                    objT(io).pxSizeCorrection = obj(io).pxSizeCorrection;
+                catch
+                    objT(io) = ImageT();
+                end
             end
-
         end
 
         function obj2List = download(objList)

@@ -1,4 +1,4 @@
-function [image2, Ph, T]=imProp(image,pxSize,lambda,z,opt)
+function [image2, Ph, T]=propagation0(image,pxSize,lambda,z,opt)
 % function that propagates a scalar E field over a distance z
 arguments
     image
