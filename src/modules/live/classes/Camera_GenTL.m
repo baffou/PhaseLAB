@@ -79,6 +79,8 @@ classdef Camera_GenTL  <  CameraLive & Camera
                 opt.expTime = [] % in [s]
                 opt.Nim = 1 % number of images to be acquiredin Fixed mode
             end
+            isrun = strcmp(obj.hndl.Running,'on');
+            stop(obj.hndl)
             src = getselectedsource(obj.hndl);
 
             if ~isempty(opt.expTime)
@@ -93,6 +95,9 @@ classdef Camera_GenTL  <  CameraLive & Camera
                 obj.hndl.FramesPerTrigger = Inf;
             end
 
+            if isrun
+                start(obj.hndl)
+            end
 
         end
 

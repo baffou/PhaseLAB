@@ -83,6 +83,9 @@ classdef Camera_pixelinkimaq  <  CameraLive & Camera
                 opt.expTime = [] % in [s]
                 opt.Nim = 1 % number of images to be acquiredin Fixed mode
             end
+            isrun = strcmp(obj.hndl.Running,'on');
+            stop(obj.hndl)
+
             src = getselectedsource(obj.hndl.vid);
             if ~isempty(opt.expTime)
                 src.Exposure = opt.expTime;
@@ -98,6 +101,9 @@ classdef Camera_pixelinkimaq  <  CameraLive & Camera
                 obj.hndl.vid.TriggerRepeat = Inf;
             end
 
+            if isrun
+                start(obj.hndl)
+            end
 
         end
 
@@ -123,6 +129,8 @@ classdef Camera_pixelinkimaq  <  CameraLive & Camera
         end
         
         function setImageDimensions(obj,varargin)
+            isrun = strcmp(obj.hndl.Running,'on');
+            stop(obj.hndl)
             if nargin == 2 && ischar(varargin{1}) % setImageDimensions('2560 x 2160')
                 Nx = 5472;
                 Ny = 3648;
@@ -142,6 +150,10 @@ classdef Camera_pixelinkimaq  <  CameraLive & Camera
             end
 
             obj.hndl.vid.ROIPosition = [dims.left, dims.top, dims.width, dims.height];
+
+            if isrun
+                start(obj.hndl)
+            end
         end
 
         function setExpTime(obj,val)
