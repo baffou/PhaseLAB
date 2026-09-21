@@ -1,6 +1,6 @@
 classdef ImageT   <   ImageMethods
 
-    properties(SetAccess={?ImageMethods})
+    properties %(SetAccess={?ImageMethods})
         OPD  (:,:) double
         TMP  (:,:) double
         HSD  (:,:) double  % W/px

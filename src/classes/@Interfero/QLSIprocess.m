@@ -31,6 +31,7 @@ arguments
     opt.computeT = true
     opt.computeIM = true % false if we only wish to get T, W, DWx, ..., but not the object
     opt.sizeMustBeEven logical = true
+    opt.DWmeanSubtraction = true % removes the global image linear gradient
 end
 
 Nf = size(Itf,1);
@@ -427,8 +428,10 @@ for ii = 1:Nf
         %DWx = DWx + Cxn*3e-10;
 
 
-        DWx = DWx-mean( DWx(:));
-        DWy = DWy-mean( DWy(:));
+        if opt.DWmeanSubtraction
+            DWx = DWx-mean( DWx(:));
+            DWy = DWy-mean( DWy(:));
+        end
 
         if opt.computeW
 

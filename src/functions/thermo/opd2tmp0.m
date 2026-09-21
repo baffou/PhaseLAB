@@ -16,6 +16,7 @@ arguments
     opt.GreenT_z0 (:,:) double
     opt.GreenT_3D (:,:) double
     opt.pxSize = []
+    opt.subtractHSDmedian = true
 end
 if isempty(opt.pxSize)
     pxSize = MI.pxSize;
@@ -145,8 +146,11 @@ end
 
 
 
-ima = ima0-max(ima0(:));
-ima = ima+0.1*mean(mean(ima(round(ny/2)-20:round(ny/2)+20,round(nx/2)-20:round(nx/2)+20)));
+ima = ima0-max(max(imgaussfilt(ima0,10)));
+
+sigm = std(ima(:));
+ima = ima - sigm/4;
+%ima = ima+0.1*mean(mean(ima(round(ny/2)-20:round(ny/2)+20,round(nx/2)-20:round(nx/2)+20)));
 ima = ima/(MI.refl+1); % divide the phase image by a factor of two if in reflection mode.
 
 if opt.imExpander == 1
@@ -282,6 +286,9 @@ end
 PrBig = ifftshift(ifft2(PrBigF));
 hsd = PrBig(1+floor(ny/2):ny+floor(ny/2),1+floor(nx/2):nx+floor(nx/2));
 
+if opt.subtractHSDmedian % to avoid a slight global offset due to the apodisation and the arbitrary T offset.
+    hsd = hsd - median(hsd(:));
+end
 % calculation of the temperature profile
 
 GreenTbigF = fft2(GreenT_z0);

@@ -26,7 +26,7 @@ nFitY = min(opt.nFit, ny);
 
 %% Smoothing of the corners of A, when problems usually appear
 
-A = smoothBorders(A, nBorder=round(min(size(A))/10), sigma=10);
+%A = smoothBorders(A, nBorder=round(min(size(A))/10), sigma=10);
 %% Horizontal extension
 
 C = zeros(ny, Nx);

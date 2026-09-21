@@ -550,7 +550,7 @@ classdef ImageQLSI   <   ImageMethods
                 imOPD = binningFunc(obj(ii).OPD);
                 obj2(ii).T = imT;
                 obj2(ii).OPD = imOPD;
-                if ~isempty(obj(ii).DWx)
+                if ~isempty(obj(ii).DWx0)
                     imDWx = binningFunc(obj(ii).DWx);
                     imDWy = binningFunc(obj(ii).DWy);
                     obj2(ii).DWx0 = imDWx;

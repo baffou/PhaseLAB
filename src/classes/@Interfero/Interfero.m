@@ -603,9 +603,11 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
             if isnumeric(obj0(1).Itf0)
                 for io=1:numel(obj0)
-                    obj(io).Ref.Itf0=rot90(obj0(io).Ref.Itf0,k);
+                    if ~isempty(obj(io).Ref)
+                        obj(io).Ref.Itf0=rot90(obj0(io).Ref.Itf0,k);
+                    end
                     obj(io).Itf0=rot90(obj0(io).Itf0,k);
-                    if ~isempty(obj.TF)
+                    if ~isempty(obj(io).TF)
                         obj(io).TF=rot90(obj0(io).TF,k);
                     end
                 end
