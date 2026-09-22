@@ -1,9 +1,9 @@
-function [profile, xy, width, edgeIm] = edgeExtraction(img, gradientDirection, opt)
+function [profile, xy, width, edgeIm] = edgeExtraction(img, crosscutDirection, opt)
 % extract the image of the edge of a structure, projected vertically or
 % horizontally
 arguments
     img
-    gradientDirection {mustBeMember(gradientDirection,{'x','y'})}
+    crosscutDirection {mustBeMember(crosscutDirection,{'x','y'})}
     opt.width = 100 % [px]
     opt.GaussFilter = 1
     opt.xy = []
@@ -38,9 +38,9 @@ y = round([min(y), max(y)]);
 
 Nw = opt.width;
 
-gradientDirection = char(gradientDirection);
+crosscutDirection = char(crosscutDirection);
 try
-    switch gradientDirection
+    switch crosscutDirection
         case 'y'
             edgeIm = zeros(Nw, x(2)-1-x(1));
             for ix = 1:(x(2)-1-x(1))
@@ -65,7 +65,7 @@ if opt.display
     subplot(1,2,1)
     imagegb(edgeIm.')
     subplot(1,2,2)
-    if strcmpi(gradientDirection,'y')
+    if strcmpi(crosscutDirection,'y')
         plot(mean(edgeIm,2) - median(mean(edgeIm,2)))
     else
         plot(mean(edgeIm,1) - median(mean(edgeIm,1)))
@@ -76,9 +76,9 @@ end
 width = opt.width;
 
 
-switch gradientDirection
+switch crosscutDirection
     case 'x'
-        profile = mean(edgeIm{ii,1},1)';
+        profile = mean(edgeIm,1)';
     case 'y'
-        profile = mean(edgeIm{ii,2},2);
+        profile = mean(edgeIm,2);
 end

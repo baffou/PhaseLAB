@@ -1,11 +1,12 @@
-function [Z, hline] = plotLineEdgeProfile(hax,opt)
+function [Z, hline] = plotLineEdgeProfile(hax,crosscutDirection,opt)
 arguments
     hax = gca
+    crosscutDirection {mustBeMember(crosscutDirection,{'x','y'})} = 'x'
     opt.Img = []
     opt.hline = []
     opt.color = 'r'
     opt.width = 50
-    opt.crosscutDirection {mustBeMember(opt.crosscutDirection,{'x','y'})}
+    opt.xy = []
 end
 
 % plotLineEdgeprofile - Lets the user draw a polyline on an axes
@@ -40,7 +41,7 @@ else
 end
 
 
-profile = edgeExtraction(I, opt.crosscutDirection, 'xy',xy,'display',false,'width',opt.width);
+profile = edgeExtraction(I, crosscutDirection, 'xy',xy,'display',false,'width',opt.width);
 
 
 
