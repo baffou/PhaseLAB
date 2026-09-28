@@ -118,11 +118,11 @@ classdef Camera_GenTL  <  CameraLive & Camera
             buf = squeeze(getdata(obj.hndl, Nim));
         end
         
-        function setImageDimensions(obj,varargin)
+        function setCameraROI(obj,varargin)
             isrun = strcmp(obj.hndl.Running,'on');
             stop(obj.hndl)
 
-            if nargin == 2 && ischar(varargin{1}) % setImageDimensions('2560 x 2160')
+            if nargin == 2 && ischar(varargin{1}) % setCameraROI('2560 x 2160')
                 switch varargin{1}
                    
                     case '2448 x 2048'
@@ -153,13 +153,13 @@ classdef Camera_GenTL  <  CameraLive & Camera
                         dims.top    = 1 + floor(2448/2-dims.width/2);
                 end
 
-            elseif nargin == 5 && isnumeric([varargin{1:end}]) % setImageDimensions(2560,2160)
+            elseif nargin == 5 && isnumeric([varargin{1:end}]) % setCameraROI(2560,2160)
                         dims.width  = varargin{1};
                         dims.height = varargin{2};
                         dims.top    = varargin{3};
                         dims.left   = varargin{4};
             else
-                error('Error in the inputs of setImageDimensions')
+                error('Error in the inputs of setCameraROI')
             end
 
             obj.hndl.ROIposition = [dims.top-1, dims.left-1, dims.width, dims.height];

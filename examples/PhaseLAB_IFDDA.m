@@ -1,13 +1,8 @@
 % PhaseLAB_IFDDA.m
-clc
 clear
 
-addpath(genpath('/Users/gbaffou/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
-addpath(genpath('/home/gb/Documents/MATLAB/PhaseLAB_Git/'))
-
-%folder = '/home/gb/Documents/surface/if-dda-m/tests/loop';
 folder = pwd;
-namefileh5 = '../essai.h5';
+namefileh5 = '../../IFDDAexample1.h5';
 
 fileh5 = [folder '/' namefileh5];
 

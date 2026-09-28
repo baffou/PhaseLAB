@@ -151,9 +151,10 @@ for io = 1:No
     % title(sprintf('Real part of E-field at the camera plane\n Reference'))
     % drawnow
 
-    cut = opt.cut;% =1 or 2. to make artificial crosses in the Fourier space and better
-    % match what is observed experimentally. Otherwise, set to 0.
-    % Note it reduces the image size from Npx to Npx-cut.
+    cut = opt.cut;% =1 or 2. Reduces the image size to break the perfect
+    % periodicity, and generate artificial crosses in the Fourier space and
+    % better match what is observed experimentally. Otherwise, set to 0.
+    % Note: it reduces the image size from Npx to Npx-2*cut.
 
     % Add the shot noise on the interferograms:
     Itf(io)    = Interfero(noiseFunction(   E2.im(1+cut:end-cut,1+cut:end-cut)  ),MI);

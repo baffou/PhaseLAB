@@ -1,7 +1,7 @@
 %% display of all the colormaps of PhaseLAB
 
 
-fileName = which('displayColorMaps');
+fileName = which('displayColormaps');
 A = strfind(fileName,"/");
 fprintf('%s\n',fileName(1:A(end)-1));
 
@@ -18,7 +18,7 @@ nFiles = logical.empty(Nf, 0);
 for ii = 1:Nf
     if isletter(fileNames{ii}(1)) % remove the . and .. files
         if strcmp(fileNames{ii}(end-1:end),'.m') % remove the .asv and .colormap files
-            if ~strcmp(fileNames{ii},'displayColorMaps.m') % remove this file
+            if ~strcmp(fileNames{ii},'displayColormaps.m') % remove this file
                 nFiles(ii) = true;
                 disp(fileNames{ii})
             end

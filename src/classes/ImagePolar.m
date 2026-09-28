@@ -43,8 +43,6 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         e % ellipticity
         rgbImageEllipse
 
-        ex
-        ey
 
         % biref/retardance params
         theta0
@@ -137,7 +135,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                 case 'Tj'
                     val = (obj.IM(2).T - obj.IM(4).T)/2;
                 case 'Ej'
-                    val = (2*real(obj.Ex.*conj(obj.Ey)))/2;
+                    val = real(obj.Ex.*conj(obj.Ey));
             end
         end
         

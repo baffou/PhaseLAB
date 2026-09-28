@@ -135,10 +135,10 @@ classdef Camera_pixelinkimaq  <  CameraLive & Camera
             buf = squeeze(getdata(obj.hndl.vid, Nim));
         end
         
-        function setImageDimensions(obj,varargin)
+        function setCameraROI(obj,varargin)
             isrun = strcmp(obj.hndl.Running,'on');
             stop(obj.hndl)
-            if nargin == 2 && ischar(varargin{1}) % setImageDimensions('2560 x 2160')
+            if nargin == 2 && ischar(varargin{1}) % setCameraROI('2560 x 2160')
                 Nx = 5472;
                 Ny = 3648;
                 numbers = regexp(varargin{1}, '[+-]?\d*\.?\d+', 'match');
@@ -147,13 +147,13 @@ classdef Camera_pixelinkimaq  <  CameraLive & Camera
                 dims.top   = floor((Nx-str2double(numbers{1}))/2);
                 dims.left    = floor((Ny-str2double(numbers{2}))/2);
 
-            elseif nargin == 5 && isnumeric([varargin{1:end}]) % setImageDimensions(2560,2160,1,1)
+            elseif nargin == 5 && isnumeric([varargin{1:end}]) % setCameraROI(2560,2160,1,1)
                         dims.width  = varargin{1};
                         dims.height = varargin{2};
                         dims.top    = varargin{3}-1;
                         dims.left   = varargin{4}-1;
             else
-                error('Error in the inputs of setImageDimensions')
+                error('Error in the inputs of setCameraROI')
             end
 
             obj.hndl.vid.ROIPosition = [dims.left, dims.top, dims.width, dims.height];

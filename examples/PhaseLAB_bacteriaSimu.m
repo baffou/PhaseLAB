@@ -1,4 +1,6 @@
-%% Examples that simulate the CGM images of a bacterium and computes the dry mass
+%% Example that simulates the OPD image of a bacterium,
+% computes its dry mass from the OPD image, 
+% and compare with the theoretical dry mass
 
 %% Building of the medium -- ME=Medium(n,nS);
 ME = Medium(1.33,1.5);
@@ -13,7 +15,7 @@ IL = Illumination(530e-9,ME,1e9);
 %% Creation of a dipole -- NP=Nanoparticle(material,geometry,param1,param2);
 radius = 100e-9;
 length = 500e-9;
-NP = Nanoparticle(1.5^2,'rod',[length radius], 30e-9);
+NP = Nanoparticle(1.5,'rod',[length radius], "meshParam",20e-9);
 NP.figure
 
 %% Illumination of the dipole

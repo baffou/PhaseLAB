@@ -145,7 +145,9 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
 
         end
 
-        function val = alpha(obj,lambda) % this second version of alpha calculates alpha from the distance specified in the CGcamera file
+        function val = alpha(obj,lambda) 
+            % The alpha parameters is used to compute the W gradients.
+            % See  J. Phys. D: Appl. Phys. 54, 294002 (2021), Eq. 8
             if nargin==2
                 if ~isnumeric(lambda)
                     error('lambda must be a number')
@@ -261,7 +263,7 @@ classdef CGcamera  <  handle & matlab.mixin.Copyable
             obj.RL = RelayLens.empty(0,0);
         end
 
-        function obj = CGrotate(obj,beta)
+        function obj = rotateCG(obj,beta)
             if nargout
                 obj  = Methods.duplicate(obj);
             end

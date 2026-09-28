@@ -17,8 +17,8 @@ classdef Dipole
         E0
         EE0             % incoming E0 field at the dipole location
         EE              % local electric field experienced by the dipole
-    end
-    properties(Access = public)
+%    end
+%    properties(Access = public)
         x = 0           % x position of the dipole [m]
         y = 0           % y position of the dipole [m]
         z = 0           % z position of the dipole [m]
@@ -97,186 +97,6 @@ classdef Dipole
             obj = DDA_aniso(obj,IL);
         end
         
-        function val = get.n(obj)
-            % returns the refractive index tensor (diagonal)
-            if ~isempty(obj.nHidden)
-                val = obj.nHidden;
-            else
-                val = indexRead(obj.mat,obj.lambda);   % dielectric function of the nanoparticle 
-            end
-
-            if numel(val) == 1
-                val = [val , val, val];
-            end
-        end
-        
-        function val = get.alphaMie(obj)
-            prop = MieTheory(obj);
-            val = prop.alpha;
-        end
-
-        function val = get.alpha(obj)
-            if isempty(obj.alphaHidden)
-                val = obj.alphaMie;
-            else
-                val = obj.alphaHidden;
-            end
-        end
-
-        function val = get.CextMie(obj)
-            prop = MieTheory(obj);
-            val = prop.Cext;
-        end
-
-        function val = get.CabsMie(obj)
-            prop = MieTheory(obj);
-            val = prop.Cabs;
-        end
-
-        function val = get.CscaMie(obj)
-            prop = MieTheory(obj);
-            val = prop.Csca;
-        end
-
-        function  val = get.chiTensor(obj) 
-            if length(obj.eps) == 1
-                tens = [obj.eps-obj.n_ext^2 0 0
-                        0 obj.eps-obj.n_ext^2 0
-                        0 0 obj.eps-obj.n_ext^2];
-            elseif length(obj.eps) == 3
-                tens = [obj.eps(1)-obj.n_ext^2 0 0
-                        0 obj.eps(2)-obj.n_ext^2 0
-                        0 0 obj.eps(3)-obj.n_ext^2];
-            end
-            val = obj.RotMat*tens*transpose(obj.RotMat);
-        end
-
-        function  val = get.alphaTensor(obj) 
-            if numel(obj.alpha) == 1
-                tens = [obj.alpha 0 0
-                        0 obj.alpha 0
-                        0 0 obj.alpha];
-            elseif numel(obj.alpha) == 3
-                tens = [obj.alpha(1) 0 0
-                        0 obj.alpha(2) 0
-                        0 0 obj.alpha(3)];
-            elseif numel(obj.alpha) == 9
-                tens = obj.alpha;
-            end
-            val = transpose(obj.RotMat)*tens*obj.RotMat;
-        end
-
-        function  val = get.eps(obj)
-            val = obj.n.^2;
-        end
-
-
-        function  val = get.epsTensor(obj)
-            if length(obj.eps) == 1
-                tens = [obj.eps 0 0
-                        0 obj.eps 0
-                        0 0 obj.eps];
-            elseif length(obj.eps) == 3
-                tens = [obj.eps(1) 0 0
-                        0 obj.eps(2) 0
-                        0 0 obj.eps(3)];
-            end
-            val = obj.RotMat*tens*transpose(obj.RotMat);
-        end
-
-        function val = get.pos(obj)
-            val = [obj.x,obj.y,obj.z];
-        end
-
-        function obj = set.pos(obj,val)
-            obj.x = val(1);
-            obj.y = val(2);
-            obj.z = val(3);
-        end
-
-        function val = get.lambda(obj)
-            val = obj.Illumination.lambda;
-        end
-
-        function val = getpos(objList)
-            val = zeros(numel(objList),3);
-            for io = 1:numel(objList)
-                val(io,:) = [objList(io).x,objList(io).y,objList(io).z];
-            end
-        end
-
-        function obj = setp(obj,p)
-            % Sets the dipole moment p
-            arguments
-                obj
-                p (:,3) double
-            end
-
-            if ~isnumeric(p)
-                error('p must be a number')
-            elseif size(p,2)~=3
-                error('p must be an Nx3 array')
-            end
-
-            if size(p,1) ~= numel(obj)
-                error('The number of positions must equal the number of dipoles')
-            end
-
-            for ip = 1:numel(obj)
-                obj(ip).p = p(ip,:);   % dipole moment of the nanoparticle 
-            end
-        end
-
-        function obj = setEE(obj,val)
-            % Sets the EE field
-            arguments
-                obj
-                val (:,3) double
-            end
-
-            if ~isnumeric(val)
-                error('EE must be a number')
-            elseif size(val,2)~=3
-                error('EE must be an Nx3 array')
-            end
-
-            if size(val,1) ~= numel(obj)
-                error('The number of positions must equal the number of dipoles')
-            end
-
-            for ip = 1:numel(obj)
-                obj(ip).EE = val(ip,:);
-            end
-        end
-
-        function obj = setEE0(obj,val)
-            % Sets the EE0 field
-            arguments
-                obj
-                val (:,3) double
-            end
-
-            if size(val,1) ~= numel(obj)
-                error('The number of positions must equal the number of dipoles')
-            end
-
-            for ip = 1:numel(obj)
-                obj(ip).EE0 = val(ip,:);
-            end
-        end
-
-        function obj = setE0(obj,val)
-            % Sets the E0 value
-            arguments
-                obj
-                val (1,3) double
-            end
-
-            for ip = 1:numel(obj)
-                obj(ip).E0 = val;
-            end
-        end
-
         function obj = rotate(obj,thetad,opt)
             %obj.rotate(thetaDeg,axis,point)
             arguments
@@ -330,7 +150,6 @@ classdef Dipole
             % end
         end
                 
-
         function obj = moveTo(obj,varargin)
             No = numel(obj);
             for io = 1:No
@@ -446,6 +265,33 @@ classdef Dipole
             end
         end
 
+        function figure(obj)
+            % obj.figure()
+            % display the geometry of the dipole(s) system
+            NDI = numel(obj);
+            [xs,ys,zs] = sphere;
+            hold on 
+            posList = reshape([obj.pos],3,NDI).';
+            for is = 1:NDI
+                a = obj(is).r;
+                surf((a*xs+posList(is,1))*1e6,(a*ys+posList(is,2))*1e6,(a*zs+posList(is,3))*1e6, 'FaceColor', [0.7 0.3 0.2], 'FaceAlpha',0.9,'EdgeAlpha', 0)
+            end
+            light
+            axis equal
+            ecart = max( max(5*[obj.r]) , 50e-9);
+            [X, Y] = meshgrid(-ecart+min(min(posList(:,1))):1e-7:ecart+max(max(posList(:,1))) , -ecart+min(min(posList(:,2))):1e-7:ecart+max(max(posList(:,2))));
+            Z = 0.*X + 0.*Y;
+            surf(X*1e6,Y*1e6,Z*1e6,'FaceColor','w','EdgeColor','w');
+            colormap(Pradeep)
+            view(14,28)
+            camproj('perspective')
+            xlabel('µm');
+            ylabel('µm');
+            zlabel('µm');
+
+% Ajout d'un titre 
+        end
+
         function prop = MieTheory(DIlist)
             
             N = numel(DIlist); % number of dipoles
@@ -529,31 +375,186 @@ classdef Dipole
             objs(N1+1:N1+N2) = obj2;
         end
         
-        function figure(obj)
-            % obj.figure()
-            % display the geometry of the dipole(s) system
-            NDI = numel(obj);
-            [xs,ys,zs] = sphere;
-            hold on 
-            posList = reshape([obj.pos],3,NDI).';
-            for is = 1:NDI
-                a = obj(is).r;
-                surf((a*xs+posList(is,1))*1e6,(a*ys+posList(is,2))*1e6,(a*zs+posList(is,3))*1e6, 'FaceColor', [0.7 0.3 0.2], 'FaceAlpha',0.9,'EdgeAlpha', 0)
-            end
-            light
-            axis equal
-            ecart = max( max(5*[obj.r]) , 50e-9);
-            [X, Y] = meshgrid(-ecart+min(min(posList(:,1))):1e-7:ecart+max(max(posList(:,1))) , -ecart+min(min(posList(:,2))):1e-7:ecart+max(max(posList(:,2))));
-            Z = 0.*X + 0.*Y;
-            surf(X*1e6,Y*1e6,Z*1e6,'FaceColor','w','EdgeColor','w');
-            colormap(Pradeep)
-            view(14,28)
-            camproj('perspective')
-            xlabel('µm');
-            ylabel('µm');
-            zlabel('µm');
 
-% Ajout d'un titre 
+        % set / get methods
+
+        function val = get.n(obj)
+            % returns the refractive index tensor (diagonal)
+            if ~isempty(obj.nHidden)
+                val = obj.nHidden;
+            else
+                val = indexRead(obj.mat,obj.lambda);   % dielectric function of the nanoparticle 
+            end
+
+            if numel(val) == 1
+                val = [val , val, val];
+            end
+        end
+        
+        function val = get.alphaMie(obj)
+            prop = MieTheory(obj);
+            val = prop.alpha;
+        end
+
+        function val = get.alpha(obj)
+            if isempty(obj.alphaHidden)
+                val = obj.alphaMie;
+            else
+                val = obj.alphaHidden;
+            end
+        end
+
+        function val = get.CextMie(obj)
+            prop = MieTheory(obj);
+            val = prop.Cext;
+        end
+
+        function val = get.CabsMie(obj)
+            prop = MieTheory(obj);
+            val = prop.Cabs;
+        end
+
+        function val = get.CscaMie(obj)
+            prop = MieTheory(obj);
+            val = prop.Csca;
+        end
+
+        function val = get.chiTensor(obj) 
+            if length(obj.eps) == 1
+                tens = [obj.eps-obj.n_ext^2 0 0
+                        0 obj.eps-obj.n_ext^2 0
+                        0 0 obj.eps-obj.n_ext^2];
+            elseif length(obj.eps) == 3
+                tens = [obj.eps(1)-obj.n_ext^2 0 0
+                        0 obj.eps(2)-obj.n_ext^2 0
+                        0 0 obj.eps(3)-obj.n_ext^2];
+            end
+            val = obj.RotMat*tens*transpose(obj.RotMat);
+        end
+
+        function val = get.alphaTensor(obj) 
+            if numel(obj.alpha) == 1
+                tens = [obj.alpha 0 0
+                        0 obj.alpha 0
+                        0 0 obj.alpha];
+            elseif numel(obj.alpha) == 3
+                tens = [obj.alpha(1) 0 0
+                        0 obj.alpha(2) 0
+                        0 0 obj.alpha(3)];
+            elseif numel(obj.alpha) == 9
+                tens = obj.alpha;
+            end
+            val = transpose(obj.RotMat)*tens*obj.RotMat;
+        end
+
+        function val = get.eps(obj)
+            val = obj.n.^2;
+        end
+
+        function val = get.epsTensor(obj)
+            if length(obj.eps) == 1
+                tens = [obj.eps 0 0
+                        0 obj.eps 0
+                        0 0 obj.eps];
+            elseif length(obj.eps) == 3
+                tens = [obj.eps(1) 0 0
+                        0 obj.eps(2) 0
+                        0 0 obj.eps(3)];
+            end
+            val = obj.RotMat*tens*transpose(obj.RotMat);
+        end
+
+        function val = get.pos(obj)
+            val = [obj.x,obj.y,obj.z];
+        end
+
+        function obj = set.pos(obj,val)
+            obj.x = val(1);
+            obj.y = val(2);
+            obj.z = val(3);
+        end
+
+        function val = get.lambda(obj)
+            val = obj.Illumination.lambda;
+        end
+
+        function val = getpos(objList)
+            val = zeros(numel(objList),3);
+            for io = 1:numel(objList)
+                val(io,:) = [objList(io).x,objList(io).y,objList(io).z];
+            end
+        end
+
+        function obj = setp(obj,p)
+            % Sets the dipole moment p
+            arguments
+                obj
+                p (:,3) double
+            end
+
+            if ~isnumeric(p)
+                error('p must be a number')
+            elseif size(p,2)~=3
+                error('p must be an Nx3 array')
+            end
+
+            if size(p,1) ~= numel(obj)
+                error('The number of positions must equal the number of dipoles')
+            end
+
+            for ip = 1:numel(obj)
+                obj(ip).p = p(ip,:);   % dipole moment of the nanoparticle 
+            end
+        end
+
+        function obj = setEE(obj,val)
+            % Sets the EE field
+            arguments
+                obj
+                val (:,3) double
+            end
+
+            if ~isnumeric(val)
+                error('EE must be a number')
+            elseif size(val,2)~=3
+                error('EE must be an Nx3 array')
+            end
+
+            if size(val,1) ~= numel(obj)
+                error('The number of positions must equal the number of dipoles')
+            end
+
+            for ip = 1:numel(obj)
+                obj(ip).EE = val(ip,:);
+            end
+        end
+
+        function obj = setEE0(obj,val)
+            % Sets the EE0 field
+            arguments
+                obj
+                val (:,3) double
+            end
+
+            if size(val,1) ~= numel(obj)
+                error('The number of positions must equal the number of dipoles')
+            end
+
+            for ip = 1:numel(obj)
+                obj(ip).EE0 = val(ip,:);
+            end
+        end
+
+        function obj = setE0(obj,val)
+            % Sets the E0 value
+            arguments
+                obj
+                val (1,3) double
+            end
+
+            for ip = 1:numel(obj)
+                obj(ip).E0 = val;
+            end
         end
 
         function obj = set.Illumination(obj,val)

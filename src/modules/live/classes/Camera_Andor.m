@@ -157,8 +157,8 @@ classdef Camera_Andor  <  CameraLive & Camera
             end
         end
         
-        function setImageDimensions(obj,varargin)
-            if nargin == 2 && ischar(varargin{1}) % setImageDimensions('2560 x 2160')
+        function setCameraROI(obj,varargin)
+            if nargin == 2 && ischar(varargin{1}) % setCameraROI('2560 x 2160')
 
                 switch varargin{1}
                     case '2560 x 2160'
@@ -209,13 +209,13 @@ classdef Camera_Andor  <  CameraLive & Camera
                         dims.top    = 1 + floor((dims.Ny-str2double(numbers{2}))/2);
                 end
 
-            elseif nargin == 5 && isnumeric([varargin{1:end}]) % setImageDimensions(2560,2160)
+            elseif nargin == 5 && isnumeric([varargin{1:end}]) % setCameraROI(2560,2160)
                         dims.width  = varargin{1};
                         dims.height = varargin{2};
                         dims.top    = varargin{3};
                         dims.left   = varargin{4};
             else
-                error('Error in the inputs of setImageDimensions')
+                error('Error in the inputs of setCameraROI')
             end
 
             rc = AT_SetInt(obj.hndl, 'AOIWidth',  dims.width);
@@ -232,7 +232,10 @@ classdef Camera_Andor  <  CameraLive & Camera
             AT_CheckWarning(rc);
         end
 
- 
+        function val = getROI(obj)
+            val = [obj.left obj.top obj.left+obj.width-1 obj.top+obj.height-1];
+        end
+
 
         % get/set methods
 
@@ -290,9 +293,6 @@ classdef Camera_Andor  <  CameraLive & Camera
             AT_CheckWarning(rc);
         end
 
-        function val = getROI(obj)
-            val = [obj.left obj.top obj.left+obj.width-1 obj.top+obj.height-1];
-        end
    end
     
     methods(Static)

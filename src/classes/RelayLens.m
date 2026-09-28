@@ -3,6 +3,9 @@ classdef RelayLens  <  handle & matlab.mixin.Copyable
         model 
         zoom (1,1) {mustBeNumeric}
         chromatic  logical = false
+    end
+
+    properties
         mask     = 0 % presence of a mask in the Fourier space, within the relay lens to crop order 0
     end
 

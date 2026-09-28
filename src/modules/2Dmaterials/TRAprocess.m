@@ -4,12 +4,6 @@ arguments
     ME Medium
 end
 
-%% calculs de R, T, A d'après chat GPT
-
-% Inputs
-% tau : complex transmittance measured relative to bare glass
-% ng  : refractive index of glass
-
 n1 = ME.n;
 n2 = ME.nS;
 

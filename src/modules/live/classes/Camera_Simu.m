@@ -47,7 +47,7 @@ classdef Camera_Simu  <  CameraLive & Camera
             obj.hndl.top = 1;
             obj.hndl.left = 1;
             obj.hndl.Nim = 1;
-            obj.setImageDimensions(cam.Nx,cam.Ny,1,1)
+            obj.setCameraROI(cam.Nx,cam.Ny,1,1)
 
             obj.imageDimensionsList = {[num2str(cam.Nx) ' x ' num2str(cam.Ny)], ...
                 [num2str(round(cam.Nx/2)) ' x ' num2str(round(cam.Ny/2))],...
@@ -177,8 +177,8 @@ classdef Camera_Simu  <  CameraLive & Camera
             end
         end
         
-        function setImageDimensions(obj,varargin)
-            if nargin == 2 && ischar(varargin{1}) % setImageDimensions('2560 x 2160')
+        function setCameraROI(obj,varargin)
+            if nargin == 2 && ischar(varargin{1}) % setCameraROI('2560 x 2160')
 
                 switch varargin{1}
                     case '2560 x 2160'
@@ -229,13 +229,13 @@ classdef Camera_Simu  <  CameraLive & Camera
                         obj.top    = 1 + floor((obj.Ny-str2double(numbers{2}))/2);
                 end
 
-            elseif nargin == 5 && isnumeric([varargin{1:end}]) % setImageDimensions(2560,2160)
+            elseif nargin == 5 && isnumeric([varargin{1:end}]) % setCameraROI(2560,2160)
                         obj.width  = varargin{1};
                         obj.height = varargin{2};
                         obj.top    = varargin{3};
                         obj.left   = varargin{4};
             else
-                error('Error in the inputs of setImageDimensions')
+                error('Error in the inputs of setCameraROI')
             end
 
         end

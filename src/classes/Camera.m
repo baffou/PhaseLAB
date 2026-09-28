@@ -5,14 +5,14 @@ classdef Camera  <  handle & matlab.mixin.Copyable
         Nx (1,1) {mustBeInteger,mustBePositive} = 600
         Ny (1,1) {mustBeInteger,mustBePositive} = 600
         fullWellCapacity (1,1) {mustBeInteger} = 15000
-        offset (1,1) double = 100
         brand char
         model char
+        offset (1,1) double = 0
         bitDepth double
         colorChannels double {mustBeInteger, mustBeGreaterThan(colorChannels,0),...
                               mustBeLessThan(colorChannels,3)} = 1 % number of colors of the camera sensor
                                          % For the moment, working only for
-                                         % = 2 and 3
+                                         % = 1, 2 and 3
         crosstalk12 = 0
         crosstalk21 = 0
     end
@@ -54,7 +54,6 @@ classdef Camera  <  handle & matlab.mixin.Copyable
                     obj2 = Camera_Andor(obj);
             end
         end
-
 
         function set.dxSize(cam,val)
             if isnumeric(val)

@@ -144,8 +144,8 @@ classdef Camera_Hamamatsu  <  CameraLive & Camera
             buf = mean(buf,3);
         end
         
-        function setImageDimensions(obj,varargin)
-            if nargin == 2 && ischar(varargin{1}) % setImageDimensions('2560 x 2160')
+        function setCameraROI(obj,varargin)
+            if nargin == 2 && ischar(varargin{1}) % setCameraROI('2560 x 2160')
 
                 numbers = regexp(varargin{1}, '[+-]?\d*\.?\d+', 'match');
                 dims.width  = str2double(numbers{1});
@@ -153,13 +153,13 @@ classdef Camera_Hamamatsu  <  CameraLive & Camera
                 dims.left   = 1 + floor((dims.Nx-str2double(numbers{1}))/2);
                 dims.top    = 1 + floor((dims.Ny-str2double(numbers{2}))/2);
 
-            elseif nargin == 5 && isnumeric([varargin{1:end}]) % setImageDimensions(2560,2160)
+            elseif nargin == 5 && isnumeric([varargin{1:end}]) % setCameraROI(2560,2160)
                 dims.width  = varargin{1};
                 dims.height = varargin{2};
                 dims.top    = varargin{3};
                 dims.left   = varargin{4};
             else
-                error('Error in the inputs of setImageDimensions')
+                error('Error in the inputs of setCameraROI')
             end
 
                     % Formalisme is not the same :
