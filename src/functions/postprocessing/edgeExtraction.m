@@ -57,7 +57,7 @@ try
     end
 
 catch
-    error('the profile is too close from a boundary of the image. Redefine the clicks xy.')
+    warning('the profile is too close from a boundary of the image. Redefine the clicks xy.')
 end
 
 if opt.display
