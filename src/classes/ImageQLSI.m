@@ -149,129 +149,6 @@ classdef ImageQLSI   <   ImageMethods
             end
         end
 
-        function val = get.Nx(obj)
-            val = size(obj.OPD,2);
-        end
-
-        function val = get.Ny(obj)
-            val = size(obj.OPD,1);
-        end
-
-        function val = get.T(obj)
-
-            if isnumeric(obj.T0) % T is a matrix
-                val=obj.T0;
-            elseif ischar(obj.T0) % T is a path/fileName
-                val=readmatrix(obj.T0);
-            else
-                error('not a proper input')
-            end
-        end
-
-        function val = get.E(obj)
-            val = sqrt(obj.T);
-        end
-
-        function set.T(obj,val)
-            if isnumeric(val) % input is a matrix
-                if isnumeric(obj.T0)
-                    obj.T0=val;
-                elseif ischar(obj.T0) % overwrite the file
-                    warning(['file overwriting!: ' obj.T0])
-                    writematrix(single(val),obj.T0)
-                end
-            elseif ischar(val) % input is a file name
-                if ischar(obj.T0) % target already a file name
-                    obj.T0=val;
-                elseif isnumeric(obj.T0) % target a matrix
-                    obj.T0=readmatrix(val);
-                end
-            end
-        end
-
-        function val = get.OPD(obj)
-
-            if isnumeric(obj.OPD0) % T is a matrix
-                val=obj.OPD0;
-            elseif ischar(obj.OPD0) % T is a path/fileName
-                val=readmatrix(obj.OPD0);
-            else
-                error('not a proper input')
-            end
-        end
-
-        function val = get.OPDnm(obj)
-
-            if isnumeric(obj.OPD0) % T is a matrix
-                val=obj.OPD0*1e9;
-            elseif ischar(obj.OPD0) % T is a path/fileName
-                val=readmatrix(obj.OPD0)*1e9;
-            else
-                error('not a proper input')
-            end
-        end
-
-        function val = get.DWx(obj)
-            % Returns the OPD gradient along x
-            if isempty(obj.DWx0)
-                if isempty(obj.OPD)
-                    val = [];
-                    return
-                end
-                val = ( obj.OPD - obj.OPD(1:end,[end 1:end-1]) ) / obj.pxSize;
-                % imgradientxy(I) does not work properly. Gives a weird results...
-            else
-                val = obj.DWx0;
-            end
-        end
-
-        function val = get.DWy(obj)
-            % Returns the OPD gradient along y
-            if isempty(obj.DWy0)
-                val = ( obj.OPD - obj.OPD([end 1:end-1], 1:end) ) / obj.pxSize;
-            else
-                val = obj.DWy0;
-            end
-        end
-
-        function set.OPD(obj,val)
-            if isnumeric(val) % input is a matrix
-                if isnumeric(obj.OPD0)
-                    obj.OPD0=val;
-                elseif ischar(obj.OPD0) % overwrite the file
-                    warning(['file overwriting!: ' obj.OPD0])
-                    writematrix(single(val),obj.OPD0)
-                end
-            elseif ischar(val) % input is a file name
-                if ischar(obj.OPD0) % target already a file name
-                    obj.OPD0=val;
-                elseif isnumeric(obj.OPD0) % target a matrix
-                    obj.OPD0=readmatrix(val);
-                end
-            end
-        end
-
-        function set.OPDnm(obj,val)
-            if isnumeric(val) % input is a matrix
-                if isnumeric(obj.OPD0)
-                    obj.OPD0=val*1e-9;
-                elseif ischar(obj.OPD0) % overwrite the file
-                    warning(['file overwriting!: ' obj.OPD0])
-                    writematrix(single(val),obj.OPD0*1e-9)
-                end
-            elseif ischar(val) % input is a file name
-                if ischar(obj.OPD0) % target already a file name
-                    obj.OPD0=val*1e-9;
-                elseif isnumeric(obj.OPD0) % target a matrix
-                    obj.OPD0=readmatrix(val)*1e-9;
-                end
-            end
-        end
-
-        function val = get.Ph(obj)
-            val = 2*pi/obj.lambda*obj.OPD;
-        end
-
         function obj2 = highPassFilter(obj,nCrop)
             arguments
                 obj
@@ -593,7 +470,7 @@ classdef ImageQLSI   <   ImageMethods
             arguments
                 obj0
                 val = 0 % if val ≠ 0, subtract this value, discarding all the Name Value parameters
-                opt.method (1,:) char {mustBeMember(opt.method,{'mean','average','median','boundaryMedian','histogram','histo'})}= 'mean'
+                opt.method (1,:) char {mustBeMember(opt.method,{'mean','average','median','boundaryMedian','histogramMode','histo'})}= 'mean'
                 % parameters for boxSelection()
                 opt.xy1 = []
                 opt.xy2 = []
@@ -641,10 +518,10 @@ classdef ImageQLSI   <   ImageMethods
                                                                 'shape',opt.shape);
                             params=[x1, x2, y1, y2];
                         else
-                            x1 = opt.params(1);
-                            x2 = opt.params(2);
-                            y1 = opt.params(3);
-                            y2 = opt.params(4);
+                            x1 = round(opt.params(1));
+                            x2 = round(opt.params(2));
+                            y1 = round(opt.params(3));
+                            y2 = round(opt.params(4));
                             params=opt.params;
                         end
                     end
@@ -657,13 +534,13 @@ classdef ImageQLSI   <   ImageMethods
                         offsetFunction = @(im) median(im(:));
                     elseif strcmpi(opt.method,'boundaryMedian')
                         offsetFunction = @(im) boundaryMedian(im);
-                    elseif strcmpi(opt.method,'histogram') || strcmpi(opt.method,'histo')
-                        offsetFunction = @(im) histrogramMedian(im);
+                    elseif strcmpi(opt.method,'histogramMode') || strcmpi(opt.method,'histo')
+                        offsetFunction = @(im) histrogramMode(im);
                     else
                         error('unkown option')
                     end
     
-                    obj(io).OPD = obj(io).OPD-offsetFunction(obj(io).OPD(y1:y2,x1:x2)) + opt.value;
+                    obj(io).OPD = obj(io).OPD - offsetFunction(obj(io).OPD(y1:y2,x1:x2)) + opt.value;
                     %if ~isempty(opt.app)
                     %    opt.app.updateImages()
                     %end
@@ -682,7 +559,7 @@ classdef ImageQLSI   <   ImageMethods
                 val = median(bound);
             end
 
-            function val = histrogramMedian(im)
+            function val = histrogramMode(im)
                 % histogram
                 [N, edges] = histcounts(im(:), 512);   % 512 bins
                 
@@ -696,7 +573,7 @@ classdef ImageQLSI   <   ImageMethods
 
         end        
 
-        function [obj, params] = normT(obj0,val,opt)
+        function [objOut, params] = normT(obj0,val,opt)
             % applies a factor to the T image so that the average value of
             % the selected area is 1.
             arguments
@@ -724,8 +601,6 @@ classdef ImageQLSI   <   ImageMethods
             for io = 1:numel(obj)
                 if ~isempty(opt.app)
                     opt.app.displayMessage(io+"/"+numel(obj),"color",opt.app.warnColor)
-                else
-                    printLoop(io,numel(obj))
                 end
 
                 if val ~= 0 % normalization by a number, not by a box
@@ -779,6 +654,11 @@ classdef ImageQLSI   <   ImageMethods
                     % end
                 end
             end
+
+            if nargout
+                objOut=obj;
+            end
+
 
             function val = boundaryMedian(im)
                 top=im(end,:);
@@ -1051,7 +931,7 @@ classdef ImageQLSI   <   ImageMethods
                         'GreenT_z0', opt.GreenT_z0, ...
                         'GreenT_3D', opt.GreenT_3D, ...
                         'pxSize',obj(io).pxSize);
-                    objT(io) = ImageT(obj(io).OPD, tmp, hsd,obj(io).T);
+                    objT(io) = ImageT(tmp, hsd, obj(io).OPD, obj(io).T);
                     objT(io).Microscope = obj(io).Microscope;
                     objT(io).Illumination = obj(io).Illumination;
                     objT(io).pxSizeCorrection = obj(io).pxSizeCorrection;
@@ -1090,7 +970,7 @@ classdef ImageQLSI   <   ImageMethods
             for ii = 1:Nim
                 if opt.pointingToIM
                     IMout(ii) = ImageEM();
-                    IMout(ii).IM = IM(ii,:); % Dès que j'en modifie un, ça les modifie tous
+                    IMout(ii).IM = IM(ii,:);
                     IMout(ii).Microscope = IM(ii,1).Microscope;
                     IMout(ii).Illumination = IM(ii,1).Illumination;
                     IMout(ii).pxSizeCorrection = IM(ii,1).pxSizeCorrection;
@@ -1191,7 +1071,158 @@ classdef ImageQLSI   <   ImageMethods
         function write(obj,obj_in)
             Methods.obj2obj(obj,obj_in)
         end
+
+        function pIM = ImagePolar(obj)
+            arguments
+                obj (:,4) ImageQLSI
+            end
+            pIM = ImageQLSIpolar(obj);
+
+        end
+        function J = im2J(obj1,obj2,selection)
+            arguments
+                obj1 (:,4) ImageQLSI % LCP incident polar
+                obj2 (:,4) ImageQLSI % RCP incident polar
+                selection {mustBeMember(selection,{'13','24','1234'})} = '1234'
+            end
+            Nim = size(obj1,1);
+            Nim2 = size(obj2,1);
+            if Nim ~= Nim2
+                error('The two inputs should have the same number of elements')
+            end
+            J = ImageJonesMatrix(Nim);
+            for ii = 1:Nim
+                J(ii) = IM_to_J(obj1(ii,:),obj2(ii,:),selection);      
+            end
+        end
+
+
+
+        % set/get methods
         
+        function val = get.Nx(obj)
+            val = size(obj.OPD,2);
+        end
+
+        function val = get.Ny(obj)
+            val = size(obj.OPD,1);
+        end
+
+        function val = get.T(obj)
+
+            if isnumeric(obj.T0) % T is a matrix
+                val=obj.T0;
+            elseif ischar(obj.T0) % T is a path/fileName
+                val=readmatrix(obj.T0);
+            else
+                error('not a proper input')
+            end
+        end
+
+        function val = get.E(obj)
+            val = sqrt(obj.T);
+        end
+
+        function set.T(obj,val)
+            if isnumeric(val) % input is a matrix
+                if isnumeric(obj.T0)
+                    obj.T0=val;
+                elseif ischar(obj.T0) % overwrite the file
+                    warning(['file overwriting!: ' obj.T0])
+                    writematrix(single(val),obj.T0)
+                end
+            elseif ischar(val) % input is a file name
+                if ischar(obj.T0) % target already a file name
+                    obj.T0=val;
+                elseif isnumeric(obj.T0) % target a matrix
+                    obj.T0=readmatrix(val);
+                end
+            end
+        end
+
+        function val = get.OPD(obj)
+
+            if isnumeric(obj.OPD0) % T is a matrix
+                val=obj.OPD0;
+            elseif ischar(obj.OPD0) % T is a path/fileName
+                val=readmatrix(obj.OPD0);
+            else
+                error('not a proper input')
+            end
+        end
+
+        function val = get.OPDnm(obj)
+
+            if isnumeric(obj.OPD0) % T is a matrix
+                val=obj.OPD0*1e9;
+            elseif ischar(obj.OPD0) % T is a path/fileName
+                val=readmatrix(obj.OPD0)*1e9;
+            else
+                error('not a proper input')
+            end
+        end
+
+        function val = get.DWx(obj)
+            % Returns the OPD gradient along x
+            if isempty(obj.DWx0)
+                if isempty(obj.OPD)
+                    val = [];
+                    return
+                end
+                val = ( obj.OPD - obj.OPD(1:end,[end 1:end-1]) ) / obj.pxSize;
+                % imgradientxy(I) does not work properly. Gives a weird results...
+            else
+                val = obj.DWx0;
+            end
+        end
+
+        function val = get.DWy(obj)
+            % Returns the OPD gradient along y
+            if isempty(obj.DWy0)
+                val = ( obj.OPD - obj.OPD([end 1:end-1], 1:end) ) / obj.pxSize;
+            else
+                val = obj.DWy0;
+            end
+        end
+
+        function set.OPD(obj,val)
+            if isnumeric(val) % input is a matrix
+                if isnumeric(obj.OPD0)
+                    obj.OPD0=val;
+                elseif ischar(obj.OPD0) % overwrite the file
+                    warning(['file overwriting!: ' obj.OPD0])
+                    writematrix(single(val),obj.OPD0)
+                end
+            elseif ischar(val) % input is a file name
+                if ischar(obj.OPD0) % target already a file name
+                    obj.OPD0=val;
+                elseif isnumeric(obj.OPD0) % target a matrix
+                    obj.OPD0=readmatrix(val);
+                end
+            end
+        end
+
+        function set.OPDnm(obj,val)
+            if isnumeric(val) % input is a matrix
+                if isnumeric(obj.OPD0)
+                    obj.OPD0=val*1e-9;
+                elseif ischar(obj.OPD0) % overwrite the file
+                    warning(['file overwriting!: ' obj.OPD0])
+                    writematrix(single(val),obj.OPD0*1e-9)
+                end
+            elseif ischar(val) % input is a file name
+                if ischar(obj.OPD0) % target already a file name
+                    obj.OPD0=val*1e-9;
+                elseif isnumeric(obj.OPD0) % target a matrix
+                    obj.OPD0=readmatrix(val)*1e-9;
+                end
+            end
+        end
+
+        function val = get.Ph(obj)
+            val = 2*pi/obj.lambda*obj.OPD;
+        end
+
 
 
     end

@@ -11,44 +11,27 @@ classdef Interfero < handle & matlab.mixin.Copyable
         Itf     (:,:) double
     end
 
-    properties
+    properties(SetAccess = {?Methods}) %,?CameraLive
         Ref      Interfero % interfero object corresponding to the reference image
-    end
-
-    properties(SetAccess = {?Methods,?CameraLive})
-        TF        % Fourier transform of the interfero
-        TFapo     = []% tells wether the TF has been calculated with an apodization (equals the width of the apodization)
-        channel   (1,:) char {mustBeMember(channel,{'R','G','0','45','90','135','none'})} = 'none'
-        Navg % number of acquistions that have been averaged
     end
     
     properties(Dependent)
-        timeStamp % returns a datetime from the char stored in timeStamp0.Avoids having a DateTime object here that Methods.duplicate would have a hard time to handle
-    end
-
-    properties
-        ROI (1,4) double
-    end
-
-    properties(Access = {?Methods})
-        timeStamp0 (1,:) char
-    end
-
-    properties(Hidden)
-        Itf0     % interferogram (matrix or path)
+        timeStamp % returns a datetime from the char stored in timeStamp0. Avoids having a DateTime object here that Methods.duplicate would have a hard time to handle
+        software char % software used to acquire the interferogram image
+        CGcam CGcamera % CGcamera object with which the images were acquired
+        pxSize double% pixel size at the sample plane
     end
 
     properties
         comment  % Any comment to leave to this image
+    end
+
+    properties(SetAccess = {?Methods})
+        TF        % Fourier transform of the interfero
+        channel   (1,:) char {mustBeMember(channel,{'R','G','0','45','90','135','none'})} = 'none'
+        Navg % number of acquistions that have been averaged
+        ROI (1,4) double
         expTime = []
-    end
-    properties (Dependent,Hidden)
-        RefIm     (:,:) double
-    end
-
-
-
-    properties(SetAccess = private)
         fileName char % Interferogram name on the computer
         path char
         imageNumber
@@ -57,25 +40,27 @@ classdef Interfero < handle & matlab.mixin.Copyable
         Ny {mustBeInteger}% Number of pixel of the image in the vertical direction
     end
 
-    properties(Dependent)
-        software char % software used to acquire the interferogram image
-        CGcam CGcamera % CGcamera object with which the images were acquired
-        pxSize double% pixel size at the sample plane
+% Hidden
+    properties (Dependent,Hidden)
+        RefIm     (:,:) double
+    end
+
+    properties(Access = {?Methods})
+        TFapo     = []% tells wether the TF has been calculated with an apodization (equals the width of the apodization)
+        timeStamp0 (1,:) char
+        binningFactor (1,1) double {mustBeInteger,mustBePositive} = 1 % in order to properly compute the pixel size of the interferogram from the Microscope properties
     end
 
     properties(Hidden)
+        Itf0     % interferogram (matrix or path)
         Fimc   (3,1) cell % 3-cell containing the 3 demodulated images
         Microscope Microscope
         Fcrops  FcropParameters = FcropParameters.empty(3,0)
         crops
         remote {mustBeInteger,mustBeLessThanOrEqual(remote,2),mustBeGreaterThanOrEqual(remote,0)}  % 0 if images are stored 
-                                                                                                   % 1 if images are not stored (only path/fileName), 
-                                                                                                   % 2 if images are not stored (only path/fileName), and to be used as a gpuArray once imported
+                                                                             % 2 if images are not stored (only path/fileName), and to be used as a gpuArray once imported
     end
 
-    properties(Access={?Methods})
-        binningFactor (1,1) double {mustBeInteger,mustBePositive} = 1 % in order to properly compute the pixel size of the interferogram from the Microscope properties
-    end
 
     methods
         function obj = Interfero(fileName,MI,opt)
@@ -90,7 +75,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                 MI = Microscope.empty()
                 opt.N (1,1) {mustBeInteger} = 0
                 opt.imageNumber =[]
-                opt.remote  (1,1) {mustBeInteger,mustBeGreaterThanOrEqual(opt.remote,0),mustBeLessThanOrEqual(opt.remote,1)} = 0
+                opt.remote  (1,1) logical = false
                 opt.channel (1,:) char {mustBeMember(opt.channel,{'R','G','0','45','90','135','none'})} = 'none'
                 opt.gpu     (1,1) logical = false
             end
@@ -121,7 +106,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             %% Interfero(3)  Interfero(fileName,MI).
             if nargin==1 % Interfero(n)
                 if isnumeric(fileName)
-                    if numel(fileName)==1
+                    if isscalar(fileName)
                         obj=Interfero(N=fileName);
                         return
                     else
@@ -145,9 +130,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
                     if strcmp(MI.software,'PHAST') || strcmp(MI.software,'Sid4Bio')
                         obj.Itf0 = convGPU(double(fileName)-2^15-100);% Removes the offset of Phasics, and removes the offset of the camera
                         %obj.Itf0 = double(fileName)-2^15;% Removes the offset of Phasics, and removes the offset of the camera
-
                     else
-
                         obj.Itf0 = convGPU(double(fileName));
                     end
                 elseif ~istext(fileName)
@@ -205,87 +188,6 @@ classdef Interfero < handle & matlab.mixin.Copyable
             obj.TF = [];
             obj.Fcrops = [FcropParameters(); FcropParameters(); FcropParameters()];
 
-        end
-
-        function set.Itf0(obj, val)
-            if isempty(obj.Microscope)
-                error('The interfero cannot be set without a microscope')
-            end
-            obj.Itf0 = val;
-            obj.TF = [];
-        end
-
-        function val = get.Nx(obj)
-            if isnumeric(obj.Itf0)
-                val = size(obj.Itf0,2);
-            elseif isempty(obj.Nx)
-                obj.Itf; % go read the interferogram, that will automatically update Nx
-                val = obj.Nx;
-            else
-                val = obj.Nx;
-            end
-        end
-
-        function val = get.Ny(obj)
-            if isnumeric(obj.Itf0)
-                val = size(obj.Itf0,1);
-            elseif isempty(obj.Ny)
-                obj.Itf; % go read the interferogram, that will automatically update Nx
-                val = obj.Ny;
-            else
-                val = obj.Ny;
-            end
-        end
-
-        function val = get.Itf(obj)
-            if istext(obj.Itf0) % remote mode
-                if strcmp(obj.fileName(end-2:end),'txt')
-                    if obj.remote == 1
-                        val = dlmread([obj.path obj.fileName]);
-                    elseif obj.remote == 2 % remote but must be gpu treated
-                        val = gpuArray( dlmread([obj.path obj.fileName]) );
-                    end
-                    [obj.Ny,obj.Nx] = size(val);
-                elseif strcmp(obj.fileName(end-2:end),'tif') || strcmp(obj.fileName(end-3:end),'tiff')
-                    if obj.remote == 1
-                        val = double(imread([obj.path obj.fileName]));
-                        [obj.Ny,obj.Nx] = size(val);
-                    elseif obj.remote == 2 % remote but must be gpu treated
-                        val = gpuArray( double(imread([obj.path obj.fileName])) );
-                        [obj.Ny,obj.Nx] = size(val);
-                    end
-                end
-                if strcmp(obj.software,'PHAST') || strcmp(obj.software,'Sid4Bio')
-                    val = val-2^15-100;% Removes the offset of Phasics, and removes the offset of the camera
-                end
-            elseif isnumeric(obj.Itf0)
-                val = obj.Itf0;
-            end
-
-            if ~strcmpi(obj.channel,'none')
-                switch obj.channel
-                    case {'R','G'}
-                        val = colorInterpolation(val,obj.channel);
-                end
-            end
-
-
-        end
-
-        function val = get.RefIm(obj)
-            val = obj.Ref.Itf;
-        end
-
-        function val = get.software(obj)
-            val = obj.Microscope.software;
-        end
-
-        function val = get.CGcam(obj)
-            val = obj.Microscope.CGcam;
-        end
-
-        function val = get.pxSize(obj)
-            val = obj.Microscope.pxSize()*obj.binningFactor;
         end
 
         function clearFcrops(obj)
@@ -448,7 +350,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         end
 
-        function obj2=computeTF(obj,apoNpx,darkImage) % Computes the TF of an interfero and store it in the TF property
+        function obj2 = computeTF(obj,apoNpx,darkImage) % Computes the TF of an interfero and store it in the TF property
             arguments
                 obj
                 apoNpx = 0
@@ -469,32 +371,6 @@ classdef Interfero < handle & matlab.mixin.Copyable
             for io=1:numel(objList)
                 objList(io).Ref.TF = [];
                 objList(io).Ref.TFapo = [];
-            end
-        end
-
-        function obj = mean(objList)
-            No = numel(objList);
-            if No == 1
-                obj = objList;
-            else
-                
-                sumObj = objList(1).Itf/No;
-                Nim = 0;
-                for io = 2:No
-                    if objList(1).Microscope~=objList(io).Microscope
-                        warning('Mean of Interfero objects that were not built using the same Microscope.')
-                    end
-                    sumObj = sumObj+objList(io).Itf/No;
-                    Nim = Nim + objList(io).Navg;
-                end
-                obj = Methods.duplicate(objList(1));
-                obj.Itf0 = sumObj;
-                obj.Navg = Nim;
-                obj.clearTF()
-                
-
-                obj.fileName = ['Mean ' objList(1).fileName ' to '  objList(end).fileName];
-
             end
         end
 
@@ -558,7 +434,6 @@ classdef Interfero < handle & matlab.mixin.Copyable
             end
         end
             
-
         function [objList,mask0] = removeFringes(objList0,mask)
 
             if nargout>=1
@@ -663,7 +538,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         end            
     
-        function val=getAreaMean(obj,Narea,hfig)
+        function val = getAreaMean(obj,Narea,hfig)
             if nargin==1
                 obj.figure()
                 Narea=1;
@@ -1055,6 +930,7 @@ classdef Interfero < handle & matlab.mixin.Copyable
             end
 
         end
+
         function obj2 = removeRef(obj)
             if nargout
                 obj2 = copy(obj);
@@ -1097,20 +973,45 @@ classdef Interfero < handle & matlab.mixin.Copyable
             end
         end
         
-
         function obj = plus(obj1,obj2)
-            obj=copy(obj1);
-            obj.Ref=copy(obj1.Ref);
+            obj = copy(obj1);
+            obj.Ref = copy(obj1.Ref);
             obj.clearTF()
             obj.Itf0 = obj1.Itf() + obj2.Itf();
             obj.Ref.Itf0 = obj1.Ref.Itf() + obj2.Ref.Itf();
         end
 
         function obj = sum(objList)
-            No=numel(objList);
-            obj=copy(objList(1));
+            No = numel(objList);
+            obj = copy(objList(1));
             for io = 2:No
-                obj=obj+objList(io);
+                obj = obj+objList(io);
+            end
+        end
+
+        function obj = mean(objList)
+            No = numel(objList);
+            if No == 1
+                obj = objList;
+            else
+                
+                sumObj = objList(1).Itf/No;
+                Nim = 0;
+                for io = 2:No
+                    if objList(1).Microscope~=objList(io).Microscope
+                        warning('Mean of Interfero objects that were not built using the same Microscope.')
+                    end
+                    sumObj = sumObj+objList(io).Itf/No;
+                    Nim = Nim + objList(io).Navg;
+                end
+                obj = Methods.duplicate(objList(1));
+                obj.Itf0 = sumObj;
+                obj.Navg = Nim;
+                obj.clearTF()
+                
+
+                obj.fileName = ['Mean ' objList(1).fileName ' to '  objList(end).fileName];
+
             end
         end
 
@@ -1134,6 +1035,89 @@ classdef Interfero < handle & matlab.mixin.Copyable
 
         end
 
+        % set/get methods
+
+        function val = get.Nx(obj)
+            if isnumeric(obj.Itf0)
+                val = size(obj.Itf0,2);
+            elseif isempty(obj.Nx)
+                obj.Itf; % go read the interferogram, that will automatically update Nx
+                val = obj.Nx;
+            else
+                val = obj.Nx;
+            end
+        end
+
+        function val = get.Ny(obj)
+            if isnumeric(obj.Itf0)
+                val = size(obj.Itf0,1);
+            elseif isempty(obj.Ny)
+                obj.Itf; % go read the interferogram, that will automatically update Nx
+                val = obj.Ny;
+            else
+                val = obj.Ny;
+            end
+        end
+
+        function val = get.Itf(obj)
+            if istext(obj.Itf0) % remote mode
+                if strcmp(obj.fileName(end-2:end),'txt')
+                    if obj.remote == 1
+                        val = dlmread([obj.path obj.fileName]);
+                    elseif obj.remote == 2 % remote but must be gpu treated
+                        val = gpuArray( dlmread([obj.path obj.fileName]) );
+                    end
+                    [obj.Ny,obj.Nx] = size(val);
+                elseif strcmp(obj.fileName(end-2:end),'tif') || strcmp(obj.fileName(end-3:end),'tiff')
+                    if obj.remote == 1
+                        val = double(imread([obj.path obj.fileName]));
+                        [obj.Ny,obj.Nx] = size(val);
+                    elseif obj.remote == 2 % remote but must be gpu treated
+                        val = gpuArray( double(imread([obj.path obj.fileName])) );
+                        [obj.Ny,obj.Nx] = size(val);
+                    end
+                end
+                if strcmp(obj.software,'PHAST') || strcmp(obj.software,'Sid4Bio')
+                    val = val-2^15-100;% Removes the offset of Phasics, and removes the offset of the camera
+                end
+            elseif isnumeric(obj.Itf0)
+                val = obj.Itf0;
+            end
+
+            if ~strcmpi(obj.channel,'none')
+                switch obj.channel
+                    case {'R','G'}
+                        val = colorInterpolation(val,obj.channel);
+                end
+            end
+
+
+        end
+
+        function val = get.RefIm(obj)
+            val = obj.Ref.Itf;
+        end
+
+        function val = get.software(obj)
+            val = obj.Microscope.software;
+        end
+
+        function val = get.CGcam(obj)
+            val = obj.Microscope.CGcam;
+        end
+
+        function val = get.pxSize(obj)
+            val = obj.Microscope.pxSize()*obj.binningFactor;
+        end
+
+        function set.Itf0(obj, val)
+            if isempty(obj.Microscope)
+                error('The interfero cannot be set without a microscope')
+            end
+            obj.Itf0 = val;
+            obj.TF = [];
+        end
+
         function val = get.timeStamp(obj)
             val = datetime(obj.timeStamp0, 'InputFormat', 'yyMMdd_HH'':''mm'':''ss''.''SSS');
         end
@@ -1146,6 +1130,12 @@ classdef Interfero < handle & matlab.mixin.Copyable
             obj.timeStamp0 = char(val,'yyMMdd_HH'':''mm'':''ss''.''SSS');
         end
 
+    
+    
+    
+    
+    
+    
     end
 end
 

@@ -6,22 +6,24 @@ function Output  =  MieScattering(lambda,radius,n_m,mat)
 % r         radius of the particle in [m], possibly an array
 % n_m       optical index of the surrounding medium
 % mat       material, in the form 'Au', 'BK7', 'Mg'. Around 40 materials available.
+%           or simply a complex refractive index
 %             The whole list is in src/spec/materials
 
 % Output is a structure
 
-%Output.Qext  Nlambda x Nradius
-%Output.Qsca  Nlambda x Nradius
-%Output.Qabs  Nlambda x Nradius
+%Output.Cext  Nlambda x Nradius
+%Output.Csca  Nlambda x Nradius
+%Output.Cabs  Nlambda x Nradius
 
 %% parameters
 
 Nl = length(lambda);
 Nr = length(radius);
 
-Output.Qext = zeros(Nl,Nr);
-Output.Qsca = zeros(Nl,Nr);
-Output.Qabs = zeros(Nl,Nr);
+Output.Cext = zeros(Nl,Nr);
+Output.Csca = zeros(Nl,Nr);
+Output.Cabs = zeros(Nl,Nr);
+Output.alpha = zeros(Nl,Nr);
 
 for il = 1:Nl
     lambda0 = lambda(il) ;
@@ -38,7 +40,11 @@ for il = 1:Nl
         if nargin == 3
             n_Au = indexRead('Au',lambda0);
         elseif nargin == 4
-            n_Au = indexRead(mat,lambda0);
+            if isnumeric(mat)
+                n_Au = mat;
+            else
+                n_Au = indexRead(mat,lambda0);
+            end
         end
 
         m = n_Au/n_m;
@@ -68,12 +74,15 @@ for il = 1:Nl
         
         aj = (m*phim.*phip-phi.*phimp)./(m*phim.*xip-xi.*phimp);
         bj = (phim.*phip-m*phi.*phimp)./(phim.*xip-m*xi.*phimp);
-        
-        Qsca = sum( (2*j+1).*(abs(aj).*abs(aj)+abs(bj).*abs(bj)) );
-        Qext = sum( (2*j+1).*real(aj+bj) );
-        
-        Output.Qext(il,ir) = Qext*2*pi/(k*k)*1e-18;
-        Output.Qsca(il,ir) = Qsca*2*pi/(k*k)*1e-18;
-        Output.Qabs(il,ir) = Output.Qext(il,ir)-Output.Qsca(il,ir);
+
+        Csca = sum( (2*j+1).*(abs(aj).*abs(aj)+abs(bj).*abs(bj)) );
+        Cext = sum( (2*j+1).*real(aj+bj) );
+   
+        Output.Cext(il,ir) = Cext*2*pi/(k*k)*1e-18;
+        Output.Csca(il,ir) = Csca*2*pi/(k*k)*1e-18;
+        Output.Cabs(il,ir) = Output.Cext(il,ir)-Output.Csca(il,ir);
+
+        Output.alpha(il,ir) = 1i*6*pi*n_m^2*aj(1)/(k*k*k)*1e-27;
+
     end %radius
 end %lamdda

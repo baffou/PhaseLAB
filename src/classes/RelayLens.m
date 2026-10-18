@@ -16,10 +16,12 @@ classdef RelayLens  <  handle & matlab.mixin.Copyable
     methods
 
         function obj = RelayLens(var1)
+            % RelayLens('VZM300')
+            % RelayLens(1.11)
             if nargin==1
-                if istext(var1) % RelayLens('EO1.11')
+                if istext(var1) % RelayLens('VZM300')
                     obj = jsonImport(strcat(var1,'.json'));
-                elseif isnumeric(var1)
+                elseif isnumeric(var1) % RelayLens(1.11)
                     obj.model = 'custom';
                     obj.zoom = abs(var1);
                 else

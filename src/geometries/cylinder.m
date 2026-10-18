@@ -5,10 +5,10 @@ Nz = floor(dim(2)/a);
 
 pos0 = zeros(Nr*Nr*Nz,3);
 ii = 0;
-for ix = 0:Nr-1
-    for iy = 0:Nr-1
+for ix = -Nr:Nr
+    for iy = -Nr:Nr
         for iz = 0:Nz-1
-            if (Nr/2-ix)^2+(Nr/2-iy)^2 < (Nr/2)^2
+            if (ix)^2+(iy)^2 < (Nr)^2
                 ii = ii+1;
                 pos0(ii,1) = ix;
                 pos0(ii,2) = iy;

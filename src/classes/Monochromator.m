@@ -32,10 +32,6 @@ classdef Monochromator  <  handle  &  Illumination
             obj.lambda = obj.lambda + val;
         end
 
-        function onLambdaSet(obj)
-            %obj.hndl.MoveTo(obj.lambda)
-        end
-
         function rc = turn(obj, state)
             arguments
                 obj

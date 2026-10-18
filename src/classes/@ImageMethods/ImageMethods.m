@@ -9,7 +9,7 @@
 classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
     properties
-        Microscope Microscope
+        Microscope   Microscope   % Microscope object
         Illumination Illumination % Illumination object
     end
 
@@ -18,7 +18,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
     end
 
     properties(Dependent)
-        dmd
+        dmd  % dry mass density
     end
 
     properties(Hidden)
@@ -474,7 +474,7 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
                     if isempty(opt.colorMap{ii})
                         if strcmp(opt.imType{ii},'OPD')
-                            opt.colorMap{ii} = Sepia;
+                            opt.colorMap{ii} = sepia;
                         else
                             opt.colorMap{ii} = gray;
                         end
@@ -865,117 +865,6 @@ classdef ImageMethods  <  handle & matlab.mixin.Copyable
 
 
             end
-        end
-
-        function IM = adjustPolarOffsets(IM0,method,opt)
-            arguments
-                IM0
-                method {mustBeMember(method,{'manual','auto','Manual','Auto'})} = 'Auto'
-                opt.pause = false
-            end
-
-            [Nim, Nch] = size(IM0);
-            if Nch ~= 4
-                error('this method assumes that the input is an N*4 array of objects, where the 4 columns are the 4 polarisation measurements')
-            end
-
-            if nargout
-                IM = copy(IM0);
-            else
-                IM = IM0;
-            end
-            if strcmpi(method,'Auto')
-                for ii = 1:Nim
-                
-    
-                    T1 = IM(ii,1).T;
-                    T2 = IM(ii,2).T;
-                    T3 = IM(ii,3).T;
-                    T4 = IM(ii,4).T;
-    
-                    Phi1 = IM(ii,1).Ph;
-                    Phi2 = IM(ii,2).Ph;
-                    Phi3 = IM(ii,3).Ph;
-                    Phi4 = IM(ii,4).Ph;
-    
-                    if ~IM(ii,1).Illumination.isCircular
-                        error('the illumination is not circularly polarized')
-                    end
-                    S3 = IM(ii,1).Illumination.S3;
-                    if S3 <0
-                        C = 0.5*(T2-T4)./sqrt(T1.*T3);
-                    else
-                        C = -0.5*(T2-T4)./sqrt(T1.*T3);
-                    end
-
-                    if opt.pause
-                        asinC = asin(C);
-                        dphi = Phi1-Phi3;
-                        asinC = asinC-mean(asinC(:));
-                        dphi = dphi - mean(dphi(:));
-                        figure
-                        subplot(1,3,1)
-                        % plot(0.64*mean(real(asinC(end/2-10:end/2+10,:))),'b','LineWidth',1.5)
-                        plot(mean(real(asinC(end/2-10:end/2+10,:))),'b','LineWidth',1.5)
-                        hold on
-                        plot(mean(dphi(end/2-10:end/2+10,:)),'r-.','LineWidth',2)
-                        legend({'asinC','Phi1-Phi3'})
-                        lims = [-1 1];
-                        ylim(lims)
-                        %%
-                        subplot(1,3,2)
-                        imagesc(real(asinC)),clim(lims),colorbar
-                        
-                        subplot(1,3,3)
-                        imagesc(dphi),clim(lims),colorbar%,clim([-0.05 0.05])
-                        fullwidth
-                        title(ii+"/"+Nim)
-                        drawnow
-                    end
-
-                    while any(abs(C(:)) > 1)
-                        warning('some pixels feature a C>1')
-                        list = find(abs(C(:))>1);
-                        for io = 1:numel(list) % take the average of the neighfor pixels, because these problematic pixels are isolated in general
-                            C(list(io)) = (C(list(io)-1)+C(list(io)+1))/2;
-                        end
-                    end
-                    % C almost equal zero.
-                    % since C = cos(phi_x - ph_y), it means that phi_x and phi_y are in
-                    % quadratude, which is true because of the circular polarization !
-    
-                    %figure,imagegb(Phi3-Phi1+acos(C));
-                    %clim([-1.57 0])
-                    dPhi3map = Phi3-Phi1+asin(C);
-                    dPhi3 = median(dPhi3map(:));
-                    %dPhi3 = Phi3-Phi1+acos(C);
-    
-                    phi1 = IM(ii,1).Ph;
-                    phi3 = IM(ii,3).Ph - dPhi3;
-    
-                    %% setting the right offset to the first image to make sure the background is zero in OPD
-                    %phi1 = phi1 - mean(mean(phi1(1,1:end-1)+phi1(1:end-1,end)+phi1(2:end,1)+phi1(end,2:end)))/4;
-    
-                    %% other polars 2 & 4
-                    E1 = sqrt(T1);
-                    E3 = sqrt(T3);
-                    dPhi2 = median(median(Phi2+unwrap(  pi/4-angle( E1.*exp(1i*phi1)+1i*E3.*exp(1i*phi3)))));
-                    dPhi4 = median(median(Phi4+unwrap(3*pi/4-angle(-E1.*exp(1i*phi1)+1i*E3.*exp(1i*phi3)))));
-    
-                    %% New OPD images, with the right shift
-                    lambda = IM(ii, 1).Illumination.lambda;
-                    % IM(ii, 1).OPD = phi1*lambda/(2*pi); % useless
-                    IM(ii, 2).OPD = IM(ii, 2).OPD - dPhi2*lambda/(2*pi);
-                    IM(ii, 3).OPD = IM(ii, 3).OPD - dPhi3*lambda/(2*pi);
-                    IM(ii, 4).OPD = IM(ii, 4).OPD - dPhi4*lambda/(2*pi);
-
-                end
-            else % manual set of the area of the image that should be zero on each image
-                figure,imageph(IM(1, 1).OPD)
-                [x, y] = ginput(2);
-                IM.level0("params", [min(x), max(x), min(y), max(y)])
-            end
-
         end
 
 

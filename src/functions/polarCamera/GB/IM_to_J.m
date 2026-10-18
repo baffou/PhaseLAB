@@ -13,7 +13,7 @@ IL_R = IMR.Illumination;
 
 Nth = size(IML,1);
 [Ny, Nx] = size(IML(1).OPD);
-J = JonesMatrix(Nth);
+J = ImageJonesMatrix(Nth);
 
 
 
@@ -36,7 +36,7 @@ switch selection
             E(2,2,:,:) = IMRem(ith).Ey;%eR3;
             
         %    J{ith} = pagemtimes(E,E0');
-            J(ith) = JonesMatrix(pagemtimes(pagemtimes(E,E0'),(E0*E0')^(-1)),IL_L.lambda);
+            J(ith) = ImageJonesMatrix(pagemtimes(pagemtimes(E,E0'),(E0*E0')^(-1)),IL_L.lambda);
         end
             
     case '1234'
@@ -80,7 +80,7 @@ switch selection
             E(2,4,:,:) = eR3bis;%eR3;
             
         %    J{ith} = pagemtimes(E,E0');
-            J(ith) = JonesMatrix(pagemtimes(pagemtimes(E,E0'),(E0*E0')^(-1)));
+            J(ith) = ImageJonesMatrix(pagemtimes(pagemtimes(E,E0'),(E0*E0')^(-1)));
         end
 
     case '24'
@@ -112,7 +112,7 @@ switch selection
             E(2,1,:,:) = eL3bis;%eL3;
             E(2,2,:,:) = eR3bis;%eR3;
             
-            J(ith) = JonesMatrix(pagemtimes(pagemtimes(E,E0'),(E0*E0')^(-1)));
+            J(ith) = ImageJonesMatrix(pagemtimes(pagemtimes(E,E0'),(E0*E0')^(-1)));
         end
 
 

@@ -10,18 +10,18 @@
 
 classdef Dipole
     properties(SetAccess = private , GetAccess = public)
-        mat             % material
-        r               % radius of the dipolar nanosphere [m]
-        n               % complex refractive index of the nanosphere material
-        p               % electric dipolar moment
-        E0
+        mat  char       % material
+        r    double     % radius of the dipolar nanosphere [m]
+        n    double     % complex refractive index of the nanosphere material
+        p    (1,3) double % electric dipolar moment
+        E0   (1,3) double 
         EE0             % incoming E0 field at the dipole location
         EE              % local electric field experienced by the dipole
-%    end
-%    properties(Access = public)
         x = 0           % x position of the dipole [m]
         y = 0           % y position of the dipole [m]
         z = 0           % z position of the dipole [m]
+    end
+    properties(Access = public)
         n_ext           % refractive index of the surroundings
     end
 
@@ -54,6 +54,7 @@ classdef Dipole
     methods
 
         function obj = Dipole(mat,radius,z)
+            % Dipole(N): creates an array of N empty dipoles
             % Dipole('Au', radius, [z]). By default, z = radius.
             % Dipole(n, radius, [z])
             % Dipole(alpha, radius, [z])
@@ -62,6 +63,11 @@ classdef Dipole
                 radius (1, 1) double = 0
                 z (1, 1) double = 0
             end
+            if nargin == 1 && isnumeric(mat) % Dipole(N)
+                obj = repmat(Dipole(),mat,1);
+                return
+            end
+
             if nargin~=0
 
                 obj.r = radius;
@@ -69,7 +75,7 @@ classdef Dipole
                 if ischar(mat) % 'Au', 'BK7', ...
                     obj.mat = mat;
                 elseif isnumeric(mat) % permittivity or polarizability
-                    if abs(mat)>1e-6 % specify an epsilon value
+                    if abs(mat)>1e-6 % specify an refractive index value
                         %disp('The code understands that you specify directly the refractive index value instead of the material')
                         obj.nHidden = mat;
                         obj.mat = 'user defined - refractive index';
@@ -151,9 +157,12 @@ classdef Dipole
         end
                 
         function obj = moveTo(obj,varargin)
+            % obj2 = obj.moveBy([x, y, z]);
+            % obj2 = obj.moveBy(x, y, z)
+            % obj2 = obj.moveBy("x", xval, "y", yval);
             No = numel(obj);
             for io = 1:No
-                if nargin==2
+                if nargin==2 % obj2 = obj.moveBy([x, y, z]);
                     if ~isnumeric(varargin{1})
                         error('the position must be a number')
                     end
@@ -164,7 +173,7 @@ classdef Dipole
                     obj(io).x = targetPos(1);
                     obj(io).y = targetPos(2);
                     obj(io).z = targetPos(3);
-                elseif nargin==4
+                elseif nargin==4 % obj.moveBy(x, y, z)
                     if isnumeric(varargin{1}) && isnumeric(varargin{2}) && isnumeric(varargin{3})
                         obj(io).x = varargin{1};
                         obj(io).y = varargin{2};
@@ -265,6 +274,23 @@ classdef Dipole
             end
         end
 
+        function IM = imaging(obj, MI, opt)
+            arguments
+                obj
+                MI
+                opt.Npx (1,1) double {mustBeGreaterThanOrEqual(opt.Npx,0)}= 0
+            end
+            dipoles = reshape([obj.p],   3, []).';
+            posList = reshape([obj.pos], 3, []).';
+            if opt.Npx == 0
+                opt.Npx = MI.CGcam.Camera.Ny;
+            end
+            [Ex, Ey, Ez, Eo] = imaging0(dipoles,posList,obj(1).Illumination,MI,"Npx", opt.Npx);
+            IM = ImageEM(Ex,Ey,Ez,Eo);
+            IM.Illumination = obj.Illumination;
+            IM.Microscope = MI;
+
+        end
         function figure(obj)
             % obj.figure()
             % display the geometry of the dipole(s) system
@@ -292,70 +318,9 @@ classdef Dipole
 % Ajout d'un titre 
         end
 
-        function prop = MieTheory(DIlist)
-            
-            N = numel(DIlist); % number of dipoles
-            
-            Nn = length(DIlist(1).n);
-            prop = repmat(NPprop(),N);
-            
-            for io = 1:N
-                DI = DIlist(io);
-                r0 = DI.r;
-
-                alpha0 = zeros(Nn, 1);
-                Cabs = zeros(Nn, 1);
-                Cext = zeros(Nn, 1);
-                Csca = zeros(Nn, 1);
-                for ii = 1:Nn
-
-                    n_DI = DI.n(ii);
-                    m = n_DI/DI.n_ext;
-                    k = 2*pi*DI.n_ext/DI.lambda;
-                    x0 = k*r0;
-                    z0 = m*x0;
-                    N = round(2+x0+4*x0.^(1/3));
-                
-                    % computation
-                
-                    j = (1:N);
-                
-                    sqr = sqrt(pi*x0/2);
-                    sqrm = sqrt(pi*z0/2);
-                
-                    phi = sqr.*besselj(j+0.5,x0);
-                    xi = sqr.*(besselj(j+0.5,x0)+1i*bessely(j+0.5,x0));
-                    phim = sqrm.*besselj(j+0.5,z0);
-                
-                    phi1 = [sin(x0), phi(1:N-1)];
-                
-                    phi1m = [sin(z0), phim(1:N-1)];
-                    y0 = sqr*bessely(j+0.5,x0);
-                
-                    y1 = [-cos(x0), y0(1:N-1)];
-                
-                    phip = (phi1-j/x0.*phi);
-                    phimp = (phi1m-j/z0.*phim);
-                    xip = (phi1+1i*y1)-j/x0.*(phi+1i*y0);
-                
-                    aj = (m*phim.*phip-phi.*phimp)./(m*phim.*xip-xi.*phimp);
-                    bj = (phim.*phip-m*phi.*phimp)./(phim.*xip-m*xi.*phimp);
-                
-                    Csca(ii) = sum( (2*j+1).*(abs(aj).*abs(aj)+abs(bj).*abs(bj)) );
-                    Cext(ii) = sum( (2*j+1).*real(aj+bj) );    
-                
-                    Cext(ii) = Cext(ii)*2*pi/(k*k);
-                    Csca(ii) = Csca(ii)*2*pi/(k*k);
-                    Cabs(ii) = Cext(ii)-Csca(ii);
-                
-                    alpha0(ii) = 1i*6*pi*DI.n_ext*DI.n_ext*aj(1)/(k*k*k);
-                
-
-                end
-                prop(io) = NPprop(alpha0,sum(Cext),sum(Csca),sum(Cabs));
-            
-            end
-
+        function prop = MieTheory(DI)
+            props = MieScattering(DI.lambda,DI.r,DI.n_ext,DI.mat);
+            prop  = NPprop(props.alpha,props.Cext,props.Csca,props.Cabs);
         end
         
         function objs = plus(obj1,obj2)
@@ -386,7 +351,7 @@ classdef Dipole
                 val = indexRead(obj.mat,obj.lambda);   % dielectric function of the nanoparticle 
             end
 
-            if numel(val) == 1
+            if isscalar(val)
                 val = [val , val, val];
             end
         end
@@ -420,7 +385,7 @@ classdef Dipole
         end
 
         function val = get.chiTensor(obj) 
-            if length(obj.eps) == 1
+            if isscalar(obj.eps)
                 tens = [obj.eps-obj.n_ext^2 0 0
                         0 obj.eps-obj.n_ext^2 0
                         0 0 obj.eps-obj.n_ext^2];
@@ -433,7 +398,7 @@ classdef Dipole
         end
 
         function val = get.alphaTensor(obj) 
-            if numel(obj.alpha) == 1
+            if isscalar(obj.alpha)
                 tens = [obj.alpha 0 0
                         0 obj.alpha 0
                         0 0 obj.alpha];
@@ -452,7 +417,7 @@ classdef Dipole
         end
 
         function val = get.epsTensor(obj)
-            if length(obj.eps) == 1
+            if isscalar(obj.eps)
                 tens = [obj.eps 0 0
                         0 obj.eps 0
                         0 0 obj.eps];
@@ -558,40 +523,17 @@ classdef Dipole
         end
 
         function obj = set.Illumination(obj,val)
-            if ~isa(val,'Illumination') % val is the wavelength
+            if isnumeric(val) % val is the wavelength
                 obj.Illumination = Illumination(val);
+            elseif isa(val,'Illumination')
+                obj.Illumination = val;
             end
-            obj.Illumination = val;
         end
         
-        function val = matList(obj)
-            % returns the list of available material
-            matList = dir([obj(1).DIpath '/../materials/*.txt']);
-            Nc = numel(matList);
-            if nargout
-                val = cell(Nc,1);
-                for ic = 1:Nc
-                    val{ic} = matList(ic).name(2:end-4);
-                end
-            else
-                for ic = 1:Nc
-                    disp(" "+matList(ic).name(2:end-4))
-                end
-            end                
-        end    
         
     end
     
     
-    methods(Static,Hidden)
-
-        function val = DIpath()
-            val = fileparts(which('Dipole.m'));
-        end
-        
-        
-        
-    end
     
  
 end

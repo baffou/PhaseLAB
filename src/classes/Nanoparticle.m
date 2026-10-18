@@ -7,16 +7,16 @@
 
 classdef Nanoparticle
 
-    properties(Access = public)
-        DIs         % Array of Dipole objects
-        geom        % geometry type of the nanoparticle
-        params      % parameters of the geometry
-        V           % volume of the nanoparticle
-        a           % lattice parameter
+    properties(SetAccess = private)
+        DIs    (:,1) Dipole % Array of Dipole objects
+        geom   char         % geometry type of the nanoparticle
+        params double       % parameters of the geometry
+        a      (1,1) double % lattice parameter
+        V      (1,1) double % volume of the nanoparticle
     end
 
     properties(Dependent)
-        pos     % (Nx3) array of the positions of the cells
+        pos (:,3) double    % (Nx3) array of the positions of the cells
         E0      % Incident polarization vector amplitude
         EE0     % incoming E0 field at the dipole location
         EE      % Local E field in each cell
@@ -41,6 +41,8 @@ classdef Nanoparticle
 
     properties(Hidden,Dependent)
         Illumination
+        pos_nm    % (Nx3) array of the positions of the cells
+
     end
     
     properties(Access = private, Dependent)
@@ -52,16 +54,22 @@ classdef Nanoparticle
     methods
         function obj = Nanoparticle(mat, geom, dims, opt)
             arguments
-                mat
-                geom {mustBeTextScalar}
-                dims (1,:) double
+                mat = []
+                geom {mustBeMember(geom,{'sphere','ellipsoid','cube','cuboid','cylinder','rod'})} = 'sphere'
+                dims (1,:) double = []
                 opt.meshParam = []
+            end
+            if nargin == 0
+                return
+            elseif nargin == 1 % Nanoparticle(N)
+                obj = repmat(Nanoparticle(),mat,1);
+                return
             end
             % mat : material or refractive index
             obj.geom = geom;
             switch obj.geom
                 case 'sphere'
-                    if numel(dims) == 1
+                    if isscalar(dims)
                         obj.params(1) = dims; % Rsphere
                     else
                         error('The dimension parameter must be a scalar, the sphere radius')
@@ -69,11 +77,14 @@ classdef Nanoparticle
                     obj.V = 4*pi/3*dims^3;
                     if isempty(opt.meshParam) % no mesh_parameter specified
                         a = obj.params(1)/4;
-                        pos = spher(obj.params(1),a);
                     else
                         a = opt.meshParam; % Lattice parameter of the meshing.
-                        pos = spher(obj.params(1),a);
                     end
+                    Ncell = obj.V/a^3;
+                    if Ncell > 1800
+                        disp("approximated number of cells: "+Ncell)
+                    end
+                    pos = spher(obj.params(1),a);
                     a_adjusted = (4*pi/3/size(pos,1))^(1/3)*obj.params(1);
                     pos = pos*a_adjusted/a;
                     a = a_adjusted;
@@ -87,28 +98,34 @@ classdef Nanoparticle
                     obj.V = 4*pi/3*obj.params(1)*obj.params(2)*obj.params(3);
                     if isempty(opt.meshParam)
                         a = obj.params(1)/4;
-                        pos = ellipsoid(obj.params,a);
                     else
                         a = opt.meshParam; % Lattice parameter of the meshing.
-                        pos = ellipsoid(obj.params,a);
                     end
+                    Ncell = obj.V/a^3;
+                    if Ncell > 1800
+                        disp("approximated number of cells: "+Ncell)
+                    end
+                    pos = ellipsoid(obj.params,a);
                     a_adjusted = (4*pi/3/size(pos,1))^(1/3)*obj.params(1);
                     pos = pos*a_adjusted/a;
                     a = a_adjusted;
                 case 'cube'
-                    if numel(dims) == 1
+                    if isscalar(dims)
                         obj.params(1) = dims; % Rsphere
                     else
                         error('The dimension parameter must be a scalar, the cube edge size')
                     end
+                    obj.V = obj.params^3;
                     if isempty(opt.meshParam)
                         a = obj.params/4;
-                        pos = cube(obj.params,a);
                     else
                         a = opt.meshParam;
-                        pos = cube(obj.params,a);
                     end
-                    obj.V = obj.params^3;
+                    Ncell = obj.V/a^3;
+                    if Ncell > 1800
+                        disp("approximated number of cells: "+Ncell)
+                    end
+                    pos = cube(obj.params,a);
                 case 'cuboid'
                     if numel(dims) ~=3
                         error('A cuboid demands a parameter that is a 3-vector')
@@ -116,44 +133,52 @@ classdef Nanoparticle
                     obj.params(1) = dims(1);
                     obj.params(2) = dims(2);
                     obj.params(3) = dims(3);
+                    obj.V = obj.params(1)*obj.params(2)*obj.params(3);
                     if isempty(opt.meshParam)
                         a = min(obj.params)/4;
-                        pos = cuboid(obj.params,a);
                     else
                         a = opt.meshParam;
-                        pos = cuboid(obj.params,a);
                     end
-                    obj.V = obj.params(1)*obj.params(2)*obj.params(3);
+                    Ncell = obj.V/a^3;
+                    if Ncell > 1800
+                        disp("approximated number of cells: "+Ncell)
+                    end
+                    pos = cuboid(obj.params,a);
                 case 'cylinder'
                     if numel(dims) ~=2
                         error('A cylinder demands a parameter that is a 2-vector')
                     end
-                    obj.params(1) = dims(1); % diameter in px
+                    obj.params(1) = dims(1); % radius in px
                     obj.params(2) = dims(2); % thickness in px
                     if isempty(opt.meshParam)
                         a = min(obj.params)/4;
-                        pos = cylinder(obj.params,a);
                     else
                         a = opt.meshParam;
-                        pos = cylinder(obj.params,a);
                     end
-                    obj.V = pi*(obj.params(1))^2*obj.params(2);
+                    Ncell = obj.V/a^3;
+                    if Ncell > 1800
+                        disp("approximated number of cells: "+Ncell)
+                    end
+                    pos = cylinder(obj.params,a);
                 case 'rod'
                     if numel(dims) ~=2
                         error('A cylinder demands a parameter that is a 2-vector')
                     end
-                    obj.params(1) = dims(1); % diameter in px
-                    obj.params(2) = dims(2); % thickness in px
+                    obj.params(1) = dims(1); % length
+                    obj.params(2) = dims(2); % radius
                     L0 = obj.params(1);
                     r0 = obj.params(2);
+                    obj.V = 4/3*pi*r0^3+pi*r0^2*(L0-2*r0);
                     if isempty(opt.meshParam)
                         a = min(obj.params)/4; %No lattice param specified
-                        pos = rod(obj.params,a);
                     else
                         a = opt.meshParam;
-                        pos = rod(obj.params,a);
                     end                
-                    obj.V = 4/3*pi*r0^3+pi*r0^2*(L0-2*r0);
+                    Ncell = obj.V/a^3;
+                    if Ncell > 1800
+                        disp("approximated number of cells: "+Ncell)
+                    end
+                    pos = rod(obj.params,a);
                 otherwise
                     error(['The geometry ''' obj.geom ''' is not known.'])
             end
@@ -164,89 +189,118 @@ classdef Nanoparticle
             obj.a = a;
             fprintf(['Meshing with ' num2str(size(pos,1)) ' cells.\n'])
         end
-
-
-
-        function val = get.pos(obj)
-            val = zeros(obj.N,3);
-            for ip = 1:obj.N
-                val(ip,:) = obj.DIs(ip).pos;
+     
+        function NP = shine_old(obj,IL)
+            NP = obj;
+            
+            if isempty(IL.n)
+                error('A Medium object needs to be assigned to the Illumination object in this kind of calculation')
             end
-        end
-
-        function val = get.mat(obj)
-            val = obj.DIs(1).mat;
-        end
-
-        function val = get.N(obj)
-            val = numel(obj.DIs);
-        end
-
-        function val = get.eps(obj)
-            val = obj.DIs(1).eps;
-        end
-
-        function val = get.EE(obj)
-            if ~isempty(obj.DIs(1).EE)
-                val = zeros(obj.N,3);
-                for ip = 1:obj.N
-                    val(ip,:) = obj.DIs(ip).EE;
+            
+            NP.DIs.setE0( IL.E0 );
+            NP.Illumination = IL;
+            n0 = IL.n;
+            nS = IL.nS;
+            NP.n_ext = n0;
+            direct = IL.direct;
+            posList = NP.pos;
+            Np = NP.N;
+            
+            kk = direct*2*pi/NP.lambda;
+            k0 = norm(kk);
+            % chi = (epsmat - n*n*eye(3))*a*a*a;
+            a0 = NP.a;
+            kan = k0*a0*n0;
+            chi = NP.chiTensor;
+            
+            
+            %% incoming electric field
+            % r12 = (n-nS)/(n+nS);
+            % EE0 = zeros(3*N,1);
+            % for ii = 1:N
+            %     %EE0(3*ii-2:3*ii) = E0*exp(1i*n*kk*pos(ii,:)');
+            %     EE0(3*ii-2:3*ii) = E0*exp(1i*n*kk*pos(ii,:)') + r12*E0*exp(-1i*n*kk*pos(ii,:)');
+            % end
+            
+            EE0list = Eincident(IL,posList,'reshape',false);
+            %% Construction of the Matrix to be inverted
+            Id = eye(3);
+            S0 = zeros(3*Np,3*Np);
+            for ny = 1:Np
+                for nx = 1:Np
+                    if ny ~= nx
+                        Rn = (posList(nx,:)-posList(ny,:))/a0;
+                        dn = sqrt(Rn*Rn');
+                        T1 =    (   Rn'*Rn  - dn^2*Id)/(dn*dn*dn);
+                        T2 =    (3*(Rn'*Rn) - dn^2*Id)/(dn*dn*dn*dn) ;
+                        T3 =    (3*(Rn'*Rn) - dn^2*Id)/(dn*dn*dn*dn*dn);
+                        S0(3*ny-2:3*ny,3*nx-2:3*nx) = chi*(-kan^2*T1-1i*kan*T2+T3)*exp(1i*kan*dn);
+                    else
+                        %S0(3*ny-2:3*ny,3*nx-2:3*nx) = -4*pi*chi/(3*a*a*a)*Id;
+                        
+                        % Correction suggested by ChatGPT:
+                        S0(3*ny-2:3*ny,3*nx-2:3*nx) = (-4*pi*chi/3 + 1i*2*(kan/n0)^3/3*chi) ;
+                                                           
+                    end
                 end
-            else
-                val = [];
             end
-        end
-
-        function val = get.EE0(obj)
-            if ~isempty(obj.DIs(1).EE0)
-                val = zeros(obj.N,3);
-                for ip = 1:obj.N
-                    val(ip,:) = obj.DIs(ip).EE0;
+            
+            S0 = S0/(4*pi*NP.eps0*n0*n0);
+            
+            if nS~=n0
+                Ssurf = zeros(3*Np,3*Np);
+                for ny = 1:Np
+                    for nx = 1:Np
+                        Rn = (posList(nx,:)-posList(ny,:).*[1,1,-1])/a0;
+                        dn = sqrt(Rn*Rn');
+                        T3 = (3*(Rn'*Rn)-dn^2*Id)/(dn*dn*dn*dn*dn);
+                        Ssurf(3*ny-2:3*ny,3*nx-2:3*nx) = chi * T3*[[-1 0 0];[0 -1 0];[0 0 1]];
+                %        Ssurf(3*ny-2:3*ny,3*nx-2:3*nx) = T3*[[-1 0 0];[0 -1 0];[0 0 1]]*exp(1i*n*k0*d);  % in principle this exp is not put. Just to check the difference
+                    end
                 end
-            else
-                val = [];
+                Ssurf = (nS*nS-n0*n0)/(nS*nS+n0*n0)*Ssurf/(4*pi*NP.eps0);
+                S0 = S0+Ssurf;
             end
+            
+            %% Calculation
+            fprintf('DDA matrix inversion. Please wait...\n')
+            EElist = (eye(3*Np)-NP.eps0*S0)\EE0list;
+            fprintf('Done.\n')
+            
+            
+            NP.DIs = NP.DIs.setEE( reshape(EElist,[3,Np]).' );
+            NP.DIs = NP.DIs.setEE0( reshape(EE0list,[3,Np]).' );
+            NP.DIs = NP.DIs.setE0( IL.E0 );
+            NP.DIs = NP.DIs.setp( NP.eps0*NP.EE*transpose(NP.chiTensor * a0 * a0 * a0) );
+            NP.Illumination = IL;
+
         end
 
-        function val = get.E0(obj)
-            val = obj.DIs(1).E0;
-        end
+        function NP = shine(obj,IL)
+            NP = obj;
+            NP.DIs.setE0( IL.E0 );
+            NP.Illumination = IL;
+            NP.n_ext = IL.n;
 
-        function val = get.p(obj)
-            val = zeros(obj.N,3);
-            for ip = 1:obj.N
-                val(ip,:) = obj.DIs(ip).p;
-            end
-        end
+            [EElist, EE0list] = GDT0(NP.pos,NP.a,NP.chiTensor,IL);
+            
+            Np = numel(NP.DIs);
+            NP.DIs = NP.DIs.setEE( reshape(EElist,[3,Np]).' );
+            NP.DIs = NP.DIs.setEE0( reshape(EE0list,[3,Np]).' );
+            NP.DIs = NP.DIs.setE0( IL.E0 );
+            NP.DIs = NP.DIs.setp( NP.eps0*NP.EE*transpose(NP.chiTensor * NP.a^3) );
+            NP.Illumination = IL;
 
-        function val = get.eps0(obj)
-            val = obj.DIs(1).eps0;
-        end
-
-        function val = get.c0(obj)
-            val = obj.DIs(1).c0;
-        end
-
-        function val = get.RotMat(obj)
-            val = obj.DIs(1).RotMat;
-        end
-
-
-        
-        function obj = shine(obj,IL)
-            % Runs de DDA simulation and returns the Nanoparticle object updated with the P, EE, EE0 fields.
-            obj = GDT(obj,IL);
-            %obj = DDA(obj,IL)
         end
 
         function obj = moveTo(obj,varargin)
-            %moveTo([x0,y0,z0])
-            %moveTo(x0,y0,z0)
-            %moveTo('x',val)
-            %moveTo('y',val)
-            %moveTo('z',val)
-            %moveTo('x',x0,'y',y0)
-            %etc
+            % moveTo([x0,y0,z0])
+            % moveTo(x0,y0,z0)
+            % moveTo('x',val)
+            % moveTo('y',val)
+            % moveTo('z',val)
+            % moveTo('x',x0,'y',y0)
+            % etc
             if nargin==2
                 if ~isnumeric(varargin{1})
                     error('the position must be a number')
@@ -404,47 +458,136 @@ classdef Nanoparticle
             val = val/obj.N;
         end
 
-        function obj = Jones(obj,varargin)
-            Nvar = numel(varargin);
-            if mod(Nvar,2)
-                error('Must have an even number of inputs')
+        function IM = imaging(obj,MI,opt)
+            arguments
+                obj Nanoparticle
+                MI Microscope
+                opt.Npx = 0
+
             end
-            
-            % Quarter waveplate
-                QWP = [1 0;0 1i];
-            % Half waveplate
-                HWP = [1 0;0 -1];
-            % Polarizer
-                P = [1 0;0 0];
-            % Rotation matrix
-                R = @(theta) [cosd(theta) -sind(theta);sind(theta) cosd(theta)];
- 
-            
-            matr = eye(2,2);
-            for ii = 1:2:Nvar
-                if ~ischar(varargin{ii})
-                    error('this input must be text: ''P'', ''QWP'' or ''HWP''')
-                elseif ~isnumeric(varargin{ii+1})
-                    error('this inpust must be a number')
-                end
-                switch varargin{ii}
-                    case 'P'
-                        matr = R(varargin{ii+1})*P*R(-varargin{ii+1})*matr;
-                    case 'QWP'
-                        matr = R(varargin{ii+1})*QWP*R(-varargin{ii+1})*matr;
-                    case 'HWP'
-                        matr = R(varargin{ii+1})*HWP*R(-varargin{ii+1})*matr;
-                end
+
+            IM = obj.DIs.imaging(MI,"Npx",opt.Npx);
+        
+        end
+
+        function figure(obj)
+            [xs,ys,zs] = sphere;
+            No = numel(obj);
+            figure
+            if No > 2
+                fullwidth
             end
-            
-            for ip = 1:obj.N
-                pol2 = [obj.p(ip,1);obj.p(ip,2)];
-                pol = matr*pol2;
-                obj.p(ip,1) = pol(1);
-                obj.p(ip,2) = pol(2);
+            for io = 1:No
+                ax = subplot(1,No,io);
+                ax.FontSize = 16;
+                if ~isempty(obj(io).EE)
+                    EEint = sqrt(sum(obj(io).EE.*conj(obj(io).EE),2));
+                    %figure
+                    hold on 
+                    for is = 1:obj(io).N
+                        col = (EEint(is)-min(EEint))/(max(EEint)-min(EEint));
+                        x_coords = obj(io).a/2*xs+obj(io).pos(is,1);
+                        y_coords = obj(io).a/2*ys+obj(io).pos(is,2);
+                        z_coords = obj(io).a/2*zs+obj(io).pos(is,3);
+                        surf(x_coords*1e9,y_coords*1e9,z_coords*1e9, 'FaceColor', [col 0 0], 'FaceAlpha',0.9,'EdgeAlpha', 0)
+                    end
+                    light
+                    axis equal
+                else  %if the Nanoparticle does not contain any mesh for the moment.
+                    %figure
+                    hold on 
+                    for is = 1:obj(io).N
+                        x_coords = obj(io).a/2*xs+obj(io).pos(is,1);
+                        y_coords = obj(io).a/2*ys+obj(io).pos(is,2);
+                        z_coords = obj(io).a/2*zs+obj(io).pos(is,3);
+                        surf(x_coords*1e9,y_coords*1e9,z_coords*1e9, 'FaceColor', [0.7 0.3 0.2], 'FaceAlpha',0.9,'EdgeAlpha', 0)
+                    end
+                    light
+                    axis equal
+                end
+                % plot the plane:
+                ecart = 5*obj(io).a;
+                [x, y] = meshgrid(-ecart+min(min(obj(io).pos(:,1))):10e-9:ecart+max(max(obj(io).pos(:,1))) , -ecart+min(min(obj(io).pos(:,2))):10e-9:ecart+max(max(obj(io).pos(:,2))));
+                z = 0.*x + 0.*y;
+                surf(x*1e9,y*1e9,z, 'FaceColor', 'w', 'EdgeColor', [0.5 0.5 0.5])
+                view(14,28)
+                camproj('perspective')
+                title(obj(io).N+" cells")
+                xlabel('nm')
+                ylabel('nm')
+                zlabel('nm')
             end
         end
-        
+                
+        % set/get
+        function val = get.pos(obj)
+            val = zeros(obj.N,3);
+            for ip = 1:obj.N
+                val(ip,:) = obj.DIs(ip).pos;
+            end
+        end
+
+        function val = get.pos_nm(obj)
+            val = get.pos(obj)*1e9;
+        end
+
+        function val = get.mat(obj)
+            val = obj.DIs(1).mat;
+        end
+
+        function val = get.N(obj)
+            val = numel(obj.DIs);
+        end
+
+        function val = get.eps(obj)
+            val = obj.DIs(1).eps;
+        end
+
+        function val = get.EE(obj)
+            if ~isempty(obj.DIs(1).EE)
+                val = zeros(obj.N,3);
+                for ip = 1:obj.N
+                    val(ip,:) = obj.DIs(ip).EE;
+                end
+            else
+                val = [];
+            end
+        end
+
+        function val = get.EE0(obj)
+            if ~isempty(obj.DIs(1).EE0)
+                val = zeros(obj.N,3);
+                for ip = 1:obj.N
+                    val(ip,:) = obj.DIs(ip).EE0;
+                end
+            else
+                val = [];
+            end
+        end
+
+        function val = get.E0(obj)
+            val = obj.DIs(1).E0;
+        end
+
+        function val = get.p(obj)
+            val = zeros(obj.N,3);
+            for ip = 1:obj.N
+                val(ip,:) = obj.DIs(ip).p;
+            end
+        end
+
+        function val = get.eps0(obj)
+            val = obj.DIs(1).eps0;
+        end
+
+        function val = get.c0(obj)
+            val = obj.DIs(1).c0;
+        end
+
+        function val = get.RotMat(obj)
+            val = obj.DIs(1).RotMat;
+        end
+
         function val = get.epsTensor(obj)
             val = obj.DIs(1).epsTensor;
         end
@@ -452,7 +595,6 @@ classdef Nanoparticle
         function val = chiTensor(obj)
             val = obj.DIs(1).chiTensor;
         end
-
 
         function val = get.alpha(obj)
             % computes and returns the dependent property alpha (complex polarizability of the nanoparticle).
@@ -535,63 +677,7 @@ classdef Nanoparticle
             end
         end
                 
-        function figure(obj)
-            [xs,ys,zs] = sphere;
-            figure
-            if ~isempty(obj.EE)
-                EEint = sqrt(sum(obj.EE.*conj(obj.EE),2));
-                %figure
-                hold on 
-                for is = 1:obj.N
-                    col = (EEint(is)-min(EEint))/(max(EEint)-min(EEint));
-%                    if nargin==2
-%                        if strcmp(varargin{1},'cut') && pos(is,1)>0
-                            surf(obj.a/2*xs+obj.pos(is,1),obj.a/2*ys+obj.pos(is,2),obj.a/2*zs+obj.pos(is,3), 'FaceColor', [col 0 0], 'FaceAlpha',0.9,'EdgeAlpha', 0)
-%                        elseif ~strcmp(varargin{1},'cut')
-%                            error([varargin{1} ' is not a known parameter.'])
-%                        end
-                    %else
-                    %    surf(a*xs+pos(is,1),a*ys+pos(is,2),a*zs+pos(is,3), 'FaceColor', [col 0 0], 'FaceAlpha',0.9,'EdgeAlpha', 0)
-                    %end 
-                end
-                light
-                axis equal
-            else  %if the Nanoparticle does not contain any mesh for the moment.
-                %figure
-                hold on 
-                for is = 1:obj.N
-                    surf(obj.a/2*xs+obj.pos(is,1),obj.a/2*ys+obj.pos(is,2),obj.a/2*zs+obj.pos(is,3), 'FaceColor', [0.7 0.3 0.2], 'FaceAlpha',0.9,'EdgeAlpha', 0)
-                end
-                light
-                axis equal
-            end
-            % plot the plane:
-            ecart = 5*obj.a;
-            [x, y] = meshgrid(-ecart+min(min(obj.pos(:,1))):10e-9:ecart+max(max(obj.pos(:,1))) , -ecart+min(min(obj.pos(:,2))):10e-9:ecart+max(max(obj.pos(:,2))));
-            z = 0.*x + 0.*y;
-            color = z*0+1;
-            surf(x,y,z,color);
-            view(14,28)
-        end
-                
-        function val = matList(obj)
-            % returns the list of available cameras
-            matList = dir([obj.NPpath '/../materials/*.txt']);
-            Nc = numel(matList);
-            val = cell(Nc,1);
-            for ic = 1:Nc
-                val{ic} = matList(ic).name(1:end-4);
-            end
-        end    
-        
     end
     
     
-    methods(Static,Hidden)
-
-        function val = NPpath()
-            val = fileparts(which('Nanoparticle.m'));
-        end
-        
-    end
 end

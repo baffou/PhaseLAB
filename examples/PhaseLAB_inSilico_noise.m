@@ -45,7 +45,7 @@ switch system
         DI(5)  = DI(1).moveBy('x',-2e-6,'y',-4.2e-6);
         DI     = DI.shine(IL);
         
-        IM0    = imaging(DI,IL,MI,Npx);
+        IM0    = imaging(DI,MI,"Npx",Npx);
         IM0    = IM0.crop("Size",600,"Center",'Auto');
         OPD0    = IM0.OPD;
         T0    = IM0.T;

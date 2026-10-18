@@ -85,6 +85,113 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
             end
         end
 
+        function val = EE0(IL,pos)
+            %% incoming electric field
+            kk = IL.direct*2*pi/IL.lambda;
+            r12 = (IL.n-IL.nS)/(IL.n+IL.nS);
+            val = IL.E0*exp(1i*IL.n*kk(:).'*pos(:))+r12*IL.E0*exp(-1i*IL.n*kk(:).'*pos(:));
+        end
+
+        function obj2 = rotate(obj,varargin)
+            if isEven(nargin)
+                error('The number of arguments of the rotate function should be an even number, in the for ''x'',45, ...')
+            end
+
+            if nargout
+                obj2 = copy(obj);
+            else
+                obj2 = obj;
+            end
+
+            for il = 1:(nargin-1)/2
+                num = il*2-1;
+                phi = varargin{num+1};
+                if strcmpi(varargin{num},'Z')
+                    RotMat = [cosd(phi) -sind(phi)  0
+                        sind(phi)  cosd(phi)  0
+                        0          0         1];
+                elseif strcmpi(varargin{num},'X')
+                    RotMat = [1     0          0
+                        0  cosd(phi)  -sind(phi)
+                        0  sind(phi)   cosd(phi)];
+                elseif strcmpi(varargin{num},'Y')
+                    RotMat = [cosd(phi)   0   sind(phi)
+                        0           1       0
+                        -sind(phi) 0    cosd(phi)];
+                else
+                    error('Rotation of Illumination should be around ''X'' or ''Y'' or ''Z''')
+                end
+                obj2.direct = (RotMat*obj.direct(:)).';
+                obj2.polar = (RotMat*obj.polar(:)).';
+            end
+
+
+        end
+
+        function ILs = Jones(IL,varargin)
+            % Jones('P', 45, 'QWP',90, 'HWP',30, 'J', {J, 45}, ...). Applies of series of polarizing plates.
+            Nvar = numel(varargin);
+            if mod(Nvar,2)
+                error('Must have an even number of inputs')
+            end
+            if nargout
+                ILs = copy(IL);
+            else
+                ILs = IL;
+            end
+
+            % Quarter waveplate
+            QWP = [1 0;0 1i];
+            % Half waveplate
+            HWP = [1 0;0 -1];
+            % Polarizer
+            P = [1 0;0 0];
+            % Rotation matrix
+            R = @(theta) [cosd(theta) -sind(theta);sind(theta) cosd(theta)];
+
+
+            mat = eye(2,2);
+            for ii = 1:2:Nvar
+                if ~ischar(varargin{ii})
+                    error('this input must be text: ''P'', ''QWP'', ''HWP'', or ''J''')
+                elseif ~isnumeric(varargin{ii+1})
+                    error('this inpust must be a number')
+                end
+                switch varargin{ii}
+                    case 'P'
+                        mat = R(varargin{ii+1})*P*R(-varargin{ii+1})*mat;
+                    case 'QWP'
+                        mat = R(varargin{ii+1})*QWP*R(-varargin{ii+1})*mat;
+                    case 'HWP'
+                        mat = R(varargin{ii+1})*HWP*R(-varargin{ii+1})*mat;
+                    case 'J'
+                        R(varargin{ii+1}{2})*varargin{ii+1}{1}*R(-varargin{ii+1}{2})*mat;
+                end
+            end
+            ILs.Jones0(mat);
+        end
+
+        function ILs = Jones0(IL,mat)
+            arguments
+                IL Illumination
+                mat (2,2) double
+            end
+            % Jones0(IL,mat). IL: Illumination object, mat: a Jones Matrix. Applies a Jones matrix to the incoming light IL./
+            pol2 = [IL.polar(1);IL.polar(2)];
+            if nargout
+                ILs = copy(IL);
+            else
+                ILs = IL;
+            end
+
+            pol = mat*pol2;
+            ILs.I = IL.I*(norm(pol)/norm(pol2))^2;
+            ILs.polar = [pol(1) pol(2) 0];
+        end
+
+
+        % set/get methods
+
         function set.lambda(obj,val)
             No = numel(obj);
             Nv = numel(val);
@@ -173,107 +280,6 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
 
         function val = get.E0(obj)
             val = obj.e0*obj.polar;
-        end
-
-
-        function val=EE0(IL,pos)
-            %% incoming electric field
-            kk = IL.direct*2*pi/IL.lambda;
-            r12 = (IL.n-IL.nS)/(IL.n+IL.nS);
-            val = IL.E0*exp(1i*IL.n*kk(:).'*pos(:))+r12*IL.E0*exp(-1i*IL.n*kk(:).'*pos(:));
-        end
-
-        function obj2 = rotate(obj,varargin)
-            if isEven(nargin)
-                error('The number of arguments of the rotate function should be an even number, in the for ''x'',45, ...')
-            end
-
-            if nargout
-                obj2 = copy(obj);
-            else
-                obj2 = obj;
-            end
-
-            for il = 1:(nargin-1)/2
-                num = il*2-1;
-                phi = varargin{num+1};
-                if strcmpi(varargin{num},'Z')
-                    RotMat = [cosd(phi) -sind(phi)  0
-                        sind(phi)  cosd(phi)  0
-                        0          0         1];
-                elseif strcmpi(varargin{num},'X')
-                    RotMat = [1     0          0
-                        0  cosd(phi)  -sind(phi)
-                        0  sind(phi)   cosd(phi)];
-                elseif strcmpi(varargin{num},'Y')
-                    RotMat = [cosd(phi)   0   sind(phi)
-                        0           1       0
-                        -sind(phi) 0    cosd(phi)];
-                else
-                    error('Rotation of Illumination should be around ''X'' or ''Y'' or ''Z''')
-                end
-                obj2.direct = (RotMat*obj.direct(:)).';
-                obj2.polar = (RotMat*obj.polar(:)).';
-            end
-
-
-        end
-
-        function ILs = Jones(IL,varargin)
-            % Jones('P', 45, 'QWP',90, 'HWP',30, 'J', {J, 45}, ...). Applies of series of polarieing plates.
-            Nvar = numel(varargin);
-            if mod(Nvar,2)
-                error('Must have an even number of inputs')
-            end
-            if nargout
-                ILs = copy(IL);
-            else
-                ILs = IL;
-            end
-
-            % Quarter waveplate
-            QWP = [1 0;0 1i];
-            % Half waveplate
-            HWP = [1 0;0 -1];
-            % Polarizer
-            P = [1 0;0 0];
-            % Rotation matrix
-            R = @(theta) [cosd(theta) -sind(theta);sind(theta) cosd(theta)];
-
-
-            mat = eye(2,2);
-            for ii = 1:2:Nvar
-                if ~ischar(varargin{ii})
-                    error('this input must be text: ''P'', ''QWP'', ''HWP'', or ''J''')
-                elseif ~isnumeric(varargin{ii+1})
-                    error('this inpust must be a number')
-                end
-                switch varargin{ii}
-                    case 'P'
-                        mat = R(varargin{ii+1})*P*R(-varargin{ii+1})*mat;
-                    case 'QWP'
-                        mat = R(varargin{ii+1})*QWP*R(-varargin{ii+1})*mat;
-                    case 'HWP'
-                        mat = R(varargin{ii+1})*HWP*R(-varargin{ii+1})*mat;
-                    case 'J'
-                        R(varargin{ii+1}{2})*varargin{ii+1}{1}*R(-varargin{ii+1}{2})*mat;
-                end
-            end
-            ILs.Jones0(mat);
-        end
-
-        function ILs = Jones0(IL,mat)
-            % Jones0(IL,mat). IL: Illumination object, mat: a Jones Matrix. Applies a Jones matrix to the incoming light IL./
-            pol2 = [IL.polar(1);IL.polar(2)];
-            if nargout
-                ILs = copy(IL);
-            else
-                ILs = IL;
-            end
-
-            pol = mat*pol2;
-            ILs.I = IL.I*(norm(pol)/norm(pol2))^2;
-            ILs.polar = [pol(1) pol(2) 0];
         end
 
         function val = get.S0(obj)

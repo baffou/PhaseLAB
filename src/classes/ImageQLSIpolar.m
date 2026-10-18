@@ -1,12 +1,13 @@
-classdef ImagePolar   <   handle & matlab.mixin.Copyable
-    % class to deal with polar QLSI images
+classdef ImageQLSIpolar   <   handle & matlab.mixin.Copyable
+    % Class that deals with **experimental** polar-CGM data.
+    % It contains the 4 QLSI images corresponding to the 4 polarizations.
     
     properties(GetAccess = public, SetAccess = {?Methods})
         IM (1,4) ImageQLSI
     end
     
     properties(GetAccess = public, SetAccess = private)
-        retardanceMax (1,1) double = 20 % max amplitude of the retardance on the color map of theta
+        retardanceMax (1,1) double = 10e-9 % max amplitude of the retardance on the color map of theta
         eLim (1,1) double = 0.1 % min ellipiticity to be displayed
         dichroMax (1,1) double = 0.1
         thetaShift = 0
@@ -35,17 +36,17 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         L
 
         % Ellipse props
-        A
-        B
-        thetaEllipse
-        thetaEllipseDeg
-        h
         e % ellipticity
-        rgbImageEllipse
+        A % major-axis length
+        B % minor-axis length
+        thetaEllipse % orientation angle of the polarization ellipse
+        thetaEllipseDeg % same in degrees
+        h % handedness +1 or -1 values
+        rgbImageEllipse 
 
 
         % biref/retardance params
-        theta0
+        theta0 % birefringence angle (if the material is purely birefringent
         phibar
         dphi
         Tbar
@@ -63,30 +64,234 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
 
     methods
 
-        function obj = ImagePolar(IM,opt)
+        function obj = ImageQLSIpolar(IM)
             arguments
-                IM  ImageQLSI = ImageQLSI.empty()
-                opt.retMax = 10e-9 % 10 nm of retardance
-                opt.eLim = 0.05 % 10 nm of retardance
+                IM  (:,4) ImageQLSI = ImageQLSI.empty(0,4)
             end
             if nargin % else, create an empty object
 
                 Nim = size(IM,1);
                 if Nim == 1
                     obj.IM0 = IM; % copy of the handle. No duplication.
-                    obj.retardanceMax = opt.retMax;
-                    obj.eLim = opt.eLim;
 
                 else
-                    obj = repmat(ImagePolar(),Nim,1);
+                    obj = repmat(ImageQLSIpolar(),Nim,1);
                     for nim = 1:Nim
-                        obj(nim) = ImagePolar(IM(nim,:), 'retMax', opt.retMax, 'eLim', opt.eLim); % copy of the handle. No duplication.
+                        obj(nim) = ImageQLSIpolar(IM(nim,:)); % copy of the handle. No duplication.
                     end
                 end
                 obj.updateIM()
             end
         end
 
+        function app = figure(obj)
+            if nargout
+                app = figurePolarGUI2(obj);
+%                app = figurePolarGUI(obj);
+            else
+                figurePolarGUI2(obj)
+%                figurePolarGUI(obj)
+            end
+        end
+
+        function setCalcSjMode(obj,val)
+            arguments
+                obj
+                val char {mustBeMember(val,{'Tj','Ej'})} = 'Tj'
+            end
+            Nim = numel(obj);
+            for ii = 1:Nim
+                obj(ii).calcSjMode = val;
+            end
+        end
+
+        function adjustPolarOffsets(obj,opt)
+            arguments
+                obj
+                opt.method {mustBeMember(opt.method,{'manual','auto'})} = 'auto'
+                opt.displayC (1,1) logical = false
+            end
+
+            [Nim, Nch] = size(obj);
+
+            for ii = 1:Nim
+                if strcmpi(opt.method,'auto')
+                    
+                    for jch = 1:Nch
+    
+        
+                        T1 = obj(ii,jch).IM(1).T;
+                        T2 = obj(ii,jch).IM(2).T;
+                        T3 = obj(ii,jch).IM(3).T;
+                        T4 = obj(ii,jch).IM(4).T;
+        
+                        Phi1 = obj(ii,jch).IM(1).Ph;
+                        Phi2 = obj(ii,jch).IM(2).Ph;
+                        Phi3 = obj(ii,jch).IM(3).Ph;
+                        Phi4 = obj(ii,jch).IM(4).Ph;
+        
+                        if ~obj(ii,jch).Illumination.isCircular
+                            error('the illumination is not circularly polarized')
+                        end
+                        S3ill = obj(ii,jch).Illumination.S3;
+                        if S3ill <0
+                            C = 0.5*(T2-T4)./sqrt(T1.*T3);
+                        else
+                            C = -0.5*(T2-T4)./sqrt(T1.*T3);
+                        end
+    
+                        if opt.displayC
+                            asinC = asin(C);
+                            dph = Phi1-Phi3;
+                            asinC = asinC-mean(asinC(:));
+                            dph = dph - mean(dph(:));
+                            figure
+                            subplot(1,3,1)
+                            % plot(0.64*mean(real(asinC(end/2-10:end/2+10,:))),'b','LineWidth',1.5)
+                            plot(mean(real(asinC(end/2-10:end/2+10,:))),'b','LineWidth',1.5)
+                            hold on
+                            plot(mean(dph(end/2-10:end/2+10,:)),'r-.','LineWidth',2)
+                            legend({'asinC','Phi1-Phi3'})
+                            lims = [-1 1];
+                            ylim(lims)
+                            %%
+                            subplot(1,3,2)
+                            imagesc(real(asinC)),clim(lims),colorbar
+                            
+                            subplot(1,3,3)
+                            imagesc(dph),clim(lims),colorbar%,clim([-0.05 0.05])
+                            fullwidth
+                            title(ii+"/"+Nim)
+                            drawnow
+                            pause(1)
+                        end
+    
+                        while any(abs(C(:)) > 1)
+                            warning('some pixels feature a C>1')
+                            list = find(abs(C(:))>1);
+                            for io = 1:numel(list) % take the average of the neighfor pixels, because these problematic pixels are isolated in general
+                                C(list(io)) = (C(list(io)-1)+C(list(io)+1))/2;
+                            end
+                        end
+                        % C almost equal zero.
+                        % since C = cos(phi_x - ph_y), it means that phi_x and phi_y are in
+                        % quadratude, which is true because of the circular polarization !
+        
+                        %figure,imagegb(Phi3-Phi1+acos(C));
+                        %clim([-1.57 0])
+                        dPhi3map = Phi3-Phi1+asin(C);
+                        dPhi3 = median(dPhi3map(:));
+                        %dPhi3 = Phi3-Phi1+acos(C);
+        
+                        phi1 = obj(ii,jch).IM(1).Ph;
+                        phi3 = obj(ii,jch).IM(3).Ph - dPhi3;
+        
+                        %% setting the right offset to the first image to make sure the background is zero in OPD
+                        %phi1 = phi1 - mean(mean(phi1(1,1:end-1)+phi1(1:end-1,end)+phi1(2:end,1)+phi1(end,2:end)))/4;
+        
+                        %% other polars 2 & 4
+                        E1 = sqrt(T1);
+                        E3 = sqrt(T3);
+                        dPhi2 = median(median(Phi2+unwrap(  pi/4-angle( E1.*exp(1i*phi1)+1i*E3.*exp(1i*phi3)))));
+                        dPhi4 = median(median(Phi4+unwrap(3*pi/4-angle(-E1.*exp(1i*phi1)+1i*E3.*exp(1i*phi3)))));
+        
+                        %% New OPD images, with the right shift
+                        lambda = obj(ii,jch).IM(1).Illumination.lambda;
+                        % IM(ii, 1).OPD = phi1*lambda/(2*pi); % useless
+                        obj(ii,jch).IM(2).OPD = obj(ii,jch).IM(2).OPD - dPhi2*lambda/(2*pi);
+                        obj(ii,jch).IM(3).OPD = obj(ii,jch).IM(3).OPD - dPhi3*lambda/(2*pi);
+                        obj(ii,jch).IM(4).OPD = obj(ii,jch).IM(4).OPD - dPhi4*lambda/(2*pi);
+                    end
+                else % manual set of the area of the image that should be zero on each image
+                    hfig = figure; imageph(obj(ii,1).Wbar)
+                    [x, y] = ginput(2);
+                    close(hfig)
+                    for jch = 1:Nch
+                        obj(ii,jch).IM.level0("params", [min(x), max(x), min(y), max(y)])
+                    end
+                end
+            end
+        end
+
+        function setThetaShift(obj, val)
+            % converts in [m] in case the norm factor is entered in [nm]
+            for io = 1:numel(obj)
+                obj(io).thetaShift = val;
+            end
+        end
+
+        function set_retMax(obj, val)
+            if val >1e-3 % value in [nm]
+                val = val*1e-9; % conversion in [m]
+            end
+            Nim = numel(obj);
+            for nim = 1:Nim
+                obj(nim).retardanceMax = val;
+            end
+        end
+
+        function set_eLim(obj, val)
+            Nim = numel(obj);
+            for nim = 1:Nim
+                obj(nim).eLim = val;
+            end
+        end
+
+        function set_dichroMax(obj, val)
+            Nim = numel(obj);
+            for nim = 1:Nim
+                obj(nim).dichroMax = val;
+            end
+        end
+
+        function updateIM(obj)
+            Nim = numel(obj);
+            for nim = 1:Nim
+                obj(nim).IM = obj(nim).IM0;
+            end
+        end
+
+        function J = im2J(obj1, obj2)
+            arguments
+                obj1 ImageQLSIpolar % [pImL, pImR]
+                obj2 ImageQLSIpolar % [pImL, pImR]
+            end
+            % J = im2J(pImL, pImR)
+            % J = im2J([pImL, pImR])
+            if nargin == 2 % im2J(pImL, pImR)
+                Nim = size(obj1,1);
+                Nim2 = size(obj2,1);
+                if Nim ~= Nim2
+                    error('The two ImageQLSIpolar inputs don''t have the same size')
+                end
+                obj = [obj1,obj2];
+            elseif nargin == 1 % im2J([pImL, pImR])
+                if size(obj1,2) ~=2
+                    error('The input should be a 2-column ImageQLSIpolar array. Or specify two 1-colum inputs.')
+                end
+                obj = obj1;
+            end
+            J = ImageJonesMatrix(Nim);
+            for ii = 1:Nim
+                J(ii) = IM_to_J(obj(ii,1).IM,obj(ii,2).IM);
+                J(ii).Microscope = obj(ii,1).Microscope;
+                J(ii).Illumination = obj(ii,1).Illumination;
+            end
+        end
+
+        function T = im2T(obj)
+            arguments
+                obj (:,2) ImageQLSIpolar % [pImL, pImR]
+            end
+            Nim = size(obj,1);
+            T = repmat(ImageTransmittance, Nim, 1);
+            for ii = 1:Nim
+                T(ii) = IM_to_T(obj(ii,1).IM,obj(ii,2).IM);
+            end
+        end
+
+
+        % set/get methods
         function val = get.Ex(obj)
            % switch obj.calcSjMode
            %      case 'Tj'
@@ -99,17 +304,6 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         function val = get.Ey(obj)
             s = -sign(obj.Illumination.S3/obj.Illumination.S0); % negative sign, because it seems that this way the ellipse turns in the right direction, according to the rotation of the sample
             val = s * 1i * sqrt(obj.IM(3).T).*exp(1i*obj.IM(3).Ph*obj.dphi0);
-        end
-
-        function setCalcSjMode(obj,val)
-            arguments
-                obj
-                val char {mustBeMember(val,{'Tj','Ej'})} = 'Tj'
-            end
-            Nim = numel(obj);
-            for ii = 1:Nim
-                obj(ii).calcSjMode = val;
-            end
         end
 
         function val = get.S0(obj)
@@ -148,7 +342,6 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                     val = imag(obj.Ex.*conj(obj.Ey));
             end
         end
-
         
         function val = get.L(obj)
             val = obj.S1 + 1i*obj.S2;
@@ -192,7 +385,6 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
 
             val = hsv2rgb(hsvImage);
         end
-
 
         function val = get.h(obj)
             val = sign(obj.S3);
@@ -244,6 +436,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         end
 
         function img = get.dphi(obj)
+            % valid for a purely birefringent sample
             arguments
                 obj
             end
@@ -256,6 +449,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         end
 
         function img = get.dichroism(obj)
+            % Valid for a purely dichroic sample
             arguments
                 obj
             end
@@ -289,26 +483,18 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
             img = obj.Wbar;
         end
 
-        function app = figure(obj)
-            if nargout
-                app = figurePolarGUI(obj);
-            else
-                figurePolarGUI(obj)
-            end
-        end
-
         function val = get.Wbar(obj)
             val = obj.phibar*obj.Illumination.lambda/(2*pi); 
         end
 
         function val = get.retardance(obj)
+            % valid for a purely birefringent sample
             val = obj.dphi*obj.Illumination.lambda/(2*pi); 
         end
 
         function val = get.dW(obj)
             val = obj.retardance; 
         end
-
 
         function set.retardanceMax(obj, val)
             % converts in [m] in case the norm factor is entered in [nm]
@@ -318,44 +504,6 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
         function set.dichroMax(obj, val)
             % converts in [m] in case the norm factor is entered in [nm]
             obj.dichroMax = val;
-        end
-
-        function setThetaShift(obj, val)
-            % converts in [m] in case the norm factor is entered in [nm]
-            for io = 1:numel(obj)
-                obj(io).thetaShift = val;
-            end
-        end
-
-        function set_retMax(obj, val)
-            if val >1e-3 % value in [nm]
-                val = val*1e-9; % conversion in [m]
-            end
-            Nim = numel(obj);
-            for nim = 1:Nim
-                obj(nim).retardanceMax = val;
-            end
-        end
-
-        function set_eLim(obj, val)
-            Nim = numel(obj);
-            for nim = 1:Nim
-                obj(nim).eLim = val;
-            end
-        end
-
-        function set_dichroMax(obj, val)
-            Nim = numel(obj);
-            for nim = 1:Nim
-                obj(nim).dichroMax = val;
-            end
-        end
-
-        function updateIM(obj)
-            Nim = numel(obj);
-            for nim = 1:Nim
-                obj(nim).IM = obj(nim).IM0;
-            end
         end
 
         function val = get.Nx(obj)
@@ -372,17 +520,6 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
 
         function val = get.Microscope(obj)
             val = obj.IM(1).Microscope;
-        end
-
-        function adjustPolarOffsets(obj,method,opt)
-            arguments
-                obj
-                method {mustBeMember(method,{'manual','auto','Manual','Auto'})} = 'Auto'
-                opt.pause = false
-            end
-
-            obj.IM.adjustPolarOffsets(method,'pause',opt.pause)
-
         end
 
         function export(obj,path,opt)
@@ -444,6 +581,7 @@ classdef ImagePolar   <   handle & matlab.mixin.Copyable
                 clear hfig
             end
         end
+
     end
 
 

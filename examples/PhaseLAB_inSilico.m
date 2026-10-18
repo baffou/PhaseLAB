@@ -35,7 +35,7 @@ switch system
         DI = Dipole('Au',radius);
         DI = DI.shine(IL);
         
-        IM0 = imaging(DI,IL,MI,Npx);
+        IM0 = imaging(DI,MI,"Npx",Npx);
     case 'noise'
         IM0 = ImageQLSI(ones(Npx),zeros(Npx),MI,IL);
     case 'Gaussian'

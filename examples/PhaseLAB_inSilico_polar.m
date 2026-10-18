@@ -57,7 +57,7 @@ for il = 1:2
     DI = DI.shine(IL(il));
 
     %% COMPUTATION OF THE IMAGES
-    IM0(il) = imaging(DI,IL(il),MI,540);
+    IM0(il) = imaging(DI,MI,"Npx",540);
 
     %% in silico
     [Itf0, ~, EE] = CGMinSilico(IM0(il),"ShotNoise",0);

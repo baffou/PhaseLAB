@@ -114,7 +114,7 @@ classdef MediumT
         end
                 
         function obj = zmesh(obj,z1,z2,dz,npx)
-            % (obj,z1,z2,dz,Npx). Meshes the layer. obj: le MediumT object to be meshed .z1: starting z. z2: final z.dz: starting increment.Npx: (optional) Number of pixels. By default: h/dz+1.
+            % (obj,z1,z2,dz,Npx). Meshes the layer. obj: the MediumT object to be meshed .z1: starting z. z2: final z.dz: starting increment.Npx: (optional) Number of pixels. By default: h/dz+1.
             % obj: le MediumT object to be meshed
             % z1: starting z
             % z2: final z

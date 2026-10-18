@@ -1,0 +1,8 @@
+{"class":"CrossGrating",
+"Gamma": 20.7e-6,
+"name": "CH12",
+"depth": 550e-9,
+"RI": 1.46,
+"lambda0": 433e-9,
+"angle": 0
+}

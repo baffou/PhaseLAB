@@ -1,22 +1,22 @@
 function hfig0 = displayJonesMatrix(J,opt)
-% J : 2*2 or 2*2*Ny*Nx matrix or JonesMatrix object
+% J : 2*2 or 2*2*Ny*Nx matrix or ImageJonesMatrix object
 arguments
-    J % double or cell array or JonesMatrix
+    J % double or cell array or ImageJonesMatrix
     opt.func {mustBeMember(opt.func,{'abs','real','imag','angle'})} = 'abs' % Functions to be applied to the Jij
     opt.clim = []
 end
 
 if isnumeric(J)
-    J = JonesMatrix(J);
+    J = ImageJonesMatrix(J);
 elseif iscell(J)
-    J0 = JonesMatrix(No);
+    J0 = ImageJonesMatrix(No);
     for io = 1:No
-        J0(io) = JonesMatrix(J{io});
+        J0(io) = ImageJonesMatrix(J{io});
     end
     J = J0;
     clear J0
-elseif ~isa(J,'JonesMatrix')
-    error('Wrong input type. Should be cell, numeric or JonesMatrix.')
+elseif ~isa(J,'ImageJonesMatrix')
+    error('Wrong input type. Should be cell, numeric or ImageJonesMatrix.')
 end
 
 switch opt.func

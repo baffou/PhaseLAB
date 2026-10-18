@@ -1,55 +1,27 @@
-%% NPimaging package
-% Computes the image of a collection of dipoles through a microscope
+function [Ex, Ey, Ez, E0] = imaging0(dipoles,posList,IL,MI,opt)
+% Computes the complex image at the image plane of a microscope created by
+% dipoles in the object plane
 
-% authors: Samira Khadir, Guillaume Baffou
-% affiliation: CNRS, Institut Fresnel
-% date: Jul 29, 2019
-
-
-function [IM, Ekprimex, Ekprimey, Ekprimez] = imaging(DIs,IL,MI,Npx,opt)
-% imaging(DIs,IL,MI[,ImSize,Npx])
-% DIs: array of Dipole objects, or Nanoparticle object
-% IL: Illumination object
-% MI: Objective or Microscope object, Objetive being a superclass of Microscope
 arguments
-    DIs
-    IL Illumination
-    MI Microscope
-    Npx double
-    opt.norm logical = false % considers IL.e0 as the field at the image plane
-    opt.rotation = true
+    dipoles (:,3) double % complex dipole moments
+    posList (:,3) double % coordinates of the dipoles
+    IL Illumination      % Incident illumination at the object plane
+    MI Microscope        % Microscope used for imaging
+    opt.Npx double = []  % Number of pixels in the image
+    opt.norm logical = false % normalizes the output xo that IL.e0 is the incident field at the image plane
+    opt.rotation = true  % Apply the rotation algorithm
 end
 
 norm0 = opt.norm;
 
-if isa(MI,'Microscope')
-elseif isa(MI,'Objective')
-    MI = Microscope(MI);
+if isempty(opt.Npx)
+    Npx = MI.CGcam.Camera.Ny;
 else
-    error('The third input must be either an Objective or a Microscope object')
+    Npx = opt.Npx;
 end
 
-if nargin==3
-    Npx = MI.CGcam.Camera.Ny;
-end
 pxSize = MI.pxSize;
 ImSize = Npx*pxSize;
-
-if isa(DIs(1),'Nanoparticle')
-    NP = DIs;
-    if NP.Illumination ~= IL
-        warning('The illumination used to shine the nanoparticle is not the one used to compute the image')
-    end
-    if isempty(NP.p)
-        error('The Nanoparticle must be illuminated before imaging')
-    end
-    DIs = NP.DIs;
-end
-
-if isempty(DIs(1).p)
-    error('The Dipole(s) must be illuminated before imaging')
-end
-
 
 %% Microscope paramaters
 
@@ -88,36 +60,22 @@ Ekprimey = zeros(length(kxx),length(kyy));
 Ekprimez = zeros(length(kxx),length(kyy));
 uz = [0;0;1];
 
-NDI = numel(DIs);
+Nd = size(dipoles,1);
 
-ILlist = [DIs(:).Illumination];
-if any(ILlist(:)~=IL)
-    warning('The illumination used to shine the nanoparticle is not the one used to compute the image')
-end
-
-
-
-if NDI>1,f = waitbar(0,'please wait');end
+if Nd>1,f = waitbar(0,'please wait');end
     
-for id = 1:NDI
+for id = 1:Nd
 
-        
-    if NDI>1,waitbar(id/numel(DIs),f,['NP imaging: ' num2str(id) '/' num2str(numel(DIs)) ' dipoles']);end
-    DI = DIs(id);
-    
-
-    if DI.Illumination ~= IL
-        warning('The illumination used to compute the image is not the one used to create the dipole')
-    end
+    if Nd>1,waitbar(id/Nd,f,['NP imaging: ' num2str(id) '/' num2str(Nd) ' dipoles']);end
     
     %% Dipole created by a nanosphere
     % Polarization of the dipole    
-    Q = DI.p.';
-    
+    %Q = DI.p.';
+    Q = dipoles(id,:).';
     %% defocus and position of the dipole
-    xQ = DI.x;  % position of the dipole according to the interface plane (m)
-    yQ = DI.y;  % position of the dipole according to the interface plane (m)
-    zQ = DI.z;  % position of the dipole according to the interface plane (m)
+    xQ = posList(id,1);  % position of the dipole according to the interface plane (m)
+    yQ = posList(id,2);  % position of the dipole according to the interface plane (m)
+    zQ = posList(id,3);  % position of the dipole according to the interface plane (m)
     
     %% Computation of the scattered field at Fourier plane
     
@@ -186,8 +144,8 @@ for id = 1:NDI
                 Q1 = Q-dot(conj(kvb),Q)*kvb; % radiated field of the dipole
                 Qs = ts*dot(conj(Q1),sb)*s;  % transmission of s component of the radiated field
                 Qp = tp*dot(conj(Q1),pb)*p;  % transmission of p component of the radiated field
-                % Le problème est avec Qp qui vaut zéro dans le cas
-                % pol=[010] if pour k normal à la surface
+                % Le problÃ¨me est avec Qp qui vaut zÃ©ro dans le cas
+                % pol=[010] if pour k normal Ã  la surface
                
                 eps0 = 8.8541878128e-12;     % vacuum permittivity
 
@@ -216,7 +174,7 @@ for id = 1:NDI
 
 
 end  % end sum over dipoles
-if NDI>1,close(f),end
+if Nd>1,close(f),end
 %% Computation of the scattered field at image plane
 
 Expp = (1/M)*fftshift(fft2(ifftshift(Ekprimex)))*dk*dk;
@@ -229,16 +187,17 @@ Ezpp = (1/M)*fftshift(fft2(ifftshift(Ekprimez)))*dk*dk;
 eexim = tr/M*sqrt(nS)*e0*exp(1i*nS*k0*zo)*IL.polar; % excitation field image plane
 Eixtot = eexim(1)+Expp;
 Eiytot = eexim(2)+Eypp;
+
 if norm0
     cst = tr/M*sqrt(nS)*e0;
-    IM = ImageEM(Eixtot/cst,Eiytot/cst,Ezpp/cst,eexim/cst);
+    Ex = Eixtot/cst;
+    Ey = Eiytot/cst;
+    Ez = Ezpp/cst;
+    E0 = eexim/cst;
     
 else
-    IM = ImageEM(Eixtot,Eiytot,Ezpp,eexim);
+    Ex = Eixtot;
+    Ey = Eiytot;
+    Ez = Ezpp;
+    E0 = eexim;
 end
-
-IM.Illumination = IL;
-IM.Microscope = MI;
-
-
-

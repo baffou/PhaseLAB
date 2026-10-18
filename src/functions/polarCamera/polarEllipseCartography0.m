@@ -1,7 +1,7 @@
 function polarEllipseCartography0(pIm,N,opt)
 
 arguments
-    pIm (1,1) ImagePolar
+    pIm (1,1) ImageQLSIpolar
     N  (1,2) double % [Ny, Nx] number of ellipses along the y annd x directions
     opt.Size (1,1) double = 0.9 % Scaling factor of the ellipses. 1 is 1 pixel
     opt.color = [0 1 1]

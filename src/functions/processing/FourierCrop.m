@@ -14,8 +14,9 @@ arguments
     opt.definition = 'high'
     opt.auto = true
     opt.display (1,1) logical = true
-    opt.Rdistance (1,1) double = 1 % multiplies the distance of the crop from the center of the image by Rfactor. Useful to crop the spots at 45°, by just setting R=sqrt(2)
-    opt.Rfactor (1,1) = [] % multiplies the racdius of the cropby Rfactor.
+    opt.Rdistance (1,1) double = 1 % multiplies the distance of the crop from the center of the image by Rdistance.
+                                   % Useful to crop the spots at 45°, by just setting R=sqrt(2)
+    opt.Rfactor = [] % multiplies the radius of the crop by Rfactor.
 end
 
 if isempty(opt.Rfactor)

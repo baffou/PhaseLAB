@@ -6,7 +6,7 @@ arguments
     Itf Interfero
     IL % Illumination object or wavelength
     opt.Fcrops = []
-    opt.crop = []
+    opt.crop = []  % 'Manual', or [x1;y1;x2;y2] . Ask for, or apply, a crop before processing
     opt.method     char {mustBeMember(opt.method,     {'Tikhonov','Errico','CPM','ASDI'})} = 'Tikhonov'
     opt.definition char {mustBeMember(opt.definition, {'high','low'})} = 'high'
     opt.Fcropshape char {mustBeMember(opt.Fcropshape, {'disc','square'})} = 'disc'
@@ -24,8 +24,8 @@ arguments
     opt.unwrap (1,1) logical = false % use unwrapping. Slows down a bit the processing.
     opt.displayCrop (1,1) logical = true % display the crops, even when automatic
     opt.displayBar (1,1) logical = true % display the progression bar in case of multiple images
-    opt.Rdistance (1,1) double = 1 % multiplies the distance of the crop from the center of the image by Rfactor. Useful to crop the spots at 45°, by just setting R=sqrt(2)
-    opt.Rfactor (1,1) double = 1 % Crop radius factor
+    opt.Rdistance (1,1) double = 1 % multiplies the distance of the crop from the center of the image by Rdistance. Useful to crop the spots at 45°, by just setting R=sqrt(2)
+    opt.Rfactor double = [] % Crop radius factor
     opt.saveGradients = false
     opt.computeW = true
     opt.computeT = true
@@ -40,10 +40,10 @@ Np = size(Itf,2);
 zetaTheo = round(Itf(1).Microscope.CGcam.zeta,1);
 
 %% Shaping of the Illumination object(s)
-if isa(IL,'Illumination')
-elseif isnumeric(IL) % if IL is a wavelength
+
+if isnumeric(IL) % if IL is a wavelength
     IL = Illumination(IL);
-else
+elseif ~isa(IL,'Illumination')
     error('error with the thrid input must be an Illumination object or a wavelength')
 end
 
@@ -53,8 +53,8 @@ else
     anglefun = @angle;
 end
 
-if numel(IL)==1
-    if length(IL.lambda)==1
+if isscalar(IL)
+    if isscalar(IL.lambda)
         IL = repmat(IL,Nf,1);
     elseif length(IL.lambda)~=Nf
         error(['The number of Interferos (' num2str(Nf) ') is not the number of specified lambda (' num2str(length(IL.lambda)) ')'])
@@ -71,7 +71,6 @@ end
 
 
 %% shaping of the crops
-updateRefFcrop = 0;
 
 IM = repmat(ImageQLSI(),Nf,Np);
 if ~isempty(opt.Fcrops) % If crops are defined within the options
@@ -91,7 +90,6 @@ elseif ~isempty(Itf(1).Ref) && ~isempty(Itf(1).Ref.Fcrops(1).Nx) % if the ref al
     cropParam1 = Itf(1).Ref.Fcrops(2);
     cropParam2 = Itf(1).Ref.Fcrops(3);
 else % if crops are not defined anywhere
-    updateRefFcrop = 1;
     cropParam0 = FcropParameters(Itf(1).Nx/2+1,Itf(1).Ny/2+1,[],Itf(1).Nx,Itf(1).Ny,'zeta',zetaTheo);
     cropParam1 = FcropParameters([],[],[],Itf(1).Nx,Itf(1).Ny,'zeta',zetaTheo);
     cropParam2 = FcropParameters([],[],[],Itf(1).Nx,Itf(1).Ny,'zeta',zetaTheo);
@@ -100,7 +98,7 @@ Nx0 = 0;
 Ny0 = 0;
 
 
-if numel(opt.Tnormalisation) == 1 % just true or false
+if isscalar(opt.Tnormalisation) % just true or false
     opt.Tnormalisation = repmat(opt.Tnormalisation,Nf,1);
 elseif numel(opt.Tnormalisation) ~= Nf
     error('The length of the Tnormalisation vector input must equal the number of images')
@@ -125,7 +123,7 @@ for ii = 1:Nf
         if any(opt.darkImage ~=0) % if a darkImage has been specified
             offset = 0; % don't substract the camera offset if a dark image is already subtracted
             if isa(opt.darkImage,'Interfero')
-                if numel(opt.darkImage) == 1 % if darkImage consists of 1 interfero
+                if isscalar(opt.darkImage) % if darkImage consists of 1 interfero
                     opt.darkImage = opt.darkImage.Itf; % take the Itf property once and for all
                     darkImage = opt.darkImage;
                 else % if darkImage consists of multiple interferos, typically for Np = 2 or 4
@@ -192,7 +190,7 @@ for ii = 1:Nf
         if ~isempty(opt.CGdistanceList)
             if numel(opt.CGdistanceList) == Nf
                 MI.CGcam.setDistance(opt.CGdistanceList(ii));
-            elseif numel(opt.CGdistanceList) == 1
+            elseif isscalar(opt.CGdistanceList)
                 MI.CGcam.setDistance(opt.CGdistanceList);
             else
                 error('not the proper number of elements of CGdistanceList')
@@ -498,7 +496,7 @@ for ii = 1:Nf
             IM(ii,ip).comment = Itf(ii,ip).comment;
             IM(ii,ip).channel = Itf(ii,ip).channel;
         end
-        %    if updateRefFcrop==1
+
         if ~opt.noRef
             Itfi.Ref.Fcrops = [cropParam0; cropParam1; cropParam2];
         end
@@ -507,7 +505,7 @@ for ii = 1:Nf
             fprintf(['Measured zeta factor: ' num2str(cropParam1.zeta) '\n'])
             fprintf(['Theo. zeta factor   : ' num2str(MI.CGcam.zeta) '\n'])
         end
-        %    end
+
 
 
         if Nf > 1
@@ -529,8 +527,3 @@ end
 if Nf >= 2 && opt.displayBar && ip == Np % delete waitbar
     delete(fwb)
 end
-
-% if opt.computeIM % ie if IM has been defined
-%     IM = reshape(IM,size(Itf)); % in case the Itf was an N*M array of interferos, i.e., in case there are channels
-% end
-

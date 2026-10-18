@@ -1,9 +1,9 @@
 classdef ImageT   <   ImageMethods
 
-    properties %(SetAccess={?ImageMethods})
-        OPD  (:,:) double
+    properties (SetAccess={?ImageMethods})
         TMP  (:,:) double
         HSD  (:,:) double  % W/px
+        OPD  (:,:) double
         T    (:,:) double
         zT   (1,1) double = 0
     end
@@ -15,12 +15,12 @@ classdef ImageT   <   ImageMethods
 
     methods
 
-        function obj = ImageT(W, TMP, H, T)
+        function obj = ImageT(TMP, H, W, T)
             arguments
-                W = [] % OPD map
                 TMP = [] % temperature map
                 H = [] % heat source density map
-                T = [] % heat source density map
+                W = [] % OPD map
+                T = [] % transmittance map
             end
             obj.OPD = W;
             obj.TMP = TMP;

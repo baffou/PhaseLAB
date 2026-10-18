@@ -1,4 +1,4 @@
-function h0 = dynamicFigure(varargin)
+function [h0, hax] = dynamicFigure(varargin)
 % dynamicFigure('ph',IM,'tf',Itf)
 % dynamicFigure('gb',{IM.T},'tf',Itf)
 % dynamicFigure('ph',IM,'bk',{IM.T},'tf',Itf)
@@ -97,7 +97,7 @@ elseif istext(h.UserData.function)
     h.UserData.function = str2func(h.UserData.function);
     h.UserData.function = repmat({h.UserData.function}, Npanels, 1);
 elseif iscell(h.UserData.function)
-    if numel(h.UserData.function) == 1
+    if isscalar(h.UserData.function)
         h.UserData.function = repmat(h.UserData.function, Npanels, 1);
     elseif numel(h.UserData.function) ~= Npanels
         error('Not the proper number of functions')

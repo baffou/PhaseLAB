@@ -19,9 +19,6 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         Ex0 (:,:) double
         Ey0 (:,:) double
         Ez0 (:,:) double
-         % or
-        IM (1,4) ImageQLSI % The difference with an ImageEM object is here. The info of an ImagePolar object is contained within this embedded ImageQLSI object.
-                            % A normal ImageEM object could have been made  from the ImageQLSI image, but it would have  duplicate some info in the RAM. And when  working with 100s of image, it is a problem.
     end
     
     properties(GetAccess = public , SetAccess={?ImageMethods, ?Interfero})
@@ -42,7 +39,7 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         E2
         E
         Ph
-        Ph_coh
+        %Ph_coh
         OPD
         OPDnm
         T
@@ -69,21 +66,21 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         chi % ellipticity angle
         rgbImageEllipse
 
-        ex
-        ey
+        %ex
+        %ey
 
         % biref/retardance params
-        theta0
+        %theta0
         phibar
-        dphi
-        Tbar
-        dichroism
-        thetaT
+        %dphi
+        %Tbar
+        %dichroism
+        %thetaT
         Wbar
         retardance
         dW
         %rgbImage
-        OPDmean
+        %OPDmean
     end
 
     properties(GetAccess = public, SetAccess = private)
@@ -1049,59 +1046,59 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
             img = angle(sqrt(obj.Ex.*obj.Ey));
         end
 
-        function img = get.Tbar(obj)
-            arguments
-                obj
-            end
+        % function img = get.Tbar(obj)
+        %     arguments
+        %         obj
+        %     end
+        % 
+        %     img = (obj.IM(1).T + obj.IM(2).T ...
+        %          + obj.IM(3).T + obj.IM(4).T)/4;
+        % 
+        % end
 
-            img = (obj.IM(1).T + obj.IM(2).T ...
-                 + obj.IM(3).T + obj.IM(4).T)/4;
+        % function img = get.theta0(obj)
+        %     arguments
+        %         obj
+        %     end
+        % 
+        %     img = mod(0.5*angle((obj.IM(1).Ph*obj.dphi0-obj.IM(3).Ph*obj.dphi0) ...
+        %            + 1i*(obj.IM(2).Ph*obj.dphi0-obj.IM(4).Ph*obj.dphi0)),pi);
+        % 
+        % end
 
-        end
+        % function img = get.thetaT(obj)
+        %     arguments
+        %         obj
+        %     end
+        % 
+        %     img = mod(0.5*angle((obj.IM(1).T-obj.IM(3).T) ...
+        %            + 1i*(obj.IM(2).T-obj.IM(4).T)),pi);
+        % 
+        % end
 
-        function img = get.theta0(obj)
-            arguments
-                obj
-            end
+        % function img = get.dphi(obj)
+        %     arguments
+        %         obj
+        %     end
+        %     phib = obj.phibar;
+        %     img = sqrt(abs((obj.IM(4).Ph*obj.dphi0-phib) ...
+        %                  .*(obj.IM(2).Ph*obj.dphi0-phib) ...
+        %                  + (obj.IM(3).Ph*obj.dphi0-phib) ...
+        %                  .*(obj.IM(1).Ph*obj.dphi0-phib)));
+        % 
+        % end
 
-            img = mod(0.5*angle((obj.IM(1).Ph*obj.dphi0-obj.IM(3).Ph*obj.dphi0) ...
-                   + 1i*(obj.IM(2).Ph*obj.dphi0-obj.IM(4).Ph*obj.dphi0)),pi);
-
-        end
-
-        function img = get.thetaT(obj)
-            arguments
-                obj
-            end
-
-            img = mod(0.5*angle((obj.IM(1).T-obj.IM(3).T) ...
-                   + 1i*(obj.IM(2).T-obj.IM(4).T)),pi);
-
-        end
-
-        function img = get.dphi(obj)
-            arguments
-                obj
-            end
-            phib = obj.phibar;
-            img = sqrt(abs((obj.IM(4).Ph*obj.dphi0-phib) ...
-                         .*(obj.IM(2).Ph*obj.dphi0-phib) ...
-                         + (obj.IM(3).Ph*obj.dphi0-phib) ...
-                         .*(obj.IM(1).Ph*obj.dphi0-phib)));
-
-        end
-
-        function img = get.dichroism(obj)
-            arguments
-                obj
-            end
-            Tb = obj.Tbar;
-            img = sqrt(abs((obj.IM(4).T-Tb) ...
-                         .*(obj.IM(2).T-Tb) ...
-                         + (obj.IM(3).T-Tb) ...
-                         .*(obj.IM(1).T-Tb)));
-
-        end
+        % function img = get.dichroism(obj)
+        %     arguments
+        %         obj
+        %     end
+        %     Tb = obj.Tbar;
+        %     img = sqrt(abs((obj.IM(4).T-Tb) ...
+        %                  .*(obj.IM(2).T-Tb) ...
+        %                  + (obj.IM(3).T-Tb) ...
+        %                  .*(obj.IM(1).T-Tb)));
+        % 
+        % end
 
 
         function set.retardanceMax(obj, val)
@@ -1210,68 +1207,78 @@ classdef ImageEM  <  ImageMethods & matlab.mixin.Copyable
         end
 
         function val = getE(obj,ax)
-            if obj.IM(1).Nx == 0 % no embedded ImageQLSI object IM
-                switch ax
-                    case 'x'
-                        val = obj.Ex0;
-                    case 'y'
-                        val = obj.Ey0;
-                    case 'z'
-                        val = obj.Ez0;
-                end
-            else % embedded IM object
-                switch ax
-                    case 'x'
-                        val = sqrt(obj.IM(1).T).*exp(1i*obj.IM(1).Ph*obj.dphi0);
-                    case 'y'
-                    s = -sign(obj.Illumination.S3/obj.Illumination.S0); % negative sign, because it seems that this way the ellipse turns in the right direction, according to the rotation of the sample
-                    val = s * 1i * sqrt(obj.IM(3).T).*exp(1i*obj.IM(3).Ph*obj.dphi0);
-                    case 'z'
-                        val = obj.IM(1).T*0;
-                end
-            end                
-        end
-
-
-    
-        function val = getS(obj,num)
-    
-            arguments
-                obj
-                num {mustBeMember(num,[0,1,2,3])}
+            switch ax
+                case 'x'
+                    val = obj.Ex0;
+                case 'y'
+                    val = obj.Ey0;
+                case 'z'
+                    val = obj.Ez0;
             end
-            if num == 0  % 1st Stokes component
-                switch obj.calcSjMode
-                    case 'Tj'
-                        val = (obj.IM(1).T + obj.IM(3).T)/2;
-                    case 'Ej'
-                        val = (abs(obj.Ex).^2 + abs(obj.Ey).^2)/2;
-                end
-            elseif num == 1 % 2nd Stokes component
-                switch obj.calcSjMode
-                    case 'Tj'
-                        val = (obj.IM(1).T - obj.IM(3).T)/2;
-                    case 'Ej'
-                        val = (abs(obj.Ex).^2 - abs(obj.Ey).^2)/2;
-                end            
-            elseif num == 2 % 3nd Stokes component
-                switch obj.calcSjMode
-                    case 'Tj'
-                        val = (obj.IM(2).T - obj.IM(4).T)/2;
-                    case 'Ej'
-                        val = real(obj.Ex.*conj(obj.Ey));
-                end
-            elseif num == 3 % 4th Stokes component
-                switch obj.calcSjMode
-                    case 'Tj'
-                        hel = -sign(obj.Illumination.S3);
-                        val = hel*sqrt(obj.S0.^2-obj.S1.^2-obj.S2.^2);
-                    case 'Ej'
-                        val = -imag(obj.Ex.*conj(obj.Ey));
-                end
-            end
-
-        end
+        end        
+        % function val = getE(obj,ax)
+        %     if obj.IM(1).Nx == 0 % no embedded ImageQLSI object IM
+        %         switch ax
+        %             case 'x'
+        %                 val = obj.Ex0;
+        %             case 'y'
+        %                 val = obj.Ey0;
+        %             case 'z'
+        %                 val = obj.Ez0;
+        %         end
+        %     else % embedded IM object
+        %         switch ax
+        %             case 'x'
+        %                 val = sqrt(obj.IM(1).T).*exp(1i*obj.IM(1).Ph*obj.dphi0);
+        %             case 'y'
+        %             s = -sign(obj.Illumination.S3/obj.Illumination.S0); % negative sign, because it seems that this way the ellipse turns in the right direction, according to the rotation of the sample
+        %             val = s * 1i * sqrt(obj.IM(3).T).*exp(1i*obj.IM(3).Ph*obj.dphi0);
+        %             case 'z'
+        %                 val = obj.IM(1).T*0;
+        %         end
+        %     end                
+        % end
+        % 
+        % 
+        % 
+        % function val = getS(obj,num)
+        % 
+        %     arguments
+        %         obj
+        %         num {mustBeMember(num,[0,1,2,3])}
+        %     end
+        %     if num == 0  % 1st Stokes component
+        %         switch obj.calcSjMode
+        %             case 'Tj'
+        %                 val = (obj.IM(1).T + obj.IM(3).T)/2;
+        %             case 'Ej'
+        %                 val = (abs(obj.Ex).^2 + abs(obj.Ey).^2)/2;
+        %         end
+        %     elseif num == 1 % 2nd Stokes component
+        %         switch obj.calcSjMode
+        %             case 'Tj'
+        %                 val = (obj.IM(1).T - obj.IM(3).T)/2;
+        %             case 'Ej'
+        %                 val = (abs(obj.Ex).^2 - abs(obj.Ey).^2)/2;
+        %         end            
+        %     elseif num == 2 % 3nd Stokes component
+        %         switch obj.calcSjMode
+        %             case 'Tj'
+        %                 val = (obj.IM(2).T - obj.IM(4).T)/2;
+        %             case 'Ej'
+        %                 val = real(obj.Ex.*conj(obj.Ey));
+        %         end
+        %     elseif num == 3 % 4th Stokes component
+        %         switch obj.calcSjMode
+        %             case 'Tj'
+        %                 hel = -sign(obj.Illumination.S3);
+        %                 val = hel*sqrt(obj.S0.^2-obj.S1.^2-obj.S2.^2);
+        %             case 'Ej'
+        %                 val = -imag(obj.Ex.*conj(obj.Ey));
+        %         end
+        %     end
+        % 
+        % end
     end
 
 end

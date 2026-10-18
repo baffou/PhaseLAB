@@ -1,0 +1,11 @@
+{"class":"Camera",
+"brand": "Allied Vision",
+"model": "Alvium 1800 U-508",
+"dxSize": 3.45e-6,
+"Nx": 2464,
+"Ny": 2056,
+"fullWellCapacity": 10000,
+"bitDepth": 10,
+"offset":0,
+"colorChannels":1
+}
