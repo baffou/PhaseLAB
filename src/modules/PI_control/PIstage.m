@@ -55,7 +55,6 @@ classdef PIstage < handle
             obj.SerialNumber = serialNumber;
         end
 
-
         function delete(obj)
             if obj.isPiezoConnected()
                 obj.disconnect();
@@ -356,6 +355,7 @@ classdef PIstage < handle
     end
 
     methods
+
         function turnMotors(obj,val)
             %Turns the motor ON/OFF
             switch val
@@ -412,39 +412,45 @@ classdef PIstage < handle
                 okPos = obj.axesRanges{obj.axNum(ax)}(1) + eps;
             end
         end
+
     end
 
-    methods
+    methods % set/get
+        
         function val = get.X(obj)
             val = obj.Controller.qPOS(obj.idAxes{obj.axNum('X')});
         end
+
         function val = get.Y(obj)
             val = obj.Controller.qPOS(obj.idAxes{obj.axNum('Y')});
         end
+
         function val = get.Z(obj)
             val = obj.Controller.qPOS(obj.idAxes{obj.axNum('Z')});
         end
-
     
         function set.X(obj, val)
             obj.moveSingleAxisTo(obj.idAxes{obj.axNum('X')},val);
         end
+
         function set.Y(obj, val)
             obj.moveSingleAxisTo(obj.idAxes{obj.axNum('Y')},val);
         end
+
         function set.Z(obj, val)
             obj.moveSingleAxisTo(obj.idAxes{obj.axNum('Z')},val);
         end
-    
-    
+
     end
 
     methods(Static)
+
         function list = controllersAvailable()
             %List all the available controllers
             obj = PI_GCS_Controller();
             list = obj.Controller.EnumerateUSB();
         end
+
         function serialNumbers = serialNumbersAvailable()
             %List all the available serial numbers
             list = PIstage.controllersAvailable();
@@ -455,5 +461,6 @@ classdef PIstage < handle
             end
 
         end
+
     end
 end

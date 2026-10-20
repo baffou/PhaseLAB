@@ -21,7 +21,7 @@ h = figure(WindowKeyPressFcn=@figureCallback);
 h.UserData.titleList = cell(1,1);
 h.UserData.sgtitleList = cell(1,1);
 h.UserData.range = cell.empty();
-
+h.UserData.fontSize = [];
 h.UserData.axesVisibility = 'none';
 
 % defining the list of display functions
@@ -59,6 +59,9 @@ for ii = 1:Npanels
             notAdisplay = notAdisplay + 1;
         case {'pattern','nm'}
             h.UserData.nm = varargin{2*ii};
+            notAdisplay = notAdisplay + 1;
+        case {'fontSize','fontsize','FontSize','Fontsize'}
+            fontSize(h, varargin{2*ii});
             notAdisplay = notAdisplay + 1;
         case {'range','zrange','clim'}
             h.UserData.range = varargin{2*ii};
@@ -123,7 +126,9 @@ if isempty(h.UserData.titleList{1})
 end
 
 for ii = 1:Npanels
-    h.UserData.ax(ii) = subplot(1,Npanels,ii);
+    nx = h.UserData.nm(2);
+    ny = h.UserData.nm(1);
+    h.UserData.Axes(ii) = subplot(ny, nx, ii);
     switch class(varargin{2*ii})
         case 'Interfero'
             h.UserData.imageList{ii} = {varargin{2*ii}.Itf};
@@ -176,10 +181,6 @@ function figureCallback(src,event)
 end
 
 function changeImage(h,step)
-    %axeList=[src.UserData.ax];
-    %src.UserData.imageList
-    %src
-    %event
     Nim = h.UserData.Nim;
     nIm = mod(h.UserData.nIm-1+step,Nim)+1;
     h.UserData.nIm = nIm;
@@ -187,16 +188,13 @@ function changeImage(h,step)
     
 end
 
-
-
-%%%%%%
 function updateImages(h)
     Npanels = h.UserData.Npanels;
     nIm = h.UserData.nIm;
-    nx = h.UserData.nm(2);
-    ny = h.UserData.nm(1);
+    %nx = h.UserData.nm(2);
+    %ny = h.UserData.nm(1);
     for ip = 1:Npanels
-        h.UserData.Axes(ip) = subplot(ny,nx,ip);
+        axes(h.UserData.Axes(ip)) % subplot(ny,nx,ip);
         h.UserData.dispfun{ip}(h.UserData.function{ip}(h.UserData.imageList{ip}{nIm})) % imagesc(...
         title(h.UserData.titleList{ip})
         if ~isempty(h.UserData.range)
@@ -206,6 +204,7 @@ function updateImages(h)
         end
         h.UserData.Axes(ip).XColor = h.UserData.axesVisibility;
         h.UserData.Axes(ip).YColor = h.UserData.axesVisibility;
+        h.UserData.Axes(ip).NextPlot = 'replacechildren'; % to avoid that imagegb, imagebw, ... replaces the predefined fontSize of parent Axes
     end
     h.Name = num2str(nIm)+"/"+num2str(h.UserData.Nim);
     if ~isempty(h.UserData.sgtitleList{1})

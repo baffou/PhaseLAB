@@ -114,16 +114,17 @@ classdef ImageJonesMatrix
             end
         end
 
-        function hfig = figure(obj,func)
+        function hfig = figure(obj,opt)
             arguments
                 obj
-                func = 'abs'
+                opt.func = 'abs'
+                opt.clim = []
             end
 
             if nargout
-                hfig = displayJonesMatrix(obj,"func",func);
+                hfig = displayJonesMatrix0(obj,"func",opt.func,"clim",opt.clim);
             else
-                displayJonesMatrix(obj,"func",func)
+                displayJonesMatrix0(obj,"func",opt.func,"clim",opt.clim)
             end  
         end
 

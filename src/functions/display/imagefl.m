@@ -1,4 +1,6 @@
-function ai=imagefl(A,Amin,Amax,opt)
+function ai = imagefl(A,Amin,Amax,opt)
+% displays an image with an inverted green coloscale, typically to display
+% fluorescence images
 arguments
     A
     Amin = 0
