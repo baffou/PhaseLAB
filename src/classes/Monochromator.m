@@ -2,6 +2,7 @@ classdef Monochromator  <  handle  &  Illumination
 
     properties
         hndl    % Monochromator handle
+        lambdaWidth = 20;
     end
 
 
@@ -11,7 +12,7 @@ classdef Monochromator  <  handle  &  Illumination
             % Monochromator(IL)
             % Monochromator(lambda)
             arguments
-                val
+                val = 600e-9
             end
             if isa(val,'Illumination')
                 IL = val;
@@ -19,9 +20,27 @@ classdef Monochromator  <  handle  &  Illumination
                 IL = Illumination(val); 
             end
             obj@Illumination(IL.lambda, IL.Medium, IL.I, IL.polar);
+
+            obj.connect()
+
+        
         end
 
+        function connect(obj)
+            obj.hndl= obj.setupSDK();
+
+            % Connexion
+            connected = logical(obj.hndl.connect());
+            
+            % Vérification
+            disp(connected)
+        end
+
+
         function moveTo(obj,val)
+            if val > 1 % wavelength certainly in [nm]
+                val = val*1e-9;
+            end
             obj.lambda = val;
         end
 
@@ -59,8 +78,19 @@ classdef Monochromator  <  handle  &  Illumination
     end
 
     methods(Static)
-        function setupSDK()
-
+        function SDK = setupSDK()
+            % Configuration Python (à faire une seule fois)
+            pyenv(ExecutionMode="OutOfProcess");
+            
+            % Dossier contenant les fichiers Python
+            folder0 = fullfile(fileparts(mfilename('fullpath')));
+            folder = [folder0 '..\modules\live\SDK\Leukos-Laser-Bebop-Control'];
+            
+            insert(py.sys.path, int32(0), folder);
+            
+            % Importer le module
+            SDK = py.importlib.import_module('BebopMatlab');
+            
         end
     end
 end

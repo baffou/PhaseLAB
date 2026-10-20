@@ -13,17 +13,20 @@
 %
 %Baptiste MARTHY & Guillaume Baffou - 2021 & 2026
 
-classdef PIstage < handle
+classdef PIstage < Stage
     properties (SetAccess = private, GetAccess = public)
-        Controller %PI_GCS_Controller %Low level Piezo object
+        hndl %PI_GCS_Controller %Low level Piezo object
         SerialNumber %The serial number of the main controller
-        axes (1,:) char {mustBeMember(axes,{'','X','XY','XYZ','Z'})} = '' % Axes being controlled
+        axes = '' % Axes being controlled
         idAxes cell %Piezo doesn't understand 'XYZ' axis format but rather '123' or 'ABC' depending on the model
 
         axesRanges cell %Min/Max range of the piezo, for the specified axes
-        HomePosition (1,:) double = double.empty(1,0)
         isJoystickUsable logical
         AccTunable logical
+    end
+
+    properties
+        HomePosition double
     end
 
     properties(Dependent)
@@ -40,10 +43,10 @@ classdef PIstage < handle
             end
             % Constructor
             try
-                obj.Controller = PI_GCS_Controller();
+                obj.hndl = PI_GCS_Controller();
             catch
                 addpath([getenv("ProgramFiles(x86)") '/Physik Instrumente (PI)\Software Suite\MATLAB_Driver']);
-                obj.Controller = PI_GCS_Controller();
+                obj.hndl = PI_GCS_Controller();
             end
 
             if isempty(serialNumber)
@@ -61,18 +64,19 @@ classdef PIstage < handle
             end
         end
 
-        function rc = connect(obj,val)
+        function rc = connect(obj,val,axes)
             %Link the controller to an actual piezo
             arguments
                 obj
                 val = []
+                axes = ''
             end
 
             if ~isempty(val)
                 obj.SerialNumber = val;
             end
             
-            obj.Controller = obj.Controller.ConnectUSB(obj.SerialNumber);
+            obj.hndl = obj.hndl.ConnectUSB(obj.SerialNumber);
 
             if ~obj.isPiezoConnected()
                 obj.SerialNumber = [];
@@ -81,28 +85,28 @@ classdef PIstage < handle
                 return
             end
 
-            obj.Controller = obj.Controller.InitializeController();
+            obj.hndl = obj.hndl.InitializeController();
 
             obj.initializeAxes()
 
             for k=1:length(obj.axes)
-                obj.axesRanges{k} = [obj.Controller.qTMN(obj.idAxes{k}) obj.Controller.qTMX(obj.idAxes{k})];
+                obj.axesRanges{k} = [obj.hndl.qTMN(obj.idAxes{k}) obj.hndl.qTMX(obj.idAxes{k})];
             end
 
             obj.isJoystickUsable = true;
             obj.turnMotors('on');
 
-            if obj.isJoystickUsable && max(obj.axes == 'X') && max(obj.axes == 'Y')
+            if obj.isJoystickUsable && any(obj.axes == 'X') && any(obj.axes == 'Y')
                 %If joystick mode is on, both X and Y axis are velocity based controlled
-                obj.Controller.HIA(obj.idAxes{obj.axNum('X')},3,2,1);
+                obj.hndl.HIA(obj.idAxes{obj.axNum('X')},3,2,1);
                 %                 obj.GCS_Object.SPA(obj.Ax{obj.getAxIndice('X')},97,1);  %Invert the X joystick axis
-                obj.Controller.HIA(obj.idAxes{obj.axNum('Y')},3,2,2);
+                obj.hndl.HIA(obj.idAxes{obj.axNum('Y')},3,2,2);
             end
             obj.setHomePosition();
 
             obj.AccTunable = true;
             try
-                obj.Controller.ACC(obj.idAxes{1},obj.Controller.qACC(obj.idAxes{1}));
+                obj.hndl.ACC(obj.idAxes{1},obj.hndl.qACC(obj.idAxes{1}));
             catch
                 obj.AccTunable = false;
             end
@@ -116,7 +120,7 @@ classdef PIstage < handle
             if obj.isPiezoConnected()
                 obj.turnMotors('off');
             end
-            obj.Controller.CloseConnection();
+            obj.hndl.CloseConnection();
             obj.SerialNumber = [];
             obj.axes = [];
             obj.delete()
@@ -126,14 +130,14 @@ classdef PIstage < handle
             % Determine the number and the name of the axes ('X', 'Y', ...)
             % and numAxes (1, 2, 3, ...)
 
-            obj.idAxes = obj.Controller.qSAI_ALL();
+            obj.idAxes = obj.hndl.qSAI_ALL();
 
             if isa(obj.idAxes,'char') %Mono ax piezo can be bugged (Ax = '1\n')
                 obj.idAxes = {obj.idAxes(obj.idAxes ~= newline)};
             end
             
             for k = 1:length(obj.idAxes)
-                axisName = obj.Controller.qCST(obj.idAxes{k});
+                axisName = obj.hndl.qCST(obj.idAxes{k});
                 currentAxis = axisName(length(axisName)-1);
                 if ~(strcmpi(currentAxis,'X') || strcmpi(currentAxis,'Y') || strcmpi(currentAxis,'Z'))
                     error('The format of the output of the qCST command is not formated as expected. Please read the comments in the PIstage.m file');
@@ -151,14 +155,14 @@ classdef PIstage < handle
         function [vel] = getVelocity(obj)
             %Get the current velocity value for a given axe (X,Y,Z)
 
-            vel = obj.Controller.qVEL(obj.idAxes{1});
+            vel = obj.hndl.qVEL(obj.idAxes{1});
         
         end
 
         function setVelocity(obj,val)
             %Set the current velocity value for a given axe (X,Y,Z)
             for ia = 1:length(obj.axes)
-                obj.Controller.VEL(obj.idAxes{ia},val);
+                obj.hndl.VEL(obj.idAxes{ia},val);
             end
 
         
@@ -167,7 +171,7 @@ classdef PIstage < handle
         function [acc] = getAcceleration(obj,ax)
             %Get the current acceleration/desacceleration value for a given axe (X,Y,Z)
 
-            acc = obj.Controller.qACC(obj.idAxes{obj.axNum(ax)});
+            acc = obj.hndl.qACC(obj.idAxes{obj.axNum(ax)});
             
         end
 
@@ -175,8 +179,8 @@ classdef PIstage < handle
             %Set the current acceleration value for a given axe (X,Y,Z)
 
             try
-                obj.Controller.ACC(obj.idAxes{obj.axNum(ax)},val);
-                obj.Controller.DEC(obj.idAxes{obj.axNum(ax)},val);
+                obj.hndl.ACC(obj.idAxes{obj.axNum(ax)},val);
+                obj.hndl.DEC(obj.idAxes{obj.axNum(ax)},val);
             catch
                 warning('Acceleration not setable');
             end
@@ -192,7 +196,7 @@ classdef PIstage < handle
 
         function [coord] = getCoordinate(obj,ax)
             %Get the current coordinate for a given axe (X,Y,Z)
-            coord = obj.Controller.qPOS(obj.idAxes{obj.axNum(ax)});
+            coord = obj.hndl.qPOS(obj.idAxes{obj.axNum(ax)});
         end
 
         function pos = getPosition(obj,ax)
@@ -209,7 +213,7 @@ classdef PIstage < handle
             pos = zeros(length(ax),1); %Coordinate store in here, 3 max
 
             for k = 1:length(ax)
-                pos(k) = obj.Controller.qPOS(obj.idAxes{obj.axNum(ax(k))});
+                pos(k) = obj.hndl.qPOS(obj.idAxes{obj.axNum(ax(k))});
             end
 
         end
@@ -278,7 +282,7 @@ classdef PIstage < handle
 
         function bool = isPiezoConnected(obj)
             %Verify is the piezo is connected
-            bool = logical(obj.Controller.IsConnected);
+            bool = logical(obj.hndl.IsConnected);
         end
 
         function turnJoystick(obj,val)
@@ -287,11 +291,11 @@ classdef PIstage < handle
             if obj.isJoystickUsable
                 switch val
                     case {'on','On',"on","On",1}
-                        obj.Controller.HIN('1',1);
-                        obj.Controller.HIN('2',1);
+                        obj.hndl.HIN('1',1);
+                        obj.hndl.HIN('2',1);
                     case {'off','Off',"off","Off",0}
-                        obj.Controller.HIN('1',0);
-                        obj.Controller.HIN('2',0);
+                        obj.hndl.HIN('1',0);
+                        obj.hndl.HIN('2',0);
                 end
             end
 
@@ -300,24 +304,24 @@ classdef PIstage < handle
         function bool = isJoystickON(obj)
         %True if the controller is controlled by a joystick
             if obj.isJoystickUsable 
-                bool = logical(max(obj.Controller.qHIN()));
+                bool = logical(max(obj.hndl.qHIN()));
             else
                 bool = false;
             end
         end
 
-        function waitUntilPiezoStill(obj)
-            %Burn time in a while loop until the piezo stoped moving
-            while obj.Controller.IsMoving
+        function waitUntilStageStill(obj)
+            %Burn time in a while loop until the piezo stopped moving
+            while obj.hndl.IsMoving
                 drawnow;
             end
         end
 
-        function stopPiezoMotion(obj)
+        function stopStageMotion(obj)
             %Stop smoothly the piezo if moving
 
             for k = 1:length(obj.idAxes)
-                obj.Controller.HLT(obj.idAxes{k})
+                obj.hndl.HLT(obj.idAxes{k})
             end
 
         end
@@ -362,21 +366,21 @@ classdef PIstage < handle
                 case {'on','On',"on","On"}
                     for k=1:length(obj.axes)
                         try
-                            obj.Controller.HIN('1',0);
-                            obj.Controller.HIN('2',0);
+                            obj.hndl.HIN('1',0);
+                            obj.hndl.HIN('2',0);
                             disp('Switch servo')
                         catch
                             obj.isJoystickUsable = false;
                         end
 
 
-                        obj.Controller.SVO(obj.idAxes{k},1);
-                        obj.Controller.FRF(obj.idAxes{k}); %MOOVE THE PIEZO TO THE REF POSITION AT STARTUP
+                        obj.hndl.SVO(obj.idAxes{k},1);
+                        obj.hndl.FRF(obj.idAxes{k}); %MOOVE THE PIEZO TO THE REF POSITION AT STARTUP
 
                     end
                 case {'off','Off',"off","Off"}
                     for k=1:length(obj.axes)
-                        obj.Controller.SVO(obj.idAxes{k},0);
+                        obj.hndl.SVO(obj.idAxes{k},0);
                     end
             end
         end
@@ -398,8 +402,8 @@ classdef PIstage < handle
         function moveSingleAxisTo(obj,ax,val)
             %Move a single axis to a given coordinate
             val = obj.checkPositionValidity(ax,val);
-            obj.Controller.MOV(obj.idAxes{obj.axNum(ax)},val);
-            obj.waitUntilPiezoStill()
+            obj.hndl.MOV(1e-3*obj.idAxes{obj.axNum(ax)},val); % 1e-3 to convert in mm
+            obj.waitUntilStageStill()
         end
 
         function okPos = checkPositionValidity(obj,ax,pos)
@@ -418,15 +422,15 @@ classdef PIstage < handle
     methods % set/get
         
         function val = get.X(obj)
-            val = obj.Controller.qPOS(obj.idAxes{obj.axNum('X')});
+            val = obj.hndl.qPOS(obj.idAxes{obj.axNum('X')});
         end
 
         function val = get.Y(obj)
-            val = obj.Controller.qPOS(obj.idAxes{obj.axNum('Y')});
+            val = obj.hndl.qPOS(obj.idAxes{obj.axNum('Y')});
         end
 
         function val = get.Z(obj)
-            val = obj.Controller.qPOS(obj.idAxes{obj.axNum('Z')});
+            val = obj.hndl.qPOS(obj.idAxes{obj.axNum('Z')});
         end
     
         function set.X(obj, val)

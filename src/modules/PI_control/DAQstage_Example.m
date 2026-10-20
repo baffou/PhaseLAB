@@ -3,7 +3,7 @@
 ZchBool = 1; % Z axis
 
 try
-    Piezo = DAQ_Piezo(ZchBool);
+    Piezo = DAQ_Piezo();
     Piezo.setVoltageRange([0 10],[0 10],[0 10]);
 catch e 
     disp("No piezo found ...");
