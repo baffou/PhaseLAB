@@ -38,10 +38,12 @@ classdef Monochromator  <  handle  &  Illumination
 
 
         function moveTo(obj,val)
-            if val > 1 % wavelength certainly in [nm]
-                val = val*1e-9;
+            if val < 1 % wavelength certainly in [m]
+                val = val*1e9;
             end
             obj.lambda = val;
+            w = obj.lambdaWidth;
+            obj.hndl.set_filter(obj.lambda*1e9 - w/2, obj.lambda*1e9 + w/2);
         end
 
         function moveBy(obj,val)
@@ -51,9 +53,39 @@ classdef Monochromator  <  handle  &  Illumination
             obj.lambda = obj.lambda + val;
         end
 
+        function val = adjustLambda(obj,val)
+            arguments
+                obj
+                val (1,1) double
+            end
+
+            if val < 1
+                val = val*1e9;
+            end
+            if val < 510 || val >1200
+                warning('lambda value out of range. no change made')
+                val = lambda2m(obj.lambda);
+                return
+            end
+
+            if val - obj.lambdaWidth/2 < 500
+                warning('lambda value out of range')
+                val = obj.lambdaWidth/2 + 500;
+            end
+        
+        end
+
         function set.lambdaWidth(obj, val)
-            lda = obj.lambda;
-            
+            arguments
+                obj
+                val {mustBeGreaterThanOrEqual(val,20),mustBeLessThanOrEqual(val,100)}
+            end
+            if obj.lambda*1e9 - val/2 < 500
+                val = obj.lambda*1e9 - 500;
+                warning('lambdaWidth value out of range')
+            end
+            obj.lambdaWidth = val;
+            obj.hndl.set_filter(obj.lambda*1e9 - val/2, obj.lambda*1e9 + val/2);
         end
 
 
