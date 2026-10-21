@@ -1,4 +1,4 @@
-function colMap = Sepia(Nval)
+function colMap = sepia(Nval)
 arguments
     Nval = 1024
 end

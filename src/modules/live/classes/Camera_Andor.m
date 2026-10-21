@@ -170,7 +170,7 @@ classdef Camera_Andor  <  CameraLive & Camera
                         dims.width  = 2064;
                         dims.height = 2048;
                         dims.top    = 57;
-                        dims.left   = 265;
+                        dims.left   = 257;
                     case '1920 x 1080'
                         dims.width  = 1920;
                         dims.height = 1080;
@@ -180,22 +180,22 @@ classdef Camera_Andor  <  CameraLive & Camera
                         dims.width  = 1392;
                         dims.height = 1040;
                         dims.top    = 561;
-                        dims.left   = 601;
+                        dims.left   = 593;
                     case '528 x 512'
                         dims.width  = 528;
                         dims.height = 512;
                         dims.top    = 825;
-                        dims.left   = 1033;
+                        dims.left   = 1025;
                     case '240 x 256'
                         dims.width  = 240;
                         dims.height = 256;
                         dims.top    = 953;
-                        dims.left   = 1177;
+                        dims.left   = 1169;
                     case '144 x 128'
                         dims.width  = 144;
                         dims.height = 128;
                         dims.top    = 1017;
-                        dims.left   = 1225;
+                        dims.left   = 1217;
                     case '2560 x 304'
                         dims.width  = 2560;
                         dims.height = 304;
@@ -205,11 +205,11 @@ classdef Camera_Andor  <  CameraLive & Camera
                         numbers = regexp(varargin{1}, '[+-]?\d*\.?\d+', 'match');
                         dims.width  = str2double(numbers{1});
                         dims.height = str2double(numbers{2});
-                        dims.left   = 1 + floor((dims.Nx-str2double(numbers{1}))/2);
-                        dims.top    = 1 + floor((dims.Ny-str2double(numbers{2}))/2);
+                        dims.left   = 1 + floor((2160-str2double(numbers{1}))/2);
+                        dims.top    = 1 + floor((2560-str2double(numbers{2}))/2);
                 end
 
-            elseif nargin == 5 && isnumeric([varargin{1:end}]) % setCameraROI(2560,2160)
+            elseif nargin == 5 && isnumeric([varargin{1:end}]) % setCameraROI(2560,2160,1,1)
                         dims.width  = varargin{1};
                         dims.height = varargin{2};
                         dims.top    = varargin{3};
