@@ -51,6 +51,12 @@ classdef Monochromator  <  handle  &  Illumination
             obj.lambda = obj.lambda + val;
         end
 
+        function set.lambdaWidth(obj, val)
+            lda = obj.lambda;
+            
+        end
+
+
         function rc = turn(obj, state)
             arguments
                 obj

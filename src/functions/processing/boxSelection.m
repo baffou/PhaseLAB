@@ -169,8 +169,11 @@ else
             h.Visible = true;
 
             [xc_px,yc_px] = ginput(1);
+            
+            if ~isapp
+                title('click on the crop center')
 
-            if isapp
+            else
 
                 if strcmp(app.scaleButton.SelectedObject.Text,'µm')
                     [xc_px,yc_px]=app.um2px([xc_px, yc_px]);
