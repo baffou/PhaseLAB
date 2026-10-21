@@ -165,7 +165,7 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
                     case 'HWP'
                         mat = R(varargin{ii+1})*HWP*R(-varargin{ii+1})*mat;
                     case 'J'
-                        R(varargin{ii+1}{2})*varargin{ii+1}{1}*R(-varargin{ii+1}{2})*mat;
+                        mat = R(varargin{ii+1}{2})*varargin{ii+1}{1}*R(-varargin{ii+1}{2})*mat;
                 end
             end
             ILs.Jones0(mat);
@@ -203,6 +203,8 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
                 error('the number of wavelength must equal the number of Illumination objects')
             end
 
+            val = obj.adjustLambda(val);
+
             for iv = 1:Nv
                 if val(iv) > 1e5
                     error('wrong lambda value')
@@ -213,7 +215,6 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
                 end
             end
 
-            obj.onLambdaSet()
         end
 
         function set.polar(obj,val)
@@ -309,10 +310,11 @@ classdef Illumination  <  handle & matlab.mixin.Copyable
             end
         end
 
-        function onLambdaSet(obj)
+        function val = adjustLambda(obj,val)
             % To be overloaded in the daughter class monochromator
             % Does not any anything special here, but does action the
             % monochromator in the class Monochromator
+
         end
     end
 end
