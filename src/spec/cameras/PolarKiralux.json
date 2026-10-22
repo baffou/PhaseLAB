@@ -1,0 +1,11 @@
+{"class":"Camera",
+"brand": "Thorlabs",
+"model": "PolarKiralux",
+"dxSize": 3.45e-6,
+"Nx": 2448,
+"Ny": 2048,
+"fullWellCapacity": 10000,
+"bitDepth": 12,
+"offset":0,
+"colorChannels":1
+}
