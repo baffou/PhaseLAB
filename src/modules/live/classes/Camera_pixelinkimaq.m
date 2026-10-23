@@ -83,9 +83,6 @@ classdef Camera_pixelinkimaq  <  CameraLive & Camera
                 opt.expTime = [] % in [s]
                 opt.Nim = 1 % number of images to be acquiredin Fixed mode
             end
-            isrun = strcmp(obj.hndl.Running,'on');
-            stop(obj.hndl)
-
             src = getselectedsource(obj.hndl.vid);
             if ~isempty(opt.expTime)
                 src.Exposure = opt.expTime;
@@ -101,9 +98,6 @@ classdef Camera_pixelinkimaq  <  CameraLive & Camera
                 obj.hndl.vid.TriggerRepeat = Inf;
             end
 
-            if isrun
-                start(obj.hndl)
-            end
 
         end
 
@@ -120,9 +114,15 @@ classdef Camera_pixelinkimaq  <  CameraLive & Camera
                 buf = getsnapshot(obj.hndl.vid);
                 flushdata(obj.hndl.vid);
             catch % in case of insufficient free physical memory due to Matlab memory leak, or camera
+                flushdata(obj.hndl.vid);
+                warning("camera failed to send an image")
                 obj.stopAcquisition
                 obj.startAcquisition
+                try
                 buf = getsnapshot(obj.hndl.vid);
+                catch
+                    warning("Failed again, image not acquired")
+                end
                 flushdata(obj.hndl.vid);
             end
                 %buf = getdata(obj.hndl.vid);
@@ -135,10 +135,8 @@ classdef Camera_pixelinkimaq  <  CameraLive & Camera
             buf = squeeze(getdata(obj.hndl.vid, Nim));
         end
         
-        function setCameraROI(obj,varargin)
-            isrun = strcmp(obj.hndl.Running,'on');
-            stop(obj.hndl)
-            if nargin == 2 && ischar(varargin{1}) % setCameraROI('2560 x 2160')
+        function setImageDimensions(obj,varargin)
+            if nargin == 2 && ischar(varargin{1}) % setImageDimensions('2560 x 2160')
                 Nx = 5472;
                 Ny = 3648;
                 numbers = regexp(varargin{1}, '[+-]?\d*\.?\d+', 'match');
@@ -147,20 +145,16 @@ classdef Camera_pixelinkimaq  <  CameraLive & Camera
                 dims.top   = floor((Nx-str2double(numbers{1}))/2);
                 dims.left    = floor((Ny-str2double(numbers{2}))/2);
 
-            elseif nargin == 5 && isnumeric([varargin{1:end}]) % setCameraROI(2560,2160,1,1)
+            elseif nargin == 5 && isnumeric([varargin{1:end}]) % setImageDimensions(2560,2160,1,1)
                         dims.width  = varargin{1};
                         dims.height = varargin{2};
                         dims.top    = varargin{3}-1;
                         dims.left   = varargin{4}-1;
             else
-                error('Error in the inputs of setCameraROI')
+                error('Error in the inputs of setImageDimensions')
             end
 
             obj.hndl.vid.ROIPosition = [dims.left, dims.top, dims.width, dims.height];
-
-            if isrun
-                start(obj.hndl)
-            end
         end
 
         function setExpTime(obj,val)
