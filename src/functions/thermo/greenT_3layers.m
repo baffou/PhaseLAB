@@ -19,9 +19,9 @@ k2 = universe(2).kappa;
 k3 = universe(3).kappa;
 
 % conversion of distances from nanometers to meters:
-x = x*1e-9;
-y = y*1e-9;
-z = z*1e-9;
+%x = x*1e-9;
+%y = y*1e-9;
+%z = z*1e-9;
 
 z1 = universe(2).mesh.z1;
 z2 = universe(2).mesh.z2;
@@ -108,6 +108,6 @@ for ii = 1:nVal
 
 end % ii
 
-Green = Green*1e-9; %go back to nanometers
+%Green = Green*1e-9; %go back to nanometers
 
 

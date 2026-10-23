@@ -49,6 +49,8 @@ for ii = 1:Npanels
             h.UserData.dispfun{ii} = @imagehsv;
         case {'Pr'} % Pradeep
             h.UserData.dispfun{ii} = @imagePr;
+        case {'sm'} % sepia mitosis
+            h.UserData.dispfun{ii} = @imagesm;
 %        case 'dx'  % does not work
 %            h.UserData.dispfun{ii} = @(x) opendx(x,"theta",0,"phi",0,"persp",1,"colorMap",jet);
         case {'titles', 'title', 'Title','Titles'}

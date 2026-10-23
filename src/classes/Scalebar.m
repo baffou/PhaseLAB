@@ -67,6 +67,7 @@ classdef Scalebar  <  handle
                 obj.Position(1) = opt.Position(1);
                 obj.Position(2) = opt.Position(2);
             end
+            
             x0 = obj.Position(1)*Ny/100;
             y0 = obj.Position(2)*Ny/100;
 
@@ -83,7 +84,7 @@ classdef Scalebar  <  handle
 
             displayedValue = [num2str(obj.value*1e6), ' µm'];
 
-            text(hax, (x0 + width_px/2)*fac, y0*fac , displayedValue, 'Color', 'white', ...
+            text(hax, (x0 + width_px/2)*fac, (y0 + thick_px/2)*fac , displayedValue, 'Color', obj.color, ...
                 'FontSize', obj.fontSize, 'FontWeight', 'bold', ...
                 'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom');
 

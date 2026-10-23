@@ -39,7 +39,7 @@ Glist = interp1(posTable,colorList(:,2),posTableInterp);
 Blist = interp1(posTable,colorList(:,3),posTableInterp);
 
 
-output = uint8(255*[Rlist', Glist', Blist']);
+output = [Rlist', Glist', Blist'];
 
 
 

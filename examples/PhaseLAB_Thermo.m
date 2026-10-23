@@ -2,7 +2,6 @@
 
 clear
 close all
-addpath(genpath('/Users/perseus/Documents/_DATA_SIMULATIONS/190729-PhaseLAB/PhaseLAB_Git'))
 
 %% BUILDING OF THE MEDIUM -- ME=Medium(n,nS);
 ME = Medium('water','glass');

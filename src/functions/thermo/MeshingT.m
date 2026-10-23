@@ -7,7 +7,7 @@
 
 classdef MeshingT
     properties(GetAccess=public , SetAccess=private)
-        z       % Array of z coordinates.
+        z       % Array of z coordinates [m]
         npx     % Number of elements of z.
         z1      % z(1)
         z2      % z(npx)
